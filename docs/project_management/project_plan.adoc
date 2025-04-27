@@ -1,4 +1,4 @@
-= Projektplan: ShareShop (Team 4.B)
+= Projektplan: {project-name}
 {localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
