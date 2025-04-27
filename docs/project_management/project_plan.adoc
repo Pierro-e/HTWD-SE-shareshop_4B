@@ -5,7 +5,7 @@ include::../_includes/default-attributes.inc.adoc[]
 
 
 == Einführung
-Dieser Projektplan beschreibt das Software Engineering-Projekt „ShareShop“, eine kollaborative Einkaufsliste für Wohngemeinschaften. Ziel ist es, den Einkaufsprozess zu optimieren und Konflikte rund um Kostenaufteilung und Bedarfsplanung zu vermeiden. Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsatz von Tools zur effizienten Zusammenarbeit und Versionskontrolle.
+Dieser Projektplan beschreibt das Software Engineering-Projekt „ShareShop“, eine kollaborative Einkaufsliste für Wohngemeinschaften. Ziel ist es, den Einkaufsprozess zu optimieren und Konflikte rund um Kostenaufteilung und Bedarfsplanung zu vermeiden. Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsatz von Tools zur effizienten Zusammenarbeit.
 
 == Projektorganisation
 //Introduce the project team, team members, and roles that they play during this project. If applicable, introduce work areas, domains, or technical work packages that are assigned to team members. Introduce neighboring projects, relationships, and communication channels. If the project is introduced somewhere else, reference that location with a link.
