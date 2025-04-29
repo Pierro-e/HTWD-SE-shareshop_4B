@@ -62,6 +62,13 @@ Dieser Projektplan beschreibt das Software Engineering-Projekt „ShareShop“, 
 
 === Definition of Done
 // Listen Sie hier alle Kritierien auf, damit die Aufgabe eines bestimmten Typs (z.B. Task, User Story) als abgeschlossen gilt.
+* Akzeptanzkrieterien sind erfüllt
+* es wurden Tests durchgeführt und alle Tests sind erfolgreich
+* es entstehen keine Fehler in der Aufgabe oder in zusammenhängenden Aufgaben
+* Code ist dokumentiert (z.B. durch Kommentare)
+* die Arbeit wurde dokumentiert
+* die Arbeit wurde ins GitHub-Repository gepusht
+* der Product Owner hat die Arbeit abgenommen 
 
 == Deployment
 //Outline the strategy for deploying the software (and its updates) into the production environment.
