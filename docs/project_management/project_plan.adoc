@@ -60,7 +60,7 @@ Dieser Projektplan beschreibt das Software Engineering-Projekt „ShareShop“, 
 * es wurde vom Product Owner priorisiert
 * das Entwicklungsteam hat das PBI verstanden und kann es umsetzen
 
-=== Definition of Done
+=== Definition of Done - Product Backlog Item
 // Listen Sie hier alle Kritierien auf, damit die Aufgabe eines bestimmten Typs (z.B. Task, User Story) als abgeschlossen gilt.
 * Akzeptanzkrieterien sind erfüllt
 * es wurden Tests durchgeführt und alle Tests sind erfolgreich
