@@ -62,11 +62,11 @@ Dieser Projektplan beschreibt das Software Engineering-Projekt „ShareShop“, 
 
 === Definition of Done - Product Backlog Item
 // Listen Sie hier alle Kritierien auf, damit die Aufgabe eines bestimmten Typs (z.B. Task, User Story) als abgeschlossen gilt.
-* Akzeptanzkrieterien sind erfüllt
+* Akzeptanzkriterien sind erfüllt
 * es wurden Tests durchgeführt und alle Tests sind erfolgreich
 * es entstehen keine Fehler in der Aufgabe oder in zusammenhängenden Aufgaben
 * Code ist dokumentiert (z.B. durch Kommentare)
-* die Dokumentation wurde akutalisiert
+* die Dokumentation wurde aktualisiert
 * die Arbeit wurde ins GitHub-Repository gepusht
 * der Product Owner hat die Arbeit abgenommen 
 
