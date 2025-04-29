@@ -51,8 +51,14 @@ Dieser Projektplan beschreibt das Software Engineering-Projekt „ShareShop“, 
 //Describe or reference which management and technical practices will be used in the project, such as iterative development, continuous integration, independent testing and list any changes or particular configuration to the project. Specify how you will track progress in each practice. As an example, for iterative development the team may decide to use iteration assessments and iteration burndown reports and collect metrics such as velocity (completed work item points/ iteration).
 
 
-=== Definition of Ready
+=== Definition of Ready - Product Backlog Item
 // Listen Sie hier die Kriterien auf, die ein Product Backlog Item (z.B. User Story) erfüllen muss, damit es bei der Sprint-Planung berücksichtigt werden kann
+* klare und verständliche Formulierung (z.B. in Form einer User Story)
+* Akzeptanzkriterien sind definiert (es ist klar, wann das PBI als erledigt gilt)
+* es ist möglich die Umsetzung durch Tests zu überprüfen
+* es ist nicht von unerledigten Aufgaben abhängig
+* es wurde vom Product Owner priorisiert
+* das Entwicklungsteam hat das PBI verstanden und kann es umsetzen
 
 === Definition of Done
 // Listen Sie hier alle Kritierien auf, damit die Aufgabe eines bestimmten Typs (z.B. Task, User Story) als abgeschlossen gilt.
