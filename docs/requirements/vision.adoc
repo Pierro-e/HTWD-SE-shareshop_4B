@@ -1,60 +1,41 @@
-= Vision: {project-name}
-Erik Wenke <erik.wenke@stud.htw-dresden.d>; Vorname2 Nachname2 <email2@domain.org>; Vorname3 Nachname3 <email3@domain.org>
+== Vision: ShareShop
+Erik Wenke <erik.wenke@stud.htw-dresden.de>; Maximilian Paul <s87085@htw-dresden.de>; Marlene Fritz <s87181@htw-dresden.de>; Levin Heirich <s87139@htw-dresden.de>; Mohsen Hosseinzadehyousefi <s87722@htw-dresden.de>; Pierre Kißling <s86388@htw-dresden.de>; Astemir Sheriev <s87009@htw-dresden.de>;
 {localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
-// Platzhalter für weitere Dokumenten-Attribute
-
 
 == Einführung
-Der Zweck dieses Dokuments ist es, die wesentlichen Bedarfe und Funktionalitäten des Systems {project-system-name} überblicksartig zu beschreiben. Der Fokus liegt auf den Fähigkeiten, die von Stakeholdern und adressierten Nutzern benötigt werden, und der Begründung dieser Bedarfe. Die Details, wie das System {project-system-name} diese Bedarfe erfüllt, werden durch User Stories im Product Backlog sowie dem UX-Konzept beschrieben.
 
 === Zweck
-Der Zweck dieses Dokuments ist es, die wesentlichen Anforderungen an das System aus Sicht und mit den Begriffen der künftigen Anwender zu beschreiben.
+Dieses Dokument beschreibt aus Anwendersicht die grundlegenden Anforderungen an das System ShareShop – eine App zur Unterstützung gemeinsamer Einkaufsprozesse in Wohngemeinschaften (WGs). Ziel ist es, Konflikte um Haushaltsanschaffungen zu minimieren, die Organisation zu erleichtern und die Zusammenarbeit zu fördern.
 
 === Gültigkeitsbereich (Scope)
-Dieses Visions-Dokument bezieht sich auf das System {project-system-name}, das von <Team> entwickelt wird. Das System wird es <Zielkunde/Auftraggeber> erlauben, <Hauptfunktionen> zu nutzen, um damit <Vorteile> zu erreichen / <Aufgabe> zu erleichtern / <Problem> zu lösen.
+Dieses Visions-Dokument bezieht sich auf das System ShareShop, das vom Projektteam 4B entwickelt wird. Das System wird es Bewohner:innen von WGs erlauben, kollaborative Einkaufslisten zu nutzen und den Haushaltsbedarf effizient zu organisieren, um damit einen gut geführten Haushalt zu erreichen, das Einkaufen zu erleichtern und Streit zu vermeiden.
 
 === Definitionen, Akronyme und Abkürzungen
-//Verweis passend zum Belegabgabe-Template se1_belegabgabe_t00.adoc
 Siehe <<#glossary, Glossar>>.
-//Siehe <<./glossary.adoc#glossary, Glossar>>.
 
 === Referenzen
-(hier externe Verweise zu anderen Dokumenten, Quellen, Standards etc. einfügen, sofern notwendig)
-
+- ShareShop-Projektbeschreibung (PDF)
+- Scrum Guide
+- ISO 9241 (Usability-Standards)
 
 == Positionierung
 
 === Fachliche Motivation
-//Erläutern Sie kurz den Hintergrund, in dem das Projekt angesiedelt ist. Welches Problem soll gelöst werden, wie ist es entstanden? Welche Verbesserung wird angestrebt. Achten Sie darauf, eine fachliche (organisatorische, betriebswirtschaftliche) Perspektive einzunehmen.
+Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei der Aufteilung von Kosten, fehlenden Absprachen oder unklaren Verantwortlichkeiten. ShareShop wurde entwickelt, um diese alltäglichen Probleme digital zu lösen und so ein transparentes, faires und angenehmes Zusammenleben zu fördern.
 
 === Produktvision
-//Eine Produktvision beschreibt das Einsatzziel der Anwendung und sorgt für ein gemeinsames Ziel und Verständnis für alle Beteiligten im Projekt. Geben Sie in knapper Form übersichtsartig die Positionierung der angestrebten Lösung im Vergleich zu verfügbaren Alternativen dar. Das folgende Format kann dazu verwendet werden:
-
 
 [cols="1,3"]
 |===
-| Für | [Zielkunde / Persona]
-| der / die | [Angabe des Bedarfs oder Chance]
-| ist das  | [Produktname]
-| eine  | [Produktkategorie]
-| der / die | [Aussage zum Hauptvorteil / Alleinstellungsmerkmal]
-| anders als | [wesentliche Lösungsalternative]
-| kann unser Produkt | [Aussage zum Hauptunterschied]
+| Für | Bewohner:innen von Wohngemeinschaften
+| die | einen gut geführten Haushalt führen möchten
+| ist der | ShareShop
+| eine | kollaborative Einkaufs- und Haushaltsorganisations-App
+| der / die | Einkaufslisten und Haushaltsbedarf organisiert
+| anders als | andere Einkaufslisten-Apps
+| kann unser Produkt | intelligente Bedarfsplanung und WG-spezifische Funktionen bieten
 |===
-
-
-//Beispiel
-//[cols="1,3"]
-//|===
-//| Für | Studierende der HTWD
-//| die | zu wenig Zeit in der Mittagspause zum Essen haben
-//| ist   | Flying Burger
-//| ein  | Lieferdient für Burger
-//| der  | per Drohne liefert
-//| anders als | landgestützte Lieferdienste
-//| kann unser Produkt |  durchs Fenster direkt in den Hörsaal liefern.
-//|===
 
 == Stakeholder Beschreibungen
 
@@ -64,25 +45,36 @@ Siehe <<#glossary, Glossar>>.
 |===
 | Name | Beschreibung | Verantwortlichkeiten
 
-| [Benennung des Stakeholders (als Rolle)]
-| [Kurze Beschreibung des Stakeholders und seiner Ziele]
-| [Fassen Sie die wesentlichen Verantwortlichkeiten des Stakeholder mit Bezug auf das zu entwickelnde System kurz zusammen, d.h. ihr besonderen Interessen. Beispiele: Dieser Stakeholder sorgt dafür, dass das System gewartet wird / dass die angezeigten Daten aktuell sind / überwacht den Projektfortschritt / usw.]
-| Auftraggeber / Pfrüfer
-// TODO: Beschreibung & Ziele + Bezug zum Projekt
-|
-|
+| Alle WG-Bewohner:innen
+| Endnutzer:innen, die gemeinsam einkaufen und Kosten teilen wollen
+| Wollen eine einfache und schnelle Erfassung von Einkaufswünschen und Bedarfen
+
+| App-Owner / Organisator:in
+| Verwaltet Rollen, Historien und Zugriffe auf Haushaltsdaten
+| Verantwortlich für Rechtevergabe, Transparenz und Übersichtlichkeit in der Einkaufs- und Haushaltsorganisation
+
+| Die Person, die einkauft
+| Führt die Einkäufe aus, nutzt die App aktiv im Laden
+| Braucht eine übersichtliche Liste und offline zugängliche Informationen beim Einkauf
+
+| Entwicklerteam
+| Realisiert die technische Umsetzung der App
+| Verantwortlich für Stabilität, Nutzerfreundlichkeit und Erweiterbarkeit der Lösung
+
+| Investor:innen
+| Unterstützen das Projekt mit finanziellen oder strategischen Ressourcen
+| Erwarten eine innovative, skalierbare Lösung mit Marktpotenzial und Mehrwert
+
 | Coach
-// TODO: Bezug zum Projekt
-|
-| Sorgt dafür, dass notwendiges Wissen aufbereitet zu Verfügung steht. Leitet Projekt durch seine gesamelten Erfahrungswerte.
-|Scrum Team
-// TODO: Beschreibung & Ziele + Bezug zum Projekt
-|
-|
+| Unterstützt das Team mit methodischem und fachlichem Know-how
+| Sorgt dafür, dass notwendiges Wissen aufbereitet zur Verfügung steht. Leitet das Projekt durch seine gesammelten Erfahrungswerte
+
+| Scrum Team
+| Entwicklungsteam bestehend aus Studierenden
+| Umsetzung der Anforderungen, Entwicklung und Test des Produkts, iterative Verbesserung
 |===
 
 Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mittels Personas vorgenommen.
-
 
 == Produktüberblick
 
