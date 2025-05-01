@@ -1,0 +1,8 @@
+= IDEAS
+
+Here you can dump different ideas about the project which don't have a place yet.
+
+== Technical
+
+- peer-to-peer sync
+- is there a platform that works across all mobile phones (web application)
