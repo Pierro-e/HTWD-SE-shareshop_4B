@@ -26,8 +26,6 @@
 
 === Increment
 
-- [ ] ist ja am Ende das Ding an sich
-
 == Meetings
 
 === Weekly Standup
