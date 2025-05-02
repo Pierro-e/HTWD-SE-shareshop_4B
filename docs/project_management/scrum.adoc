@@ -14,45 +14,34 @@
 * Kommunikation und Fragen mit Coach
 
 == Artefakte
-
 === Product Backlog
-
-* noch unklar wie wir es genau machen wollen
-* Professor Anke -> alles in GitHub (auch User Stories) (ist das ne gute Idee)
+* Liste in Miro
 
 === Sprint Backlog
-
-* in Miro mit Zetteln
+* Liste in Miro
 
 === Increment
 
 == Meetings
 
 === Weekly Standup
-
 Jedes Mitglied beantwortet kurz und bündig folgende fragen.
 . Was habe ich gemacht.
 . Was werde ich machen.
 . Was waren meine Probleme. Wie könnte man deren Lösung *initalisieren*.
 
 === Sprint Planning
-
 . Ziel Sprint definieren
 . entsprechende PBI auswählen
 . ableiten der zugehörigen Tasks
 . Developer Team wählt Aufgaben aus
 
 === Retro
-
 * Starfish
 Themen über den Sprint hinweg in Miro sammeln.
 Am Ende des Sprints besprechen und aufräumen.
 
 === Review
 
-- [ ] TODO: Ablauf definieren
-
 === Refinement
-
-- [ ] TODO: Ablauf definieren
 
