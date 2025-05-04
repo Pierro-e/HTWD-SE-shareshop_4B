@@ -25,10 +25,14 @@
 == Meetings
 
 === Weekly Standup
-Jedes Mitglied beantwortet kurz und bündig folgende fragen:
-. Was habe ich gemacht.
-. Was werde ich machen.
-. Was waren meine Probleme. Wie könnte man deren Lösung *initalisieren*.
+Jeder Teilnehmer beantwortet *kurz* folgende Fragen:
+
+. Was habe ich diese Woche _gemacht_?
+. Was werde ich diese Woche _machen_?
+. Was waren meine _Probleme_ bis jetzt?
+. Was ist mein Vorschlag zur _Problemlösung_?
+
+Danach *kurz* "Feedback" / Gedanken der anderen Teilnehmer zum gesagten.
 
 === Sprint Planning
 . Ziel Sprint definieren
