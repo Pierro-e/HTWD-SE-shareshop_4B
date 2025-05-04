@@ -25,7 +25,7 @@
 == Meetings
 
 === Weekly Standup
-Jedes Mitglied beantwortet kurz und bündig folgende fragen.
+Jedes Mitglied beantwortet kurz und bündig folgende fragen:
 . Was habe ich gemacht.
 . Was werde ich machen.
 . Was waren meine Probleme. Wie könnte man deren Lösung *initalisieren*.
