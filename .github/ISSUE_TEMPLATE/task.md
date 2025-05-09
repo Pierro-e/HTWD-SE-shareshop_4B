@@ -6,9 +6,11 @@ labels: task
 assignees: ""
 ---
 
+<!-- sdfkjs -->
+
 ## Beschreibung
 
-Es geht darum
+Es soll ...
 
 ## Abstammung
 
@@ -16,6 +18,6 @@ Die Aufgaben sind abgeleitet von der User Story ...
 
 ## Aufgaben
 
-Fertig bedeutet folgende Sachen wurden behandelt:
+"Fertig" wenn:
 
 - [ ] ...
