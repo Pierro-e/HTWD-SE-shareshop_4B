@@ -50,7 +50,7 @@ Dieses Repository enthält Vorlagen im AsciiDoc-Format zur Dokumentation der ver
 ### Hinweis
 
 Falls Sie Fehler korrigieren oder Verbesserungen machen möchten, können Sie
-  dies gern über einen _Pull Request_ tun.
+dies gern über einen _Pull Request_ tun.
 
 ## Hinweise zu den AsciiDoc-Vorlagen
 
