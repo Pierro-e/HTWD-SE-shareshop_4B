@@ -2,11 +2,11 @@
 name: Task
 about: Template für Issues mit dem Label "task" in GitHub.
 title: ""
-labels: task
+labels:
+  - task
+  - ready
 assignees: ""
 ---
-
-<!-- sdfkjs -->
 
 ## Beschreibung
 
