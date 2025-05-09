@@ -23,7 +23,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|*Demographie*
 
-|image::../images/Persona(Laura_Lehmann).png[width=100%,alt="Persona Bild"]
+|image::../images/Persona(Laura_Lehmann).png[width=100%,alt="Persona1 Bild"]
 |
 * Alter: 27  
 * Geschlecht: weiblich  
@@ -56,6 +56,51 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 - Diskussionen über Einkaufspflichten (wenn nicht klar is, wer wann einkaufen geht)  
 - Zu komplizierte Benutzerführung, weshalb App nicht von allen WG-Bewohnern genutzt  
 |===
+
+=== Mark Müller
+
+[cols="2a,4a", options="header"]
+|===
+
+2+|*Demographie*
+
+|image::../images/Persona(Mark_Müller).png[width=100%,alt="Persona2 Bild"]
+| 
+* Alter: 23  
+* Geschlecht: männlich  
+* Familienstand: in einer Beziehung  
+* Wohnsituation: 3er-WG  
+* Beruf: Student Umweltwissenschaften  
+
+2+|*Technische Fähigkeiten / Technologie*
+
+2+|
+- Nutzt regelmäßig Smartphone und Tablet  
+- Ist technikaffin  
+- Nutzt viel Social Media  
+- Hat viele Einkaufstools getestet, aber enttäuscht von Usability  
+- Internetzugang vorhanden  
+
+2+|*Bedürfnisse / Ziele*
+
+2+|
+- App sollte nachhaltigen Konsum unterstützen (Verpackungsverwaltung bzw. Angabe der Verpackung, in der das Produkt sein sollte)  
+- Faire und NUTZUNGSBASIERTE Kostenverteilung 
+    (ist ein Produkt für alle (Preisaufteilung) oder ist es nur für mich (ich bezahle vollen Preis))
+- Regelmäßige Einkaufszeiten (z.B. immer jeden Freitag geht eine Person einkaufen)  
+- Möchte möglichst wenig Absprachen diesbezüglich außerhalb der App 
+- Klare Übersicht, wer sich wie sehr beteiligt und wer wie viel in Anspruch nimmt (Statistik: Einkaufen gegangen & Einkauf in Anspruch genommen)  
+- Möglichkeit, Hinweise zu den Produkten zu geben, um sie zu spezifizieren (z.B. laktosefreie Milch) 
+
+2+|*Hindernisse / Frustrationen*
+
+2+|
+- Fehlende Nachhaltigkeitsfilter  
+- Andere WG-Mitglieder sind unzuverlässig  
+- Zu viele unnötige Klicks bis zur gewünschten Information  
+- Will keine Apps benutzen, die keine Werte wie Fairness (wer beteiligt sich aktiv) unterstützen  
+|===
+
 
 
 == Nutzungskontext
