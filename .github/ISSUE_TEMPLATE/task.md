@@ -1,23 +1,21 @@
 ---
 name: Task
-about: Template für Issues mit dem Label "task" in GitHub.
+about: A template that should be used when creating tasks in GitHub Issues.
 title: ""
-labels:
-  - task
-  - ready
+labels: task
 assignees: ""
 ---
 
-## Beschreibung
+# Task Description
 
-Es soll ...
+- describe the technical work to be done here
 
-## Abstammung
+# Linked User Story (-ies)
 
-Die Aufgaben sind abgeleitet von der User Story ...
+- link user story (-ies) to this task here
 
-## Aufgaben
+# Subtasks
 
-"Fertig" wenn:
+- [ ] list subtasks here
 
-- [ ] ...
+- delete this line if all fields are filled

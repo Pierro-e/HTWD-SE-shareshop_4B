@@ -14,6 +14,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 * Zusammenhänge mittels Taskflow-Diagrammen
 * Angaben über die Gestaltung der Benutzeroberfläche, z.B. Styling, Bedienbarkeit, ...
 
+[[persona]]
 == Personas
 // Fügen Sie hier als Tabelle oder Bild die Persons der wichtigsten Stakeholder ein
 === Laura Lehmann
@@ -25,36 +26,36 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 |image::../images/Persona(Laura_Lehmann).png[width=100%,alt="Persona1 Bild"]
 |
-* Alter: 27  
-* Geschlecht: weiblich  
-* Familienstand: ledig  
-* Wohnsituation: 4er-WG  
-* Beruf: Bürojob  
+* Alter: 27
+* Geschlecht: weiblich
+* Familienstand: ledig
+* Wohnsituation: 4er-WG
+* Beruf: Bürojob
 
 2+|*Technische Fähigkeiten / Technologie*
 
 2+|
-- Nutzt täglich Smartphone und Laptop Job und Organisation  
+- Nutzt täglich Smartphone und Laptop Job und Organisation
 - Vertraut mit Technik, sowie dem Anlegen und Verwalten von Listen
-- Hat bereits Erfahrung mit Haushaltsorganisation (mehrere Jahre WG-Erfahrung)  
-- Nutzt auch andere Apps zur Organisation (z.B. Online-Banking)  
-- Gute Internetverbindung  
+- Hat bereits Erfahrung mit Haushaltsorganisation (mehrere Jahre WG-Erfahrung)
+- Nutzt auch andere Apps zur Organisation (z.B. Online-Banking)
+- Gute Internetverbindung
 
 2+|*Bedürfnisse / Ziele*
 
 2+|
-- Klare, faire Aufteilung von Kosten und Einkäufen  
-- Einsehbare Historie: Wer hat was gekauft?  
-- Nachvollziehbarkeit der Abrechnungen  
-  (Warum muss ich diesen Betrag zahlen? / Was wurde bereits bezahlt?)  
+- Klare, faire Aufteilung von Kosten und Einkäufen
+- Einsehbare Historie: Wer hat was gekauft?
+- Nachvollziehbarkeit der Abrechnungen
+  (Warum muss ich diesen Betrag zahlen? / Was wurde bereits bezahlt?)
 
 2+|*Hindernisse / Frustrationen*
 
 2+|
-- Diskussionen darüber, wer wie viel bezahlt hat  
-  → Wunsch nach klaren Abrechnungen mit Kostenübersicht  
-- Diskussionen über Einkaufspflichten (wenn nicht klar is, wer wann einkaufen geht)  
-- Zu komplizierte Benutzerführung, weshalb App nicht von allen WG-Bewohnern genutzt  
+- Diskussionen darüber, wer wie viel bezahlt hat
+  → Wunsch nach klaren Abrechnungen mit Kostenübersicht
+- Diskussionen über Einkaufspflichten (wenn nicht klar is, wer wann einkaufen geht)
+- Zu komplizierte Benutzerführung, weshalb App nicht von allen WG-Bewohnern genutzt
 |===
 
 === Mark Müller
@@ -65,46 +66,46 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 2+|*Demographie*
 
 |image::../images/Persona(Mark_Müller).png[width=100%,alt="Persona2 Bild"]
-| 
-* Alter: 23  
-* Geschlecht: männlich  
-* Familienstand: in einer Beziehung  
-* Wohnsituation: 3er-WG  
-* Beruf: Student Umweltwissenschaften  
+|
+* Alter: 23
+* Geschlecht: männlich
+* Familienstand: in einer Beziehung
+* Wohnsituation: 3er-WG
+* Beruf: Student Umweltwissenschaften
 
 2+|*Technische Fähigkeiten / Technologie*
 
 2+|
-- Nutzt regelmäßig Smartphone und Tablet  
-- Ist technikaffin  
-- Nutzt viel Social Media  
-- Hat viele Einkaufstools getestet, aber enttäuscht von Usability  
-- Internetzugang vorhanden  
+- Nutzt regelmäßig Smartphone und Tablet
+- Ist technikaffin
+- Nutzt viel Social Media
+- Hat viele Einkaufstools getestet, aber enttäuscht von Usability
+- Internetzugang vorhanden
 
 2+|*Bedürfnisse / Ziele*
 
 2+|
-- App sollte nachhaltigen Konsum unterstützen (Verpackungsverwaltung bzw. Angabe der Verpackung, in der das Produkt sein sollte)  
-- Faire und NUTZUNGSBASIERTE Kostenverteilung 
+- App sollte nachhaltigen Konsum unterstützen (Verpackungsverwaltung bzw. Angabe der Verpackung, in der das Produkt sein sollte)
+- Faire und NUTZUNGSBASIERTE Kostenverteilung
     (ist ein Produkt für alle (Preisaufteilung) oder ist es nur für mich (ich bezahle vollen Preis))
-- Regelmäßige Einkaufszeiten (z.B. immer jeden Freitag geht eine Person einkaufen)  
-- Möchte möglichst wenig Absprachen diesbezüglich außerhalb der App 
-- Klare Übersicht, wer sich wie sehr beteiligt und wer wie viel in Anspruch nimmt (Statistik: Einkaufen gegangen & Einkauf in Anspruch genommen)  
-- Möglichkeit, Hinweise zu den Produkten zu geben, um sie zu spezifizieren (z.B. laktosefreie Milch) 
+- Regelmäßige Einkaufszeiten (z.B. immer jeden Freitag geht eine Person einkaufen)
+- Möchte möglichst wenig Absprachen diesbezüglich außerhalb der App
+- Klare Übersicht, wer sich wie sehr beteiligt und wer wie viel in Anspruch nimmt (Statistik: Einkaufen gegangen & Einkauf in Anspruch genommen)
+- Möglichkeit, Hinweise zu den Produkten zu geben, um sie zu spezifizieren (z.B. laktosefreie Milch)
 
 2+|*Hindernisse / Frustrationen*
 
 2+|
-- Fehlende Nachhaltigkeitsfilter  
-- Andere WG-Mitglieder sind unzuverlässig  
-- Zu viele unnötige Klicks bis zur gewünschten Information  
-- Will keine Apps benutzen, die keine Werte wie Fairness (wer beteiligt sich aktiv) unterstützen  
+- Fehlende Nachhaltigkeitsfilter
+- Andere WG-Mitglieder sind unzuverlässig
+- Zu viele unnötige Klicks bis zur gewünschten Information
+- Will keine Apps benutzen, die keine Werte wie Fairness (wer beteiligt sich aktiv) unterstützen
 |===
 
 
 
 == Nutzungskontext
-// Beschreiben Sie die Arbeitsaufgaben, Arbeitsmittel, physische und soziale Umgebung, in der das Produkt genutzt wird. 
+// Beschreiben Sie die Arbeitsaufgaben, Arbeitsmittel, physische und soziale Umgebung, in der das Produkt genutzt wird.
 // Eventuell sind Angaben zu Fehlerquellen, Häufigkeiten von Ereignisse sowie Bearbeitungsdauern von Vorgängen relevant
 
 //Hier sind einige Anregungen:

@@ -45,36 +45,45 @@ Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei d
 |===
 | Name | Beschreibung | Verantwortlichkeiten
 
-| Alle WG-Bewohner:innen
-| Endnutzer:innen, die gemeinsam einkaufen und Kosten teilen wollen
-| Wollen eine einfache und schnelle Erfassung von Einkaufswünschen und Bedarfen
+| *Nutzer* (WG-Bewohner)
+| Endnutzer:innen, welcher die Software mit dem Ziel der Lebensmittelbeschaffung nutzt
+| Sie bilden die zentrale Quelle für Anforderungen an für den ShareShop.
 
-| App-Owner / Organisator:in
-| Verwaltet Rollen, Historien und Zugriffe auf Haushaltsdaten
-| Verantwortlich für Rechtevergabe, Transparenz und Übersichtlichkeit in der Einkaufs- und Haushaltsorganisation
+//| Alle WG-Bewohner:innen
+//| Endnutzer:innen, die gemeinsam einkaufen und Kosten teilen wollen
+//| Wollen eine einfache und schnelle Erfassung von Einkaufswünschen und Bedarfen
 
-| Die Person, die einkauft
-| Führt die Einkäufe aus, nutzt die App aktiv im Laden
-| Braucht eine übersichtliche Liste und offline zugängliche Informationen beim Einkauf
+//| App-Owner / Organisator:in
+//| Verwaltet Rollen, Historien und Zugriffe auf Haushaltsdaten
+//| Verantwortlich für Rechtevergabe, Transparenz und Übersichtlichkeit in der Einkaufs- und Haushaltsorganisation
 
-| Entwicklerteam
-| Realisiert die technische Umsetzung der App
-| Verantwortlich für Stabilität, Nutzerfreundlichkeit und Erweiterbarkeit der Lösung
+//| Die Person, die einkauft
+//| Führt die Einkäufe aus, nutzt die App aktiv im Laden
+//| Braucht eine übersichtliche Liste und offline zugängliche Informationen beim Einkauf
 
-| Investor:innen
-| Unterstützen das Projekt mit finanziellen oder strategischen Ressourcen
-| Erwarten eine innovative, skalierbare Lösung mit Marktpotenzial und Mehrwert
+| *Entwicklerteam*
+| Personen, die an der technischen Entwicklung der Software beteiligt sind (= SCRUM-Team + Coach).
+| Das Entwicklerteam ist der entscheidende Faktor für den Erfolg des Projekts. Es ist zudem verantwortlich für die technische Qualität (wie z.B. Security, Safety, Nutzerfreundlichkeit und Skalierbarkeit) der Lösung.
 
-| Coach
-| Unterstützt das Team mit methodischem und fachlichem Know-how
-| Sorgt dafür, dass notwendiges Wissen aufbereitet zur Verfügung steht. Leitet das Projekt durch seine gesammelten Erfahrungswerte
+// TODO: Entfernen? -> sind Investoren JETZT relevant für unser Projekt
+//| Investor:innen
+//| Unterstützen das Projekt mit finanziellen oder strategischen Ressourcen
+//| Erwarten eine innovative, skalierbare Lösung mit Marktpotenzial und Mehrwert
 
-| Scrum Team
-| Entwicklungsteam bestehend aus Studierenden
-| Umsetzung der Anforderungen, Entwicklung und Test des Produkts, iterative Verbesserung
+| *Coachin*
+| Person, die das Team mit methodischer und fachlicher Erfahrung unterstützt
+| Sie nimmt die Rolle einer Beraterin ein und leitet das Projekt durch ihren Erfahrungswerte.
+
+| *Gesetzgeber*
+| Institution, die Ladungsraum einschränkt indem sie "bestimmt" Handlungen sanktioniert.
+| Er trägt die Verantwortung das Projekt in einem ganzheitlichem Licht zu sehen und einen moralischen Richtung vor zu geben.
+
+| *Technologie-Provider*
+| Personen und Organisationen, die technische Systeme bereitstellen, welche von uns genutzt wird.
+| Sie kümmern sich um die Qualität dieser verwendeten Systeme.
 |===
 
-Die Verfeinerung der Stakeholder, die das System benutzen, wird im UX-Konzept mittels Personas vorgenommen.
+Die Verfeinerung der Stakeholder erfolgt mittels <<ux-concept.adoc#persona, Personas>>.
 
 == Produktüberblick
 

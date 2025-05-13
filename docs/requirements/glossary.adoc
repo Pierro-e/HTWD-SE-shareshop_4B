@@ -10,8 +10,9 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Begriff | Definition und Erläuterung | Synonyme
 //| Kommissionierung | Bereitstellung von Waren aus einem Lager entsprechend eines Kundenauftrags | (keine)
-| Task | Sequenz von Tätigkeiten, welche ein PBI (zum Teil) realisiert | Issue in GitHub
+| Task | Sequenz von Tätigkeiten, welche ein PBI (zum Teil) realisiert | -
 |===
+
 
 
 == Abkürzungen und Akronyme
