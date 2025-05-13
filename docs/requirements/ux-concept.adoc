@@ -35,7 +35,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 2+|*Technische Fähigkeiten / Technologie*
 
 2+|
-- Nutzt täglich Smartphone und Laptop Job und Organisation
+- Nutzt täglich Smartphone und Laptop für Job und Organisation
 - Vertraut mit Technik, sowie dem Anlegen und Verwalten von Listen
 - Hat bereits Erfahrung mit Haushaltsorganisation (mehrere Jahre WG-Erfahrung)
 - Nutzt auch andere Apps zur Organisation (z.B. Online-Banking)
@@ -122,3 +122,7 @@ Hier können zudem bei Bedarf Teile des Unternehmensmodells (Prozesse, Organigra
 == Wireframes und Wireflow
 // Fügen Sie Wireframes als Bilder oder als Link (z.B. zu einem Miroboard) ein
 // Beziehen Sie ihre Wireframes auf konkrete User Stories oder Epics.
+
+// Wireframes sind Skizzen, die den Aufbau und die Struktur der Benutzeroberfläche zeigen.
+// Sie zeigen das Layout und die Anordnung der Bedienelemente.
+// Wollen wir das hier in Form von Bildern machen oder in Miro?
