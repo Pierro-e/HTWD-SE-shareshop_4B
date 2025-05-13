@@ -18,4 +18,4 @@ assignees: ""
 
 - [ ] list subtasks here
 
-- delete this line if all fields are filled
+- DELETE THIS IF YOU WILL FILL OUT ALL THE FIELDS AFTER CREATION
