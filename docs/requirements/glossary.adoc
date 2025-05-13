@@ -10,7 +10,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Begriff | Definition und Erläuterung | Synonyme
 //| Kommissionierung | Bereitstellung von Waren aus einem Lager entsprechend eines Kundenauftrags | (keine)
-| Task | Sequenz von Tätigkeiten, welche eine User Story (teilweise) realisieren | Issue in GitHub
+| Task | Sequenz von Tätigkeiten, welche ein PBI (zum Teil) realisiert | Issue in GitHub
 |===
 
 
@@ -21,6 +21,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 //| UP | Unified Process | Vorgehensmodell für die Softwareentwicklung
 | PB | Product Backlog | eines der zentralen Artefakt von SCRUM
 | SP | Sprint Backlog | eines der zentralen Artefakt von SCRUM
+| PBI | Product Backlog Item | Element von PB
 |===
 
 == Verzeichnis der Datenstrukturen
