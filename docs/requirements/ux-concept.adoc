@@ -111,7 +111,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|*Demographie*
 
-|image::
+|image::../images/Persona(Niklas_Neumann).png[width=100%,alt="Persona2 Bild"]
 |
 * Stakeholdergruppe: Entwicklerteam
 * Alter: 21
