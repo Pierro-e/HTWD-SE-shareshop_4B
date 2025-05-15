@@ -104,6 +104,49 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 - Will keine Apps benutzen, die keine Werte wie Fairness (wer beteiligt sich aktiv) unterstützen
 |===
 
+=== Susi Senn
+
+[cols="2a,4a", options="header"]
+|===
+
+2+|*Demographie*
+
+|image::../images/Persona(Susi_Senn).png[width=100%,alt="Persona 3 Bild"]
+|
+* Stakeholdergruppe: Nutzer
+* Alter: 24
+* Geschlecht: weiblich
+* Familienstand: ledig
+* Wohnsituation: 5er-WG
+* Beruf: Studentin Kunst
+
+2+|*Technische Fähigkeiten / Technologie*
+
+2+|
+- nutzt Smartphone für soziale Medien
+- nutzt sonst wenige Elektronische Geräte
+- mag Apps, die ohne großen Aufwand ihren ZWeck erfüllen, ist genervt, wenn man viel denken muss
+- hat noch keine Erfahrung im Organisieren von Einkauf und Haushalt in einer WG
+- Gute Internetverbindung
+
+2+|*Bedürfnisse / Ziele*
+
+2+|
+- organisiertes Einkaufen sowohl innerhalb der WG, als auch für sich selbst
+- besserer Überblick über Kosten der Lebensmittel
+- wenig Lebensmittel verschwenden
+- wenig Zeitaufwand für Entwurf der Einkaufsliste
+- Notwendigkeit der Kommunikation mit WG-Bewohnern minimieren
+- hat eine starke Erdnussallergie und möchte die Einkaufenden darauf hinweisen auf Kontamination zu achten
+
+2+|*Hindernisse / Frustrationen*
+
+2+|
+- bisher: jeder geht ür sich einkaufen, keine Absprachen -> hoher Zeitaufwand für alle  
+- vergisst häufig Dinge, die sie einkaufen wollte
+- ist im Laden oft planlos, da keine Zeit für viel Vorbereitung z.B. was als nächstes gekocht werden soll, was noch da ist, ect
+|===
+
 === Niklas Neumann
 
 [cols="2a,4a", options="header"]
