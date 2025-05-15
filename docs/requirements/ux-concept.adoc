@@ -123,13 +123,13 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|
 - entwickelt täglich mit modernen Tehnologien
-- vertraut mit Clean-Code, Security-Prinzipien und agilen Methoden
+- vertraut mit Clean-Code, Security-Prinzipien und agilen Methoden (SCRUM)
 - Fokus auf Benutzerfreundlichkeit, Skalierbarkeit und Wartbarkeit der Systeme
 
 2+|*Bedürfnisse / Ziele*
 
 2+|
-- klare Anforderungen und Anwendungsfälle aller Features (muss klar Wissen, was er zu tun hat) 
+- klare Anforderungen und Anwendungsfälle aller Features (muss klar Wissen, was er zu tun hat (Missverständnisse vermeiden/direkt am Anfang klären)) 
 - technisch saubere, skalierbare Lösung die wartbar bleibt (Fehlerfindung sollte nicht zu kompliziert werden)
 - klare Definition of Done Formulierung, dass Tests schnell ablaufen
 - konstruktives Feedback und enger Austausch mit Product Owner
@@ -141,6 +141,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 - technische Kompromisse wegen Zeitdruck oder mangelhafter Planung
 - fehlende oder zu spät kommunizierte Nutzerbedürfnisse
 - unzureichende Dokumentation oder unklar definierte Verantwortlichkeiten 
+- fehlende Informationen über Verantwortlichkeiten (wenn man nicht weiß wer diesen Code geschrieben hat -> dann könnte man keine Fragen klären)
 
 |===
 
@@ -181,7 +182,45 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 |===
 
+=== Tim Tiedemann
 
+[cols="2a,4a", options="header"]
+|===
+
+2+|*Demographie*
+
+|image::
+|
+* Stakeholdergruppe: Technoligie-Provider
+* Alter: 35
+* Geschlecht: männlich
+* Familienstand: verheiratet
+* Beruf: Cloud-Architekt bei großem IT-Dienstleister
+
+2+|*Technische Fähigkeiten / Technologie*
+
+2+|
+- Spezialist für Cloud-Infrastruktur
+- sorgt für Skalirbarkeit, Ausfallsicherheit und Performance von Plattformdiensten 
+- vertraut mit Dev-Ops-Prinzipien, Monitoring und IT-Sicherheitsrichtlinien
+
+2+|*Bedürfnisse / Ziele*
+
+2+|
+- Reibungslose Integration der eigenen Systeme in das Projekt (z.B. Datenbanken, Hosting)
+- klare technische Anforderungen und gute Abstimmung mit den Entwicklern
+- Sicherstellung der Systemstabilität, Performance und Skalierbarkeit
+- Einhaltung von Sicherheits- Datenschuttzstandarda in der Systemnutzung
+- efiizient Fehlerbehebung 
+
+2+|*Hindernisse / Frustrationen*
+
+2+|
+- unklare Verantworlichkeiten bei Systemproblemen (Dokumenatation darüber, wer welches System/Datenbank integriert hat)
+- Fehler durch fehlerhafte Nutzung der, durch das System bereitgestellte, Infrastruktur
+- Fehler durch unzureichende Tests 
+
+|===
 
 
 == Nutzungskontext
