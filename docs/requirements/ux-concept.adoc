@@ -144,6 +144,43 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 |===
 
+=== Klara Krüger
+
+[cols="2a,4a", options="header"]
+|===
+
+2+|*Demographie*
+
+|image::
+|
+* Stakeholdergruppe: Gesetzgeber
+* Alter: 49
+* Geschlecht: weiblich
+* Familienstand: verheiratet
+* Beruf: Referentin in Bundesbehörde für Verbraucherschutz und Digitalisierung
+
+2+|*Technische Fähigkeiten / Technologie*
+
+2+|
+- grundlegendes Verständnis von IT-Systemen, Datenschutz und Online-Diensten
+- vertraut mit den regulatorischen Rahmenwerken (DSGVO, Sicherheitsrichtlinien) 
+
+2+|*Bedürfnisse / Ziele*
+
+2+|
+- Sicherstellung von Rechtskonformität der App
+- Datenschutz, Transparenz und faire digitale Teilhabe für alle Nutzergruppen
+- klare Richtlinien zur Datenspeicherung, -weitergabe und -verwendung (hauptsächlich Nutzerdaten, wie Login, PW oder E-Mail (je nachdem was wir fordern))
+- Förderung barrierefreier Lösung (körperliche als auch geistig Behinderte (z.B. Alternativtexte bei Bildern, hohe Farbkontraste, einfache Texte/Beschreibungen)) 
+
+2+|*Hindernisse / Frustrationen*
+
+2+|
+- schlechte oder unvollständige Einhaltung der Richtlinien 
+- Konflikte zwischen Innovationsdrang und reagulatorischen Schranken 
+
+|===
+
 
 
 
