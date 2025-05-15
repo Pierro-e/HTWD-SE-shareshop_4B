@@ -104,6 +104,47 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 - Will keine Apps benutzen, die keine Werte wie Fairness (wer beteiligt sich aktiv) unterstützen
 |===
 
+=== Niklas Neumann
+
+[cols="2a,4a", options="header"]
+|===
+
+2+|*Demographie*
+
+|image::
+|
+* Stakeholdergruppe: Entwicklerteam
+* Alter: 21
+* Geschlecht: männlich
+* Familienstand: in einer Beziehung
+* Beruf: Software Entwicklung
+
+2+|*Technische Fähigkeiten / Technologie*
+
+2+|
+- entwickelt täglich mit modernen Tehnologien
+- vertraut mit Clean-Code, Security-Prinzipien und agilen Methoden
+- Fokus auf Benutzerfreundlichkeit, Skalierbarkeit und Wartbarkeit der Systeme
+
+2+|*Bedürfnisse / Ziele*
+
+2+|
+- klare Anforderungen und Anwendungsfälle aller Features (muss klar Wissen, was er zu tun hat) 
+- technisch saubere, skalierbare Lösung die wartbar bleibt (Fehlerfindung sollte nicht zu kompliziert werden)
+- klare Definition of Done Formulierung, dass Tests schnell ablaufen
+- konstruktives Feedback und enger Austausch mit Product Owner
+
+2+|*Hindernisse / Frustrationen*
+
+2+|
+- unklare oder sich ständig ändernde Anforderungen
+- technische Kompromisse wegen Zeitdruck oder mangelhafter Planung
+- fehlende oder zu spät kommunizierte Nutzerbedürfnisse
+- unzureichende Dokumentation oder unklar definierte Verantwortlichkeiten 
+
+|===
+
+
 
 
 == Nutzungskontext
