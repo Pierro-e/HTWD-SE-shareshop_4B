@@ -234,7 +234,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 |image::
 |
-* Stakeholdergruppe: Technoligie-Provider
+* Stakeholdergruppe: Technologie-Provider
 * Alter: 35
 * Geschlecht: männlich
 * Familienstand: verheiratet
@@ -244,7 +244,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|
 - Spezialist für Cloud-Infrastruktur
-- sorgt für Skalirbarkeit, Ausfallsicherheit und Performance von Plattformdiensten 
+- sorgt für Skalierbarkeit, Ausfallsicherheit und Performance von Plattformdiensten 
 - vertraut mit Dev-Ops-Prinzipien, Monitoring und IT-Sicherheitsrichtlinien
 
 2+|*Bedürfnisse / Ziele*
@@ -253,13 +253,13 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 - Reibungslose Integration der eigenen Systeme in das Projekt (z.B. Datenbanken, Hosting)
 - klare technische Anforderungen und gute Abstimmung mit den Entwicklern
 - Sicherstellung der Systemstabilität, Performance und Skalierbarkeit
-- Einhaltung von Sicherheits- Datenschuttzstandarda in der Systemnutzung
+- Einhaltung von Sicherheits- Datenschuttzstandards in der Systemnutzung
 - efiizient Fehlerbehebung 
 
 2+|*Hindernisse / Frustrationen*
 
 2+|
-- unklare Verantworlichkeiten bei Systemproblemen (Dokumenatation darüber, wer welches System/Datenbank integriert hat)
+- unklare Verantwortlichkeiten bei Systemproblemen (Dokumenatation darüber, wer welches System/Datenbank integriert hat)
 - Fehler durch fehlerhafte Nutzung der, durch das System bereitgestellte, Infrastruktur
 - Fehler durch unzureichende Tests 
 
