@@ -49,26 +49,9 @@ Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei d
 | Endnutzer:innen, welcher die Software mit dem Ziel der Lebensmittelbeschaffung nutzt
 | Sie bilden die zentrale Quelle für Anforderungen an für den ShareShop.
 
-//| Alle WG-Bewohner:innen
-//| Endnutzer:innen, die gemeinsam einkaufen und Kosten teilen wollen
-//| Wollen eine einfache und schnelle Erfassung von Einkaufswünschen und Bedarfen
-
-//| App-Owner / Organisator:in
-//| Verwaltet Rollen, Historien und Zugriffe auf Haushaltsdaten
-//| Verantwortlich für Rechtevergabe, Transparenz und Übersichtlichkeit in der Einkaufs- und Haushaltsorganisation
-
-//| Die Person, die einkauft
-//| Führt die Einkäufe aus, nutzt die App aktiv im Laden
-//| Braucht eine übersichtliche Liste und offline zugängliche Informationen beim Einkauf
-
 | *Entwicklerteam*
 | Personen, die an der technischen Entwicklung der Software beteiligt sind (= SCRUM-Team + Coach).
 | Das Entwicklerteam ist der entscheidende Faktor für den Erfolg des Projekts. Es ist zudem verantwortlich für die technische Qualität (wie z.B. Security, Safety, Nutzerfreundlichkeit und Skalierbarkeit) der Lösung.
-
-// TODO: Entfernen? -> sind Investoren JETZT relevant für unser Projekt
-//| Investor:innen
-//| Unterstützen das Projekt mit finanziellen oder strategischen Ressourcen
-//| Erwarten eine innovative, skalierbare Lösung mit Marktpotenzial und Mehrwert
 
 | *Coachin*
 | Person, die das Team mit methodischer und fachlicher Erfahrung unterstützt
