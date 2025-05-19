@@ -142,7 +142,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 2+|*Hindernisse / Frustrationen*
 
 2+|
-- bisher: jeder geht ür sich einkaufen, keine Absprachen -> hoher Zeitaufwand für alle  
+- bisher: jeder geht ür sich einkaufen, keine Absprachen -> hoher Zeitaufwand für alle
 - vergisst häufig Dinge, die sie einkaufen wollte
 - ist im Laden oft planlos, da keine Zeit für viel Vorbereitung z.B. was als nächstes gekocht werden soll, was noch da ist, ect
 |===
@@ -172,7 +172,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 2+|*Bedürfnisse / Ziele*
 
 2+|
-- klare Anforderungen und Anwendungsfälle aller Features (muss klar Wissen, was er zu tun hat (Missverständnisse vermeiden/direkt am Anfang klären)) 
+- klare Anforderungen und Anwendungsfälle aller Features (muss klar Wissen, was er zu tun hat (Missverständnisse vermeiden/direkt am Anfang klären))
 - technisch saubere, skalierbare Lösung die wartbar bleibt (Fehlerfindung sollte nicht zu kompliziert werden)
 - klare Definition of Done Formulierung, dass Tests schnell ablaufen
 - konstruktives Feedback und enger Austausch mit Product Owner
@@ -183,7 +183,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 - unklare oder sich ständig ändernde Anforderungen
 - technische Kompromisse wegen Zeitdruck oder mangelhafter Planung
 - fehlende oder zu spät kommunizierte Nutzerbedürfnisse
-- unzureichende Dokumentation oder unklar definierte Verantwortlichkeiten 
+- unzureichende Dokumentation oder unklar definierte Verantwortlichkeiten
 - fehlende Informationen über Verantwortlichkeiten (wenn man nicht weiß wer diesen Code geschrieben hat -> dann könnte man keine Fragen klären)
 
 |===
@@ -207,7 +207,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|
 - grundlegendes Verständnis von IT-Systemen, Datenschutz und Online-Diensten
-- vertraut mit den regulatorischen Rahmenwerken (DSGVO, Sicherheitsrichtlinien) 
+- vertraut mit den regulatorischen Rahmenwerken (DSGVO, Sicherheitsrichtlinien)
 
 2+|*Bedürfnisse / Ziele*
 
@@ -215,13 +215,13 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 - Sicherstellung von Rechtskonformität der App
 - Datenschutz, Transparenz und faire digitale Teilhabe für alle Nutzergruppen
 - klare Richtlinien zur Datenspeicherung, -weitergabe und -verwendung (hauptsächlich Nutzerdaten, wie Login, PW oder E-Mail (je nachdem was wir fordern))
-- Förderung barrierefreier Lösung (körperliche als auch geistig Behinderte (z.B. Alternativtexte bei Bildern, hohe Farbkontraste, einfache Texte/Beschreibungen)) 
+- Förderung barrierefreier Lösung (körperliche als auch geistig Behinderte (z.B. Alternativtexte bei Bildern, hohe Farbkontraste, einfache Texte/Beschreibungen))
 
 2+|*Hindernisse / Frustrationen*
 
 2+|
-- schlechte oder unvollständige Einhaltung der Richtlinien 
-- Konflikte zwischen Innovationsdrang und reagulatorischen Schranken 
+- schlechte oder unvollständige Einhaltung der Richtlinien
+- Konflikte zwischen Innovationsdrang und reagulatorischen Schranken
 
 |===
 
@@ -244,7 +244,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|
 - Spezialist für Cloud-Infrastruktur
-- sorgt für Skalierbarkeit, Ausfallsicherheit und Performance von Plattformdiensten 
+- sorgt für Skalierbarkeit, Ausfallsicherheit und Performance von Plattformdiensten
 - vertraut mit Dev-Ops-Prinzipien, Monitoring und IT-Sicherheitsrichtlinien
 
 2+|*Bedürfnisse / Ziele*
@@ -254,14 +254,14 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 - klare technische Anforderungen und gute Abstimmung mit den Entwicklern
 - Sicherstellung der Systemstabilität, Performance und Skalierbarkeit
 - Einhaltung von Sicherheits- Datenschuttzstandards in der Systemnutzung
-- efiizient Fehlerbehebung 
+- efiizient Fehlerbehebung
 
 2+|*Hindernisse / Frustrationen*
 
 2+|
 - unklare Verantwortlichkeiten bei Systemproblemen (Dokumenatation darüber, wer welches System/Datenbank integriert hat)
 - Fehler durch fehlerhafte Nutzung der, durch das System bereitgestellte, Infrastruktur
-- Fehler durch unzureichende Tests 
+- Fehler durch unzureichende Tests
 
 |===
 

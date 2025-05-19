@@ -53,6 +53,7 @@ Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei d
 | Personen, die an der technischen Entwicklung der Software beteiligt sind (= SCRUM-Team + Coach).
 | Das Entwicklerteam ist der entscheidende Faktor für den Erfolg des Projekts. Es ist zudem verantwortlich für die technische Qualität (wie z.B. Security, Safety, Nutzerfreundlichkeit und Skalierbarkeit) der Lösung.
 
+
 | *Coachin*
 | Person, die das Team mit methodischer und fachlicher Erfahrung unterstützt
 | Sie nimmt die Rolle einer Beraterin ein und leitet das Projekt durch ihren Erfahrungswerte.
