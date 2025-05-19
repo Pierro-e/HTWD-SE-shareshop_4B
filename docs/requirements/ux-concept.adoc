@@ -154,7 +154,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|*Demographie*
 
-|image::../images/Persona(Niklas_Neumann).png[width=100%,alt="Persona2 Bild"]
+|image::../images/Persona(Niklas_Neumann).png[width=100%,alt="Persona4 Bild"]
 |
 * Stakeholdergruppe: Entwicklerteam
 * Alter: 21
@@ -195,7 +195,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|*Demographie*
 
-|image::../images/Persona(Klara_Krüger).png[width=100%,alt="Persona2 Bild"]
+|image::../images/Persona(Klara_Krüger).png[width=100%,alt="Persona5 Bild"]
 |
 * Stakeholdergruppe: Gesetzgeber
 * Alter: 49
@@ -232,7 +232,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|*Demographie*
 
-|image::../images/Persona(Tim_Tiedemann).png[width=100%,alt="Persona2 Bild"]
+|image::../images/Persona(Tim_Tiedemann).png[width=100%,alt="Persona6 Bild"]
 |
 * Stakeholdergruppe: Technologie-Provider
 * Alter: 35
