@@ -270,16 +270,39 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 // Beschreiben Sie die Arbeitsaufgaben, Arbeitsmittel, physische und soziale Umgebung, in der das Produkt genutzt wird.
 // Eventuell sind Angaben zu Fehlerquellen, Häufigkeiten von Ereignisse sowie Bearbeitungsdauern von Vorgängen relevant
 
-//Hier sind einige Anregungen:
+* Die *primäre Aufgabe* besteht in der Organisation gemeinschaftlicher Einkäufe innerhalb von Wohngemeinschaften. Dies umfasst:
+** das Erstellen und Pflegen gemeinsamer Einkaufslisten
+** die Unterscheidung zwischen individuellen und gemeinsamen Bedarfen
+** das Erfassen und Aufteilen der Kosten
+** die Koordination des Einkaufsprozesses
 
-//Zutreffendes angeben, nicht zutreffendes streichen oder auskommentieren
-. Anzahl der Personen, die an der Erfüllung der Aufgabe beteiligt sind. Ändert sich das?
-. Wie lange dauert die Bearbeitung der Aufgabe? Wie viel Zeit wird für jeden Arbeitsschritt benötigt? Ändert sich das?
-. Gibt es besondere Umgebungsbedingungen, z.B. mobil, offline, Außeneinsatz, Touchbedienung, Nutzung durch seh- oder hörbeeinträchtigte Personen?
-. Welche Systemplattformen werden heute eingesetzt? Welche sind es ggf. zukünftig?
-. Welche anderen Anwendungen sind im Einsatz? Muss ihre Anwendung mit diesen integriert werden?
+* diese Aufgaben sollen möglichst einfach und schnell erledigt werden können, um den Aufwand für die Nutzer zu minimieren und die Akzeptanz der App zu erhöhen.
 
-Hier können zudem bei Bedarf Teile des Unternehmensmodells (Prozesse, Organigramme, IT-Landschaft, ...) eingefügt werden, um die beteiligten Aufgaben und Rollen zu skizzieren.
+* *Arbeitsumgebung*:
+** Die App wird in kleinen bis mittelgroßen Gruppen (2–6 Personen) genutzt, typischerweise Mitglieder einer WG. Die Rollen sind nicht festgelegt – jede Person kann Artikel hinzufügen, einkaufen oder Kosten eintragen.
+
+* *Arbeitsmittel*:
+** Mobile Nutzung (Smartphone, Tablet): Hauptplattform zur Nutzung unterwegs und beim Einkauf
+** Desktop-Nutzung: gelegentliche Nutzung
+
+* *Arbeitsbedingungen*:
+** offline Nutzung: ggf. im Supermarkt, wenn kein Internet verfügbar ist
+** online Nutzung: in der Wohnung oder unterwegs
+** Touchbedienung: Hauptsächlich Smartphone und Tablet, daher Touchbedienung wichtig
+** Nutzung durch beeinträchtigte Personen: Barrierefreiheit ist wichtig, um eine breite Nutzerbasis zu erreichen
+
+* *Systemplattformen*:
+** derzeit: IOS, Android, WebApp
+//** Zukünftig: Desktop-Anwendung (Windows, MacOS, Linux) und Smartwatch 
+
+//keine Ahnung ob wir das machen wollen
+//* *Andere Anwendungen und Integrationen*:
+//** Kalender-Integration: zur Abstimmung vonb Einkaufszeiten
+
+
+//. Welche anderen Anwendungen sind im Einsatz? Muss ihre Anwendung mit diesen integriert werden?
+
+//Hier können zudem bei Bedarf Teile des Unternehmensmodells (Prozesse, Organigramme, IT-Landschaft, ...) eingefügt werden, um die beteiligten Aufgaben und Rollen zu skizzieren.
 
 == Wireframes und Wireflow
 // Fügen Sie Wireframes als Bilder oder als Link (z.B. zu einem Miroboard) ein
