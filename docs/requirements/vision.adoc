@@ -47,7 +47,7 @@ Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei d
 
 | *Nutzer* (WG-Bewohner)
 | Endnutzer:innen, welcher die Software mit dem Ziel der Lebensmittelbeschaffung nutzt
-| Sie bilden die zentrale Quelle für Anforderungen an für den ShareShop.
+| Sie bilden die zentrale Quelle für Anforderungen an den ShareShop (user Produkt).
 
 | *Entwicklerteam*
 | Personen, die an der technischen Entwicklung der Software beteiligt sind (= SCRUM-Team + Coach).
@@ -60,11 +60,11 @@ Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei d
 
 | *Gesetzgeber*
 | Institution, die Ladungsraum einschränkt indem sie "bestimmt" Handlungen sanktioniert.
-| Er trägt die Verantwortung das Projekt in einem ganzheitlichem Licht zu sehen und einen moralischen Richtung vor zu geben.
+| Er trägt die Verantwortung das Projekt aus einer ganzheitlichem Perspektive zu betrachten und einen moralischen Richtung vor zu geben.
 
 | *Technologie-Provider*
 | Personen und Organisationen, die technische Systeme bereitstellen, welche von uns genutzt wird.
-| Sie kümmern sich um die Qualität dieser verwendeten Systeme.
+| Sie garantieren Qualität der genutzten Arbeitsmittel.
 |===
 
 Die Verfeinerung der Stakeholder erfolgt mittels <<ux-concept.adoc#persona, Personas>>.
