@@ -1,6 +1,5 @@
 = Architecture Notebook: {project-name}
-Vorname Nachname <email@domain.org>; Vorname2 Nachname2 <email2@domain.org>; Vorname3 Nachname3 <email3@domain.org>
-{localdatetime}
+Erik Wenke <erik.wenke@stud.htw-dresden.de>; Maximilian Paul <s87085@htw-dresden.de>; Marlene Fritz <s87181@htw-dresden.de>; Levin Heirich <s87139@htw-dresden.de>; Mohsen Hosseinzadehyousefi <s87722@htw-dresden.de>; Pierre Kißling <s86388@htw-dresden.de>; Astemir Sheriev <s87009@htw-dresden.de>;{localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
 // Platzhalter für weitere Dokumenten-Attribute
 
@@ -18,10 +17,19 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 
 //Formulieren Sie eine Reihe von Zielen, die die Architektur in ihrer Struktur und ihrem Verhalten erfüllen muss. Identifizieren Sie kritische Fragen, die von der Architektur adressiert werden müssen, z.B. besondere Hardware-Abhängigkeiten, die vom Rest des Systems isoliert werden sollten oder Sicherstellung der Funktionsfähigkeit unter besonderen Bedingungen (z.B. Offline-Nutzung).
 
+- Trennung von Frontend (Vue.js) und Backend (Spring Boot) für klare Verantwortlichkeiten
+- Offline-Fähigkeit (z.B. mit PWA-Funktionalität) für Einkauf ohne Internet 
+- Unterstützung mehrerer WG's, denen jeweils mehrere Personen zugeordnet sind
+- hohe Transparenz und Nachvollziehbarkeit bei Finanzdaten
+- responsive UI für Desktop und Mobile (Größe der Website passt sich automatisch an)
+
+
 
 == Annahmen und Abhängigkeiten
 //[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
-
+- Team kennt sich mit Java aus, daher ist Spring Boot als Backend geeignet
+- Vue.js ist ebenfalls beim Großteil des Teams bekannt und bietet vielversprechende Möglichkeiten für das UI
+- externe API's können integriert werden, bspw. für Bereitstellung der Produkte inkl. deren Preise
 
 == Architektur-relevante Anforderungen
 //Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
@@ -30,8 +38,10 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 == Entscheidungen, Nebenbedingungen und Begründungen
 //[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
-. Wir wollen view.js as Programmierspraceh nutzen, da es nach einer vielversprechenden Möglichkeit aussieht.
-. Die Haupsächlich benutzt Sprache zur Umsetzung ist Java, da mir ihr die meisten Teammitglieder vertraut ist.
+- Vue.js wird als Frontend genutzt, um moderne reaktive Overflächen mit kurzen Ladezeiten zu realisieren
+- Java mit Spring Boot wird als Backend verwendet, da es gut mit Vue.js zusammenarbeitet
+- DB:
+- die Anwendung wird als Webanwendung umgesetz (mit Option auf PWA-Funktionalität??)
 
 
 == Schichten oder Architektur-Framework
