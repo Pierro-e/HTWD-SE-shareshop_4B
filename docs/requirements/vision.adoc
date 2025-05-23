@@ -77,8 +77,16 @@ Die Verfeinerung der Stakeholder erfolgt mittels <<ux-concept.adoc#persona, Pers
 [%header, cols="4,1,4,1"]
 |===
 | Bedarf | Priorität | Features / Funktionen | Geplantes Release
-| Unterscheidung "habe ich" / "habe ich noch nicht"  | xx | Sortiermöglichkeit (abhaken) der Items | xx
+| WG möchte Einkäufe zusammen organisieren | hoch | gemeinsame Einkaufsliste (jeder kann bearbeiten) und Kalender für Einkaufsrythmen| xx
+| Mitglieder möchten Kosten für Einkauf teilen | hoch | nachvollziehbare Rechnung zur Kostenverteilung | xx
+| Im Supermarkt ist schlechte Internetverbindung | mittel | Liste auch offline bereitstellen | xx
+| Person möchte beim Einkaufen die Übersicht behalten  | hoch | Sortiermöglichkeit und abhaken der Items | xx
+| ShareShop soll dem Nutzer Arbeit abnehmen / Planung erleichtern | hoch | Bedarfsvorhersage basierend auf Nutzungsmuster | xx
+| WG-Mitglied will individuelle Bedürfnisse kennzeichnen | hoch | personalisierte Tags | xx
+| Überblick über gemeinsame Ausgaben gewünscht | mittel | Ausgabenstatistik pro Person und Haushalt (evtl. Budgetfunktion) | xx 
 | Nächstes Item am Anfang der Liste  | xx | Manuelles sortieren (+ Sortieralgorithmus ?) | xx
+| umweltbewusste Nutzer wollen nachhaltig einkaufen | niedrig | Nachhaltigkeits-Tracking mit CO2- und Verpackungsstatistik | xx
+| Vorräte solen verwaltet werden | niedrig | Inventarliste | xx
 |===
 
 
