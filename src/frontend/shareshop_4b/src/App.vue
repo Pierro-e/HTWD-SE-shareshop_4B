@@ -65,6 +65,8 @@
         <li>Führe den Befehl <code>npm install</code> aus, um alle Abhängigkeiten zu installieren.</li>
         <li>Starte den Entwicklungsserver mit <code>npm run dev</code>.</li>
         <li>Öffne dann im Browser die angezeigte Adresse.</li>
+        <li>Nach einer Änderung Code speichern -> Änderung wird direkt angezeigt</li>
+        <li>Zum Abbrechen / Beenden <code>strg + c</code></li>
       </ol>
       <p>Jetzt kannst du die App live lokal testen und Änderungen werden automatisch aktualisiert.</p>
     </section>
