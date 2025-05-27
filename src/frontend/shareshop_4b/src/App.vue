@@ -38,6 +38,7 @@
         <li><strong>App.vue</strong> - Hauptkomponente, hier startet die App</li>
         <li><strong>components/</strong> - Ordner für Unter-Komponenten (z.B. Einkaufslisten, Finanzen)</li>
         <li><strong>assets/</strong> - Bilder, Styles oder andere Ressourcen</li>
+        <li><strong>style.css</strong> - Globale CSS-Datei für allgemeine Gestaltung, die auf alle Komponenten wirkt</li>
       </ul>
     </section>
 
