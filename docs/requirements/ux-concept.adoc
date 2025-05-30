@@ -280,6 +280,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 * *Arbeitsumgebung*:
 ** Die App wird in kleinen bis mittelgroßen Gruppen (2–6 Personen) genutzt, typischerweise Mitglieder einer WG. Die Rollen sind nicht festgelegt – jede Person kann Artikel hinzufügen, einkaufen oder Kosten eintragen.
+** Benutzung mit nur einer Hand möglich
 
 * *Arbeitsmittel*:
 ** Mobile Nutzung (Smartphone, Tablet): Hauptplattform zur Nutzung unterwegs und beim Einkauf
@@ -293,11 +294,11 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 * *Systemplattformen*:
 ** derzeit: IOS, Android, WebApp
-//** Zukünftig: Desktop-Anwendung (Windows, MacOS, Linux) und Smartwatch 
+//** Zukünftig: Desktop-Anwendung (Windows, MacOS, Linux) und Smartwatch
 
 //keine Ahnung ob wir das machen wollen
 //* *Andere Anwendungen und Integrationen*:
-//** Kalender-Integration: zur Abstimmung vonb Einkaufszeiten
+//** Kalender-Integration: zur Abstimmung von Einkaufszeiten
 
 
 //. Welche anderen Anwendungen sind im Einsatz? Muss ihre Anwendung mit diesen integriert werden?
