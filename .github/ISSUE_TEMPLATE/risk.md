@@ -1,8 +1,8 @@
 ---
-name: spike
+name: risk
 about: A template that should be used when creating tasks in GitHub Issues.
 title: ""
-labels: spike
+labels: risk
 assignees: ""
 ---
 

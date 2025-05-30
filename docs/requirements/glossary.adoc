@@ -12,7 +12,8 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 //| Kommissionierung | Bereitstellung von Waren aus einem Lager entsprechend eines Kundenauftrags | (keine)
 | Task | Sequenz von Tätigkeiten, welche ein PBI (zum Teil) realisiert | -
 | Artikel | Einkaufsgegenstand (Klopapier, Bananen, Schüssel, ...)| -
-| Einkäufer | Nutzer welcher Artikel in einem Laden einkauft| -
+| Einkäufer | Bezeichnung für einen Nutzer, welcher gerade Artikel in einem Laden einkauft| -
+| Schuldner | Bezeichnung für einen Nutzer, mit negativen Kontostand | -
 |===
 
 == Abkürzungen und Akronyme
