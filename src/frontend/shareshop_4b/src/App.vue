@@ -63,6 +63,7 @@
       <h2>Wie starte ich die App lokal?</h2>
       <ol>
         <li>Im Projektverzeichnis öffnest du ein Terminal (z.B. in VSCode).</li>
+        <li>Du musst dich in diesem Verzeichnis befinden: <code>HTWD-SE-SHARESHOP_4B/src/frontend/shareshop_4b</code></li>
         <li>Führe den Befehl <code>npm install</code> aus, um alle Abhängigkeiten zu installieren.</li>
         <li>Starte den Entwicklungsserver mit <code>npm run dev</code>.</li>
         <li>Öffne dann im Browser die angezeigte Adresse.</li>
