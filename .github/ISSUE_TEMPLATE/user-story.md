@@ -32,6 +32,10 @@ assignees: ""
 
 # Acceptance Criteria
 
+Wenn (Ausgangspunkt), dann kann man (Aktion), damit (Folge) passiert.
+Es gibt (Objekt).
+Das (Objekt) hat (Eigenschaft).
+
 - Describe the conditions that the software product must satisfy to be accepted by a user, customer or other stakeholder.
 - The acceptance criteria should be testable and act as testing guidelines for developers.
 - Acceptance criteria should use the following format: "Given (how things begin), when (action taken), then (outcome of taking action)."
