@@ -56,7 +56,7 @@ Die Architektur basiert auf einem Schichtenmodell:
   * Vue.js (Vite)
   * Zuständig für UI, Benutzerinteraktion und Darstellung der Daten
 - Anwendungsschicht (Backend):
-    * Python mit FastAPI
+    * Python mit FastAPI | Verbindung mit DB über SQLAlchemy
     * Implementierung der Geschäftslogik, REST-API und Kommunikation mit der Datenbank
 - Persistenzschicht:
     * MySQL
@@ -79,7 +79,7 @@ Das System stellt die zentrale Plattform für eine WG-Einkaufsorganisation dar.
 === Container
 //Level 2 im C4-Modell
 - Vue-Frontend (SPA) läuft im Browser
-- Python-backend mit FastAPI läuft auf einem Server
+- Python-backend mit FastAPI läuft auf einem Server und verbindet sich über SQLAlchemy mit DB
 - MySQL
 - Web Application liefert eine Single Page Application (SPA) aus, die im Browser des Nutzers läuft
     * durch möglicher PWA-Funktionalität kann die Anwendung auch offline genutzt werden
