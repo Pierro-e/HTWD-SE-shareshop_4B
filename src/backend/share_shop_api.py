@@ -18,7 +18,7 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 Base = declarative_base()
 
-class Nutzer(Base):                                                     # nutzer
+class Nutzer(Base):                                                     # nutzer ----------------------
     __tablename__ = "Nutzer"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
@@ -148,14 +148,14 @@ def get_db():
 
 
 
-@app.get("/nutzer", response_model=NutzerRead)                              # Nur ein Nutzer wird zurückgegeben
-def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):         #anhand id
+@app.get("/nutzer/by-id", response_model=NutzerRead)                              # Nur ein Nutzer wird zurückgegeben
+def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):             #anhand id
     nutzer = db.query(Nutzer).filter(Nutzer.id == id).first()
     if not nutzer:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
     return nutzer
 
-@app.get("/nutzer", response_model=NutzerRead)                              # Nur ein Nutzer wird zurückgegeben
+@app.get("/nutzer/by-email", response_model=NutzerRead)                              # Nur ein Nutzer wird zurückgegeben
 def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):         #anhand email
     nutzer = db.query(Nutzer).filter(Nutzer.email == email).first()
     if not nutzer:
