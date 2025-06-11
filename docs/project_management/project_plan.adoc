@@ -34,6 +34,7 @@ Dieser Projektplan beschreibt das Software Engineering-Projekt „ShareShop“, 
     - Email: s89009@htw-dresden.de
     - Studiengang: Wirtschaftsinformatik
 * *Erik Wenke* - Development Team
+    - verantwortlich für die VM
     - verantwortlich für die Entwicklung der Software und die Umsetzung der Anforderungen
     - Email: s86221@htw-dresden.de
     - Studiengang: Informatik

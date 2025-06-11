@@ -1,12 +1,12 @@
 ---
-name: spike
-about: A template that should be used when creating tasks in GitHub Issues.
+name: Spike
+about: template for "spike" GitHub issues
 title: ""
 labels: spike
 assignees: ""
 ---
 
-# Spike Description
+# Description
 
 - Describe the tool, library, framework, etc. that you want to explore and explain why it is needed for the project.
 
@@ -16,5 +16,4 @@ assignees: ""
 
 # Subtasks
 
-- [ ] List subtasks here.
-- [ ] Make use of checkbox for easy progress tracking.
+- [ ]
