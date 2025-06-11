@@ -38,13 +38,11 @@ async def search_one_product(query: str):
 
     data = response.json()
     products = data.get("products", [])
-    print(f"Gefundene Produkte: {len(products)}")
 
     for p in products:
         name = p.get("product_name")
         if not name:
             continue
-        print("Produktname:", name)
 
         if query.lower().strip() in name.lower():
             quantity = p.get("quantity", "")
