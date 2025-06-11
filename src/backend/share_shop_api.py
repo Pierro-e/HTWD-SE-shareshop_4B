@@ -1,14 +1,17 @@
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import date
+from decimal import Decimal
+from sqlalchemy import or_
+
 
 DATABASE_URL = "mysql+pymysql://userAdmin:xdb_Admin890!@141.56.137.83/share_shop"
 
 engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=True)
 Base = declarative_base()
 
 # --- Datenbankmodelle ---
@@ -16,15 +19,15 @@ Base = declarative_base()
 class Nutzer(Base):                                                    
     __tablename__ = "Nutzer"
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
     email = Column(String, unique=True, index=True, nullable=False)
+    name = Column(String, nullable=False)
     passwort_hash = Column(String, nullable=False)
 
 class Einheit(Base):                                            
     __tablename__ = "Einheiten"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(20), unique=True, nullable=False)
-    abkürzung = Column(String(10))
+    abkürzung = Column(String(10), unique=True, nullable=False)
 
 class Produkt(Base):                                                
     __tablename__ = "Produkt"
@@ -37,42 +40,36 @@ class Liste(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(150), nullable=False)
     ersteller = Column(Integer, ForeignKey('Nutzer.id', ondelete='SET NULL'), nullable=True)
-    datum = Column(String)    
+    datum = Column(Date)  
 
 class ListeMitglieder(Base):                                            
     __tablename__ = "ListeMitglieder"
-    listen_id = Column(Integer, primary_key=True)
-    nutzer_id = Column(Integer, primary_key=True)
-    beigetreten_am = Column(String)  
-
-from sqlalchemy import ForeignKey
+    listen_id = Column(Integer, ForeignKey('Listen.id', ondelete='CASCADE'), primary_key=True )
+    nutzer_id = Column(Integer, ForeignKey('Nutzer.id', ondelete = 'Cascade'), primary_key=True)
+    beigetreten_am = Column(Date)
 
 class ListeProdukte(Base):
     __tablename__ = "ListeProdukte"
-    listen_id = Column(Integer, ForeignKey('Listen.id'), primary_key=True)
+    listen_id = Column(Integer, ForeignKey('Listen.id', ondelete='Cascade'), primary_key=True)
     produkt_id = Column(Integer, ForeignKey('Produkt.id'), primary_key=True)
     hinzugefügt_von = Column(Integer, ForeignKey('Nutzer.id', ondelete='SET NULL'), nullable=True)
-    produkt_menge = Column(String)
+    produkt_menge = Column(Numeric(10,2))
     einheit_id = Column(Integer)
     beschreibung = Column(String)
-
-
-
-
 
 # --- Pydantic-Modelle ---
 
 class NutzerRead(BaseModel):
-    id: int
-    name: str
+    id: int        
     email: str
+    name: str
 
     class Config:
         from_attributes = True
 
 class NutzerCreate(BaseModel):
-    name: str
     email: str
+    name: str
     passwort: str
 
 class EinheitRead(BaseModel):
@@ -116,13 +113,12 @@ class MitgliedRead(BaseModel):
     class Config:
         from_attributes = True
 
-class MitgliedCreate(BaseModel):
-    nutzer_id: int
-    beigetreten_am: Optional[str] = None
+# class MitgliedCreate(BaseModel):
+
 
 class ProduktInListeRead(BaseModel):
     produkt_id: int
-    produkt_menge: float
+    produkt_menge: Decimal
     einheit_id: int
     hinzugefügt_von: int
     beschreibung: Optional[str] = None
@@ -131,11 +127,17 @@ class ProduktInListeRead(BaseModel):
         from_attributes = True
 
 class ProduktInListeCreate(BaseModel):
-    produkt_id: int
-    produkt_menge: float
+    produkt_menge: Decimal
     einheit_id: int
     hinzugefügt_von: int
     beschreibung: Optional[str] = None
+
+class ListeDatumUpdate(BaseModel):
+    datum: date
+
+class ProduktDeleteRequest(BaseModel):
+    hinzugefügt_von: int
+
 
 
 # --- FastAPI-App ---
@@ -168,15 +170,21 @@ def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
 
 @app.post("/nutzer", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
 def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
-    db_nutzer = Nutzer(
-        name=nutzer.name,
-        email=nutzer.email,
-        passwort_hash=nutzer.passwort  # ACHTUNG: Passwort sollte gehashed werden
-    )
-    db.add(db_nutzer)
-    db.commit()
-    db.refresh(db_nutzer)
-    return db_nutzer
+   
+    vorhanden = db.query(Nutzer).filter(Nutzer.email == nutzer.email).first()
+   
+    if vorhanden:
+        raise HTTPException(status_code=400, detail="Nutzeremail existiert bereits")
+    else:
+        db_nutzer = Nutzer(
+            email=nutzer.email,
+            name=nutzer.name,
+            passwort_hash=nutzer.passwort  # ACHTUNG: Passwort sollte gehashed werden
+        )
+        db.add(db_nutzer)
+        db.commit()
+        db.refresh(db_nutzer)
+        return db_nutzer
 
 @app.delete("/nutzer/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
@@ -204,10 +212,23 @@ def get_einheit(einheit_id: int = Path(..., gt=0), db: Session = Depends(get_db)
 
 
 # --- Produkte ---
+@app.get("/produkte/", response_model=List[ProduktRead])
+def get_produkte(db: Session = Depends(get_db)):
+    produkte = db.query(Produkt).all()
+  
+    return produkte
 
-@app.get("/produkte/{produkt_id}", response_model=ProduktRead)
-def get_produkt(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+@app.get("/produkte/by-id/{produkt_id}", response_model=ProduktRead)
+def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     produkt = db.query(Produkt).filter(Produkt.id == produkt_id).first()
+    if not produkt:
+        raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
+    return produkt
+
+@app.get("/produkte/by-name/{produkt_name}", response_model=ProduktRead)
+def get_produkt_by_name(produkt_name: str = Path(..., gt=0), db: Session = Depends(get_db)):
+    produkt = db.query(Produkt).filter(Produkt.name.lower() == produkt_name.lower()).first()
     if not produkt:
         raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
     return produkt
@@ -217,24 +238,25 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
     existing = db.query(Produkt).filter(Produkt.name == produkt.name).first()
     if existing:
         raise HTTPException(status_code=400, detail="Produkt mit diesem Namen existiert bereits")
-
-    db_produkt = Produkt(
-        name=produkt.name,
-        standard_einheit=produkt.standard_einheit
-    )
-    db.add(db_produkt)
-    db.commit()
-    db.refresh(db_produkt)
-    return db_produkt
+    else:
+        db_produkt = Produkt(
+            name=produkt.name,
+            standard_einheit=produkt.standard_einheit
+        )
+        db.add(db_produkt)
+        db.commit()
+        db.refresh(db_produkt)
+        return db_produkt
 
 @app.delete("/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_produkt(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     produkt = db.query(Produkt).filter(Produkt.id == produkt_id).first()
     if not produkt:
         raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
-    db.delete(produkt)
-    db.commit()
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
+    else:
+        db.delete(produkt)
+        db.commit()
+        return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 # --- Listen ---
@@ -247,6 +269,9 @@ def get_listen(db: Session = Depends(get_db)):
 @app.post("/listen", response_model=ListeRead, status_code=status.HTTP_201_CREATED)
 def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
    
+    if liste is None:
+        raise HTTPException(status_code=400, detail="Listendaten fehlen")
+
     # Prüfen, ob Nutzer mit hinzugefügt_von existiert
     existierender_nutzer = db.query(Nutzer).filter_by(id=liste.ersteller).first()
     if not existierender_nutzer:
@@ -266,12 +291,27 @@ def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
     neues_mitglied = ListeMitglieder(
         listen_id=db_liste.id,
         nutzer_id=liste.ersteller,
-        beigetreten_am=date.today() # oder liste.datum, je nach gewünschter Logik
+        beigetreten_am=date.today() 
     )
     db.add(neues_mitglied)
     db.commit()
 
     return db_liste
+
+from fastapi import Body
+
+@app.put("/listen/{listen_id}/datum", response_model=ListeRead)
+def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...), db: Session = Depends(get_db)):
+    liste = db.query(Liste).filter(Liste.id == listen_id).first()
+    if not liste:
+        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
+    
+    # Datum als ISO-String speichern, da in DB als String definiert
+    liste.datum = datum_update.datum
+    
+    db.commit()
+    db.refresh(liste)
+    return liste
  
 
 @app.delete("/listen/{listen_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -291,20 +331,24 @@ def get_mitglieder(listen_id: int = Path(..., gt=0), db: Session = Depends(get_d
     mitglieder = db.query(ListeMitglieder).filter(ListeMitglieder.listen_id == listen_id).all()
     return mitglieder
 
-@app.post("/listen/{listen_id}/mitglieder", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
-def add_mitglied(listen_id: int = Path(..., gt=0), mitglied: MitgliedCreate = None, db: Session = Depends(get_db)):
-    if mitglied is None:
-        raise HTTPException(status_code=400, detail="Mitgliedsdaten fehlen")
+@app.post("/listen/{listen_id}/mitglieder/{nutzer_id}", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
+def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
+    vorhanden = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
+
+    if not vorhanden:
+             raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+    
     neues_mitglied = ListeMitglieder(
         listen_id=listen_id,
-        nutzer_id=mitglied.nutzer_id,
-        beigetreten_am=mitglied.beigetreten_am
+        nutzer_id=nutzer_id,
+        beigetreten_am=date.today()
     )
     db.add(neues_mitglied)
     db.commit()
     db.refresh(neues_mitglied)
     return neues_mitglied
+
 
 @app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
@@ -326,34 +370,45 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
     produkte = db.query(ListeProdukte).filter(ListeProdukte.listen_id == listen_id).all()
     return produkte
 
-@app.post("/listen/{listen_id}/produkte", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
-def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt: ProduktInListeCreate = None, db: Session = Depends(get_db)):
+@app.post("/listen/{listen_id}/produkte/{produkt_id}", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
+def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), produkt: ProduktInListeCreate = Body(...), db: Session = Depends(get_db)):
     if produkt is None:
-        raise HTTPException(status_code=400, detail="Produktdaten fehlen")
+       raise HTTPException(status_code=400, detail="Produktdaten fehlen")
 
-    # Prüfen, ob Produkt mit produkt.produkt_id in DB existiert
-    existierendes_produkt = db.query(Produkt).filter_by(id=produkt.produkt_id).first()
+    existing_list = db.query(Liste).filter_by(id=listen_id).first()
+    if not existing_list:
+        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
+
+    existierendes_produkt = db.query(Produkt).filter_by(id = produkt_id).first()
     if not existierendes_produkt:
-        raise HTTPException(status_code=400, detail="Das Produkt muss erst in der DB hinzugefügt werden")
+        raise HTTPException(status_code=400, detail="Das Produkt muss erst in der DB_Tabelle Produkt hinzugefügt werden")
 
-    # Prüfen, ob Nutzer mit hinzugefügt_von existiert
     existierender_nutzer = db.query(Nutzer).filter_by(id=produkt.hinzugefügt_von).first()
     if not existierender_nutzer:
         raise HTTPException(status_code=400, detail="Der Nutzer zum Hinzufügen wurde nicht gefunden")
 
-    vorhandenes_produkt = db.query(ListeProdukte).filter_by(listen_id=listen_id, produkt_id=produkt.produkt_id).first()
+    if not produkt.produkt_menge or not produkt.einheit_id:
+        raise HTTPException(status_code=400, detail="produkt_menge und einheit_id müssen angegeben werden")
+
+
+    vorhandenes_produkt = db.query(ListeProdukte).filter(
+        ListeProdukte.listen_id == listen_id,
+        ListeProdukte.produkt_id == produkt_id,
+        or_(
+            ListeProdukte.hinzugefügt_von ==produkt.hinzugefügt_von,
+            ListeProdukte.hinzugefügt_von == None  # prüft auf NULL
+        )
+    ).first()
 
     if vorhandenes_produkt:
-        # Prüfen, ob die Mengeneinheit übereinstimmt
         if vorhandenes_produkt.einheit_id != produkt.einheit_id:
             raise HTTPException(
                 status_code=400,
                 detail=f"Mengeneinheit stimmt nicht überein (vorhanden: {vorhandenes_produkt.einheit_id}, übergeben: {produkt.einheit_id})"
             )
-
         try:
-            aktuelle_menge = float(vorhandenes_produkt.produkt_menge)
-            neue_menge = float(produkt.produkt_menge)
+            aktuelle_menge = Decimal(vorhandenes_produkt.produkt_menge)
+            neue_menge = Decimal(produkt.produkt_menge)
         except ValueError:
             raise HTTPException(status_code=400, detail="Ungültiges Mengenformat")
 
@@ -363,12 +418,12 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt: ProduktInLis
         db.commit()
         db.refresh(vorhandenes_produkt)
         return vorhandenes_produkt
-
+    
     else:
         neues_produkt = ListeProdukte(
             listen_id=listen_id,
-            produkt_id=produkt.produkt_id,
-            produkt_menge=str(produkt.produkt_menge),
+            produkt_id=produkt_id,
+            produkt_menge=produkt.produkt_menge,
             einheit_id=produkt.einheit_id,
             hinzugefügt_von=produkt.hinzugefügt_von,
             beschreibung=produkt.beschreibung
@@ -379,10 +434,11 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt: ProduktInLis
         return neues_produkt
     
 @app.delete("/listen/{listen_id}/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), deleteRequest: ProduktDeleteRequest = Body(...), db: Session = Depends(get_db)):
     eintrag = db.query(ListeProdukte).filter(
         ListeProdukte.listen_id == listen_id,
-        ListeProdukte.produkt_id == produkt_id
+        ListeProdukte.produkt_id == produkt_id,
+        ListeProdukte.hinzugefügt_von == deleteRequest.hinzugefügt_von
     ).first()
     if not eintrag:
         raise HTTPException(status_code=404, detail="Produkt in Liste nicht gefunden")
