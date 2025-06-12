@@ -199,12 +199,12 @@ def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db
 # --- Einheiten ---
 
 @app.get("/einheiten", response_model=List[EinheitRead])
-def get_einheiten(db: Session = Depends(get_db)):
+def get_einheiten_all(db: Session = Depends(get_db)):
     einheiten = db.query(Einheit).all()
     return einheiten
 
 @app.get("/einheiten/{einheit_id}", response_model=EinheitRead)
-def get_einheit(einheit_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     einheit = db.query(Einheit).filter(Einheit.id == einheit_id).first()
     if einheit is None:
         raise HTTPException(status_code=404, detail="Einheit nicht gefunden")
@@ -213,7 +213,7 @@ def get_einheit(einheit_id: int = Path(..., gt=0), db: Session = Depends(get_db)
 
 # --- Produkte ---
 @app.get("/produkte/", response_model=List[ProduktRead])
-def get_produkte(db: Session = Depends(get_db)):
+def get_produkte_all(db: Session = Depends(get_db)):
     produkte = db.query(Produkt).all()
   
     return produkte
@@ -268,7 +268,7 @@ def delete_produkt(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_
 # --- Listen ---
 
 @app.get("/listen", response_model=List[ListeRead])
-def get_listen(db: Session = Depends(get_db)):
+def get_listen_all(db: Session = Depends(get_db)):
     listen = db.query(Liste).all()
     return listen
 
@@ -333,7 +333,7 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
 # --- Mitglieder in Listen ---
 
 @app.get("/listen/{listen_id}/mitglieder", response_model=List[MitgliedRead])
-def get_mitglieder(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     mitglieder = db.query(ListeMitglieder).filter(ListeMitglieder.listen_id == listen_id).all()
     if not mitglieder:
         raise HTTPException(status_code=404, detail="Keine Mitglieder für diese Liste gefunden")
