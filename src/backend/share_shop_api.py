@@ -335,6 +335,8 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
 @app.get("/listen/{listen_id}/mitglieder", response_model=List[MitgliedRead])
 def get_mitglieder(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     mitglieder = db.query(ListeMitglieder).filter(ListeMitglieder.listen_id == listen_id).all()
+    if not mitglieder:
+        raise HTTPException(status_code=404, detail="Keine Mitglieder für diese Liste gefunden")
     return mitglieder
 
 @app.post("/listen/{listen_id}/mitglieder/{nutzer_id}", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
@@ -343,7 +345,7 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
     vorhanden = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not vorhanden:
-             raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
     
     neues_mitglied = ListeMitglieder(
         listen_id=listen_id,
