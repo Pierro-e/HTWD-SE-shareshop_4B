@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, func
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
 from typing import List, Optional
@@ -227,26 +227,32 @@ def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(g
     return produkt
 
 @app.get("/produkte/by-name/{produkt_name}", response_model=ProduktRead)
-def get_produkt_by_name(produkt_name: str = Path(..., gt=0), db: Session = Depends(get_db)):
-    produkt = db.query(Produkt).filter(Produkt.name.lower() == produkt_name.lower()).first()
+def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get_db)):
+    produkt = db.query(Produkt).filter(func.lower(Produkt.name)== produkt_name.lower()).first()
     if not produkt:
         raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
     return produkt
 
-@app.post("/produkte", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
+@app.post("/produkte_create", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
-    existing = db.query(Produkt).filter(Produkt.name == produkt.name).first()
+    # Formatierter Produktname
+    formatted_name = ' '.join([word.capitalize() for word in produkt.name.split()])
+
+    # Prüfen, ob Produkt mit dem formatierten Namen schon existiert
+    existing = db.query(Produkt).filter(func.lower(Produkt.name) == formatted_name.lower()).first()
     if existing:
         raise HTTPException(status_code=400, detail="Produkt mit diesem Namen existiert bereits")
-    else:
-        db_produkt = Produkt(
-            name=produkt.name,
-            standard_einheit=produkt.standard_einheit
-        )
-        db.add(db_produkt)
-        db.commit()
-        db.refresh(db_produkt)
-        return db_produkt
+    
+    # Produkt speichern
+    db_produkt = Produkt(
+        name=formatted_name,
+        standard_einheit=produkt.standard_einheit
+    )
+    db.add(db_produkt)
+    db.commit()
+    db.refresh(db_produkt)
+    return db_produkt
+
 
 @app.delete("/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_produkt(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
