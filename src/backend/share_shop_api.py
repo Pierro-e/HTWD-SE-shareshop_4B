@@ -63,6 +63,7 @@ class NutzerRead(BaseModel):
     id: int        
     email: str
     name: str
+    passwort_hash: str
 
     class Config:
         from_attributes = True
@@ -70,7 +71,7 @@ class NutzerRead(BaseModel):
 class NutzerCreate(BaseModel):
     email: str
     name: str
-    passwort: str
+    passwort_hash: str
 
 class EinheitRead(BaseModel):
     id: int
@@ -138,6 +139,11 @@ class ListeDatumUpdate(BaseModel):
 class ProduktDeleteRequest(BaseModel):
     hinzugefügt_von: int
 
+class PasswortÄndern(BaseModel):
+    neues_passwort: str
+
+class NameAendern(BaseModel):
+    neuer_name: str
 
 
 # --- FastAPI-App ---
@@ -154,6 +160,15 @@ def get_db():
 
 # --- Nutzer ---
 
+@app.get("/")
+def start():
+    return{"message": "API für share_shop DB"}
+
+@app.get("/nutzer", response_model=List[NutzerRead])
+def get_nutzer_all(db: Session = Depends(get_db)):
+    nutzer = db.query(Nutzer).all()
+    return nutzer
+
 @app.get("/nutzer/by-id", response_model=NutzerRead)
 def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == id).first()
@@ -168,7 +183,7 @@ def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
     return nutzer
 
-@app.post("/nutzer", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
+@app.post("/nutzer_create", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
 def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
    
     vorhanden = db.query(Nutzer).filter(Nutzer.email == nutzer.email).first()
@@ -179,14 +194,14 @@ def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
         db_nutzer = Nutzer(
             email=nutzer.email,
             name=nutzer.name,
-            passwort_hash=nutzer.passwort  # ACHTUNG: Passwort sollte gehashed werden
+            passwort_hash=nutzer.passwort_hash 
         )
         db.add(db_nutzer)
         db.commit()
         db.refresh(db_nutzer)
         return db_nutzer
 
-@app.delete("/nutzer/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/nutzer_delete/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
     if not nutzer:
@@ -195,6 +210,33 @@ def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db
     db.delete(nutzer)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@app.put("/nutzer_change/{nutzer_id}/passwort", status_code=status.HTTP_200_OK)
+def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Depends(get_db)):
+    nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
+    
+    if not nutzer:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+    
+    nutzer.passwort_hash = passwort.neues_passwort  
+    db.commit()
+    db.refresh(nutzer)
+    
+    return nutzer
+
+@app.put("/nutzer_change/{nutzer_id}/name", status_code=status.HTTP_200_OK)
+def change_name(nutzer_id: int, name: NameAendern, db: Session = Depends(get_db)):
+    nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
+
+    if not nutzer:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+    nutzer.name = name.neuer_name
+    db.commit()
+    db.refresh(nutzer)
+
+    return nutzer
+
 
 # --- Einheiten ---
 
