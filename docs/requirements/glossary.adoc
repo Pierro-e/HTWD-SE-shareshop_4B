@@ -1,33 +1,57 @@
 = Glossar: {project-name}
 include::../_includes/default-attributes.inc.adoc[]
-// Platzhalter für weitere Dokumenten-Attribute
 
 == Einführung
 In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fachdomäne) der <Projektthema-Systems> definiert. Zur besseren Übersichtlichkeit sind Begriffe, Abkürzungen und Datendefinitionen gesondert aufgeführt.
 
 == Begriffe
+
 [%header]
 |===
 | Begriff | Definition und Erläuterung | Synonyme
-//| Kommissionierung | Bereitstellung von Waren aus einem Lager entsprechend eines Kundenauftrags | (keine)
-| Task | Sequenz von Tätigkeiten, welche ein PBI (zum Teil) realisiert | -
-| Artikel | Einkaufsgegenstand (Klopapier, Bananen, Schüssel, ...)| -
-| Einkäufer | Nutzer, welcher gerade Artikel in einem Laden einkauft| -
-| Schuldner | Nutzer, mit negativen Kontostand | -
-| WG-Mitglied | Nutzer der Software | -
+
+| *Task*
+| Tätigkeit, welche ein PBI (bzw. dessen Akzeptankriterium) teilweise realisiert
+|
+
+| *Artikel*
+| Gegenstand, welcher eingekauft werden soll
+| -
+
+| Einkäufer
+| WG-Mitglied, welcher gerade dabei ist Artikel einzukaufen
+| -
+
+| Schuldner
+| Nutzer, der finanziell von andere Einkäufen profitiert
+| -
+
+| WG-Mitglied
+| Nutzer der Software
+| -
 |===
 
 == Abkürzungen und Akronyme
+
 [%header]
 |===
 | Abkürzung | Bedeutung | Erläuterung
-//| UP | Unified Process | Vorgehensmodell für die Softwareentwicklung
-| PB | Product Backlog | eines der zentralen Artefakt von SCRUM
-| SP | Sprint Backlog | eines der zentralen Artefakt von SCRUM
-| PBI | Product Backlog Item | Element von PB
+
+| PB
+| Product Backlog
+| ein SCRUM-Artefakt
+
+| SP
+| Sprint Backlog
+| ein SCRUM-Artefakt
+
+| PBI
+| Product Backlog Item
+| Elemente des Product Backlog
 |===
 
 == Verzeichnis der Datenstrukturen
+
 [%header]
 |===
 | Bezeichnung | Definition | Format | Gültigkeitsregeln | Aliase
@@ -37,13 +61,6 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | String
 | Emailadresse muss `@`-Zeichen und `.` Punkt enthalten.
 | Login
-
-| xx
-| xx
-| xx
-| xx
-| xx
 |===
 
 == Domänenmodell
-// Fügen Sie hier eine Abbildung mit ihrem Domänenmodell ein
