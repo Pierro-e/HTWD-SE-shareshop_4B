@@ -35,20 +35,63 @@ h1 {
   line-height: 1.1;
 }
 
+/*wirkt bei allen <button>-Elementen*/
 button {
-  border-radius: 8px;
+   /*Legt einen Rahmen mit 1 Pixel Breite, durchgehend (solid), aber unsichtbar an */
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  /*Textfarbe*/
+  color: white;
+  /*Hintergrundfarbe*/
+  background-color: #bbf798;
+  /*Wieviel Padding rund um Schrift -> beeinflusst Groesse des Buttons*/
+  padding: 0.6 em 1.2 em;
+  /*Runde Ecken*/
+  border-radius: 0.5em;
+  /*zenriert Text horizontal*/
+  text-align: center;
+  /*Sorg dafür, dass margin und padding korrekt greifen*/
+  display: inline-block;
+  /*Schriftgröße relativ zur aktuellen Schriftgröße bzw der des Elternelements. 1em = aktuelle Schriftgröße*/
   font-size: 1em;
+  /*Steuert Dicke der Schrift 700=Fett*/
   font-weight: 500;
+  /*Erbt Schriftart von Elternelement*/
   font-family: inherit;
-  background-color: #1a1a1a;
+  /*Wieviel Abstand der Button nach oben und zur Seite hält*/
+  margin: 0.3em;
+  /*veraendert aussehen des Mauszeigers beim hovern*/
   cursor: pointer;
+  /*Animation des Rahmens über 0.25 sek*/
   transition: border-color 0.25s;
 }
+
+/*wirkt nur bei <button>-Elementen mit class="button-add"*/
+.button-add {
+  background-color: #28a745; 
+}
+
+.button-cancel {
+  background-color: #ffc107; 
+  color: black;
+}
+
+.button-delete {
+  background-color: #dc3545; 
+}
+
+.button-edit {
+  background-color: #007bff; 
+}
+
 button:hover {
+  /* Vergrößert das Element um 5% */
+  transform: scale(1.05); 
+  /* Fügt einen Schatten hinzu */
+  box-shadow: 0 0.3em 0.6em rgba(0, 0, 0, 0.1); 
+  /*ändert Randfarbe*/
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
