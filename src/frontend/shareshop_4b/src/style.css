@@ -42,7 +42,7 @@ button {
   /*Textfarbe*/
   color: white;
   /*Hintergrundfarbe*/
-  background-color: #bbf798;
+  background-color: #33750d;
   /*Wieviel Padding rund um Schrift -> beeinflusst Groesse des Buttons*/
   padding: 0.6 em 1.2 em;
   /*Runde Ecken*/
@@ -81,6 +81,10 @@ button {
 
 .button-edit {
   background-color: #007bff; 
+}
+
+.button-submit {
+  background-color: #646cff;
 }
 
 button:hover {

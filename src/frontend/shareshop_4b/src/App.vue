@@ -1,9 +1,11 @@
 <template>
   <div id="app">
-    <ProjektEinführung />
+    <router-view/>
   </div>
 </template>
 
 <script setup>
-import ProjektEinführung from './components/ProjektEinführung.vue'
+import { ref } from 'vue'
+
+
 </script>

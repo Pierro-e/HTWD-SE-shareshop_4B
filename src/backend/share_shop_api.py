@@ -6,6 +6,9 @@ from typing import List, Optional
 from datetime import date
 from decimal import Decimal
 from sqlalchemy import or_
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 
 DATABASE_URL = "mysql+pymysql://userAdmin:xdb_Admin890!@141.56.137.83/share_shop"
@@ -114,6 +117,10 @@ class MitgliedRead(BaseModel):
     class Config:
         from_attributes = True
 
+class LoginRequest(BaseModel):
+    email: str
+    passwort: str
+
 # class MitgliedCreate(BaseModel):
 
 
@@ -150,6 +157,15 @@ class NameAendern(BaseModel):
 
 app = FastAPI()
 
+# CORS Middleware hinzufügen
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 def get_db():
     db = SessionLocal()
     try:
@@ -158,11 +174,29 @@ def get_db():
         db.close()
 
 
-# --- Nutzer ---
-
 @app.get("/")
 def start():
     return{"message": "API für share_shop DB"}
+
+# --- Nutzer ---
+@app.post("/login")
+def login(login_data: LoginRequest, db: Session = Depends(get_db)):
+    # Nutzer mit E-Mail suchen
+    nutzer = db.query(Nutzer).filter(Nutzer.email == login_data.email).first()
+    if not nutzer:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Falsche Zugangsdaten")
+
+    # Passwort prüfen - hier Beispiel: einfacher Vergleich
+    # TODO: In Produktion: Passwort mit bcrypt oder ähnlichem prüfen
+    if nutzer.passwort_hash != login_data.passwort:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Falsche Zugangsdaten")
+
+    # Falls alles stimmt: Nutzerdaten zurückgeben (ohne passwort_hash)
+    return {
+        "id": nutzer.id,
+        "email": nutzer.email,
+        "name": nutzer.name,
+    }
 
 @app.get("/nutzer", response_model=List[NutzerRead])
 def get_nutzer_all(db: Session = Depends(get_db)):
