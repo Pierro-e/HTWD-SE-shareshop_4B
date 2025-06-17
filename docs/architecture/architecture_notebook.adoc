@@ -17,23 +17,20 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 
 //Formulieren Sie eine Reihe von Zielen, die die Architektur in ihrer Struktur und ihrem Verhalten erfüllen muss. Identifizieren Sie kritische Fragen, die von der Architektur adressiert werden müssen, z.B. besondere Hardware-Abhängigkeiten, die vom Rest des Systems isoliert werden sollten oder Sicherstellung der Funktionsfähigkeit unter besonderen Bedingungen (z.B. Offline-Nutzung).
 
-- Trennung von Frontend (Vue.js) und Backend (php oder Spring Boot)
+- Trennung von Frontend (Vue.js) und Backend (Python mit FastAPI)
 - Offline-Fähigkeit (z.B. mit PWA-Funktionalität) für Einkauf ohne Internet 
-- Unterstützung mehrerer WG's, denen jeweils mehrere Personen zugeordnet sind (mehrere voneinander getrennte WG's)
-- hohe Transparenz und Nachvollziehbarkeit bei Finanzdaten
+- Hardware-unabhängige Architektur, sodass die Anwendung auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann 
 - responsive UI für Desktop und Mobile zur flexiblen Nutzung (Größe der Website passt sich automatisch an)
-- Skalierbarkeit und Erweiterbarkeit der Architektur für zukünftige Features
-- Sicherheit und Datenschutz der Nutzerdaten
-
+- Skalierbarkeit und Erweiterbarkeit der Architektur für zukünftige Features (gut strukturierter und wartbarer Code) 
 
 
 == Annahmen und Abhängigkeiten
 //[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
 - Vue.js ist beim Großteil des Teams bekannt, was die Fronted-Entwicklung erleichtert
-- im Backend nutzen wir Python mit FastAPI, da es ebenfalls bekannt ist und gut mit MySQL harmoniert
+- im Backend nutzen wir Python mit FastAPI, da es ebenfalls bekannt ist
 - externe API's können integriert werden, bspw. für Bereitstellung der Produkte inkl. deren Preise
-- Annahme: Wir haben Zugriff auf einen Server der Uni??
-- Datenbank (MySQL) wird als Speicher für Nutzerdaten, Listen und Finanzinformationen genutzt
+- Annahme: Wir haben Zugriff auf einen Server der Uni, auf dem das Backend und die Datenbank laufen können
+- Datenbank (MySQL) funktioniert wie erwartet und harmoniert gut mit dem Backend (FastAPI + SQLAlchemy)
 
 == Architektur-relevante Anforderungen
 //Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
@@ -42,57 +39,82 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 == Entscheidungen, Nebenbedingungen und Begründungen
 //[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
-- die Anwendung wird als Webanwendung bereitgestellt (mit PWA-Funktionalität??)
-- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver
-- Backend wird mit Python mit FastAPI enwtickelt
-- Datenerhaltung erfolgt über eine relationale Datenbank als MySQL
+- die Anwendung wird als Webanwendung bereitgestellt (im späteren Verlauf mit PWA-Funktionalität)
+- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM
+-mittels Vue.js werden die Komponenten der Benutzeroberfläche klar strukturiert und modular aufgebaut
+- Frontend ist eine Single Page Application (SPA), die im Browser des Nutzers läuft
+- REST-API im Backend wird mit Python mit FastAPI enwtickelt und läuft auch auf der VM
+- Datenerhaltung erfolgt über eine relationale Datenbank mit MySQL, ebenfalls auf der VM
 
 
 == Schichten oder Architektur-Framework
 //[Describe the architectural pattern that you will use or how the architecture will be consistent and uniform. This could be a simple reference to an existing or well-known architectural pattern, such as the Layer framework, a reference to a high-level model of the framework, or a description of how the major system components should be put together.]
-Die Architektur basiert auf einem Schichtenmodell:
+- Wir verwenden eine Schichtenarchitektur (Layered Architecture), um das System klar zu strukturieren und die Erweitbarkeit zu gewährleisten.
 
-- Präsentationsschicht (Frontend):
-  * Vue.js (Vite)
-  * Zuständig für UI, Benutzerinteraktion und Darstellung der Daten
-- Anwendungsschicht (Backend):
-    * Python mit FastAPI | Verbindung mit DB über SQLAlchemy
-    * Implementierung der Geschäftslogik, REST-API und Kommunikation mit der Datenbank
-- Persistenzschicht:
-    * MySQL
-    * Speicherung der Daten in einer relationalen Datenbank
+- Präsentationsschicht (Frontend)
+* Implementiert mit Vue.js als Single Page Application (SPA)
+* Präsentiert die Benutzeroberfläche im Webbrowser
+* Verwaltet die Bennutzerinteraktion und Darstellung
+* Kommuniziert mit dem Backend über HTTP-Requests (REST-API)
 
+- Logikschicht (Backend)
+* Implementiert mit Python und FastAPI
+* Verarbeitet Anfragen aus dem Frontend
+* Implementiert die Geschäftslogik
+* Überprüft, verarbeitet und validiert Daten
 
+- Datenschicht (Datenbank) 
+* MySQL-Datenbank und SQLAlchemy als ORM
+* Verwwaltet den Zugriff auf die relationale Datenbank
+* Kommuniziert direkt mit MySQL für Datenoperationen
+
+Diese Struktur ermöglicht eine klare Trennung von Verantwortlichkeiten und erleichtert sowohl die Entwicklung als auch die Fehlersuche und Erweiterung.
 
 == Architektursichten (Views)
 //[Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
 
 === Kontextabgrenzung
 //Level 1 im C4-Modell
-Das System stellt die zentrale Plattform für eine WG-Einkaufsorganisation dar.
+Das System ist eine Webanwendung zur Organisation von Einkäufen in Wohngemeinschaften.
 
 - Es interagiert mit:
-    * Nutzern (WG-Mitglieder) über das Frontend
-    * externen API's für Produktinformationen
-    * Datenbank für die Speicherung von Nutzerdaten
+* Nutzer (WG-Mitglieder) über das Frontend im Browser
+* eigener API für die Verarbeitung von Anfragen
+* später evtl. mit externen API's für Produktinformationen 
+* Datenbank (MySQL) für die Speicherung von Nutzerdaten
     
 === Container
 //Level 2 im C4-Modell
-- Vue-Frontend (SPA) läuft im Browser
-- Python-backend mit FastAPI läuft auf einem Server und verbindet sich über SQLAlchemy mit DB
-- MySQL
-- Web Application liefert eine Single Page Application (SPA) aus, die im Browser des Nutzers läuft
-    * durch möglicher PWA-Funktionalität kann die Anwendung auch offline genutzt werden
-- FasTAPI stellt eine REST-API zur Verfügung, die von der Webanwendung aufgerufen wird, um Anfragen zu bearbeiten
-- MySQL-Datenbank wird vom Backend angesprochen, um Daten zu speichern und abzurufen
 
+- Frontend (Vue.js): 
+* Läuft im Browser und übernimmt alle Benutzerinteraktionen und die Darstellung der Anwendung.
+** als Single Page Application (SPA) und Progressive Web App (PWA)
+* Kommuniziert mit der REST-API des Backends über HTTP-Requests.
+- Backend (FastAPI): 
+* Läuft auf einem Server und stellt eine REST-API bereit, welche die Anwendungslogik enthält und Daten verwaltet. 
+* Verarbeitet Anfragen des Frontends
+* Kommuniziert mit der Datenbank (MySQL) über SQLAlchemy als ORM.
+- Datenbank (MySQL):
+* Läuft ebenfalls auf dem Server und speichert persistente Daten.
+* Stellt die Daten für das Backend bereit
+
+- Zusätzlich:
+* PWA-Funktionalität für Offline-Nutzung des Frontends
+* Server (VM) für das Hosting von Frontend, Backend und Datenbank
 
 
 === Components
 //Level 3 im C4-Modell
-- Komponenten im Frontend:
-    
+- Komponenten im Frontend (SPA = PWA):
+* CreateAccount: Komponente zur Erstellung eines neuen Nutzerkontos
+* Login: Komponente für die Anmeldung eines Nutzers
 
 === Verteilungsdiagramm (Deployment Diagramm)
 //Beschreibt die physischen Knoten (Rechner) des Systems und Komponenten, die in diesen Knoten ausgeführt werden. Diese Sicht wird nicht benötigt, wenn das System in einem einzelnen Prozess oder Thread ausgeführt wird.
 
+Server-Setup:
+- Ein Server (VM der Hochschule) beherbergt:
+* Nginx-Webserver für das Frontend
+* FastAPI-Backend  via uvicorn
+* MySQL-Datenbank  lokal installiert
+- Nutzer greifen über Webbrowser (PC, Tablet, Smartphone) auf das System zu
