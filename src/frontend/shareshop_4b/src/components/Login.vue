@@ -27,6 +27,10 @@
     </form>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
+  <div class="create_account">
+    <p>Du hast noch keinen Account?</p>
+    <button class="button-add" @click="$router.push('/registrieren')">Registrieren</button>
+  </div>
 </template>
 
 <script setup>
@@ -52,7 +56,11 @@ const onSubmit = async () => {
     setUser(response.data)          // Benutzerdaten setzen
     router.push('/einfuehrung')     // Weiterleitung nach erfolgreichem Login
   } catch (error) {
-    errorMessage.value = 'Login fehlgeschlagen. Bitte überprüfe deine Eingaben.'
+    if (error.response && error.response.data && error.response.data.detail) {
+      errorMessage.value = error.response.data.detail
+    } else {
+      errorMessage.value = 'Login fehlgeschlagen. Bitte überprüfe deine Eingaben.'
+    }
   }
 }
 </script>
