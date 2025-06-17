@@ -5,7 +5,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, provide} from 'vue'
 
-
+const user = ref({  //Benutzerdaten bereitgestellt, dass man sie in anderen Komponenten verwenden kann
+  id: null,
+  email: '',
+  name: '',
+})
+provide('user', user)   //mit provide die Daten bereitstellen, um sie in anderen Komponenten zu verwenden
+                        // Nutzung mit inject('user') in anderen Komponenten
+function setUser(userData) {
+  user.value = userData
+}
+provide('setUser', setUser)   //mit provide die Funktion bereitstellen, um die Benutzerdaten zu setzen
 </script>

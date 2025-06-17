@@ -1,5 +1,5 @@
 <template>
-  <div class="login_container">
+  <div class="login_container">                      
     <h2>Login</h2>
     <form @submit.prevent="onSubmit">
       <div class="login_email">
@@ -30,24 +30,27 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
 
-const email = ref('')
+const email = ref('')              // Reaktive Variable, die mit v-model im Template verknüpft ist
 const password = ref('')
 const errorMessage = ref('')
 const router = useRouter()
+
+const setUser = inject('setUser')       // Funktion setUser aus App.vue importieren
 
 const onSubmit = async () => {
   errorMessage.value = ''
   try {
     const response = await axios.post('http://141.56.137.83:8000/login', {
-      email: email.value,
-      passwort: password.value,
+      email: email.value,           // Benutzereingaben für Email und Passwort
+      passwort: password.value,     // das erste Wort ist das Schlüsselwort im Backend, das zweite ist der Wert
     })
-    // Weiterleitung nach erfolgreichem Login
-    router.push('/einfuehrung')
+
+    setUser(response.data)          // Benutzerdaten setzen
+    router.push('/einfuehrung')     // Weiterleitung nach erfolgreichem Login
   } catch (error) {
     errorMessage.value = 'Login fehlgeschlagen. Bitte überprüfe deine Eingaben.'
   }
