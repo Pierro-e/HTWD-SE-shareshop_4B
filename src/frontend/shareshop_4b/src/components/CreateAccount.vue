@@ -1,5 +1,4 @@
 <template>
-
     <div class="create_account-container">
         <div class="header">    
             <button class="button-cancel" @click="$router.push('/')">Zurück</button>
@@ -40,47 +39,46 @@
             <button class="button-submit" type="submit">Account erstellen</button>
         </form>
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-
     </div>
-            
-
-
 </template>
 
-<script setup>
-import { ref, inject } from 'vue'
+<script>
 import axios from 'axios'
-import { useRouter } from 'vue-router'
 
-const email = ref('')              // Reaktive Variable, die mit v-model im Template verknüpft ist
-const name = ref('')
-const password = ref('')
-
-const errorMessage = ref('')
-const router = useRouter()
-
-
-const onSubmit = async () => {
-  errorMessage.value = ''
-  try {
-    const response = await axios.post('http://141.56.137.83:8000/nutzer_create', {
-      email: email.value,           // Benutzereingaben für Email und Passwort
-      name: name.value,
-      passwort_hash: password.value,     // das erste Wort ist das Schlüsselwort im Backend, das zweite ist der Wert
-    })
-
-    router.push('/')     // Weiterleitung nach erfolgreicher Registrierung
-    } catch (error) {
-        if (error.response && error.response.data && error.response.data.detail) {
-            errorMessage.value = error.response.data.detail
-        } else {
-            errorMessage.value = 'Ein unbekannter Fehler ist aufgetreten.'
-        }
+export default {
+  name: 'CreateAccount',
+  data() {
+    return {
+      email: '',
+      name: '',
+      password: '',
+      errorMessage: ''
     }
+  },
+  methods: {
+    async onSubmit() {
+      this.errorMessage = ''
+      try {
+        const response = await axios.post('http://141.56.137.83:8000/nutzer_create', {
+          email: this.email,
+          name: this.name,
+          passwort_hash: this.password,
+        })
+        this.$router.push('/')
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.detail) {
+          this.errorMessage = error.response.data.detail
+        } else {
+          this.errorMessage = 'Ein unbekannter Fehler ist aufgetreten.'
+        }
+      }
+    }
+  }
 }
 </script>
 
 <style scoped>
+/* dein CSS bleibt unverändert */
 .create_account-container {
   max-width: 400px;
   margin: 2rem auto;
@@ -109,7 +107,7 @@ const onSubmit = async () => {
 }
 
 button.button-cancel {
-  position: static; /* Wichtig, keine absolute Position */
+  position: static;
   padding: 0.5em 1em;
   font-size: 1em;
   flex-shrink: 0;
@@ -164,5 +162,4 @@ button.button-submit {
   text-align: center;
   font-weight: 600;
 }
-
 </style>

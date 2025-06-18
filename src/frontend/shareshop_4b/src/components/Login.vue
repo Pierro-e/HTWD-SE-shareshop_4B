@@ -33,38 +33,40 @@
   </div>
 </template>
 
-<script setup>
-import { ref, inject } from 'vue'
+<script>
 import axios from 'axios'
-import { useRouter } from 'vue-router'
 
-const email = ref('')              // Reaktive Variable, die mit v-model im Template verknüpft ist
-const password = ref('')
-const errorMessage = ref('')
-const router = useRouter()
-
-const setUser = inject('setUser')       // Funktion setUser aus App.vue importieren
-
-const onSubmit = async () => {
-  errorMessage.value = ''
-  try {
-    const response = await axios.post('http://141.56.137.83:8000/login', {
-      email: email.value,           // Benutzereingaben für Email und Passwort
-      passwort: password.value,     // das erste Wort ist das Schlüsselwort im Backend, das zweite ist der Wert
-    })
-
-    setUser(response.data)          // Benutzerdaten setzen
-    router.push('/einfuehrung')     // Weiterleitung nach erfolgreichem Login
-  } catch (error) {
-    if (error.response && error.response.data && error.response.data.detail) {
-      errorMessage.value = error.response.data.detail
-    } else {
-      errorMessage.value = 'Login fehlgeschlagen. Bitte überprüfe deine Eingaben.'
+export default {
+  name: 'Login',
+  data() {
+    return {
+      email: '',
+      password: '',
+      errorMessage: ''
+    }
+  },
+  inject: ['setUser'],   // setUser aus app.vue injizieren
+  methods: {
+    async onSubmit() {
+      this.errorMessage = ''
+      try {
+        const response = await axios.post('http://141.56.137.83:8000/login', {
+          email: this.email,
+          passwort: this.password,
+        })
+        this.setUser(response.data)         // Benutzerdaten setzen
+        this.$router.push('/einfuehrung')   // Weiterleitung
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.detail) {
+          this.errorMessage = error.response.data.detail
+        } else {
+          this.errorMessage = 'Login fehlgeschlagen. Bitte überprüfe deine Eingaben.'
+        }
+      }
     }
   }
 }
 </script>
-
 
 <style scoped>
 .login_container {
@@ -137,5 +139,3 @@ input[type="password"]:focus {
   font-size: 1rem;
 }
 </style>
-
-
