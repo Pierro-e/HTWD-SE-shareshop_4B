@@ -60,7 +60,7 @@ export default {
         if (error.response && error.response.data && error.response.data.detail) {
           this.errorMessage = error.response.data.detail
         } else {
-          this.errorMessage = 'Login fehlgeschlagen. Bitte überprüfe deine Eingaben.'
+          this.errorMessage = 'Falsche Zugangsdaten'
         }
       }
     }

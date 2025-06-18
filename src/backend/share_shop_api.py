@@ -182,7 +182,7 @@ def start():
 @app.post("/login")
 def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     # Nutzer mit E-Mail suchen
-    nutzer = db.query(Nutzer).filter(Nutzer.email == login_data.email).first()
+    nutzer = db.query(Nutzer).filter(func.lower(Nutzer.email) == func.lower(login_data.email)).first()
     if not nutzer:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Falsche Zugangsdaten")
 
