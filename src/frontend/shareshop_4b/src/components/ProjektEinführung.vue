@@ -49,12 +49,12 @@
         Um das Projekt lokal zu starten, benötigst du:
       </p>
       <ul>
-        <li><strong>Node.js</strong> (Version 14 oder höher) – eine JavaScript-Laufzeitumgebung.  
-          Installation: <code>https://nodejs.org</code> (Installer)  
+        <li><strong>Node.js</strong> (Version 14 oder höher) – eine JavaScript-Laufzeitumgebung.
+          Installation: <code>https://nodejs.org</code> (Installer)
           Update prüfen mit: <code>node -v</code></li>
-        <li><strong>npm</strong> (Node Package Manager) – wird zusammen mit Node.js installiert.  
+        <li><strong>npm</strong> (Node Package Manager) – wird zusammen mit Node.js installiert.
           Update mit: <code>npm install -g npm</code></li>
-        <li><strong>Vite</strong> – das Build-Tool und Dev-Server, das im Projekt verwendet wird.  
+        <li><strong>Vite</strong> – das Build-Tool und Dev-Server, das im Projekt verwendet wird.
           Installiert automatisch bei <code>npm install</code> im Projekt, oder manuell mit: <code>npm install -g vite</code>. Überprüfen mit <code>vite --version</code></li>
       </ul>
       <p>Diese Werkzeuge erlauben es dir, die Anwendung zu bauen und lokal im Browser auszuführen.</p>
@@ -84,7 +84,7 @@
       </div>
     </section>
   </div>
-    
+
 </template>
 
 <script></script>

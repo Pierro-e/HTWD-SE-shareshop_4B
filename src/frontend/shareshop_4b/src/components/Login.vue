@@ -55,7 +55,7 @@ export default {
           passwort: this.password,
         })
         this.setUser(response.data)         // Benutzerdaten setzen
-        this.$router.push('/einfuehrung')   // Weiterleitung
+        this.$router.push('/listen')  // Weiterleiten
       } catch (error) {
         if (error.response && error.response.data && error.response.data.detail) {
           this.errorMessage = error.response.data.detail
