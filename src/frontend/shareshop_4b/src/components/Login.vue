@@ -1,5 +1,5 @@
 <template>
-  <div class="login_container">                      
+  <div class="login_container">
     <h2>Login</h2>
     <form @submit.prevent="onSubmit">
       <div class="login_email">
