@@ -55,7 +55,7 @@ export default {
           passwort: this.password,
         })
         this.setUser(response.data)         // Benutzerdaten setzen
-        this.$router.push('/listen')  // Weiterleiten
+        this.$router.push('/listen')  // Einkaufslisten des Nutzers aufrufen
       } catch (error) {
         if (error.response && error.response.data && error.response.data.detail) {
           this.errorMessage = error.response.data.detail

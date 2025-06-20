@@ -13,7 +13,10 @@
   export default {
     methods: {
       createList() {
-        this.$router.push('/list')  // Weiterleiten
+        // TODO: function which creates a new List in the database and returns its ID
+        // axios post mit get User id
+        const id = "1234"
+        this.$router.push('/list/' + id)  // Einkaufsliste aufrufen
       }
     }
   }
