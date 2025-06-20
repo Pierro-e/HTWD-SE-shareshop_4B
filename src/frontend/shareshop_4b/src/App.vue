@@ -14,7 +14,6 @@ export default {
       id: null,
       email: '',
       name: '',
-      list: '',
     })
 
     function setUser(userData) {
