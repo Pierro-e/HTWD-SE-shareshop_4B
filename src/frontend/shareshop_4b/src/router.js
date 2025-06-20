@@ -11,15 +11,11 @@ const routes = [
   { path: "/einfuehrung", component: ProjektEinführung },
   { path: "/registrieren", component: CreateAccount },
   { path: "/listen", component: ListOverview },
-  {
-    path: "/neueliste/",
-    component: ListCreator,
-  },
+  { path: "/neueliste", component: ListCreator },
   {
     component: List,
     path: "/list/:id",
     props: true,
-    // TODO: Parameter für Listen übergabe, welcher eine Neue Liste aufruft zum erstellen
   },
 ];
 
