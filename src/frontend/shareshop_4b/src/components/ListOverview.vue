@@ -1,7 +1,7 @@
 <template>
   <header>
     <h1>Einkaufslisten</h1>
-    <button id="newlist">+</button>
+    <button @click="newList" id="newlist">+</button>
   </header>
   <main>
     <ul id="einkaufslisten">
@@ -14,6 +14,13 @@
 </template>
 
 <script>
+export default {
+  methods: {
+    newList() {
+        this.$router.push('/neueliste')  // Weiterleiten
+    }
+  }
+}
 </script>
 
 <style scoped>
