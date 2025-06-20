@@ -121,8 +121,6 @@ class LoginRequest(BaseModel):
     email: str
     passwort: str
 
-# class MitgliedCreate(BaseModel):
-
 
 class ProduktInListeRead(BaseModel):
     produkt_id: int
