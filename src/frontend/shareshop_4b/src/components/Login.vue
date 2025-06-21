@@ -42,7 +42,7 @@ export default {
     return {
       email: '',
       password: '',
-      errorMessage: ''
+      errorMessage: '',
     }
   },
   inject: ['setUser'],   // setUser aus app.vue injizieren
