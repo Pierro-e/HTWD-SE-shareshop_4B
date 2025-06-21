@@ -346,6 +346,13 @@ def get_listen_all(db: Session = Depends(get_db)):
     listen = db.query(Liste).all()
     return listen
 
+@app.get("/listen/by-id/{list_id}", response_model=ListeRead)
+def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    liste = db.query(Liste).filter(Liste.id == list_id).first()
+    if not liste:
+        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
+    return liste
+
 @app.post("/listen", response_model=ListeRead, status_code=status.HTTP_201_CREATED)
 def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
 
