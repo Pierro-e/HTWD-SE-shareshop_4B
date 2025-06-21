@@ -1,6 +1,6 @@
 <template>
     <div class="create_account-container">
-        <div class="header">    
+        <div class="header">
             <button class="button-cancel" @click="$router.push('/')">Zurück</button>
             <h1>Registrieren</h1>
         </div>
