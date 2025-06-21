@@ -2,7 +2,23 @@
   <div class="user-settings">
     <h2>Profil bearbeiten</h2>
 
+    <div class="current-user-data">
+      <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier deine E-mail, deinen Namen und dein Passwort ändern</strong></p>
+      <p><strong>Aktuelle E-Mail:</strong> {{ email }}</p>
+      
+    </div>
+
     <form @submit.prevent="updateUser">
+      
+      <div>
+        <label for="name">Neuer Name:</label>
+        <input v-model="name" 
+            type="name" 
+            id="name" 
+            required 
+        />
+      </div>
+      
       <div>
         <label for="email">Neue E-Mail:</label>
         <input v-model="email" 
@@ -29,41 +45,89 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'UserSettings',
+  inject: ['user'],
   data() {
     return {
+      name: '',
       email: '',
       password: '',
+      //currentEmail: '',//gebraucht?
       message: '',
       errorMessage: ''
     };
   },
+
+  async mounted() {
+    // Beim Laden: Werte aus globalem User setzen
+    if (this.user?.id) {
+      this.name = this.user.name
+      this.email = this.user.email
+    }
+  },
+
   methods: {
-    async updateUser() {
+
+    async loadUserData() {
       try {
-        // Beispiel: Axios PUT request
-        const response = await fetch('/api/user/update', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: this.email,
-            password: this.password
-          })
-        });
-
-        if (!response.ok) throw new Error('Fehler beim Aktualisieren');
-
-        this.message = 'Daten erfolgreich aktualisiert!';
-        this.error = '';
+        const response = await axios.get(`http://141.56.137.83:8000/nutzer/by-id?id=${this.user.id}`)
+        
+        this.currentEmail = response.data.email
+        this.name = response.data.name
+        this.email = response.data.email
       } catch (err) {
-        this.error = err.message || 'Unbekannter Fehler';
-        this.message = '';
+        this.errorMessage = 'Fehler beim Laden der Daten'
+      }
+    },
+
+    async updateUser() {
+      this.message = ''
+      this.errorMessage = ''
+      
+    try {
+      const promises = []
+
+        // Name ändern, wenn ein neuer Name eingegeben wurde
+      if (this.name.trim()) {
+        promises.push(
+          axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/name`, {
+            neuer_name: this.name
+          })
+      )
+      }
+
+        // Passwort ändern, wenn ein neues Passwort eingegeben wurde
+      if (this.password.trim()) {
+        promises.push(
+          axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/passwort`, {
+            neues_passwort: this.password
+          })
+      )
+      }
+
+      // Warten, bis alle API-Aufrufe abgeschlossen sind
+      await Promise.all(promises)
+
+
+      this.message = 'Daten erfolgreich aktualisiert!'
+        this.errorMessage = ''
+
+        // Optional: globalen Benutzer aktualisieren
+        this.user.email = this.email
+        this.user.name = this.name
+
+      } catch (err) {
+        this.errorMessage = err.response?.data?.detail || 'Fehler beim Aktualisieren'
+        this.message = ''
       }
     }
   }
 };
 </script>
+
 
 <style scoped>
 .success {
@@ -75,6 +139,15 @@ export default {
   margin-top: 0.8rem;
   text-align: center;
   font-weight: 600;
+}
+
+.current-user-data {
+  background-color: #333;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  color: #ddd;
+  font-size: 0.95rem;
 }
 </style>
 
