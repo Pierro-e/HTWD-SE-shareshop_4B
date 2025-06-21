@@ -1,5 +1,5 @@
 <template>
-  <div class="login_container">                      
+  <div class="login_container">
     <h2>Login</h2>
     <form @submit.prevent="onSubmit">
       <div class="login_email">
@@ -55,7 +55,7 @@ export default {
           passwort: this.password,
         })
         this.setUser(response.data)         // Benutzerdaten setzen
-        this.$router.push('/einfuehrung')   // Weiterleitung
+        this.$router.push('/listen')  // Einkaufslisten des Nutzers aufrufen
       } catch (error) {
         if (error.response && error.response.data && error.response.data.detail) {
           this.errorMessage = error.response.data.detail

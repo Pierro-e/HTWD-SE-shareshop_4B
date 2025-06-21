@@ -1,21 +1,29 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
-<script setup>
-import { ref, provide} from 'vue'
+<script>
+import { ref, provide } from 'vue'
 
-const user = ref({  //Benutzerdaten bereitgestellt, dass man sie in anderen Komponenten verwenden kann
-  id: null,
-  email: '',
-  name: '',
-})
-provide('user', user)   //mit provide die Daten bereitstellen, um sie in anderen Komponenten zu verwenden
-                        // Nutzung mit inject('user') in anderen Komponenten
-function setUser(userData) {
-  user.value = userData
+export default {
+  name: 'App',
+  setup() {
+    const user = ref({
+      id: null,
+      email: '',
+      name: '',
+    })
+
+    function setUser(userData) {
+      user.value = userData
+    }
+
+    provide('user', user)
+    provide('setUser', setUser)
+
+    return {} 
+  }
 }
-provide('setUser', setUser)   //mit provide die Funktion bereitstellen, um die Benutzerdaten zu setzen
 </script>
