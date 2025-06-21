@@ -14,8 +14,7 @@
         <label for="name">Neuer Name:</label>
         <input v-model="name" 
             type="name" 
-            id="name" 
-            required 
+            id="name"            
         />
       </div>
       
@@ -32,8 +31,8 @@
         <label for="password">Neues Passwort:</label>
         <input v-model="password" 
             type="password" 
-            id="password" 
-            required />
+            id="password"
+            />
       </div>
 
       <button class="button-submit" type="submit">Änderungen speichern</button>
@@ -53,6 +52,7 @@ export default {
   data() {
     return {
       name: '',
+      currentName: '',
       email: '',
       password: '',
       //currentEmail: '',//gebraucht?
@@ -61,11 +61,18 @@ export default {
     };
   },
 
+
+ 
   async mounted() {
     // Beim Laden: Werte aus globalem User setzen
     if (this.user?.id) {
-      this.name = this.user.name
-      this.email = this.user.email
+      await this.loadUserData()
+      //this.name = this.user.name
+      //this.email = this.user.email
+    }  else {
+      // Für Test: User-ID auf 1 setzen und laden
+      this.user.id = 1
+      await this.loadUserData()
     }
   },
 
@@ -73,43 +80,50 @@ export default {
 
     async loadUserData() {
       try {
+        
         const response = await axios.get(`http://141.56.137.83:8000/nutzer/by-id?id=${this.user.id}`)
         
         this.currentEmail = response.data.email
         this.name = response.data.name
+        this.currentName = response.data.name
         this.email = response.data.email
       } catch (err) {
         this.errorMessage = 'Fehler beim Laden der Daten'
       }
     },
 
-    async updateUser() {
+  async updateUser() {
+      
       this.message = ''
       this.errorMessage = ''
       
     try {
       const promises = []
 
-        // Name ändern, wenn ein neuer Name eingegeben wurde
-      if (this.name.trim()) {
-        promises.push(
-          axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/name`, {
-            neuer_name: this.name
-          })
-      )
-      }
+    // Trim, damit Leerzeichen ignoriert werden
+    const trimmedName = this.name.trim();
+    const trimmedPassword = this.password.trim();
 
-        // Passwort ändern, wenn ein neues Passwort eingegeben wurde
-      if (this.password.trim()) {
-        promises.push(
-          axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/passwort`, {
-            neues_passwort: this.password
-          })
-      )
-      }
+    // Name ändern, wenn anders als vorher
+    if (trimmedName !== '') {
+      promises.push(
+        axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/name`, {
+          neuer_name: trimmedName
+        })
+      );
+    }
+
+     // Passwort ändern, wenn etwas eingegeben wurde
+    if (trimmedPassword !=='') {
+      promises.push(
+        axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/passwort`, {
+          neues_passwort: trimmedPassword
+        })
+      );
+    }
 
       // Warten, bis alle API-Aufrufe abgeschlossen sind
-      await Promise.all(promises)
+      await Promise.all(promises);
 
 
       this.message = 'Daten erfolgreich aktualisiert!'
@@ -117,7 +131,9 @@ export default {
 
         // Optional: globalen Benutzer aktualisieren
         this.user.email = this.email
-        this.user.name = this.name
+        this.user.name = trimmedName
+
+        this.password = ''
 
       } catch (err) {
         this.errorMessage = err.response?.data?.detail || 'Fehler beim Aktualisieren'
