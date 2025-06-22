@@ -15,7 +15,7 @@
       createList() {
         // TODO: function which creates a new List in the database and returns its ID
         // axios post mit get User id
-        const id = "1234"
+        const id = "1"
         this.$router.push('/list/' + id)  // Einkaufsliste aufrufen
       }
     }

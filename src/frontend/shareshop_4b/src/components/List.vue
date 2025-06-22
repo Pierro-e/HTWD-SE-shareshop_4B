@@ -25,12 +25,11 @@
       <div class="popup-content">
         <h3>Listeninformationen</h3>
         <p>Name der Liste: {{ list_name }}</p>
-        <p>Ersteller: {{ list_creator }}</p>
-        <ul>
-          <li v-for="mitglied in mitglieder" :key="mitglied.id">
-            Mitglied: {{ mitglied.name }} (ID: {{ mitglied.id }})
-          </li>
-        </ul>
+        <p>Ersteller: {{ list_creator_name }}</p>
+        <p>Mitglieder:</p>
+          <div v-for="(mitglied, index) in mitglieder_names" :key="index" class="mitglieder-anzeige">
+            {{ mitglied }}
+          </div>
         <button @click="showpopup_list = false" class="button button-cancel">Schließen</button>
       </div>
     </div>   
@@ -38,8 +37,14 @@
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
-        <button @click="showpopup_product = false" class="button button-cancel">Abbrechen</button>
-        <button @click="showpopup_product = false" class="button button-add">Hinzufügen</button>
+        <input class="input-product"
+          v-model="new_product"
+          type="text"
+          placeholder="Produktname"
+          maxlength="30">
+        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+        <button @click="cancel_product_popup" class="button button-cancel">Abbrechen</button>
+        <button @click="add_product" class="button button-add">Hinzufügen</button>
       </div>
     </div>
   </div>
@@ -48,6 +53,7 @@
 <script>
 import axios from 'axios'
 import { inject } from 'vue'
+
 export default {
   name: 'Liste',
   inject: ['user', 'getUser'],
@@ -55,42 +61,52 @@ export default {
   data() {
     return {
       list_name: '',
-      list_creator: '',
+      list_creator_id: null,
+      list_creator_name: '',
       errorMessage: '',
       showpopup_product: false,
       showpopup_list: false,
+      new_product: '',
       listenprodukte: [],
       mitglieder: [],
-      mitglieder_ids: [],
+      mitglieder_names: [],
+      userData: null,   // hier speichern wir den injecteten user
     }
   },
 
   methods: {
-  async get_list(id) {
-    this.errorMessage = '';
-    try {
-      const response = await axios.get(`http://141.56.137.83:8000/listen/by-id/${id}`);
-      this.list_name = response.data.name;
-      const creator_id = response.data.ersteller;
-      const creator = await this.getUser(creator_id);
+    async get_list(id) {
+      this.errorMessage = '';
+      try {
+        const response = await axios.get(`http://141.56.137.83:8000/listen/by-id/${id}`);
+        this.list_name = response.data.name;
+        this.list_creator_id = response.data.ersteller;
 
-      this.list_creator = creator ? creator.name : 'Unbekannt';
+        const creator = await this.getUser(this.list_creator_id);
+        this.list_creator_name = creator.name || 'Unbekannt';
 
-    } catch (error) {
-      if (error.response && error.response.data && error.response.data.detail) {
-        this.errorMessage = error.response.data.detail;
-      } else {
-        this.errorMessage = 'Fehler beim Laden der Liste';
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.detail) {
+          this.errorMessage = error.response.data.detail;
+        } else {
+          this.errorMessage = 'Fehler beim Laden der Liste';
+        }
       }
-    }
-  },
+    },
 
     async get_list_members(id) {
       this.errorMessage = ''
       try {
-        const response = await axios.get(`http:///listen/${id}/mitglieder`)
+        const response = await axios.get(`http://141.56.137.83:8000/listen/${id}/mitglieder`)
         this.mitglieder = response.data
-        this.mitglieder_ids = this.mitglieder.map(member => member.id)
+
+        this.mitglieder_names = await Promise.all(
+          this.mitglieder.map(async (mitglied) => {
+            const user = await this.getUser(mitglied.nutzer_id);
+            return user.name || 'Unbekannt';
+          })
+        );
+
       }catch (error) {
         if (error.response && error.response.data && error.response.data.detail) {
           this.errorMessage = error.response.data.detail
@@ -101,20 +117,87 @@ export default {
     },
 
     openListPopup() {
+      this.errorMessage = '';
       this.showpopup_list = true;
       this.showpopup_product = false;
       this.get_list_members(this.list_id);
     },
     
     openProductPopup() {
+      this.errorMessage = '';
       this.showpopup_product = true;
       this.showpopup_list = false;
     },
+
+    async add_product() {
+      const list_id = this.list_id || this.$route.params.id;
+      const user_id = this.user.id;
+
+      this.errorMessage = '';
+
+      if (this.new_product.trim() === '') {
+        this.errorMessage = 'Produktname darf nicht leer sein';
+        return;
+      }
+
+      let produkt_Id;
+
+      try {
+        // Produkt existiert schon?
+        const responseCheck = await axios.get(`http://141.56.137.83:8000/produkte/by-name/${encodeURIComponent(this.new_product.trim())}`);
+        produkt_Id = responseCheck.data.id;
+      } catch (error) {
+        // Wenn 404 (Produkt nicht gefunden), dann neu anlegen
+        if (error.response && error.response.status === 404) {
+          try {
+            const responseCreate = await axios.post(`http://141.56.137.83:8000/produkte_create`, {
+              name: this.new_product.trim()
+            });
+            produkt_Id = responseCreate.data.id;
+          } catch (error) {
+            if (error.response && error.response.data && error.response.data.detail) {
+              this.errorMessage = error.response.data.detail
+            } else {
+            this.errorMessage = 'Fehler beim Anlegen des Produkts';
+            return;
+            }
+          }
+        }
+      }
+
+      if (!list_id || !produkt_Id || !user_id) {
+        console.log('Fehlende Liste-, Produkt- oder Nutzer-ID');
+        return;
+      }
+
+      try {
+        await axios.post(`http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`);
+        this.showpopup_product = false;
+        this.errorMessage = '';
+        this.new_product = '';
+      } catch (error) {
+        if (error.response) {
+          this.errorMessage = error.response.data.detail || 'Unbekannter Fehler beim Hinzufügen des Produkts zur Liste';
+        }
+      }
+    },
+    
+    cancel_product_popup() {
+      this.errorMessage = '';
+      this.showpopup_product = false;
+      this.new_product = ''; 
+    },
+
   },
 
   mounted() {
+    this.errorMessage = '';
     const id = this.list_id || this.$route.params.id
     this.get_list(id)
+    this.get_list_members(id)
+
+    // Injected user in data speichern
+    this.userData = this.user;
   },
 }
 </script>
@@ -162,6 +245,16 @@ export default {
   align-items: center;
 }
 
+.input-product {
+  width: 100%;
+  padding: 0.5em;
+  border-radius: 0.25em;
+  border: none;
+  background-color: #3a3a3a;
+  color: white;
+  font-size: 1em;
+  box-sizing: border-box;
+}
 
 .popup-overlay {
   position: fixed;
@@ -192,4 +285,3 @@ export default {
   opacity: 0.6;
 }
 </style>
-
