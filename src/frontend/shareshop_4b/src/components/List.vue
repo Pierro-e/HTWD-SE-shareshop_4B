@@ -11,7 +11,7 @@
       <button 
         :disabled="showpopup_product || showpopup_list" 
         @click="openProductPopup()" 
-        class="button button-add">+</button>
+        class="button button-add button-add-header">Produkt hinzufügen</button>
 
       <div class="settings-container">
         <button 
@@ -285,46 +285,60 @@ export default {
 </script>
 
 <style scoped>
-.liste {
-  padding: 80px 20px 20px 20px; /* oben genug Abstand für den fixierten Header */
-}
-
-/* Header fixiert oben */
 .header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: 80px; /* etwas kleiner */
   background-color: black;
   z-index: 1100;
-  padding: 10px 60px;
+  padding: 0 60px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; /* zentriert h2 */
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   box-sizing: border-box;
-  gap: 1rem;
-} 
+  /* Keine gap, stattdessen absolute Buttons */
+  position: fixed;
+}
 
-/* Überschrift zentriert */
+/* Zurück-Button links */
+.back-button {
+  position: absolute;
+  left: 20px;
+}
+
+/* Produkt hinzufügen Button rechts */
+.button-add-header {
+  position: absolute;
+  right: 20px;
+}
+
+/* h2 mittig im Header */
 .header h2 {
   margin: 0;
   font-weight: 400;
-  font-size: 1.5rem;
-  color: inherit;
+  font-size: 2rem;
+  color: white;
   text-align: center;
-  flex-grow: 1;
+  /* Kein position fixed mehr! */
 }
 
+/* Settings-Container fixiert unter der Überschrift mittig */
 .settings-container {
   position: fixed;
-  top: 60px; 
-  right: 25px;
-  left: 70px;
+  top: 80px; /* direkt unterhalb des Headers */
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1100;
+  background-color: black; /* wenn gewünscht */
+  width: 100%;
+  padding: 10px 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 .input-product {
