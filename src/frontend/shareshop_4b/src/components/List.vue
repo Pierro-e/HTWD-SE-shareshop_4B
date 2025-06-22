@@ -72,11 +72,8 @@ export default {
       const response = await axios.get(`http://141.56.137.83:8000/listen/by-id/${id}`);
       this.list_name = response.data.name;
       const creator_id = response.data.ersteller;
-      
-      // getUser ist injected, also this.getUser()
       const creator = await this.getUser(creator_id);
-      
-      // creator ist schon response.data aus App.vue getUser()
+
       this.list_creator = creator ? creator.name : 'Unbekannt';
 
     } catch (error) {
