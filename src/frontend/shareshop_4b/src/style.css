@@ -41,10 +41,8 @@ button {
   border: 1px solid transparent;
   /*Textfarbe*/
   color: rgb(235, 236, 230);
-  /*Hintergrundfarbe*/
-  background-color: #33750d;
   /*Wieviel Padding rund um Schrift -> beeinflusst Groesse des Buttons*/
-  padding: 0.6 em 1.2 em;
+  padding: 0.6em 1.2em;
   /*Runde Ecken*/
   border-radius: 0.5em;
   /*zenriert Text horizontal*/
