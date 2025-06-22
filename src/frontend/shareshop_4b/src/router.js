@@ -13,16 +13,8 @@ const routes = [
   { path: "/registrieren", component: CreateAccount },
   { path: '/settings', component: UserSettings },
   { path: "/listen", component: ListOverview },
-  {
-    path: "/neueliste/",
-    component: ListCreator,
-  },
-  {
-    component: List,
-    path: "/list/:id",
-    props: true,
-    // TODO: Parameter für Listen übergabe, welcher eine Neue Liste aufruft zum erstellen
-  },
+  { path: "/neueliste/", component: ListCreator },
+  { path: "/list/:id", component: List, props: true, },
 ];
 const router = createRouter({
   history: createWebHistory(),
