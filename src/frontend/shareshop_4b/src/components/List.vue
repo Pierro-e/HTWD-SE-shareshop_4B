@@ -47,6 +47,36 @@
         <button @click="add_product" class="button button-add">Hinzufügen</button>
       </div>
     </div>
+
+    <div class="produkte-grid">
+      <div
+        v-for="(produkt, index) in listenprodukte"
+        :key="index"
+        class="produkt-card"
+      >
+        <h3 class="produkt-name">
+          {{ produkt.name || 'Unbekanntes Produkt' }}
+        </h3>
+
+        <div class="produkt-info" v-if="produkt.produkt_menge || produkt.einheit_abk">
+          <span v-if="produkt.produkt_menge">
+            <strong>Menge:</strong> {{ produkt.produkt_menge }}
+          </span>
+          <span v-if="produkt.einheit_abk">
+            {{ produkt.einheit_abk }}
+          </span>
+        </div>
+
+        <p v-if="produkt.beschreibung" class="produkt-beschreibung">
+          {{ produkt.beschreibung }}
+        </p>
+      </div>
+    </div>
+
+
+
+
+
   </div>
 </template>
 
@@ -68,6 +98,8 @@ export default {
       showpopup_list: false,
       new_product: '',
       listenprodukte: [],
+      listenprodukte_names: [],
+      listenprodukte_einheiten: [],
       mitglieder: [],
       mitglieder_names: [],
       userData: null,   // hier speichern wir den injecteten user
@@ -99,7 +131,6 @@ export default {
       try {
         const response = await axios.get(`http://141.56.137.83:8000/listen/${id}/mitglieder`)
         this.mitglieder = response.data
-
         this.mitglieder_names = await Promise.all(
           this.mitglieder.map(async (mitglied) => {
             const user = await this.getUser(mitglied.nutzer_id);
@@ -115,6 +146,56 @@ export default {
         }
       }
     },
+
+    async get_products(id) {
+      this.errorMessage = '';
+      try {
+        const response = await axios.get(`http://141.56.137.83:8000/listen/${id}/produkte`);
+        this.listenprodukte = response.data;
+
+        for (const produkt of this.listenprodukte) {
+          // Produktname holen
+          try {
+            const res1 = await axios.get(`http://141.56.137.83:8000/produkte/by-id/${produkt.produkt_id}`);
+            produkt.name = res1.data.name;  
+          } catch (innerError) {
+            produkt.name = '[Fehler beim Laden]';
+            console.error(`Fehler beim Laden von Produkt ${produkt.produkt_id}:`, innerError);
+          }
+
+          // Einheit holen
+          try {
+            const res2 = await axios.get(`http://141.56.137.83:8000/einheiten/${produkt.einheit_id}`);
+            produkt.einheit_abk = res2.data.abkürzung;  
+          } catch (innerError) {
+            produkt.einheit_abk = '';
+            console.error(`Fehler beim Laden von Einheit ${produkt.einheit_id}:`, innerError);
+          }
+
+          // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
+          if (produkt.produkt_menge !== undefined && produkt.produkt_menge !== null) {
+            const menge = Number(produkt.produkt_menge);
+            // Prüfen ob die Zahl eine ganze Zahl ist
+            if (Number.isInteger(menge)) {
+              produkt.produkt_menge = menge.toString();  // z.B. 5 statt 5.00
+            } else {
+              // andernfalls auf 2 Nachkommastellen runden (falls notwendig)
+              produkt.produkt_menge = menge.toFixed(2);
+            }
+          }
+        }
+
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.detail) {
+          this.errorMessage = error.response.data.detail;
+        } else {
+          this.errorMessage = 'Fehler beim Laden der Produkte';
+        }
+      }
+    },
+
+
+
 
     openListPopup() {
       this.errorMessage = '';
@@ -186,6 +267,7 @@ export default {
       this.errorMessage = '';
       this.showpopup_product = false;
       this.new_product = ''; 
+
     },
 
   },
@@ -195,7 +277,7 @@ export default {
     const id = this.list_id || this.$route.params.id
     this.get_list(id)
     this.get_list_members(id)
-
+    this.get_products(id);
     // Injected user in data speichern
     this.userData = this.user;
   },
@@ -204,7 +286,7 @@ export default {
 
 <style scoped>
 .liste {
-  padding: 10px 20px;
+  padding: 80px 20px 20px 20px; /* oben genug Abstand für den fixierten Header */
 }
 
 /* Header fixiert oben */
@@ -284,4 +366,62 @@ export default {
   cursor: not-allowed;
   opacity: 0.6;
 }
+.produkte-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .produkte-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .produkte-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.produkt-card {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.produkt-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.produkt-name {
+  font-size: 1.125rem; /* 18px */
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 0.5rem;
+}
+
+.produkt-info {
+  font-size: 1rem; /* 14px */
+  color: #000000;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center; /* Vertikal zentrieren */
+}
+
+.produkt-info strong {
+  font-weight: 600;
+  color: #000000;
+}
+
+.produkt-beschreibung {
+  font-size: 1rem;
+  color: #000000; /* etwas heller als produkt-info */
+  margin-top: 0.5rem;
+  white-space: pre-wrap; /* Zeilenumbrüche in Beschreibung erhalten */
+}
+
 </style>
