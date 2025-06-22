@@ -24,7 +24,7 @@ const routes = [
     props: true,
     // TODO: Parameter für Listen übergabe, welcher eine Neue Liste aufruft zum erstellen
   },
-  { path: "/produktDetail", component: ProductDetail, props: true },
+  { path: "/listen/:listenId/produkte/:produktId/nutzer/:nutzerId", component: ProductDetail, props: true },
 ];
 const router = createRouter({
   history: createWebHistory(),
