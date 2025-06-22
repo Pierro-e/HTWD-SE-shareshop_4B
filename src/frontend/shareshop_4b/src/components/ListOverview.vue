@@ -9,7 +9,9 @@
     </ul>
   </main>
   <Footer>
-    <button id="settings">Einstellungen</button>
+    <button class= "button-edit" @click="$router.push('/settings')">
+      Zu den Profileinstellungen
+    </button>
   </Footer>
 </template>
 
