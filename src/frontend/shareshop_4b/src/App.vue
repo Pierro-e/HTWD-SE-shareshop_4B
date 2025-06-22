@@ -26,7 +26,6 @@ export default {
 
   async function getUser(id) {
     try {
-      // Anfrage an /nutzer/by-id mit Query-Parameter id
       const response = await axios.get(`http://141.56.137.83:8000/nutzer/by-id`, {
         params: { id: id }
       })
@@ -35,8 +34,8 @@ export default {
       console.error('Fehler beim Laden des Nutzers:', error)
       throw error
     }
-  }
   
+  }
   provide('getUser', getUser)
 
     return {} 
