@@ -5,7 +5,8 @@ import CreateAccount from "./components/CreateAccount.vue";
 import ListOverview from "./components/ListOverview.vue";
 import ListCreator from "./components/ListCreator.vue";
 import List from "./components/List.vue";
-import UserSettings from './components/UserSettings.vue'
+import UserSettings from './components/UserSettings.vue';
+import ProductDetail from './components/ProductDetail.vue';
 
 const routes = [
   { path: "/", component: Login },
@@ -23,6 +24,7 @@ const routes = [
     props: true,
     // TODO: Parameter für Listen übergabe, welcher eine Neue Liste aufruft zum erstellen
   },
+  { path: "/produktDetail", component: ProductDetail, props: true },
 ];
 const router = createRouter({
   history: createWebHistory(),
