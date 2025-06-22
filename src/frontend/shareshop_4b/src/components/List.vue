@@ -261,6 +261,7 @@ export default {
           this.errorMessage = error.response.data.detail || 'Unbekannter Fehler beim Hinzufügen des Produkts zur Liste';
         }
       }
+      this.get_products(list_id); 
     },
     
     cancel_product_popup() {
