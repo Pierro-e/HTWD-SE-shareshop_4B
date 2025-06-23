@@ -44,7 +44,7 @@
           type="text"
           placeholder="Produktname"
           maxlength="30">
-        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+          <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <button @click="cancel_product_popup" class="button button-cancel">Abbrechen</button>
         <button @click="add_product" class="button button-add">Hinzufügen</button>
       </div>
