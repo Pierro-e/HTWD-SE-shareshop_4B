@@ -560,7 +560,7 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Pat
     if vorhandenes_produkt:
         raise HTTPException(
             status_code=400,
-            detail=f"das Produkt ist bereits vorhanden. Du kannst es über den Button bearbeiten."
+            detail=f"Das Produkt ist bereits vorhanden. Du kannst es über den Button bearbeiten."
         )
     else:
         neues_Produkt = ListeProdukte(
