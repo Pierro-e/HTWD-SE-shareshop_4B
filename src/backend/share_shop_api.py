@@ -270,6 +270,13 @@ def change_name(nutzer_id: int, name: NameAendern, db: Session = Depends(get_db)
 
     return nutzer
 
+@app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
+def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    listen = db.query(Liste).filter(Liste.ersteller == nutzer_id).all()
+    if not listen:
+        raise HTTPException(status_code=404, detail="Keine Listen für diesen Nutzer gefunden")
+    return listen
+    
 
 # --- Einheiten ---
 
@@ -412,7 +419,6 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
 
 
 # --- Mitglieder in Listen ---
-
 @app.get("/listen/{listen_id}/mitglieder", response_model=List[MitgliedRead])
 def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     mitglieder = db.query(ListeMitglieder).filter(ListeMitglieder.listen_id == listen_id).all()
