@@ -4,7 +4,11 @@
     <button @click="newList" id="newlist">+</button>
   </header>
   <main>
-<ListButton v-for="list in lists" :key="list.id" :name="list.name" />
+    <ListButton
+      v-for="list in lists"
+      :key="list.id"
+      :name="list.name"
+    />
   </main>
   <Footer>
     <button class= "button-edit" @click="$router.push('/settings')">
@@ -15,17 +19,13 @@
 
 <script>
 import ListButton from './ListButton.vue'
-/*
+import axios from 'axios'
+
 // INFO: currently this ref object is for test purposes to show show the list display
-*/
 export default {
   data() {
     return {
-      lists: [
-        {id: 1, name: "WG1"},
-        {id: 2, name: "WG2"},
-        {id: 3, name: "WG3"}
-      ]
+      lists: []
     }
   },
   methods: {
@@ -35,6 +35,11 @@ export default {
   },
   components: {
     ListButton
+  },
+  mounted() {
+    this.lists = axios.get("/lists", {id,name,ersteller,datum})
+    //id: int
+    //name: str
   }
 }
 </script>
