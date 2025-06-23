@@ -72,10 +72,12 @@
         :key="index"
         class="produkt-card"
       >
-        <h3 class="produkt-name">
-          {{ produkt.name || 'Unbekanntes Produkt' }}
-        </h3>
-        <button @click="product_settings(produkt)" class="button button-settings">|||</button>
+        <div class="produkt-header">
+          <h3 class="produkt-name">
+            {{ produkt.name || 'Unbekanntes Produkt' }}
+          </h3>
+          <button @click="product_settings(produkt)" class="button button-product-settings">|||</button>
+        </div>
 
         <div class="produkt-info" v-if="produkt.produkt_menge || produkt.einheit_abk">
           <span v-if="produkt.produkt_menge">
@@ -91,7 +93,6 @@
         </p>
       </div>
     </div>
-
 
 
 
@@ -483,6 +484,12 @@ export default {
   }
 }
 
+.produkt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Button und Name auf gleicher Höhe */
+}
+
 .produkt-card {
   background-color: #c8e2c8;
   border: 1px solid #e5e7eb;
@@ -497,10 +504,11 @@ export default {
 }
 
 .produkt-name {
-  font-size: 1.25rem; /* 18px */
-  font-weight: 600;
-  color: #000000;
-  margin-bottom: 0.5rem;
+  margin: 0;
+  color: #000000; 
+  font-size: 1.2em;
+  font-weight: bold;
+  word-break: break-word;
 }
 
 .produkt-info {
@@ -515,14 +523,27 @@ export default {
 .produkt-info strong {
   font-weight: 600;
   color: #000000;
+  text-align: left;
 }
 
 .produkt-beschreibung {
   font-size: 1rem;
-  color: #000000; /* etwas heller als produkt-info */
+  color: #000000;
   font-weight: 450;
   margin-top: 0.5rem;
-  white-space: pre-wrap; /* Zeilenumbrüche in Beschreibung erhalten */
+  white-space: pre-wrap;
+  text-align: left; /* Linksbündig explizit gesetzt */
+}
+
+.button-product-settings {
+  background: none;
+  color: rgb(61, 57, 53);
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  line-height: 1; /* optional, für vertikale Ausrichtung */
 }
 
 </style>
