@@ -2,21 +2,21 @@
   <div class="liste">
 <div class="header">
   <button 
-    :disabled="showpopup_product || showpopup_list" 
+    :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
     @click="$router.push('/listen')" 
     class="button button-cancel back-button">Zurück</button>
 
   <h2 class="list-title">{{ list_name }}</h2>
 
   <button 
-    :disabled="showpopup_product || showpopup_list" 
+    :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
     @click="openProductPopup()" 
     class="button button-add button-add-header">Produkt hinzufügen</button>
 </div>
 
 <div class="settings-container">
   <button 
-    :disabled="showpopup_product || showpopup_list" 
+    :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
     @click="openListPopup()" 
     class="button button-settings">Listeneininformationen</button>
 </div>
@@ -33,6 +33,7 @@
             {{ mitglied }}
           </div>
         <button @click="showpopup_list = false" class="button button-cancel">Schließen</button>
+        <button @click="mitglied_hinzufügen_popup()" class="button">Mitglied hinzufügen</button>
       </div>
     </div>   
 
@@ -47,6 +48,21 @@
           <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <button @click="cancel_product_popup" class="button button-cancel">Abbrechen</button>
         <button @click="add_product" class="button button-add">Hinzufügen</button>
+      </div>
+    </div>
+
+    <div v-if="showpopup_add_member" class="popup-overlay">
+      <div class="popup-content">
+        <h3>Mitglied hinzufügen</h3>
+        <input class="input-product"
+          v-model="new_member_email"
+          type="text"
+          placeholder="E-Mail"
+          maxlength="30"
+          > 
+          <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+        <button @click="showpopup_add_member = false" class="button button-cancel">Abbrechen</button>
+        <button @click="mitglied_hinzufügen" class="button button-add">Hinzufügen</button>
       </div>
     </div>
 
@@ -98,6 +114,8 @@ export default {
       errorMessage: '',
       showpopup_product: false,
       showpopup_list: false,
+      showpopup_add_member: false,
+      new_member_email: '',
       new_product: '',
       listenprodukte: [],
       listenprodukte_names: [],
@@ -162,7 +180,6 @@ export default {
             produkt.name = res1.data.name;  
           } catch (innerError) {
             produkt.name = '[Fehler beim Laden]';
-            console.error(`Fehler beim Laden von Produkt ${produkt.produkt_id}:`, innerError);
           }
 
           // Einheit holen
@@ -171,7 +188,6 @@ export default {
             produkt.einheit_abk = res2.data.abkürzung;  
           } catch (innerError) {
             produkt.einheit_abk = '';
-            console.error(`Fehler beim Laden von Einheit ${produkt.einheit_id}:`, innerError);
           }
 
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
@@ -273,8 +289,54 @@ export default {
 
     },
 
-  },
+    mitglied_hinzufügen_popup() {
+      this.errorMessage = '';
+      this.showpopup_list = false;
+      this.showpopup_add_member = true;
+    },
 
+    async mitglied_hinzufügen() {
+      this.errorMessage = '';
+      const list_id = this.list_id || this.$route.params.id;
+      const user_email = this.new_member_email.trim();
+      let new_member_id;
+
+        if (!user_email) {
+        this.errorMessage = 'E-Mail darf nicht leer sein';
+        return;
+      }
+      console.log(`Suche nach E-Mail: ${user_email}`);
+
+      try {
+        const userResponse = await axios.get(`http://141.56.137.83:8000/nutzer/by-email`, {
+          params: { email: user_email }
+        });
+        new_member_id = userResponse.data.id;
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.detail) {
+          this.errorMessage = error.response.data.detail
+        } else {
+        this.errorMessage = 'Fehler beim Finden des Nutzers';
+        return;
+        }
+        return;
+      }
+
+      try {
+        const response = await axios.post(`http://141.56.137.83:8000/listen/${list_id}/mitglieder/${new_member_id}`);
+        this.showpopup_add_member = false;
+        this.errorMessage = '';
+        this.new_member_email = '';
+        this.get_list_members(list_id); // Aktualisiere die Mitgliederliste
+      } catch (error) {
+          if (error.response && error.response.data && error.response.data.detail) {
+            this.errorMessage = error.response.data.detail;
+          } else {
+            this.errorMessage = 'Person bereits Mitglied der Liste.';
+          }
+        }
+      },
+  },
   mounted() {
     this.errorMessage = '';
     const id = this.list_id || this.$route.params.id
@@ -384,11 +446,6 @@ export default {
   pointer-events: auto;
 }
 
-/* Buttons außerhalb Popup (z.B. header) deaktivieren wenn Popup offen */
-.button[disabled] {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
 .produkte-grid {
   display: grid;
   grid-template-columns: 1fr;
