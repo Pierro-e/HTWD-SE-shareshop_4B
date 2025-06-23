@@ -33,7 +33,7 @@
             {{ mitglied }}
           </div>
         <button @click="showpopup_list = false" class="button button-cancel">Schließen</button>
-        <button @click="mitglied_hinzufügen_popup()" class="button">Mitglied hinzufügen</button>
+        <button @click="mitglieder_verwalten_popup()" class="button">Mitglieder verwalten</button>
       </div>
     </div>   
 
@@ -61,7 +61,7 @@
           maxlength="30"
           > 
           <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-        <button @click="cancel_mitglied_hinzufügen()" class="button button-cancel">Abbrechen</button>
+        <button @click="cancel_mitglied_hinzufügen" class="button button-cancel">Abbrechen</button>
         <button @click="mitglied_hinzufügen" class="button button-add">Hinzufügen</button>
       </div>
     </div>
@@ -75,6 +75,7 @@
         <h3 class="produkt-name">
           {{ produkt.name || 'Unbekanntes Produkt' }}
         </h3>
+        <button @click="product_settings(produkt)" class="button button-settings">|||</button>
 
         <div class="produkt-info" v-if="produkt.produkt_menge || produkt.einheit_abk">
           <span v-if="produkt.produkt_menge">
@@ -114,6 +115,7 @@ export default {
       errorMessage: '',
       showpopup_product: false,
       showpopup_list: false,
+      showpopup_delete_member: false,
       showpopup_add_member: false,
       new_member_email: '',
       new_product: '',
@@ -289,7 +291,7 @@ export default {
 
     },
 
-    mitglied_hinzufügen_popup() {
+    mitglieder_verwalten_popup() {
       this.errorMessage = '';
       this.showpopup_list = false;
       this.showpopup_add_member = true;
@@ -342,6 +344,16 @@ export default {
       this.showpopup_add_member = false;
       this.new_member_email = ''; 
     },
+
+    product_settings(produkt) {
+      this.errorMessage = '';
+      const list_id = this.list_id || this.$route.params.id;
+      const product_id = produkt.produkt_id;
+      const nutzer_id = produkt.hinzugefügt_von;
+
+      this.$router.push(`/listen/${list_id}/produkte/${product_id}/nutzer/${nutzer_id}`);        
+    }
+
   },
   mounted() {
     this.errorMessage = '';
