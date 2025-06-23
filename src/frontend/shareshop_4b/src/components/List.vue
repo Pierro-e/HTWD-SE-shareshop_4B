@@ -1,32 +1,34 @@
 <template>
   <div class="liste">
-    <div class="header">
-      <button 
-        :disabled="showpopup_product || showpopup_list" 
-        @click="$router.push('/listen')" 
-        class="button button-cancel back-button">Zurück</button>
+<div class="header">
+  <button 
+    :disabled="showpopup_product || showpopup_list" 
+    @click="$router.push('/listen')" 
+    class="button button-cancel back-button">Zurück</button>
 
-      <h2>{{ list_name }}</h2>
+  <h2 class="list-title">{{ list_name }}</h2>
 
-      <button 
-        :disabled="showpopup_product || showpopup_list" 
-        @click="openProductPopup()" 
-        class="button button-add button-add-header">Produkt hinzufügen</button>
+  <button 
+    :disabled="showpopup_product || showpopup_list" 
+    @click="openProductPopup()" 
+    class="button button-add button-add-header">Produkt hinzufügen</button>
+</div>
 
-      <div class="settings-container">
-        <button 
-          :disabled="showpopup_product || showpopup_list" 
-          @click="openListPopup()" 
-          class="button button-settings">Listeneininformationen</button>
-      </div>
-    </div>
+<div class="settings-container">
+  <button 
+    :disabled="showpopup_product || showpopup_list" 
+    @click="openListPopup()" 
+    class="button button-settings">Listeneininformationen</button>
+</div>
+
+
 
     <div v-if="showpopup_list" class="popup-overlay">
       <div class="popup-content">
         <h3>Listeninformationen</h3>
         <p>Name der Liste: {{ list_name }}</p>
         <p>Ersteller: {{ list_creator_name }}</p>
-        <p>Mitglieder:</p>
+        <p><u>Mitglieder</u></p>
           <div v-for="(mitglied, index) in mitglieder_names" :key="index" class="mitglieder-anzeige">
             {{ mitglied }}
           </div>
@@ -286,39 +288,42 @@ export default {
 </script>
 
 <style scoped>
+.liste {
+  padding-top: 50px; 
+}
+
 .header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px; /* etwas kleiner */
-  background-color: black;
-  z-index: 1100;
-  padding: 0 60px;
+  height: 100px; /* vorher 60px */
+  background-color: rgb(6, 32, 12);
+  z-index: 1000;
   display: flex;
   align-items: center;
-  justify-content: center; /* zentriert h2 */
+  justify-content: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-  box-sizing: border-box;
-  /* Keine gap, stattdessen absolute Buttons */
-  position: fixed;
 }
 
 /* Zurück-Button links */
 .back-button {
   position: absolute;
   left: 20px;
+  top: 25px;
 }
 
 /* Produkt hinzufügen Button rechts */
 .button-add-header {
   position: absolute;
   right: 20px;
+  top: 25px;
 }
 
 /* h2 mittig im Header */
 .header h2 {
   margin: 0;
+  top: 20px;
   font-weight: 400;
   font-size: 2rem;
   color: white;
@@ -326,20 +331,23 @@ export default {
   /* Kein position fixed mehr! */
 }
 
+.list-title {
+  color: white;
+  font-size: 1.8rem;
+  margin: 0;
+}
+
 /* Settings-Container fixiert unter der Überschrift mittig */
 .settings-container {
   position: fixed;
-  top: 80px; /* direkt unterhalb des Headers */
-  left: 50%;
-  transform: translateX(-50%);
+  top: 100px; /* vorher 60px */
+  left: 0;
+  width: 100%;
+  z-index: 1100;
+  padding: 5px 0;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1100;
-  background-color: black; /* wenn gewünscht */
-  width: 100%;
-  padding: 10px 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 }
 
 .input-product {
@@ -385,6 +393,7 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
+
 }
 
 @media (min-width: 768px) {
@@ -400,7 +409,7 @@ export default {
 }
 
 .produkt-card {
-  background-color: #ffffff;
+  background-color: #c8e2c8;
   border: 1px solid #e5e7eb;
   border-radius: 1rem;
   padding: 1rem;
@@ -413,7 +422,7 @@ export default {
 }
 
 .produkt-name {
-  font-size: 1.125rem; /* 18px */
+  font-size: 1.25rem; /* 18px */
   font-weight: 600;
   color: #000000;
   margin-bottom: 0.5rem;
@@ -422,6 +431,7 @@ export default {
 .produkt-info {
   font-size: 1rem; /* 14px */
   color: #000000;
+  font-weight: 450;
   display: flex;
   gap: 0.5rem;
   align-items: center; /* Vertikal zentrieren */
@@ -435,6 +445,7 @@ export default {
 .produkt-beschreibung {
   font-size: 1rem;
   color: #000000; /* etwas heller als produkt-info */
+  font-weight: 450;
   margin-top: 0.5rem;
   white-space: pre-wrap; /* Zeilenumbrüche in Beschreibung erhalten */
 }
