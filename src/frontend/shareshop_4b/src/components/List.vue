@@ -61,12 +61,12 @@
           maxlength="30"
           > 
           <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-        <button @click="showpopup_add_member = false" class="button button-cancel">Abbrechen</button>
+        <button @click="cancel_mitglied_hinzufügen()" class="button button-cancel">Abbrechen</button>
         <button @click="mitglied_hinzufügen" class="button button-add">Hinzufügen</button>
       </div>
     </div>
 
-    <div class="produkte-grid">
+    <div class="produkte-grid"> 
       <div
         v-for="(produkt, index) in listenprodukte"
         :key="index"
@@ -336,6 +336,12 @@ export default {
           }
         }
       },
+
+    cancel_mitglied_hinzufügen() {
+      this.errorMessage = '';
+      this.showpopup_add_member = false;
+      this.new_member_email = ''; 
+    },
   },
   mounted() {
     this.errorMessage = '';
