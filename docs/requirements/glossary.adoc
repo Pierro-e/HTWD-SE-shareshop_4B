@@ -127,7 +127,8 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Nutzer
 | Registrierter Benutzer der Anwendung mit Login- und Profildaten.
-| `id` INT, `email` VARCHAR(255) +
+| `id` INT +
+`email` VARCHAR(255) +
 `name` VARCHAR(150) +
 `passwort_hash` VARCHAR(255)
 |  `id` ist Primärschlüssel (PK) und eindeutig  +
