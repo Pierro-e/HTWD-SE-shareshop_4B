@@ -1,25 +1,34 @@
 <template>
   <div class="liste">
-<div class="header">
-  <button 
-    :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
-    @click="$router.push('/listen')" 
-    class="button button-cancel back-button">Zurück</button>
+    <div class="header">
+      <button 
+        :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
+        @click="$router.push('/listen')" 
+        class="button button-cancel back-button">Zurück</button>
 
-  <h2 class="list-title">{{ list_name }}</h2>
+      <h2 class="list-title">{{ list_name }}</h2>
 
-  <button 
-    :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
-    @click="openProductPopup()" 
-    class="button button-add button-add-header">Produkt hinzufügen</button>
-</div>
+      <button 
+        :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
+        @click="openProductPopup()" 
+        class="button button-add button-add-header">Produkt hinzufügen</button>
+    </div>
 
-<div class="settings-container">
-  <button 
-    :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
-    @click="openListPopup()" 
-    class="button button-settings">Listeneininformationen</button>
-</div>
+    <div class="settings-section">
+      <div class="settings-container">
+        <button 
+          :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
+          @click="openListPopup()" 
+          class="button button-settings">Listeneininformationen</button>
+
+        <button 
+          :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
+          @click="einkauf_abschließen" 
+          class="button button-submit button-einkauf-abschließen">
+          Einkauf
+        </button>
+      </div>
+    </div>
 
 
 
@@ -430,6 +439,20 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
+.settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Abstand zwischen Buttons */
+}
+
+
+.button-einkauf-abschließen {
+  position: relative;
+  margin-top: 0px;
+
+}
+
 
 .input-product {
   width: 100%;
