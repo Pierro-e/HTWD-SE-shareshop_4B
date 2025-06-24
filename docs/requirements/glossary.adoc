@@ -127,7 +127,9 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Nutzer
 | Registrierter Benutzer der Anwendung mit Login- und Profildaten.
-| `id` INT, `email` VARCHAR(255), `name` VARCHAR(150), `passwort_hash` VARCHAR(255)
+| `id` INT, `email` VARCHAR(255) +
+`name` VARCHAR(150) +
+`passwort_hash` VARCHAR(255)
 |  `id` ist Primärschlüssel (PK) und eindeutig  +
  `email` muss eindeutig sein und sowohl `@` als auch `.` enthalten  +
  alle Felder not null
@@ -135,7 +137,10 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Listen
 | Einkaufsliste, die von einem Nutzer angelegt wird.
-| `id` INT, `name` VARCHAR(150), `ersteller` INT, `datum` DATE
+| `id` INT +
+`name` VARCHAR(150) +
+`ersteller` INT +
+`datum` DATE
 |  `id` PK, eindeutig  +
  `name` darf nicht leer sein  +
  `ersteller` referenziert `Nutzer.id`  +
@@ -144,7 +149,9 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | ListenMitglieder
 | Verknüpfung, welche Nutzer Teil welcher Liste sind.
-| `listen_id` INT, `nutzer_id` INT, `beigetreten_am` DATE
+| `listen_id` INT +
+`nutzer_id` INT +
+`beigetreten_am` DATE
 |  Zusammengesetzter PK (`listen_id`,`nutzer_id`)  +
  `listen_id` FK → `Listen.id`  +
  `nutzer_id` FK → `Nutzer.id`
@@ -152,7 +159,12 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | ListeProdukte
 | Produkte, die zu einer Liste gehören, inkl. Menge & Beschreibung.
-| `listen_id` INT, `produkt_id` INT, `produkt_menge` DECIMAL(10,2), `einheit_id` INT, `hinzugefugt_von` INT, `beschreibung` TEXT
+| `listen_id` INT +
+`produkt_id` INT +
+`produkt_menge` DECIMAL(10,2) +
+`einheit_id` INT +
+`hinzugefugt_von` INT +
+`beschreibung` TEXT
 |  PK (`listen_id`,`produkt_id`)  +
  `einheit_id` FK → `Einheiten.id`  +
  `hinzugefugt_von` FK → `Nutzer.id`  +
@@ -161,7 +173,10 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Einkaufsarchiv
 | Abgeschlossener Einkauf einer Liste (Historie).
-| `id` INT, `listen_id` INT, `getatigt_von` INT, `getatigt_am` DATE, `gesamtpreis` DECIMAL(10,2)
+| `id` INT + `listen_id` INT + 
+`getatigt_von` INT +
+`getatigt_am` DATE + 
+`gesamtpreis` DECIMAL(10,2)
 |  `id` PK  +
  `listen_id` FK → `Listen.id`  +
  `getatigt_von` FK → `Nutzer.id`  +
@@ -170,7 +185,11 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | eingekaufte_Produkte
 | Produkte, die in einem bestimmten Einkauf gekauft wurden.
-| `einkauf_id` INT, `produkt_id` INT, `produkt_menge` DECIMAL(10,2), `einheit_id` INT, `produkt_preis` DECIMAL(10,2), `hinzugefugt_von` INT
+| `einkauf_id` INT +
+`produkt_id` INT + 
+`produkt_menge` DECIMAL(10,2) +
+`einheit_id` INT, `produkt_preis` DECIMAL(10,2) +
+`hinzugefugt_von` INT
 | PK (`einkauf_id`,`produkt_id`)  +
  `einkauf_id` FK → `Einkaufsarchiv.id`  +
  `produkt_id` FK → `Produkt.id`  +
@@ -180,14 +199,17 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Produkt
 | Katalogeintrag eines verfügbaren Produkts.
-| `id` INT, `name` VARCHAR(255)
+| `id` INT +
+`name` VARCHAR(255)
 |  `id` PK  +
  `name` unique, not null +
 | Item
 
 | Einheiten
 | Maßeinheiten für Mengenangaben.
-| `id` INT, `name` VARCHAR(20), `abkurzung` VARCHAR(10)
+| `id` INT +
+`name` VARCHAR(20) +
+`abkurzung` VARCHAR(10)
 |  `id` PK  +
  `name` unique, not null +
  `abkurzung` not null +
