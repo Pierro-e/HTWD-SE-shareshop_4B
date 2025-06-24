@@ -32,75 +32,71 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 
 | Einkaufslisten
-| 
+| Strukturierte Liste von Artikeln, die innerhalb einer WG gemeinsam beschafft werden sollen
 | Besorgungslisten
 
-| Einführung
-| 
-| Einleitung
-
 | Funktionalität
-| 
+| Gesamtheit aller vom System bereitgestellten Funktionen, die den Nutzern messbaren Nutzen geben und fachliche Anforderungen realisieren
 | Leistungsumfang
 
 | Komponenten
-| 
+| Abgegrenzte Bausteine des Softwaresystems mit klarer Verantwortung und definierten Schnittstellen; können unabhängig entwickelt, getestet und ausgetauscht werden
 | Bauteile, Module
 
 | Produktinformationen
-| 
+| Metadaten zu einem Produkt (z. B. Name, Beschreibung, Preis, Kategorie), die dem Benutzer helfen, eine Kauf- bzw. Auswahlentscheidung zu treffen
 | Artikelinformationen
 
 | Benutzer
-| 
+| Mensch, der die Software nutzt
 | Anwender, Nutzer
 
 | Datenbank
-| 
+| Verwaltungssystem zur Speicherung, Abfrage und Konsistenzsicherung von Daten für eine Anwendung
 | 
 
 | Datenmodell
-| 
+| Abstrakte Beschreibung der relevanten Entitäten und ihrer Beziehungen; legt fest, wie Informationen strukturiert und in der Datenbank abgespeichert werden
 | Informationsmodell
 
 | Datenstruktur
-| 
+| Interne Organisation von Daten in Speicher oder Dateien (z. B. Arrays, Hash-Maps)
 | Datenschema
 
 | Einkaufsprozess
-| 
+| Abfolge definierter Schritte von der Produktauswahl über Einkauf bis zum zahlvorgang im System.
 | Beschaffungsprozess
 
 | Funktion
-| 
+| Einzelne, klar umrissene Aufgabe oder Prozedur innerhalb des Systems, die einen konkreten Output erzeugt
 | Aufgabe
 
 | Schnittstelle
-| 
+| Formal definierter Zugriffspunkt, über den Komponenten oder externe Systeme miteinander kommunizieren
 | 
 
 | Komponentenübersicht
-| 
+| Zusammenstellung aller Systemkomponenten inklusive ihrer Verantwortlichkeiten und Beziehungen -> liefert einen Architektur-überblick
 | Komponentenliste
 
 | Produktliste
-| 
+| Tabelle oder Ansicht aller ausgewählten(zur Einkaufsliste hinzugefügten) Produkte, meist filter- und sortierbar
 | Artikelliste
 
 | Qualitätsmerkmal
-| 
+| Eigenschaft, anhand der sich die Qualität eines Produkts oder Systems beurteilen lässt
 | Qualitätskriterium
 
 | Systemanforderung
-| 
+| Funktionale oder nicht-funktionale Bedingung, die das Softwaresystem erfüllen muss, um Stakeholder-Bedürfnisse zu erfüllen
 | Systemvoraussetzung
 
 | Systemkomponente
-| 
+| Abgeschlossene Einheit innerhalb des Gesamtsystems, die einen Teil der Infrastruktur bereitstellt
 | 
 
 | Validierung
-| 
+| Test, der prüft, ob ein Ergebnis den spezifizierten Anforderungen und dem Nutzerbedarf entspricht
 | Überprüfung, Verifizierung
 |===
 
