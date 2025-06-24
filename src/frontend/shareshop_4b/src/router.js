@@ -7,7 +7,7 @@ import ListCreator from "./components/ListCreator.vue";
 import List from "./components/List.vue";
 import UserSettings from "./components/UserSettings.vue";
 import ProductDetail from "./components/ProductDetail.vue";
-import Einkauf from "/components/Einkauf.vue"
+import Einkauf from "./components/Einkauf.vue"
 
 const routes = [
   { path: "/", component: Login },
