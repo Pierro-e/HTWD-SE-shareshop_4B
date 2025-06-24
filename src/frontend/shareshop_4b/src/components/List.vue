@@ -362,6 +362,10 @@ export default {
       const nutzer_id = produkt.hinzugefügt_von;
 
       this.$router.push(`/listen/${list_id}/produkte/${product_id}/nutzer/${nutzer_id}`);        
+    },
+
+    einkauf_abschließen() {
+      
     }
 
   },
