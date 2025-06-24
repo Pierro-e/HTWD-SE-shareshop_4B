@@ -6,6 +6,10 @@
             <button @click="einkauf_abschließen" class="button button-submit button-submit-header">Einkauf abschließen</button>
         </div>
         
+        <div v-if="errorMessage" class="error">
+             {{ errorMessage }}
+        </div>
+
         <div class="produkte-grid"> 
             <div
                 v-for="(produkt, index) in listenprodukte"
@@ -17,7 +21,7 @@
                     type="checkbox"
                     :id="`check-${index}`"
                     class="produkt-checkbox"
-                    @change="toggle_Erledigt(produkt)"
+                    @change="toggle_Erledigt(produkt, $event)"
                 />
                 <h3 class="produkt-name">
                     {{ produkt.name || 'Unbekanntes Produkt' }}
@@ -126,13 +130,41 @@ export default {
             // anzeigen der Produktdetails: von wem hinzugefügt, 
         },
 
-        toggle_Erledigt(produkt) {
-            produkt.erledigt = true;
+        toggle_Erledigt(produkt, event) {
+            produkt.erledigt = event.target.checked;
         },
 
-        einkauf_abschließen(){
+        async einkauf_abschließen() {
+        this.errorMessage = '';
+        const list_id = this.list_id || this.$route.params.listenId;
+        try {
+            const erledigteProdukte = this.listenprodukte.filter(p => p.erledigt);
 
+            if (erledigteProdukte.length === 0) {
+            this.errorMessage = 'Es sind keine Produkte abgehakt!';
+            return;
+            }
+
+            for (const produkt of erledigteProdukte) {
+            await axios.delete(`http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt.produkt_id}`, {
+                data: {
+                hinzugefügt_von: produkt.hinzugefügt_von
+                }
+            });
+            }
+            
+            this.$router.push(`/list/${list_id}`);
+
+        } catch (error) {
+            if (error.response && error.response.data && error.response.data.detail) {
+            this.errorMessage = error.response.data.detail;
+            } else {
+            this.errorMessage = 'Fehler beim Abschließen des Einkaufs.';
+            }
+        }
         },
+
+
     },
   mounted() {
     this.errorMessage = '';
@@ -276,4 +308,21 @@ export default {
   text-decoration: line-through;
   color: #777;
 }
+
+.error {
+  position: fixed;
+  top: 110px; /* Direkt unter dem Header, der 100px hoch ist */
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #ffe6e6; /* hellroter Hintergrund */
+  padding: 10px 20px;
+  border: 1px solid #cc0000;
+  border-radius: 6px;
+  font-weight: bold;
+  z-index: 1100; /* höher als der Header */
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(204, 0, 0, 0.3);
+}
+
 </style>
