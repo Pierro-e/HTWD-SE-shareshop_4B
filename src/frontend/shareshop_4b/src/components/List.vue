@@ -24,7 +24,7 @@
         <button 
           :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
           @click="einkauf_abschließen" 
-          class="button button-submit button-einkauf-abschließen">
+          class="button button-submit button-einkauf-tätigen">
           Einkauf
         </button>
       </div>
@@ -453,7 +453,7 @@ export default {
 }
 
 
-.button-einkauf-abschließen {
+.button-einkauf-tätigen {
   position: relative;
   margin-top: 0px;
 
