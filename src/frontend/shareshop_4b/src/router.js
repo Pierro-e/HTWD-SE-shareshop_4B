@@ -7,7 +7,7 @@ import ListCreator from "./components/ListCreator.vue";
 import List from "./components/List.vue";
 import UserSettings from "./components/UserSettings.vue";
 import ProductDetail from "./components/ProductDetail.vue";
-import Einkauf from "./components/Einkauf.vue"
+import Einkauf from "./components/Einkauf.vue";
 
 const routes = [
   { path: "/", component: Login },
@@ -22,7 +22,7 @@ const routes = [
     component: ProductDetail,
     props: true,
   },
-  { path: "list/:id/einkauf", component: Einkauf, props: true},
+  { path: "/list/:id/einkauf", component: Einkauf, props: true},
 ];
 const router = createRouter({
   history: createWebHistory(),
