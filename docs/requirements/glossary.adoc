@@ -57,7 +57,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Datenbank
 | 
-| Datenbanksystem
+| 
 
 | Datenmodell
 | 
@@ -77,7 +77,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Schnittstelle
 | 
-| Interface
+| 
 
 | Komponentenübersicht
 | 
@@ -97,7 +97,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Systemkomponente
 | 
-| Systemmodul
+| 
 
 | Validierung
 | 
