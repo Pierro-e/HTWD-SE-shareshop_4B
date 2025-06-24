@@ -128,69 +128,69 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Nutzer
 | Registrierter Benutzer der Anwendung mit Login- und Profildaten.
 | `id` INT, `email` VARCHAR(255), `name` VARCHAR(150), `passwort_hash` VARCHAR(255)
-| * `id` ist Primärschlüssel (PK) und eindeutig  
-* `email` muss eindeutig sein und sowohl `@` als auch `.` enthalten  
-* alle Felder not null
+|  `id` ist Primärschlüssel (PK) und eindeutig  +
+ `email` muss eindeutig sein und sowohl `@` als auch `.` enthalten  +
+ alle Felder not null
 | User
 
 | Listen
 | Einkaufsliste, die von einem Nutzer angelegt wird.
 | `id` INT, `name` VARCHAR(150), `ersteller` INT, `datum` DATE
-| * `id` PK, eindeutig  
-* `name` darf nicht leer sein  
-* `ersteller` referenziert `Nutzer.id`  
-* `datum` muss gültiges Datum sein
+|  `id` PK, eindeutig  +
+ `name` darf nicht leer sein  +
+ `ersteller` referenziert `Nutzer.id`  +
+ `datum` muss gültiges Datum sein
 | ShoppingList
 
 | ListenMitglieder
 | Verknüpfung, welche Nutzer Teil welcher Liste sind.
 | `listen_id` INT, `nutzer_id` INT, `beigetreten_am` DATE
-| * Zusammengesetzter PK (`listen_id`,`nutzer_id`)  
-* `listen_id` FK → `Listen.id`  
-* `nutzer_id` FK → `Nutzer.id`
+|  Zusammengesetzter PK (`listen_id`,`nutzer_id`)  +
+ `listen_id` FK → `Listen.id`  +
+ `nutzer_id` FK → `Nutzer.id`
 | ListMembers
 
 | ListeProdukte
 | Produkte, die zu einer Liste gehören, inkl. Menge & Beschreibung.
 | `listen_id` INT, `produkt_id` INT, `produkt_menge` DECIMAL(10,2), `einheit_id` INT, `hinzugefugt_von` INT, `beschreibung` TEXT
-| * PK (`listen_id`,`produkt_id`)  
-* `einheit_id` FK → `Einheiten.id`  
-* `hinzugefugt_von` FK → `Nutzer.id`  
-* Mengenwert ≥ 0
+|  PK (`listen_id`,`produkt_id`)  +
+ `einheit_id` FK → `Einheiten.id`  +
+ `hinzugefugt_von` FK → `Nutzer.id`  +
+ Mengenwert ≥ 0
 | ListItems
 
 | Einkaufsarchiv
 | Abgeschlossener Einkauf einer Liste (Historie).
 | `id` INT, `listen_id` INT, `getatigt_von` INT, `getatigt_am` DATE, `gesamtpreis` DECIMAL(10,2)
-| * `id` PK  
-* `listen_id` FK → `Listen.id`  
-* `getatigt_von` FK → `Nutzer.id`  
-* `gesamtpreis` ≥ 0
+|  `id` PK  +
+ `listen_id` FK → `Listen.id`  +
+ `getatigt_von` FK → `Nutzer.id`  +
+ `gesamtpreis` ≥ 0 +
 | Purchase
 
 | eingekaufte_Produkte
 | Produkte, die in einem bestimmten Einkauf gekauft wurden.
 | `einkauf_id` INT, `produkt_id` INT, `produkt_menge` DECIMAL(10,2), `einheit_id` INT, `produkt_preis` DECIMAL(10,2), `hinzugefugt_von` INT
-| * PK (`einkauf_id`,`produkt_id`)  
-* `einkauf_id` FK → `Einkaufsarchiv.id`  
-* `produkt_id` FK → `Produkt.id`  
-* `einheit_id` FK → `Einheiten.id`  
-* Preis & Menge ≥ 0
+| PK (`einkauf_id`,`produkt_id`)  +
+ `einkauf_id` FK → `Einkaufsarchiv.id`  +
+ `produkt_id` FK → `Produkt.id`  +
+ `einheit_id` FK → `Einheiten.id`  +
+ Preis & Menge ≥ 0 +
 | PurchasedItems
 
 | Produkt
 | Katalogeintrag eines verfügbaren Produkts.
 | `id` INT, `name` VARCHAR(255)
-| * `id` PK  
-* `name` unique, not null
+|  `id` PK  +
+ `name` unique, not null +
 | Item
 
 | Einheiten
 | Maßeinheiten für Mengenangaben.
 | `id` INT, `name` VARCHAR(20), `abkurzung` VARCHAR(10)
-| * `id` PK  
-* `name` unique, not null
-* `abkurzung` not null
+|  `id` PK  +
+ `name` unique, not null +
+ `abkurzung` not null +
 | Units
 |===
 
