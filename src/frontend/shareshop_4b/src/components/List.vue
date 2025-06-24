@@ -365,7 +365,9 @@ export default {
     },
 
     einkauf_abschließen() {
+      const list_id = this.list_id || this.$route.params.id;
       
+      this.$router.push(`/list/${list_id}/einkauf`)
     }
 
   },
