@@ -173,7 +173,8 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Einkaufsarchiv
 | Abgeschlossener Einkauf einer Liste (Historie).
-| `id` INT + `listen_id` INT + 
+| `id` INT + 
+`listen_id` INT + 
 `getatigt_von` INT +
 `getatigt_am` DATE + 
 `gesamtpreis` DECIMAL(10,2)
