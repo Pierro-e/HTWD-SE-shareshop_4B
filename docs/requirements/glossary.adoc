@@ -29,6 +29,79 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | WG-Mitglied
 | Nutzer der Software
 | -
+
+
+| Einkaufslisten
+| 
+| Besorgungslisten
+
+| Einführung
+| 
+| Einleitung
+
+| Funktionalität
+| 
+| Leistungsumfang
+
+| Komponenten
+| 
+| Bauteile, Module
+
+| Produktinformationen
+| 
+| Artikelinformationen
+
+| Benutzer
+| 
+| Anwender, Nutzer
+
+| Datenbank
+| 
+| Datenbanksystem
+
+| Datenmodell
+| 
+| Informationsmodell
+
+| Datenstruktur
+| 
+| Datenschema
+
+| Einkaufsprozess
+| 
+| Beschaffungsprozess
+
+| Funktion
+| 
+| Aufgabe
+
+| Schnittstelle
+| 
+| Interface
+
+| Komponentenübersicht
+| 
+| Komponentenliste
+
+| Produktliste
+| 
+| Artikelliste
+
+| Qualitätsmerkmal
+| 
+| Qualitätskriterium
+
+| Systemanforderung
+| 
+| Systemvoraussetzung
+
+| Systemkomponente
+| 
+| Systemmodul
+
+| Validierung
+| 
+| Überprüfung, Verifizierung
 |===
 
 == Abkürzungen und Akronyme
