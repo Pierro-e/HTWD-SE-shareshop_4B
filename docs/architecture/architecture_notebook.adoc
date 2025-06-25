@@ -88,12 +88,12 @@ Das System ist eine Webanwendung zur Organisation von Einkäufen in Wohngemeinsc
 
 - Frontend (Vue.js): 
 * Läuft im Browser und übernimmt alle Benutzerinteraktionen und die Darstellung der Anwendung.
-** als Single Page Application (SPA) und Progressive Web App (PWA)
+** als Single Page Application (SPA)
 * Kommuniziert mit der REST-API des Backends über HTTP-Requests.
 - Backend (FastAPI): 
 * Läuft auf einem Server und stellt eine REST-API bereit, welche die Anwendungslogik enthält und Daten verwaltet. 
 * Verarbeitet Anfragen des Frontends
-* Kommuniziert mit der Datenbank (MySQL) über SQLAlchemy als ORM.
+* Kommuniziert mit der Datenbank (MySQL) über SQLAlchemy mit ORM.
 - Datenbank (MySQL):
 * Läuft ebenfalls auf dem Server und speichert persistente Daten.
 * Stellt die Daten für das Backend bereit
