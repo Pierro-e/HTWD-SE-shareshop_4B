@@ -1,6 +1,6 @@
 <template>
   <header>
-    <h1>Einkaufslisten von {{ user }}</h1>
+    <h1>{{ user.name }}'s Einkaufslisten</h1>
     <button @click="newList" id="newlist">+</button>
   </header>
   <main>
@@ -10,38 +10,40 @@
       :name="list.name"
     />
   </main>
-  <Footer>
+  <footer>
     <button class= "button-edit" @click="$router.push('/settings')">
       Zu den Profileinstellungen
     </button>
-  </Footer>
+  </footer>
 </template>
 
 <script>
 import ListButton from './ListButton.vue'
+import { inject } from 'vue'
 import axios from 'axios'
 
-// INFO: currently this ref object is for test purposes to show show the list display
+// TODO: inject('user') nur einmal rufen
+// INFO: Doc -> inject soll in setup() ?
 export default {
   data() {
-    return {
-      lists: [],
-      user: "Erik"
-    }
+    // momentanen Nutzer holen
+    const user = inject('user')
+
+    return { lists: [], user}
   },
   methods: {
-    newList() {
-        this.$router.push('/neueliste')  // Weiterleiten
-    }
+    // Nutzer möchte neue Liste erstellen
+    newList() {this.$router.push('/neueliste')}
   },
   components: {
     ListButton
   },
-  mounted() {
-    // TODO: API function nutzen
-    this.lists = axios.get("/lists", {id,name,ersteller,datum})
-    //id: int
-    //name: str
+  async mounted() {
+    // Listen des momentanen Nutzers holen
+    const user = inject('user')
+    const user_id = user.value.id
+    const response = await axios.get(`http://141.56.137.83:8000/nutzer/${user_id}/listen`)
+    this.lists = response.data
   }
 }
 </script>

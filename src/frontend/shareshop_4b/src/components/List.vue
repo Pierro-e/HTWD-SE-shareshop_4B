@@ -1,22 +1,22 @@
 <template>
   <div class="liste">
     <div class="header">
-      <button 
-        :disabled="showpopup_product || showpopup_list" 
-        @click="$router.push('/listen')" 
+      <button
+        :disabled="showpopup_product || showpopup_list"
+        @click="$router.push('/listen')"
         class="button button-cancel back-button">Zurück</button>
 
       <h2>{{ list_name }}</h2>
 
-      <button 
-        :disabled="showpopup_product || showpopup_list" 
-        @click="openProductPopup()" 
+      <button
+        :disabled="showpopup_product || showpopup_list"
+        @click="openProductPopup()"
         class="button button-add">+</button>
 
       <div class="settings-container">
-        <button 
-          :disabled="showpopup_product || showpopup_list" 
-          @click="openListPopup()" 
+        <button
+          :disabled="showpopup_product || showpopup_list"
+          @click="openListPopup()"
           class="button button-settings">Listeneininformationen</button>
       </div>
     </div>
@@ -33,7 +33,7 @@
         </ul>
         <button @click="showpopup_list = false" class="button button-cancel">Schließen</button>
       </div>
-    </div>   
+    </div>
 
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
@@ -72,10 +72,10 @@ export default {
       const response = await axios.get(`http://141.56.137.83:8000/listen/by-id/${id}`);
       this.list_name = response.data.name;
       const creator_id = response.data.ersteller;
-      
+
       // getUser ist injected, also this.getUser()
       const creator = await this.getUser(creator_id);
-      
+
       // creator ist schon response.data aus App.vue getUser()
       this.list_creator = creator ? creator.name : 'Unbekannt';
 
@@ -108,7 +108,7 @@ export default {
       this.showpopup_product = false;
       this.get_list_members(this.list_id);
     },
-    
+
     openProductPopup() {
       this.showpopup_product = true;
       this.showpopup_list = false;
@@ -143,7 +143,7 @@ export default {
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
   box-sizing: border-box;
   gap: 1rem;
-} 
+}
 
 /* Überschrift zentriert */
 .header h2 {
@@ -157,7 +157,7 @@ export default {
 
 .settings-container {
   position: fixed;
-  top: 60px; 
+  top: 60px;
   right: 25px;
   left: 70px;
   display: flex;
