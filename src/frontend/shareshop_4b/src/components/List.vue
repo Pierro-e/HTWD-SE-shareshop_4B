@@ -107,7 +107,6 @@
         </div>
         <div class="produkt-beschreibung" v-else>
           <p style="visibility: hidden;">Platzhalter</p>
-
         </div>
       </div>
     </div>

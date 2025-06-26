@@ -37,10 +37,18 @@
                     {{ produkt.einheit_abk }}
                 </span>
                 </div>
+                <div class="produkt-info" v-else>
+                  <span style="visibility: hidden;">Platzhalter</span>
+                </div>
 
-                <p v-if="produkt.beschreibung" class="produkt-beschreibung">
-                {{ produkt.beschreibung }}
-                </p>
+                <div class="produkt-beschreibung" v-if="produkt-beschreibung">
+                  <p v-if="produkt.beschreibung">
+                    {{ produkt.beschreibung }}
+                  </p>
+                  </div>
+                  <div class="produkt-beschreibung" v-else>
+                    <p style="visibility: hidden;">Platzhalter</p>
+                </div>
             </div>
         </div>        
 
@@ -219,7 +227,7 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
-
+  padding-top: 140px;
 }
 
 @media (min-width: 768px) {
