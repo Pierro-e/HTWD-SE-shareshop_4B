@@ -38,11 +38,14 @@
         <p>Name der Liste: {{ list_name }}</p>
         <p>Ersteller: {{ list_creator_name }}</p>
         <p><u>Mitglieder</u></p>
-          <div v-for="(mitglied, index) in mitglieder_names" :key="index" class="mitglieder-anzeige">
-            {{ mitglied }}
-          </div>
+        <div v-for="mitglied in mitglieder" :key="mitglied.id" class="mitglieder-anzeige">
+          <p>{{ mitglied.name }}</p>
+          <button @click="mitglied_entfernen(mitglied.id)" class="button button-delete-member">
+            Entfernen
+          </button>
+        </div>
         <button @click="showpopup_list = false" class="button button-cancel">Schließen</button>
-        <button @click="mitglieder_verwalten_popup()" class="button">Mitglieder verwalten</button>
+        <button @click="mitglied_hinzufügen_popup()" class="button button-add">Mitglied hinzufügen</button>
       </div>
     </div>
 
@@ -140,8 +143,8 @@ export default {
       listenprodukte: [],
       listenprodukte_names: [],
       listenprodukte_einheiten: [],
+      mitglieder_ids: [],
       mitglieder: [],
-      mitglieder_names: [],
       userData: null,   // hier speichern wir den injecteten user
     }
   },
@@ -167,22 +170,40 @@ export default {
     },
 
     async get_list_members(id) {
-      this.errorMessage = ''
+      this.errorMessage = '';
       try {
-        const response = await axios.get(`http://141.56.137.83:8000/listen/${id}/mitglieder`)
-        this.mitglieder = response.data
-        this.mitglieder_names = await Promise.all(
-          this.mitglieder.map(async (mitglied) => {
-            const user = await this.getUser(mitglied.nutzer_id);
-            return user.name || 'Unbekannt';
+        const response = await axios.get(`http://141.56.137.83:8000/listen/${id}/mitglieder`);
+        let mitgliederData = response.data;
+
+        // Wenn response.data kein Array ist, packe es in ein Array (falls einzelnes Objekt)
+        if (!Array.isArray(mitgliederData)) {
+          mitgliederData = [mitgliederData];
+        }
+
+        this.mitglieder = await Promise.all(
+          mitgliederData.map(async (mitglied) => {
+            try {
+              // nutzer_id aus dem Objekt extrahieren
+              const user = await this.getUser(mitglied.nutzer_id);
+              return {
+                id: mitglied.nutzer_id,
+                name: user.name || 'Unbekannt',
+                email: user.email || 'Keine E-Mail'
+              };
+            } catch {
+              return {
+                id: mitglied.nutzer_id,
+                name: 'Fehler beim Laden',
+                email: '-'
+              };
+            }
           })
         );
-
-      }catch (error) {
+      } catch (error) {
         if (error.response && error.response.data && error.response.data.detail) {
-          this.errorMessage = error.response.data.detail
+          this.errorMessage = error.response.data.detail;
         } else {
-          this.errorMessage = 'Fehler beim Laden der Mitglieder'
+          this.errorMessage = 'Fehler beim Laden der Mitglieder';
         }
       }
     },
@@ -309,10 +330,28 @@ export default {
 
     },
 
-    mitglieder_verwalten_popup() {
+    mitglied_hinzufügen_popup() {
       this.errorMessage = '';
       this.showpopup_list = false;
       this.showpopup_add_member = true;
+    },
+
+    async mitglied_entfernen(nutzer_id) {
+      this.errorMessage = '';
+      const listen_id = this.list_id || this.$route.params.id;
+      console.log(`Entferne Mitglied ${nutzer_id} aus Liste ${listen_id}`);
+
+      try {
+        await axios.delete(`http://141.56.137.83:8000/listen/${listen_id}/mitglieder/${nutzer_id}`);
+        // Nach erfolgreichem Entfernen Mitgliederliste neu laden
+        await this.get_list_members(listen_id);
+      } catch (error) {
+        if (error.response && error.response.data && error.response.data.detail) {
+          this.errorMessage = error.response.data.detail;
+        } else {
+          this.errorMessage = 'Fehler beim Entfernen des Mitglieds';
+        }
+      }
     },
 
     async mitglied_hinzufügen() {
@@ -355,6 +394,7 @@ export default {
             this.errorMessage = 'Person bereits Mitglied der Liste.';
           }
         }
+        this.showpopup_list = true;
       },
 
     cancel_mitglied_hinzufügen() {
@@ -582,4 +622,28 @@ export default {
   margin-left: 10px;
   line-height: 1; /* optional, für vertikale Ausrichtung */
 }
+
+.mitglieder-anzeige {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.2em 0;
+}
+
+.button-delete-member {
+  background-color: transparent;
+  border: none;
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0 0.5em;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.button-delete-member:hover {
+  color: darkred;
+}
+
+
 </style>
