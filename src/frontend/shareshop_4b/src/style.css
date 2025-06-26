@@ -40,7 +40,7 @@ button {
    /*Legt einen Rahmen mit 1 Pixel Breite, durchgehend (solid), aber unsichtbar an */
   border: 1px solid transparent;
   /*Textfarbe*/
-  color: rgb(235, 236, 230);
+  color: rgb(7, 7, 7);
   /*Wieviel Padding rund um Schrift -> beeinflusst Groesse des Buttons*/
   padding: 0.6em 1.2em;
   /*Runde Ecken*/
