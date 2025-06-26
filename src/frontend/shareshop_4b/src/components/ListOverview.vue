@@ -20,7 +20,6 @@
 
 <script>
 import ListButton from './ListButton.vue'
-b
 import { inject } from 'vue'
 import axios from 'axios'
 

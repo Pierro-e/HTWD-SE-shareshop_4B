@@ -3,8 +3,10 @@
     <h1>Neue Liste erstellen</h1>
   </header>
   <main>
-    <Form>
-    </Form>
+    <Form
+      to="url"
+      after="function"
+      />
   </main>
   <Footer>
   </Footer>
