@@ -1,6 +1,6 @@
 <template>
   <header>
-    <h1>Einkaufslisten</h1>
+    <h1>Einkaufslisten von {{ user }}</h1>
     <button @click="newList" id="newlist">+</button>
   </header>
   <main>
@@ -25,7 +25,8 @@ import axios from 'axios'
 export default {
   data() {
     return {
-      lists: []
+      lists: [],
+      user: "Erik"
     }
   },
   methods: {
@@ -37,6 +38,7 @@ export default {
     ListButton
   },
   mounted() {
+    // TODO: API function nutzen
     this.lists = axios.get("/lists", {id,name,ersteller,datum})
     //id: int
     //name: str
