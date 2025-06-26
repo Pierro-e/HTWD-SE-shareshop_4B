@@ -400,21 +400,6 @@ export default {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-<<<<<<< HEAD
-=======
-  box-sizing: border-box;
-  gap: 1rem;
-}
-
-/* Überschrift zentriert */
-.header h2 {
-  margin: 0;
-  font-weight: 400;
-  font-size: 1.5rem;
-  color: inherit;
-  text-align: center;
-  flex-grow: 1;
->>>>>>> listoverview
 }
 
 /* Zurück-Button links */
