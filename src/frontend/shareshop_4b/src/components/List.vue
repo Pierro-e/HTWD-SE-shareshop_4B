@@ -1,29 +1,29 @@
 <template>
   <div class="liste">
     <div class="header">
-      <button 
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
-        @click="$router.push('/listen')" 
+      <button
+        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+        @click="$router.push('/listen')"
         class="button button-cancel back-button">Zurück</button>
 
       <h2 class="list-title">{{ list_name }}</h2>
 
-      <button 
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
-        @click="openProductPopup()" 
+      <button
+        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+        @click="openProductPopup()"
         class="button button-add button-add-header">Produkt hinzufügen</button>
     </div>
 
     <div class="settings-section">
       <div class="settings-container">
-        <button 
-          :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
-          @click="openListPopup()" 
+        <button
+          :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+          @click="openListPopup()"
           class="button button-settings">Listeneininformationen</button>
 
-        <button 
-          :disabled="showpopup_product || showpopup_list || showpopup_add_member" 
-          @click="einkauf_abschließen" 
+        <button
+          :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+          @click="einkauf_abschließen"
           class="button button-submit button-einkauf-tätigen">
           Einkauf
         </button>
@@ -44,7 +44,7 @@
         <button @click="showpopup_list = false" class="button button-cancel">Schließen</button>
         <button @click="mitglieder_verwalten_popup()" class="button">Mitglieder verwalten</button>
       </div>
-    </div>   
+    </div>
 
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
@@ -68,14 +68,14 @@
           type="text"
           placeholder="E-Mail"
           maxlength="30"
-          > 
+          >
           <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <button @click="cancel_mitglied_hinzufügen" class="button button-cancel">Abbrechen</button>
         <button @click="mitglied_hinzufügen" class="button button-add">Hinzufügen</button>
       </div>
     </div>
 
-    <div class="produkte-grid"> 
+    <div class="produkte-grid">
       <div
         v-for="(produkt, index) in listenprodukte"
         :key="index"
@@ -189,7 +189,7 @@ export default {
           // Produktname holen
           try {
             const res1 = await axios.get(`http://141.56.137.83:8000/produkte/by-id/${produkt.produkt_id}`);
-            produkt.name = res1.data.name;  
+            produkt.name = res1.data.name;
           } catch (innerError) {
             produkt.name = '[Fehler beim Laden]';
           }
@@ -197,7 +197,7 @@ export default {
           // Einheit holen
           try {
             const res2 = await axios.get(`http://141.56.137.83:8000/einheiten/${produkt.einheit_id}`);
-            produkt.einheit_abk = res2.data.abkürzung;  
+            produkt.einheit_abk = res2.data.abkürzung;
           } catch (innerError) {
             produkt.einheit_abk = '';
           }
@@ -233,7 +233,7 @@ export default {
       this.showpopup_product = false;
       this.get_list_members(this.list_id);
     },
-    
+
     openProductPopup() {
       this.errorMessage = '';
       this.showpopup_product = true;
@@ -291,13 +291,13 @@ export default {
           this.errorMessage = error.response.data.detail || 'Unbekannter Fehler beim Hinzufügen des Produkts zur Liste';
         }
       }
-      this.get_products(list_id); 
+      this.get_products(list_id);
     },
-    
+
     cancel_product_popup() {
       this.errorMessage = '';
       this.showpopup_product = false;
-      this.new_product = ''; 
+      this.new_product = '';
 
     },
 
@@ -352,7 +352,7 @@ export default {
     cancel_mitglied_hinzufügen() {
       this.errorMessage = '';
       this.showpopup_add_member = false;
-      this.new_member_email = ''; 
+      this.new_member_email = '';
     },
 
     product_settings(produkt) {
@@ -361,12 +361,12 @@ export default {
       const product_id = produkt.produkt_id;
       const nutzer_id = produkt.hinzugefügt_von;
 
-      this.$router.push(`/listen/${list_id}/produkte/${product_id}/nutzer/${nutzer_id}`);        
+      this.$router.push(`/listen/${list_id}/produkte/${product_id}/nutzer/${nutzer_id}`);
     },
 
     einkauf_abschließen() {
       const list_id = this.list_id || this.$route.params.id;
-      
+
       this.$router.push(`/list/${list_id}/einkauf`)
     }
 
@@ -385,7 +385,7 @@ export default {
 
 <style scoped>
 .liste {
-  padding-top: 50px; 
+  padding-top: 50px;
 }
 
 .header {
@@ -400,6 +400,21 @@ export default {
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+<<<<<<< HEAD
+=======
+  box-sizing: border-box;
+  gap: 1rem;
+}
+
+/* Überschrift zentriert */
+.header h2 {
+  margin: 0;
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: inherit;
+  text-align: center;
+  flex-grow: 1;
+>>>>>>> listoverview
 }
 
 /* Zurück-Button links */
@@ -534,7 +549,7 @@ export default {
 
 .produkt-name {
   margin: 0;
-  color: #000000; 
+  color: #000000;
   font-size: 1.2em;
   font-weight: bold;
   word-break: break-word;
@@ -574,5 +589,4 @@ export default {
   margin-left: 10px;
   line-height: 1; /* optional, für vertikale Ausrichtung */
 }
-
 </style>
