@@ -100,7 +100,7 @@
           <span style="visibility: hidden;">Platzhalter</span>
         </div>
 
-        <div class="produkt-beschreibung" v-if="produkt-beschreibung">
+        <div class="produkt-beschreibung" v-if="produkt.beschreibung">
         <p v-if="produkt.beschreibung">
           {{ produkt.beschreibung }}
         </p>
