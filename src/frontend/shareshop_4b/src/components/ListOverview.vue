@@ -7,6 +7,7 @@
     <ListButton
       v-for="list in lists"
       :key="list.id"
+      :id="list.id"
       :name="list.name"
     />
   </main>
@@ -23,7 +24,9 @@ import { inject } from 'vue'
 import axios from 'axios'
 
 // TODO: inject('user') nur einmal rufen
+
 // INFO: Doc -> inject soll in setup() ?
+
 export default {
   data() {
     // momentanen Nutzer holen
