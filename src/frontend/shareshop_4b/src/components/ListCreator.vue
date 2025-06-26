@@ -1,23 +1,27 @@
 <template>
   <header>
     <h1>Neue Liste erstellen</h1>
-    <button id="done" @click="createList">Fertig</button>
   </header>
   <main>
+    <Form>
+    </Form>
   </main>
   <Footer>
   </Footer>
 </template>
 
 <script>
+  import Form from './Form.vue'
+  // TODO: Form einbinden
+
   export default {
+    data() {
+    },
+    components: {
+      Form
+    },
     methods: {
-      createList() {
-        // TODO: function which creates a new List in the database and returns its ID
-        // axios post mit get User id
-        const id = "1"
-        this.$router.push('/list/' + id)  // Einkaufsliste aufrufen
-      }
+      // TODO: Funktion die aufgerufen wird, wenn Form abgeschickt wird
     }
   }
 </script>

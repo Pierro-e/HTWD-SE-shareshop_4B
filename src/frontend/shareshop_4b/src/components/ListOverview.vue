@@ -20,6 +20,7 @@
 
 <script>
 import ListButton from './ListButton.vue'
+b
 import { inject } from 'vue'
 import axios from 'axios'
 
@@ -49,6 +50,7 @@ export default {
     this.lists = response.data
   }
 }
+
 </script>
 
 <style scoped>
