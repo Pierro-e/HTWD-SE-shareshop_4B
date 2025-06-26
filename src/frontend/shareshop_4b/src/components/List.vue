@@ -88,7 +88,7 @@
           <button @click="product_settings(produkt)" class="button button-product-settings">|||</button>
         </div>
 
-        <div class="produkt-info" v-if="produkt.produkt_menge || produkt.einheit_abk">
+        <div class="produkt-info" v-if="produkt.produkt_menge">
           <span v-if="produkt.produkt_menge">
             <strong>Menge:</strong> {{ produkt.produkt_menge }}
           </span>
