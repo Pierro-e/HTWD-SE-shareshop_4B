@@ -8,6 +8,7 @@
 import { ref, provide, onMounted } from 'vue'
 import axios from 'axios'
 
+// TODO: formal der Options API von Vue.js anpassen
 export default {
   name: 'App',
   setup() {
