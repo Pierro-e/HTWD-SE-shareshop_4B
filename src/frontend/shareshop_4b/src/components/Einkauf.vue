@@ -15,6 +15,7 @@
                 v-for="(produkt, index) in listenprodukte"
                 :key="index"
                 class="produkt-card"
+                :class="{ erledigt: produkt.erledigt }"
             >
                 <div class="produkt-header">
                 <input
@@ -23,7 +24,7 @@
                     class="produkt-checkbox"
                     @change="toggle_Erledigt(produkt, $event)"
                 />
-                <h3 class="produkt-name">
+                <h3 class="produkt-name" :class="{ erledigt: produkt.erledigt }">
                     {{ produkt.name || 'Unbekanntes Produkt' }}
                 </h3>
                 <button @click="product_details(produkt)" class="button button-product-settings">|||</button>
@@ -37,10 +38,18 @@
                     {{ produkt.einheit_abk }}
                 </span>
                 </div>
+                <div class="produkt-info" v-else>
+                  <span style="visibility: hidden;">Platzhalter</span>
+                </div>
 
-                <p v-if="produkt.beschreibung" class="produkt-beschreibung">
-                {{ produkt.beschreibung }}
-                </p>
+                <div class="produkt-beschreibung" v-if="produkt.beschreibung">
+                  <p v-if="produkt.beschreibung">
+                    {{ produkt.beschreibung }}
+                  </p>
+                  </div>
+                  <div class="produkt-beschreibung" v-else>
+                    <p style="visibility: hidden;">Platzhalter</p>
+                </div>
             </div>
         </div>        
 
@@ -219,7 +228,7 @@ export default {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
-
+  padding-top: 140px;
 }
 
 @media (min-width: 768px) {
@@ -250,6 +259,13 @@ export default {
   transition: box-shadow 0.3s ease;
 }
 
+.erledigt {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+
 .produkt-card:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -261,6 +277,12 @@ export default {
   font-weight: bold;
   word-break: break-word;
 }
+
+.produkt-name.erledigt {
+  text-decoration: line-through;
+  color: #777;
+}
+
 
 .produkt-info {
   font-size: 1rem; /* 14px */

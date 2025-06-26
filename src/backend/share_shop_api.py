@@ -320,10 +320,9 @@ def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends
         .all()
     )
     if not listen:
-        raise HTTPException(status_code=404, detail="Keine Listen für diesen Nutzer gefunden")
+        raise HTTPException(
+            status_code=404, detail="Keine Listen für diesen Nutzer gefunden")
     return listen
-
-
 
 
 # --- Einheiten ---
