@@ -109,16 +109,17 @@ button:focus-visible {
   padding: 2rem;
   text-align: center;
 }
- /*
+
 @media (prefers-color-scheme: light) {
   :root {
+    color: rgba(0, 0, 0, 0.87);
     background-color: #ffffff;
   }
   a:hover {
     color: #747bff;
   }
 }
-*/
+
 
 @media (prefers-color-scheme: dark) {
   :root {
