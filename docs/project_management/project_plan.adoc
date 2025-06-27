@@ -10,39 +10,29 @@ Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und 
 
 === Teammitglieder
 
-[cols="1,1,1,1"]
+[cols="1,1,1"]
 |===
 | Name | Kontaktdaten | SCRUM-Rolle| Verantwortlichkeiten
 
 |*Maximilian Paul*
 |s87085@htw-dresden.de
 |Product Owner
-|
 
 |*Pierre Kißling*
 |s86388@htw-dresden.de
 |Scrum Master
-|
 
 |*Marlene Fritz*
 |s87181@htw-dresden.de
 |Development Team
-|
-
-|*Mohsen Hosseinzadehyousefi*
-|s87722@htw-dresden.de
-|Development Team
-|
 
 |*Levin Heinrich*
 |s87139@htw-dresden.de
 |Development Team
-|
 
 |*Erik Wenke*
 |s86221@htw-dresden.de
 |Development Team
-|Virtuellen Maschine
 |===
 
 === Arbeitsumgebung
