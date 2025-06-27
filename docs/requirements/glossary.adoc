@@ -169,7 +169,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 
 == Domänenmodell
-[plantuml]
+
 ----
 @startuml
 hide methods
