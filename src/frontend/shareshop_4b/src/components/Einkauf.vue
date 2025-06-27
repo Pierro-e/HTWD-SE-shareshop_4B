@@ -1,58 +1,19 @@
 <template>
-    <div class="einkauf">
-        <div class="header">
-            <button @click="einkauf_abbrechen" class="button button-cancel back-button">Einkauf abbrechen</button>
-            <h2 class="list-title">{{ list_name }}</h2>
-            <button @click="einkauf_abschließen" class="button button-submit button-submit-header">Einkauf abschließen</button>
-        </div>
-
-        <div v-if="errorMessage" class="error">
-             {{ errorMessage }}
-        </div>
-
-        <div class="produkte-grid">
-            <div
-                v-for="(produkt, index) in listenprodukte"
-                :key="index"
-                class="produkt-card"
-                :class="{ erledigt: produkt.erledigt }"
-            >
-                <div class="produkt-header">
-                <input
-                    type="checkbox"
-                    :id="`check-${index}`"
-                    class="produkt-checkbox"
-                    @change="toggle_Erledigt(produkt, $event)"
-                />
-                <h3 class="produkt-name" :class="{ erledigt: produkt.erledigt }">
-                    {{ produkt.name || 'Unbekanntes Produkt' }}
-                </h3>
-                <button @click="product_details(produkt)" class="button button-product-settings">|||</button>
-                </div>
-
-                <div class="produkt-info" v-if="produkt.produkt_menge || produkt.einheit_abk">
-                <span v-if="produkt.produkt_menge">
-                    <strong>Menge:</strong> {{ produkt.produkt_menge }}
-                </span>
-                <span v-if="produkt.einheit_abk">
-                    {{ produkt.einheit_abk }}
-                </span>
-                </div>
-                <div class="produkt-info" v-else>
-                  <span style="visibility: hidden;">Platzhalter</span>
-                </div>
-
-                <div class="produkt-beschreibung" v-if="produkt.beschreibung">
-                  <p v-if="produkt.beschreibung">
-                    {{ produkt.beschreibung }}
-                  </p>
-                  </div>
-                  <div class="produkt-beschreibung" v-else>
-                    <p style="visibility: hidden;">Platzhalter</p>
-                </div>
-            </div>
-        </div>
-
+  <div class="einkauf">
+    <div class="header">
+      <button
+        @click="einkauf_abbrechen"
+        class="button button-cancel back-button"
+      >
+        Einkauf abbrechen
+      </button>
+      <h2 class="list-title">{{ list_name }}</h2>
+      <button
+        @click="einkauf_abschließen"
+        class="button button-submit button-submit-header"
+      >
+        Einkauf abschließen
+      </button>
     </div>
 
     <div v-if="errorMessage" class="error">
@@ -64,6 +25,7 @@
         v-for="(produkt, index) in listenprodukte"
         :key="index"
         class="produkt-card"
+        :class="{ erledigt: produkt.erledigt }"
       >
         <div class="produkt-header">
           <input
@@ -72,7 +34,7 @@
             class="produkt-checkbox"
             @change="toggle_Erledigt(produkt, $event)"
           />
-          <h3 class="produkt-name">
+          <h3 class="produkt-name" :class="{ erledigt: produkt.erledigt }">
             {{ produkt.name || "Unbekanntes Produkt" }}
           </h3>
           <button
@@ -94,11 +56,65 @@
             {{ produkt.einheit_abk }}
           </span>
         </div>
+        <div class="produkt-info" v-else>
+          <span style="visibility: hidden">Platzhalter</span>
+        </div>
 
-        <p v-if="produkt.beschreibung" class="produkt-beschreibung">
-          {{ produkt.beschreibung }}
-        </p>
+        <div class="produkt-beschreibung" v-if="produkt.beschreibung">
+          <p v-if="produkt.beschreibung">
+            {{ produkt.beschreibung }}
+          </p>
+        </div>
+        <div class="produkt-beschreibung" v-else>
+          <p style="visibility: hidden">Platzhalter</p>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <div v-if="errorMessage" class="error">
+    {{ errorMessage }}
+  </div>
+
+  <div class="produkte-grid">
+    <div
+      v-for="(produkt, index) in listenprodukte"
+      :key="index"
+      class="produkt-card"
+    >
+      <div class="produkt-header">
+        <input
+          type="checkbox"
+          :id="`check-${index}`"
+          class="produkt-checkbox"
+          @change="toggle_Erledigt(produkt, $event)"
+        />
+        <h3 class="produkt-name">
+          {{ produkt.name || "Unbekanntes Produkt" }}
+        </h3>
+        <button
+          @click="product_details(produkt)"
+          class="button button-product-settings"
+        >
+          |||
+        </button>
+      </div>
+
+      <div
+        class="produkt-info"
+        v-if="produkt.produkt_menge || produkt.einheit_abk"
+      >
+        <span v-if="produkt.produkt_menge">
+          <strong>Menge:</strong> {{ produkt.produkt_menge }}
+        </span>
+        <span v-if="produkt.einheit_abk">
+          {{ produkt.einheit_abk }}
+        </span>
+      </div>
+
+      <p v-if="produkt.beschreibung" class="produkt-beschreibung">
+        {{ produkt.beschreibung }}
+      </p>
     </div>
   </div>
 </template>
@@ -319,9 +335,10 @@ export default {
 .erledigt {
   opacity: 0.5;
   filter: grayscale(100%);
-  transition: opacity 0.3s ease, filter 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    filter 0.3s ease;
 }
-
 
 .produkt-card:hover {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -339,7 +356,6 @@ export default {
   text-decoration: line-through;
   color: #777;
 }
-
 
 .produkt-info {
   font-size: 1rem; /* 14px */
@@ -404,4 +420,3 @@ export default {
   box-shadow: 0 2px 8px rgba(204, 0, 0, 0.3);
 }
 </style>
-
