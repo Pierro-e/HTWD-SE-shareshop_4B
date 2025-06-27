@@ -267,7 +267,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 == Domänenmodell
 
 [plantuml]
-
+----
 @startuml
 hide methods
 
@@ -344,4 +344,4 @@ EingekaufteProdukte "0..*" --> "1" Produkt
 EingekaufteProdukte "0..*" --> "1" Einheit
 EingekaufteProdukte "0..*" --> "1" Nutzer : hinzugefügt_von
 @enduml
-
+----
