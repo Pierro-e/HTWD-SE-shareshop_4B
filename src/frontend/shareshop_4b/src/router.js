@@ -22,7 +22,7 @@ const routes = [
     component: ProductDetail,
     props: true,
   },
-  { path: "/list/:listenId/einkauf", component: Einkauf, props: true},
+  { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
 ];
 const router = createRouter({
   history: createWebHistory(),

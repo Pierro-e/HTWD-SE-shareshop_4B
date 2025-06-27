@@ -4,33 +4,45 @@
       <button
         :disabled="showpopup_product || showpopup_list || showpopup_add_member"
         @click="$router.push('/listen')"
-        class="button button-cancel back-button">Zurück</button>
+        class="button button-cancel back-button"
+      >
+        Zurück
+      </button>
 
       <h2 class="list-title">{{ list_name }}</h2>
 
       <button
         :disabled="showpopup_product || showpopup_list || showpopup_add_member"
         @click="openProductPopup()"
-        class="button button-add button-add-header">Produkt hinzufügen</button>
+        class="button button-add button-add-header"
+      >
+        Produkt hinzufügen
+      </button>
     </div>
 
     <div class="settings-section">
       <div class="settings-container">
         <button
-          :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+          :disabled="
+            showpopup_product || showpopup_list || showpopup_add_member
+          "
           @click="openListPopup()"
-          class="button button-settings">Listeneininformationen</button>
+          class="button button-settings"
+        >
+          Listeneininformationen
+        </button>
 
         <button
-          :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+          :disabled="
+            showpopup_product || showpopup_list || showpopup_add_member
+          "
           @click="einkauf_abschließen"
-          class="button button-submit button-einkauf-tätigen">
+          class="button button-submit button-einkauf-tätigen"
+        >
           Einkauf
         </button>
       </div>
     </div>
-
-
 
     <div v-if="showpopup_list" class="popup-overlay">
       <div class="popup-content">
@@ -38,43 +50,68 @@
         <p>Name der Liste: {{ list_name }}</p>
         <p>Ersteller: {{ list_creator_name }}</p>
         <p><u>Mitglieder</u></p>
-        <div v-for="mitglied in mitglieder" :key="mitglied.id" class="mitglieder-anzeige">
+        <div
+          v-for="mitglied in mitglieder"
+          :key="mitglied.id"
+          class="mitglieder-anzeige"
+        >
           <p>{{ mitglied.name }}</p>
-          <button @click="mitglied_entfernen(mitglied.id)" class="button button-delete-member">
+          <button
+            @click="mitglied_entfernen(mitglied.id)"
+            class="button button-delete-member"
+          >
             Entfernen
           </button>
         </div>
-        <button @click="showpopup_list = false" class="button button-cancel">Schließen</button>
-        <button @click="mitglied_hinzufügen_popup()" class="button button-add">Mitglied hinzufügen</button>
+        <button @click="showpopup_list = false" class="button button-cancel">
+          Schließen
+        </button>
+        <button @click="mitglied_hinzufügen_popup()" class="button button-add">
+          Mitglied hinzufügen
+        </button>
       </div>
     </div>
 
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
-        <input class="input-product"
+        <input
+          class="input-product"
           v-model="new_product"
           type="text"
           placeholder="Produktname"
-          maxlength="30">
-          <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-        <button @click="cancel_product_popup" class="button button-cancel">Abbrechen</button>
-        <button @click="add_product" class="button button-add">Hinzufügen</button>
+          maxlength="30"
+        />
+        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+        <button @click="cancel_product_popup" class="button button-cancel">
+          Abbrechen
+        </button>
+        <button @click="add_product" class="button button-add">
+          Hinzufügen
+        </button>
       </div>
     </div>
 
     <div v-if="showpopup_add_member" class="popup-overlay">
       <div class="popup-content">
         <h3>Mitglied hinzufügen</h3>
-        <input class="input-product"
+        <input
+          class="input-product"
           v-model="new_member_email"
           type="text"
           placeholder="E-Mail"
           maxlength="30"
-          >
-          <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-        <button @click="cancel_mitglied_hinzufügen" class="button button-cancel">Abbrechen</button>
-        <button @click="mitglied_hinzufügen" class="button button-add">Hinzufügen</button>
+        />
+        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+        <button
+          @click="cancel_mitglied_hinzufügen"
+          class="button button-cancel"
+        >
+          Abbrechen
+        </button>
+        <button @click="mitglied_hinzufügen" class="button button-add">
+          Hinzufügen
+        </button>
       </div>
     </div>
 
@@ -86,9 +123,14 @@
       >
         <div class="produkt-header">
           <h3 class="produkt-name">
-            {{ produkt.name || 'Unbekanntes Produkt' }}
+            {{ produkt.name || "Unbekanntes Produkt" }}
           </h3>
-          <button @click="product_settings(produkt)" class="button button-product-settings">|||</button>
+          <button
+            @click="product_settings(produkt)"
+            class="button button-product-settings"
+          >
+            |||
+          </button>
         </div>
 
         <div class="produkt-info" v-if="produkt.produkt_menge">
@@ -100,46 +142,42 @@
           </span>
         </div>
         <div class="produkt-info" v-else>
-          <span style="visibility: hidden;">Platzhalter</span>
+          <span style="visibility: hidden">Platzhalter</span>
         </div>
 
         <div class="produkt-beschreibung" v-if="produkt.beschreibung">
-        <p v-if="produkt.beschreibung">
-          {{ produkt.beschreibung }}
-        </p>
+          <p v-if="produkt.beschreibung">
+            {{ produkt.beschreibung }}
+          </p>
         </div>
         <div class="produkt-beschreibung" v-else>
-          <p style="visibility: hidden;">Platzhalter</p>
+          <p style="visibility: hidden">Platzhalter</p>
         </div>
       </div>
     </div>
-
-
-
-
   </div>
 </template>
 
 <script>
-import axios from 'axios'
-import { inject } from 'vue'
+import axios from "axios";
+import { inject } from "vue";
 
 export default {
-  name: 'Liste',
-  inject: ['user', 'getUser'],
-  props: ['list_id'],
+  name: "Liste",
+  inject: ["user", "getUser"],
+  props: ["list_id"],
   data() {
     return {
-      list_name: '',
+      list_name: "",
       list_creator_id: null,
-      list_creator_name: '',
-      errorMessage: '',
+      list_creator_name: "",
+      errorMessage: "",
       showpopup_product: false,
       showpopup_list: false,
       showpopup_delete_member: false,
       showpopup_add_member: false,
-      new_member_email: '',
-      new_product: '',
+      new_member_email: "",
+      new_product: "",
       listenprodukte: [],
       listenprodukte_names: [],
       listenprodukte_einheiten: [],
@@ -151,20 +189,25 @@ export default {
 
   methods: {
     async get_list(id) {
-      this.errorMessage = '';
+      this.errorMessage = "";
       try {
-        const response = await axios.get(`http://141.56.137.83:8000/listen/by-id/${id}`);
+        const response = await axios.get(
+          `http://141.56.137.83:8000/listen/by-id/${id}`,
+        );
         this.list_name = response.data.name;
         this.list_creator_id = response.data.ersteller;
 
         const creator = await this.getUser(this.list_creator_id);
-        this.list_creator_name = creator.name || 'Unbekannt';
-
+        this.list_creator_name = creator.name || "Unbekannt";
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.detail) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
           this.errorMessage = error.response.data.detail;
         } else {
-          this.errorMessage = 'Fehler beim Laden der Liste';
+          this.errorMessage = "Fehler beim Laden der Liste";
         }
       }
     },
@@ -209,62 +252,71 @@ export default {
     },
 
     async get_products(id) {
-      this.errorMessage = '';
+      this.errorMessage = "";
       try {
-        const response = await axios.get(`http://141.56.137.83:8000/listen/${id}/produkte`);
+        const response = await axios.get(
+          `http://141.56.137.83:8000/listen/${id}/produkte`,
+        );
         this.listenprodukte = response.data;
 
         for (const produkt of this.listenprodukte) {
           // Produktname holen
           try {
-            const res1 = await axios.get(`http://141.56.137.83:8000/produkte/by-id/${produkt.produkt_id}`);
+            const res1 = await axios.get(
+              `http://141.56.137.83:8000/produkte/by-id/${produkt.produkt_id}`,
+            );
             produkt.name = res1.data.name;
           } catch (innerError) {
-            produkt.name = '[Fehler beim Laden]';
+            produkt.name = "[Fehler beim Laden]";
           }
 
           // Einheit holen
           try {
-            const res2 = await axios.get(`http://141.56.137.83:8000/einheiten/${produkt.einheit_id}`);
+            const res2 = await axios.get(
+              `http://141.56.137.83:8000/einheiten/${produkt.einheit_id}`,
+            );
             produkt.einheit_abk = res2.data.abkürzung;
           } catch (innerError) {
-            produkt.einheit_abk = '';
+            produkt.einheit_abk = "";
           }
 
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
-          if (produkt.produkt_menge !== undefined && produkt.produkt_menge !== null) {
+          if (
+            produkt.produkt_menge !== undefined &&
+            produkt.produkt_menge !== null
+          ) {
             const menge = Number(produkt.produkt_menge);
             // Prüfen ob die Zahl eine ganze Zahl ist
             if (Number.isInteger(menge)) {
-              produkt.produkt_menge = menge.toString();  // z.B. 5 statt 5.00
+              produkt.produkt_menge = menge.toString(); // z.B. 5 statt 5.00
             } else {
               // andernfalls auf 2 Nachkommastellen runden (falls notwendig)
               produkt.produkt_menge = menge.toFixed(2);
             }
           }
         }
-
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.detail) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
           this.errorMessage = error.response.data.detail;
         } else {
-          this.errorMessage = 'Fehler beim Laden der Produkte';
+          this.errorMessage = "Fehler beim Laden der Produkte";
         }
       }
     },
 
-
-
-
     openListPopup() {
-      this.errorMessage = '';
+      this.errorMessage = "";
       this.showpopup_list = true;
       this.showpopup_product = false;
       this.get_list_members(this.list_id);
     },
 
     openProductPopup() {
-      this.errorMessage = '';
+      this.errorMessage = "";
       this.showpopup_product = true;
       this.showpopup_list = false;
     },
@@ -273,10 +325,10 @@ export default {
       const list_id = this.list_id || this.$route.params.id;
       const user_id = this.user.id;
 
-      this.errorMessage = '';
+      this.errorMessage = "";
 
-      if (this.new_product.trim() === '') {
-        this.errorMessage = 'Produktname darf nicht leer sein';
+      if (this.new_product.trim() === "") {
+        this.errorMessage = "Produktname darf nicht leer sein";
         return;
       }
 
@@ -284,50 +336,62 @@ export default {
 
       try {
         // Produkt existiert schon?
-        const responseCheck = await axios.get(`http://141.56.137.83:8000/produkte/by-name/${encodeURIComponent(this.new_product.trim())}`);
+        const responseCheck = await axios.get(
+          `http://141.56.137.83:8000/produkte/by-name/${encodeURIComponent(this.new_product.trim())}`,
+        );
         produkt_Id = responseCheck.data.id;
       } catch (error) {
         // Wenn 404 (Produkt nicht gefunden), dann neu anlegen
         if (error.response && error.response.status === 404) {
           try {
-            const responseCreate = await axios.post(`http://141.56.137.83:8000/produkte_create`, {
-              name: this.new_product.trim()
-            });
+            const responseCreate = await axios.post(
+              `http://141.56.137.83:8000/produkte_create`,
+              {
+                name: this.new_product.trim(),
+              },
+            );
             produkt_Id = responseCreate.data.id;
           } catch (error) {
-            if (error.response && error.response.data && error.response.data.detail) {
-              this.errorMessage = error.response.data.detail
+            if (
+              error.response &&
+              error.response.data &&
+              error.response.data.detail
+            ) {
+              this.errorMessage = error.response.data.detail;
             } else {
-            this.errorMessage = 'Fehler beim Anlegen des Produkts';
-            return;
+              this.errorMessage = "Fehler beim Anlegen des Produkts";
+              return;
             }
           }
         }
       }
 
       if (!list_id || !produkt_Id || !user_id) {
-        console.log('Fehlende Liste-, Produkt- oder Nutzer-ID');
+        console.log("Fehlende Liste-, Produkt- oder Nutzer-ID");
         return;
       }
 
       try {
-        await axios.post(`http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`);
+        await axios.post(
+          `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`,
+        );
         this.showpopup_product = false;
-        this.errorMessage = '';
-        this.new_product = '';
+        this.errorMessage = "";
+        this.new_product = "";
       } catch (error) {
         if (error.response) {
-          this.errorMessage = error.response.data.detail || 'Unbekannter Fehler beim Hinzufügen des Produkts zur Liste';
+          this.errorMessage =
+            error.response.data.detail ||
+            "Unbekannter Fehler beim Hinzufügen des Produkts zur Liste";
         }
       }
       this.get_products(list_id);
     },
 
     cancel_product_popup() {
-      this.errorMessage = '';
+      this.errorMessage = "";
       this.showpopup_product = false;
-      this.new_product = '';
-
+      this.new_product = "";
     },
 
     mitglied_hinzufügen_popup() {
@@ -355,80 +419,93 @@ export default {
     },
 
     async mitglied_hinzufügen() {
-      this.errorMessage = '';
+      this.errorMessage = "";
       const list_id = this.list_id || this.$route.params.id;
       const user_email = this.new_member_email.trim();
       let new_member_id;
 
-        if (!user_email) {
-        this.errorMessage = 'E-Mail darf nicht leer sein';
+      if (!user_email) {
+        this.errorMessage = "E-Mail darf nicht leer sein";
         return;
       }
       console.log(`Suche nach E-Mail: ${user_email}`);
 
       try {
-        const userResponse = await axios.get(`http://141.56.137.83:8000/nutzer/by-email`, {
-          params: { email: user_email }
-        });
+        const userResponse = await axios.get(
+          `http://141.56.137.83:8000/nutzer/by-email`,
+          {
+            params: { email: user_email },
+          },
+        );
         new_member_id = userResponse.data.id;
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.detail) {
-          this.errorMessage = error.response.data.detail
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
+          this.errorMessage = error.response.data.detail;
         } else {
-        this.errorMessage = 'Fehler beim Finden des Nutzers';
-        return;
+          this.errorMessage = "Fehler beim Finden des Nutzers";
+          return;
         }
         return;
       }
 
       try {
-        const response = await axios.post(`http://141.56.137.83:8000/listen/${list_id}/mitglieder/${new_member_id}`);
+        const response = await axios.post(
+          `http://141.56.137.83:8000/listen/${list_id}/mitglieder/${new_member_id}`,
+        );
         this.showpopup_add_member = false;
-        this.errorMessage = '';
-        this.new_member_email = '';
+        this.errorMessage = "";
+        this.new_member_email = "";
         this.get_list_members(list_id); // Aktualisiere die Mitgliederliste
       } catch (error) {
-          if (error.response && error.response.data && error.response.data.detail) {
-            this.errorMessage = error.response.data.detail;
-          } else {
-            this.errorMessage = 'Person bereits Mitglied der Liste.';
-          }
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
+          this.errorMessage = error.response.data.detail;
+        } else {
+          this.errorMessage = "Person bereits Mitglied der Liste.";
         }
         this.showpopup_list = true;
       },
 
     cancel_mitglied_hinzufügen() {
-      this.errorMessage = '';
+      this.errorMessage = "";
       this.showpopup_add_member = false;
-      this.new_member_email = '';
+      this.new_member_email = "";
     },
 
     product_settings(produkt) {
-      this.errorMessage = '';
+      this.errorMessage = "";
       const list_id = this.list_id || this.$route.params.id;
       const product_id = produkt.produkt_id;
       const nutzer_id = produkt.hinzugefügt_von;
 
-      this.$router.push(`/listen/${list_id}/produkte/${product_id}/nutzer/${nutzer_id}`);
+      this.$router.push(
+        `/listen/${list_id}/produkte/${product_id}/nutzer/${nutzer_id}`,
+      );
     },
 
     einkauf_abschließen() {
       const list_id = this.list_id || this.$route.params.id;
 
-      this.$router.push(`/list/${list_id}/einkauf`)
-    }
-
+      this.$router.push(`/list/${list_id}/einkauf`);
+    },
   },
   mounted() {
-    this.errorMessage = '';
-    const id = this.list_id || this.$route.params.id
-    this.get_list(id)
-    this.get_list_members(id)
+    this.errorMessage = "";
+    const id = this.list_id || this.$route.params.id;
+    this.get_list(id);
+    this.get_list_members(id);
     this.get_products(id);
     // Injected user in data speichern
     this.userData = this.user;
   },
-}
+};
 </script>
 
 <style scoped>
@@ -447,7 +524,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 /* Zurück-Button links */
@@ -500,13 +577,10 @@ export default {
   gap: 10px; /* Abstand zwischen Buttons */
 }
 
-
 .button-einkauf-tätigen {
   position: relative;
   margin-top: 0px;
-
 }
-
 
 .input-product {
   width: 100%;
@@ -521,8 +595,11 @@ export default {
 
 .popup-overlay {
   position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background-color: rgba(0,0,0,0.5);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -644,6 +721,4 @@ export default {
 .button-delete-member:hover {
   color: darkred;
 }
-
-
 </style>
