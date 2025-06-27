@@ -29,43 +29,49 @@
   </div>
   <div class="create_account">
     <p>Du hast noch keinen Account?</p>
-    <button class="button-add" @click="$router.push('/registrieren')">Registrieren</button>
+    <button class="button-add" @click="$router.push('/registrieren')">
+      Registrieren
+    </button>
   </div>
 </template>
 
 <script>
-import axios from 'axios'
+import axios from "axios";
 
 export default {
-  name: 'Login',
+  name: "Login",
   data() {
     return {
-      email: '',
-      password: '',
-      errorMessage: ''
-    }
+      email: "",
+      password: "",
+      errorMessage: "",
+    };
   },
-  inject: ['setUser'],   // setUser aus app.vue injizieren
+  inject: ["setUser"], // setUser aus app.vue injizieren
   methods: {
     async onSubmit() {
-      this.errorMessage = ''
+      this.errorMessage = "";
       try {
-        const response = await axios.post('http://141.56.137.83:8000/login', {
+        const response = await axios.post("http://141.56.137.83:8000/login", {
           email: this.email,
           passwort: this.password,
-        })
-        this.setUser(response.data)         // Benutzerdaten setzen
-        this.$router.push('/listen')  // Einkaufslisten des Nutzers aufrufen
+        });
+        this.setUser(response.data); // Benutzerdaten setzen
+        this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.detail) {
-          this.errorMessage = error.response.data.detail
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
+          this.errorMessage = error.response.data.detail;
         } else {
-          this.errorMessage = 'Falsche Zugangsdaten'
+          this.errorMessage = "Falsche Zugangsdaten";
         }
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -75,7 +81,7 @@ export default {
   padding: 2em;
   background-color: #2a2a2a;
   border-radius: 0.75em;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   color: inherit;
   font-size: 1.1rem;
   text-align: left;
@@ -113,7 +119,9 @@ input[type="password"] {
   box-sizing: border-box;
   background-color: #3a3a3a;
   color: white;
-  transition: background-color 0.25s, border-color 0.25s;
+  transition:
+    background-color 0.25s,
+    border-color 0.25s;
 }
 
 input[type="email"]:focus,
