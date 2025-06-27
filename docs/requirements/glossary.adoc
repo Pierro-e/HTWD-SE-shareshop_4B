@@ -16,7 +16,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | *Artikel*
 | Gegenstand, welcher eingekauft werden soll
-| item
+| Item
 
 | Einkäufer
 | WG-Mitglied, welcher gerade dabei ist Artikel einzukaufen
