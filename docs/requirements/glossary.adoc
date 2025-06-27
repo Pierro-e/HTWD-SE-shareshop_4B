@@ -62,61 +62,9 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Abkürzung | Bedeutung | Erläuterung
 
-| PB
-| Product Backlog
-| ein SCRUM-Artefakt
-
-| SP
-| Sprint Backlog
-| ein SCRUM-Artefakt
-
-| PBI
-| Product Backlog Item
-| Elemente des Product Backlog
-
 | WG
 | Wohngemeinschaft
 | Gruppe von Personen, die gemeinsam wohnen und Kosten teilen
-
-| API
-| Application Programming Interface
-| Definierte Programmschnittstelle, über die Software-Komponenten interagieren
-
-| SPA
-| Single-Page-Application
-| Webanwendung, die nach dem ersten Laden ohne vollständige Seiten-Reloads auskommt
-
-| PWA
-| Progressive Web App
-| Web-App mit Offline-Fähigkeit und App-ähnlichem Nutzererlebnis
-
-| REST
-| Representational State Transfer
-| Architekturstil für Web-APIs 
-
-| VM
-| Virtuelle Maschine
-| Emulierte Computerumgebung, die Betriebssysteme isoliert ausführt
-
-| UX
-| User Experience
-| Gesamterlebnis eines Nutzers bei der Interaktion mit einem Produkt
-
-| HTTP
-| Hypertext Transfer Protocol
-| Standardprotokoll für die Übertragung von Daten im World Wide Web
-
-| ORM
-| Object-Relational Mapping
-| Technik zur Abbildung von Objektmodellen auf relationale Datenbanken
-
-| DB
-| Datenbank
-| Strukturierte Sammlung persistenter Daten, verwaltet durch ein Datenbankmanagementsystem
-
-| UI
-| User Interface
-| Schnittstelle, über die Nutzer mit einem System interagieren
 
 |===
 
