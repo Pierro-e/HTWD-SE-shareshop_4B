@@ -103,8 +103,8 @@ Hinweise:
 [%header, cols="4,1,1"]
 |===
 | Anforderung | Priorität | Geplantes Release
-| minimalistisches Design | xx | xx
-| dezentral | xx | xx
-| Betriebssystem unabhängig | xx | xx
-| Benutzerhandbuch oder andere Hilfe | xx | xx
+| minimalistisches Design | Mittel| xx
+| Performance | Hoch | xx
+| Barrierefreiheit| Mittel | xx
+| Dokumentation: In-App-Hilfe | Mittel | xx
 |===
