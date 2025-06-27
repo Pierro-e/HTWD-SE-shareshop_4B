@@ -4,7 +4,7 @@ include::../_includes/default-attributes.inc.adoc[]
 == Einführung
 
 Dieses Dokument beschreibt das kollaborative Zusammenarbeiten innerhalb des Projektes.
-Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsatz von Tools zur effektiven Zusammenarbeit.
+Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsatz von Tools zur effektiven Zusammenarbeit.
 
 == Projektorganisation
 
@@ -62,13 +62,14 @@ Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und 
 
 === Definition of Ready - Product Backlog Item
 
-* Product Backlog Item muss vom Product Owner angenommen werden -> kein Label "vorschlag"
-* Field "Status" ist auf "ready" gesetzt
-* Akzeptankriterien sind ausgearbeitet und prüfbar
+* PBI wurde von PO in PB aufgenommen (kein Label "vorschlag")
+* Aktzeptanzkriterien sind ausgearbeitet
 
 === Definition of Done - Product Backlog Item
 
 * Alle Sub-Issues (Tasks oder Akzeptanzkriterien) sind abgeschlossen
+* Arbeit ist ins Remote Repository aufgenommen
+* PBI wurde im wöchentlichen Meeting besprochen
 
 == Deployment
 
