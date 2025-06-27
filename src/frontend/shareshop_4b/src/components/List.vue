@@ -471,7 +471,8 @@ export default {
           this.errorMessage = "Person bereits Mitglied der Liste.";
         }
         this.showpopup_list = true;
-      },
+      }
+    },
 
     cancel_mitglied_hinzufügen() {
       this.errorMessage = "";
