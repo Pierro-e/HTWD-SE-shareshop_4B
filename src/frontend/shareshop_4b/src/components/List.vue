@@ -183,8 +183,8 @@ export default {
       listenprodukte_einheiten: [],
       mitglieder_ids: [],
       mitglieder: [],
-      userData: null,   // hier speichern wir den injecteten user
-    }
+      userData: null, // hier speichern wir den injecteten user
+    };
   },
 
   methods: {
@@ -213,9 +213,11 @@ export default {
     },
 
     async get_list_members(id) {
-      this.errorMessage = '';
+      this.errorMessage = "";
       try {
-        const response = await axios.get(`http://141.56.137.83:8000/listen/${id}/mitglieder`);
+        const response = await axios.get(
+          `http://141.56.137.83:8000/listen/${id}/mitglieder`,
+        );
         let mitgliederData = response.data;
 
         // Wenn response.data kein Array ist, packe es in ein Array (falls einzelnes Objekt)
@@ -230,23 +232,27 @@ export default {
               const user = await this.getUser(mitglied.nutzer_id);
               return {
                 id: mitglied.nutzer_id,
-                name: user.name || 'Unbekannt',
-                email: user.email || 'Keine E-Mail'
+                name: user.name || "Unbekannt",
+                email: user.email || "Keine E-Mail",
               };
             } catch {
               return {
                 id: mitglied.nutzer_id,
-                name: 'Fehler beim Laden',
-                email: '-'
+                name: "Fehler beim Laden",
+                email: "-",
               };
             }
-          })
+          }),
         );
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.detail) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
           this.errorMessage = error.response.data.detail;
         } else {
-          this.errorMessage = 'Fehler beim Laden der Mitglieder';
+          this.errorMessage = "Fehler beim Laden der Mitglieder";
         }
       }
     },
@@ -395,25 +401,31 @@ export default {
     },
 
     mitglied_hinzufügen_popup() {
-      this.errorMessage = '';
+      this.errorMessage = "";
       this.showpopup_list = false;
       this.showpopup_add_member = true;
     },
 
     async mitglied_entfernen(nutzer_id) {
-      this.errorMessage = '';
+      this.errorMessage = "";
       const listen_id = this.list_id || this.$route.params.id;
       console.log(`Entferne Mitglied ${nutzer_id} aus Liste ${listen_id}`);
 
       try {
-        await axios.delete(`http://141.56.137.83:8000/listen/${listen_id}/mitglieder/${nutzer_id}`);
+        await axios.delete(
+          `http://141.56.137.83:8000/listen/${listen_id}/mitglieder/${nutzer_id}`,
+        );
         // Nach erfolgreichem Entfernen Mitgliederliste neu laden
         await this.get_list_members(listen_id);
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.detail) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
           this.errorMessage = error.response.data.detail;
         } else {
-          this.errorMessage = 'Fehler beim Entfernen des Mitglieds';
+          this.errorMessage = "Fehler beim Entfernen des Mitglieds";
         }
       }
     },
@@ -471,7 +483,8 @@ export default {
           this.errorMessage = "Person bereits Mitglied der Liste.";
         }
         this.showpopup_list = true;
-      },
+      }
+    },
 
     cancel_mitglied_hinzufügen() {
       this.errorMessage = "";

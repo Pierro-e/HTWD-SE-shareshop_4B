@@ -3,7 +3,7 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Einführung
 
-Dieser Projektplan beschreibt das kollaborative Zusammenarbeiten innerhalb des Projektes.
+Dieses Dokument beschreibt das kollaborative Zusammenarbeiten innerhalb des Projektes.
 Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsatz von Tools zur effektiven Zusammenarbeit.
 
 == Projektorganisation
