@@ -79,7 +79,7 @@ Diese Struktur ermöglicht eine klare Trennung von Verantwortlichkeiten und erle
 
 === Kontextabgrenzung
 
-image::../images/C4-Modell_Level_1.png[width=60%,alt="C4-Modell Level 1"]
+image::images/C4-Modell_Level_1.png[width=60%,alt="C4-Modell Level 1"]
 
 //Level 1 im C4-Modell
 Das System ist eine Webanwendung zur Organisation von Einkäufen in Wohngemeinschaften.
