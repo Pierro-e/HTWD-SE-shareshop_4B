@@ -103,8 +103,12 @@ Hinweise:
 [%header, cols="4,1,1"]
 |===
 | Anforderung | Priorität | Geplantes Release
-| minimalistisches Design | Mittel| xx
-| Performance | Hoch | xx
-| Barrierefreiheit| Mittel | xx
-| Dokumentation: In-App-Hilfe | Mittel | xx
+| DSGVO-Konformität | Hoch | xx
+| Effizienz/Performance | Mittel | xx
+| Offline-Funktion/Synchronisation | Hoch | xx
+| App-Hilfen | Niedrig | xx
+| Push-Benachrichtigungen | Niedrig | xx
+| Mehrsprachlichkeit | Niedrig | xx
+| Plattform-Support | Hoch | xx
 |===
+
