@@ -71,52 +71,10 @@
       </div>
     </div>
   </div>
-
   <div v-if="errorMessage" class="error">
     {{ errorMessage }}
   </div>
 
-  <div class="produkte-grid">
-    <div
-      v-for="(produkt, index) in listenprodukte"
-      :key="index"
-      class="produkt-card"
-    >
-      <div class="produkt-header">
-        <input
-          type="checkbox"
-          :id="`check-${index}`"
-          class="produkt-checkbox"
-          @change="toggle_Erledigt(produkt, $event)"
-        />
-        <h3 class="produkt-name">
-          {{ produkt.name || "Unbekanntes Produkt" }}
-        </h3>
-        <button
-          @click="product_details(produkt)"
-          class="button button-product-settings"
-        >
-          |||
-        </button>
-      </div>
-
-      <div
-        class="produkt-info"
-        v-if="produkt.produkt_menge || produkt.einheit_abk"
-      >
-        <span v-if="produkt.produkt_menge">
-          <strong>Menge:</strong> {{ produkt.produkt_menge }}
-        </span>
-        <span v-if="produkt.einheit_abk">
-          {{ produkt.einheit_abk }}
-        </span>
-      </div>
-
-      <p v-if="produkt.beschreibung" class="produkt-beschreibung">
-        {{ produkt.beschreibung }}
-      </p>
-    </div>
-  </div>
 </template>
 
 <script>
