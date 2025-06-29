@@ -19,7 +19,7 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 
 - Trennung von Frontend (Vue.js) und Backend (Python mit FastAPI)
 - Offline-Fähigkeit (z.B. mit PWA-Funktionalität) für Einkauf ohne Internet 
-- Hardware-unabhängige Architektur, sodass die Anwendung auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann 
+- Hardware/Betriebssystem unabhängige Architektur, sodass die Anwendung auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann 
 - responsive UI für Desktop und Mobile zur flexiblen Nutzung (Größe der Website passt sich automatisch an)
 - Skalierbarkeit und Erweiterbarkeit der Architektur für zukünftige Features (gut strukturierter und wartbarer Code) 
 
@@ -28,23 +28,27 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 //[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
 - Vue.js ist beim Großteil des Teams bekannt, was die Fronted-Entwicklung erleichtert
 - im Backend nutzen wir Python mit FastAPI, da es ebenfalls bekannt ist
+- das Team hat ebenfalls Erfahrung mit SQL 
 - externe API's können integriert werden, bspw. für Bereitstellung der Produkte inkl. deren Preise
-- Annahme: Wir haben Zugriff auf einen Server der Uni, auf dem das Backend und die Datenbank laufen können
+- Vorraussetzung: Datenbank und API laufen problemlos auf der bereitgestellten VM 
 - Datenbank (MySQL) funktioniert wie erwartet und harmoniert gut mit dem Backend (FastAPI + SQLAlchemy)
 
 == Architektur-relevante Anforderungen
 //Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
 
+Die arichitektur-relevanten Anforderungen sind in der <<../requirements/vision.adoc#anforderungen, Vision.adoc>> unter Produktüberblick beschrieben.
+
 
 == Entscheidungen, Nebenbedingungen und Begründungen
 //[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
-- die Anwendung wird als Webanwendung bereitgestellt (im späteren Verlauf mit PWA-Funktionalität)
-- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM
--mittels Vue.js werden die Komponenten der Benutzeroberfläche klar strukturiert und modular aufgebaut
-- Frontend ist eine Single Page Application (SPA), die im Browser des Nutzers läuft
-- REST-API im Backend wird mit Python mit FastAPI enwtickelt und läuft auch auf der VM
+- die Anwendung wird als Webanwendung bereitgestellt (im späteren Verlauf wird sie um PWA-Funktionalität erweitert)
+- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM um einen simplen Aufruf per Mobilegerät zu ermöglichen
+- mittels Vue.js werden die Komponenten der Benutzeroberfläche klar strukturiert und modular aufgebaut, mit dem Ziel einen übersichtlichen und wartbaren Code zu haben
+- das Frontend ist eine Single Page Application (SPA), die im Browser des Nutzers läuft
+- REST-API im Backend wird mit Python mit FastAPI enwtickelt und läuft auch auf der VM 
 - Datenerhaltung erfolgt über eine relationale Datenbank mit MySQL, ebenfalls auf der VM
+- Python und MySQL wurden gewählt, da sie über SQL-Alchemy gut zusammenarbeiten
 
 
 == Schichten oder Architektur-Framework
@@ -74,33 +78,37 @@ Diese Struktur ermöglicht eine klare Trennung von Verantwortlichkeiten und erle
 //[Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
 
 === Kontextabgrenzung
+
+image::../images/C4-Modell_Level_1.png[width=60%,alt="C4-Modell Level 1"]
+
 //Level 1 im C4-Modell
 Das System ist eine Webanwendung zur Organisation von Einkäufen in Wohngemeinschaften.
 
-- Es interagiert mit:
-* Nutzer (WG-Mitglieder) über das Frontend im Browser
-* eigener API für die Verarbeitung von Anfragen
-* später evtl. mit externen API's für Produktinformationen 
-* Datenbank (MySQL) für die Speicherung von Nutzerdaten
+- interagierende Personen und Systeme:
+* Nutzer (WG-Mitglieder): greifen über das Frontend im Browser auf die Anwendung zu
     
 === Container
 //Level 2 im C4-Modell
 
+image::../images/C4-Modell_Level_2.png[width=75%,alt="C4-Modell Level 2"]
+
+
 - Frontend (Vue.js): 
-* Läuft im Browser und übernimmt alle Benutzerinteraktionen und die Darstellung der Anwendung.
-** als Single Page Application (SPA) und Progressive Web App (PWA)
-* Kommuniziert mit der REST-API des Backends über HTTP-Requests.
+* Läuft im Browser und übernimmt die Benutzerinteraktionen, sowie die Darstellung der Anwendung.
+* realisiert als Single Page Application (SPA)
+* Kommuniziert über HTTP mit der REST-API des Backends.
 - Backend (FastAPI): 
-* Läuft auf einem Server und stellt eine REST-API bereit, welche die Anwendungslogik enthält und Daten verwaltet. 
+* Läuft auf einem Server und stellt eine REST-API bereit, welche die Anwendungslogik implementiert und die Datenverwaltung übernimmt. 
 * Verarbeitet Anfragen des Frontends
-* Kommuniziert mit der Datenbank (MySQL) über SQLAlchemy als ORM.
+* Kommuniziert mit der Datenbank (MySQL) über SQLAlchemy (ORM).
 - Datenbank (MySQL):
-* Läuft ebenfalls auf dem Server und speichert persistente Daten.
+* Läuft auf dem Server und speichert alle persistente Daten.
 * Stellt die Daten für das Backend bereit
 
 - Zusätzlich:
-* PWA-Funktionalität für Offline-Nutzung des Frontends
 * Server (VM) für das Hosting von Frontend, Backend und Datenbank
+* (geplant) PWA-Funktionalität für Offline-Nutzung des Frontends
+
 
 
 === Components
