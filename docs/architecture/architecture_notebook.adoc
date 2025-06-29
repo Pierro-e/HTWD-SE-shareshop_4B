@@ -90,7 +90,7 @@ Das System ist eine Webanwendung zur Organisation von Einkäufen in Wohngemeinsc
 === Container
 //Level 2 im C4-Modell
 
-image::..images/C4-Modell_Level_2.png[width=75%,alt="C4-Modell Level 2"]
+image::images/C4-Modell_Level_2.png[width=75%,alt="C4-Modell Level 2"]
 
 
 - Frontend (Vue.js): 
