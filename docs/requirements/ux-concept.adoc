@@ -24,7 +24,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 
 2+|*Demographie*
 
-|image::images/Persona(Laura_Lehmann).png[width=40%,alt="Persona1 Bild"]
+|image::images/Persona(Laura_Lehmann).png[width=40%,height=auto,alt="Persona1 Bild"]
 |
 * Stakeholdergruppe: Nutzer
 * Alter: 27
