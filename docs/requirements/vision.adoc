@@ -71,40 +71,41 @@ Die Verfeinerung der Stakeholder erfolgt mittels <<ux-concept.adoc#persona, Pers
 
 == Produktüberblick
 
-=== Bedarfe und Hauptfunktionen
+=== Bedarfe und Hauptfunktionen [[anforderungen]]
 //Vermeiden Sie Angaben zum Entwurf. Nennen wesentliche Features (Produktmerkmale) auf allgemeiner Ebene. Fokussieren Sie sich auf die benötigten Fähigkeiten des Systems und warum (nicht wie!) diese realisiert werden sollen. Geben Sie die von den Stakeholdern vorgegebenen Prioritäten an.
 
-[%header, cols="4,1,4,1"]
+[%header, cols="4,1,4"]
 |===
-| Bedarf | Priorität | Features / Funktionen | Geplantes Release
-| WG möchte Einkäufe zusammen organisieren | hoch | gemeinsame Einkaufsliste (jeder kann bearbeiten) und Kalender für Einkaufsrythmen| xx
-| Mitglieder möchten Kosten für Einkauf teilen | hoch | nachvollziehbare Rechnung zur Kostenverteilung | xx
-| Im Supermarkt ist schlechte Internetverbindung | mittel | Liste auch offline bereitstellen | xx
-| Person möchte beim Einkaufen die Übersicht behalten  | hoch | Sortiermöglichkeit und abhaken der Items | xx
-| ShareShop soll dem Nutzer Arbeit abnehmen / Planung erleichtern | hoch | Bedarfsvorhersage basierend auf Nutzungsmuster | xx
-| WG-Mitglied will individuelle Bedürfnisse kennzeichnen | hoch | personalisierte Tags | xx
-| Überblick über gemeinsame Ausgaben gewünscht | mittel | Ausgabenstatistik pro Person und Haushalt (evtl. Budgetfunktion) | xx 
-| Nächstes Item am Anfang der Liste  | xx | Manuelles sortieren (+ Sortieralgorithmus ?) | xx
-| umweltbewusste Nutzer wollen nachhaltig einkaufen | niedrig | Nachhaltigkeits-Tracking mit CO2- und Verpackungsstatistik | xx
-| Vorräte solen verwaltet werden | niedrig | Inventarliste | xx
+| Bedarf | Priorität | Features / Funktionen
+| WG möchte Einkäufe zusammen organisieren | hoch | gemeinsame Einkaufsliste (jeder kann bearbeiten) und Kalender für Einkaufsrythmen
+| Mitglieder möchten Kosten für Einkauf teilen | hoch | nachvollziehbare Rechnung zur Kostenverteilung 
+| Im Supermarkt ist schlechte Internetverbindung | mittel | Liste auch offline bereitstellen 
+| Person möchte beim Einkaufen die Übersicht behalten  | hoch | Sortiermöglichkeit und abhaken der Items 
+| ShareShop soll dem Nutzer Arbeit abnehmen / Planung erleichtern | hoch | Bedarfsvorhersage basierend auf Nutzungsmuster
+| WG-Mitglied will individuelle Bedürfnisse kennzeichnen | hoch | personalisierte Tags 
+| Überblick über gemeinsame Ausgaben gewünscht | mittel | Ausgabenstatistik pro Person und Haushalt (evtl. Budgetfunktion) 
+| Nächstes Item am Anfang der Liste  | xx | Manuelles sortieren (+ Sortieralgorithmus ?) 
+| umweltbewusste Nutzer wollen nachhaltig einkaufen | niedrig | Nachhaltigkeits-Tracking mit CO2- und Verpackungsstatistik 
+| Vorräte sollen verwaltet werden | niedrig | Inventarliste 
 |===
-
 
 === Zusätzliche Produktanforderungen
 //Zutreffendes angeben, nicht zutreffendes streichen oder auskommentieren
-Hinweise:
-
+//Hinweise:
+////
 . Führen Sie die wesentlichen anzuwendenden Standards, Hardware oder andere Plattformanforderungen, Leistungsanforderungen und Umgebungsanforderungen auf
 . Definieren Sie grob die Qualitätsanforderungen für Leistung, Robustheit, Ausfalltoleranz, Benutzbarkeit und ähnliche Merkmale, die Qualitätsanforderungen an das geplante Produkt beschreiben.
 . Notieren Sie alle Entwurfseinschränkungen, externe Einschränkungen, Annahmen oder andere Abhängigkeiten, die wenn Sie geändert werden, das Visions-Dokument beeinflussen. Ein Beispiel wäre die Annahme, dass ein bestimmtes Betriebssystem für die vom System erforderliche Hardware verfügbar ist. Ist das Betriebssystem nicht verfügbar, muss das Visions-Dokument angepasst werden.
 . Definieren Sie alle Dokumentationsanforderugen, inkl. Benutzerhandbücher, Onlinehilfe, Installations-, Kennzeichnungs- und Auslieferungsanforderungen.
-. Definieren Sie die Priorität für diese zusätzlichen Produktanforderungen. Ergänzen Sie, falls sinnvoll, Angaben zu Stabilität, Nutzen, Aufwand und Risiko für diese Anforderungen.
+. Definieren Sie die Priorität für diese zusätzlichen Produktanforderungen. Ergänzen Sie, falls sinnvoll, Angaben zu Stabilität, Nutzen, Aufwand und Risiko für diese Anforderungen. 
+////
 
-[%header, cols="4,1,1"]
+
+[%header, cols="4,1"]
 |===
-| Anforderung | Priorität | Geplantes Release
-| minimalistisches Design | xx | xx
-| dezentral | xx | xx
-| Betriebssystem unabhängig | xx | xx
-| Benutzerhandbuch oder andere Hilfe | xx | xx
+| Anforderung | Priorität 
+| minimalistisches Design | mittel
+| Betriebssystem unabhängig | sehr hoch
+| Benutzerhandbuch oder andere Hilfe | gering
+| offline Funktionalität | gering (für Prototyp)
 |===
