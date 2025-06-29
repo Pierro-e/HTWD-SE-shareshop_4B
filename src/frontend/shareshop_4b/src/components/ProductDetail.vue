@@ -28,8 +28,9 @@
         </select>
       </div>
 
-      <button class="button-submit" type="submit">Speichern</button>
       <button class="button-delete" type="button" @click="deleteProduct">Löschen</button>
+      <button class="button-submit" type="submit">Speichern</button>
+
     </form>
 
     <div v-if="message" class="success">{{ message }}</div>
@@ -127,7 +128,6 @@ export default {
           einheit_id: this.einheit,  
           beschreibung: this.beschreibung
         });
-        alert('Produkt gespeichert!');
         this.message = 'Produkt erfolgreich aktualisiert.'
         this.$router.push(`/list/${this.listenId}`);
       } catch (error) {
@@ -136,9 +136,6 @@ export default {
     },
 
     async deleteProduct() {
-      if (!confirm('Möchtest du dieses Produkt wirklich löschen?')) {
-        return; // Abgebrochen
-       }
 
       this.message = '';
       this.errorMessage = '';
