@@ -36,9 +36,9 @@
                     required
                 >
             </div>
+            <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
             <button class="button-submit" type="submit">Account erstellen</button>
         </form>
-        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </div>
 </template>
 

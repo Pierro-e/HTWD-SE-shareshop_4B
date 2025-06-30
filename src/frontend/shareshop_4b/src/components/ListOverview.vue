@@ -1,27 +1,54 @@
 <template>
   <header>
-    <h1>Einkaufslisten</h1>
+    <h1>{{ user.name }}'s Einkaufslisten</h1>
     <button @click="newList" id="newlist">+</button>
   </header>
   <main>
-    <ul id="einkaufslisten">
-      <p>Du hast im Moment noch keine Einkaufslisten. Erstelle doch gerne eine.</p>
-    </ul>
+    <ListButton
+      v-for="list in lists"
+      :key="list.id"
+      :id="list.id"
+      :name="list.name"
+    />
   </main>
-  <Footer>
-    <button id="settings">Einstellungen</button>
-  </Footer>
+  <footer>
+    <button class="button-edit" @click="$router.push('/settings')">
+      Zu den Profileinstellungen
+    </button>
+  </footer>
 </template>
 
 <script>
+import ListButton from "./ListButton.vue";
+import { inject } from "vue";
+import axios from "axios";
+
 export default {
+  data() {
+    // momentanen Nutzer holen
+    const user = inject("user");
+
+    return { lists: [], user };
+  },
   methods: {
+    // Nutzer möchte neue Liste erstellen
     newList() {
-        this.$router.push('/neueliste')  // Weiterleiten
-    }
-  }
-}
+      this.$router.push("/neueliste");
+    },
+  },
+  components: {
+    ListButton,
+  },
+  async mounted() {
+    // Listen des momentanen Nutzers holen
+    const user = inject("user");
+    const user_id = user.value.id;
+    const response = await axios.get(
+      `http://141.56.137.83:8000/nutzer/${user_id}/listen`,
+    );
+    this.lists = response.data;
+  },
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

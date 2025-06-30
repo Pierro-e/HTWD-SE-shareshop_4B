@@ -4,6 +4,10 @@
       <h1>ShareShop - Projektstruktur & Start</h1>
     <p>Willkommen im ShareShop Vue-Projekt!</p>
 
+    <button class= "button-edit" @click="$router.push('/settings')">
+      Zu den Profileinstellungen
+    </button>
+    
     <section>
       <h2>Was ist eine SPA?</h2>
       <p>

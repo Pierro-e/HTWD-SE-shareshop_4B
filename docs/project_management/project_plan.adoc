@@ -26,10 +26,6 @@ Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und 
 |s87181@htw-dresden.de
 |Development Team
 
-|*Mohsen Hosseinzadehyousefi*
-|s87722@htw-dresden.de
-|Development Team
-
 |*Levin Heinrich*
 |s87139@htw-dresden.de
 |Development Team
@@ -37,7 +33,6 @@ Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und 
 |*Erik Wenke*
 |s86221@htw-dresden.de
 |Development Team
-|Virtuellen Maschine
 |===
 
 === Arbeitsumgebung
@@ -53,7 +48,7 @@ Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und 
 |https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git[*GitHub*]
 
 | kollaboratives Arbeiten (z.B Brainstorming)
-|https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git[*GitHub*]
+|https://miro.com/app/board/uXjVIEJUxFI=/[*Miro*]
 
 | Online Meetings
 | https://discord.gg/33mhPr53[*Discord*]

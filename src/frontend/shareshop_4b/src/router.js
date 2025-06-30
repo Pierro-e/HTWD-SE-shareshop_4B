@@ -5,24 +5,25 @@ import CreateAccount from "./components/CreateAccount.vue";
 import ListOverview from "./components/ListOverview.vue";
 import ListCreator from "./components/ListCreator.vue";
 import List from "./components/List.vue";
+import UserSettings from "./components/UserSettings.vue";
+import ProductDetail from "./components/ProductDetail.vue";
+import Einkauf from "./components/Einkauf.vue";
 
 const routes = [
   { path: "/", component: Login },
   { path: "/einfuehrung", component: ProjektEinführung },
   { path: "/registrieren", component: CreateAccount },
+  { path: "/settings", component: UserSettings },
   { path: "/listen", component: ListOverview },
+  { path: "/neueliste/", component: ListCreator },
+  { path: "/list/:id", component: List, props: true },
   {
-    path: "/neueliste/",
-    component: ListCreator,
-  },
-  {
-    component: List,
-    path: "/list/:id",
+    path: "/listen/:listenId/produkte/:produktId/nutzer/:nutzerId",
+    component: ProductDetail,
     props: true,
-    // TODO: Parameter für Listen übergabe, welcher eine Neue Liste aufruft zum erstellen
   },
+  { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
 ];
-
 const router = createRouter({
   history: createWebHistory(),
   routes,

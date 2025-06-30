@@ -1,6 +1,6 @@
 // Meta
 :project-name: ShareShop (T4.B)
-:project-system-name: Software-Name
+:project-system-name: ShareShop
 // Settings:
 :toc:
 :toc-title: Inhaltsverzeichnis
