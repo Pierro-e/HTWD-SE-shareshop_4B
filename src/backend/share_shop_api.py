@@ -604,8 +604,13 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
         raise HTTPException(
             status_code=404, detail="Produkt in Liste nicht gefunden")
     else:
-        vorhandenes_produkt.produkt_menge = produkt.produkt_menge
-        vorhandenes_produkt.einheit_id = produkt.einheit_id
+        if produkt.produkt_menge == 0:
+            vorhandenes_produkt.produkt_menge = None
+            vorhandenes_produkt.einheit_id = None
+        else:
+            vorhandenes_produkt.produkt_menge = produkt.produkt_menge
+            vorhandenes_produkt.einheit_id = produkt.einheit_id
+
         vorhandenes_produkt.beschreibung = produkt.beschreibung
 
         db.commit()
