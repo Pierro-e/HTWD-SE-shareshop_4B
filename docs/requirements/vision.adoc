@@ -104,8 +104,15 @@ Die Verfeinerung der Stakeholder erfolgt mittels <<ux-concept.adoc#persona, Pers
 [%header, cols="4,1"]
 |===
 | Anforderung | Priorität 
-| minimalistisches Design | mittel
 | Betriebssystem unabhängig | sehr hoch
-| Benutzerhandbuch oder andere Hilfe | gering
-| offline Funktionalität | gering (für Prototyp)
+| Browser-Support | Hoch
+| DSGVO-Konformität | Hoch
+| Effizienz/Performance | Mittel
+| Offline-Funktion/Synchronisation | Hoch
+| App-Hilfen | Niedrig
+| Push-Benachrichtigungen | Niedrig
+| Mehrsprachlichkeit | Niedrig
+| minimalistisches Design | mittel
+
 |===
+
