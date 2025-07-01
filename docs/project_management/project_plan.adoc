@@ -72,4 +72,20 @@ Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und 
 
 == Deployment
 
+* aktuellen Zustand im wöchentlichen Meeting besprechen
+* bei Bedarf Remote "Developer" Branch in Remote "Main" Branch mergen
+
 == Erkenntnisse (Lessons learned)
+
+=== Version Control System Workflow
+
+Version Control Software unterstützt und ermöglicht unabhängige bis zu "chaotischen" Arbeitsweisen.
+Dennoch ist habe wir festgestellt, dass es hilfreich sein kann eine Workflow zu defninieren, welcher zusätzlichen Arbeitsaufwand minimiert.
+
+include::./version_control_system_workflow.adoc[]
+
+=== Fortschritt visulaisieren
+
+Im Gegensatz zu existierenden Objekten ist Software mit Sprache als Material eine Abstraktion.
+Dem entsprechend schwierig ist die Visulaisierung des aktuellen Standes.
+Hier muss sich noch eine System zur besseren Zusammenarbeit ausgedacht werden.

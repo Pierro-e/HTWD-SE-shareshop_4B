@@ -18,19 +18,19 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 //Formulieren Sie eine Reihe von Zielen, die die Architektur in ihrer Struktur und ihrem Verhalten erfüllen muss. Identifizieren Sie kritische Fragen, die von der Architektur adressiert werden müssen, z.B. besondere Hardware-Abhängigkeiten, die vom Rest des Systems isoliert werden sollten oder Sicherstellung der Funktionsfähigkeit unter besonderen Bedingungen (z.B. Offline-Nutzung).
 
 - Trennung von Frontend (Vue.js) und Backend (Python mit FastAPI)
-- Offline-Fähigkeit (z.B. mit PWA-Funktionalität) für Einkauf ohne Internet 
-- Hardware/Betriebssystem unabhängige Architektur, sodass die Anwendung auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann 
+- Offline-Fähigkeit (z.B. mit PWA-Funktionalität) für Einkauf ohne Internet
+- Hardware/Betriebssystem unabhängige Architektur, sodass die Anwendung auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann
 - responsive UI für Desktop und Mobile zur flexiblen Nutzung (Größe der Website passt sich automatisch an)
-- Skalierbarkeit und Erweiterbarkeit der Architektur für zukünftige Features (gut strukturierter und wartbarer Code) 
+- Skalierbarkeit und Erweiterbarkeit der Architektur für zukünftige Features (gut strukturierter und wartbarer Code)
 
 
 == Annahmen und Abhängigkeiten
 //[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
 - Vue.js ist beim Großteil des Teams bekannt, was die Fronted-Entwicklung erleichtert
 - im Backend nutzen wir Python mit FastAPI, da es ebenfalls bekannt ist
-- das Team hat ebenfalls Erfahrung mit SQL 
+- das Team hat ebenfalls Erfahrung mit SQL
 - externe API's können integriert werden, bspw. für Bereitstellung der Produkte inkl. deren Preise
-- Vorraussetzung: Datenbank und API laufen problemlos auf der bereitgestellten VM 
+- Vorraussetzung: Datenbank und API laufen problemlos auf der bereitgestellten VM
 - Datenbank (MySQL) funktioniert wie erwartet und harmoniert gut mit dem Backend (FastAPI + SQLAlchemy)
 
 == Architektur-relevante Anforderungen
@@ -46,7 +46,7 @@ Die arichitektur-relevanten Anforderungen sind in der <<../requirements/vision.a
 - Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM um einen simplen Aufruf per Mobilegerät zu ermöglichen
 - mittels Vue.js werden die Komponenten der Benutzeroberfläche klar strukturiert und modular aufgebaut, mit dem Ziel einen übersichtlichen und wartbaren Code zu haben
 - das Frontend ist eine Single Page Application (SPA), die im Browser des Nutzers läuft
-- REST-API im Backend wird mit Python mit FastAPI enwtickelt und läuft auch auf der VM 
+- REST-API im Backend wird mit Python mit FastAPI enwtickelt und läuft auch auf der VM
 - Datenerhaltung erfolgt über eine relationale Datenbank mit MySQL, ebenfalls auf der VM
 - Python und MySQL wurden gewählt, da sie über SQL-Alchemy gut zusammenarbeiten
 
@@ -67,7 +67,7 @@ Die arichitektur-relevanten Anforderungen sind in der <<../requirements/vision.a
 * Implementiert die Geschäftslogik
 * Überprüft, verarbeitet und validiert Daten
 
-- Datenschicht (Datenbank) 
+- Datenschicht (Datenbank)
 * MySQL-Datenbank und SQLAlchemy als ORM
 * Verwwaltet den Zugriff auf die relationale Datenbank
 * Kommuniziert direkt mit MySQL für Datenoperationen
@@ -86,19 +86,19 @@ Das System ist eine Webanwendung zur Organisation von Einkäufen in Wohngemeinsc
 
 - interagierende Personen und Systeme:
 * Nutzer (WG-Mitglieder): greifen über das Frontend im Browser auf die Anwendung zu
-    
+
 === Container
 //Level 2 im C4-Modell
 
 image::C4-Modell_Level_2.png[width=60%,alt="C4-Modell Level 2"]
 
 
-- Frontend (Vue.js): 
+- Frontend (Vue.js):
 * Läuft im Browser und übernimmt die Benutzerinteraktionen, sowie die Darstellung der Anwendung.
 * realisiert als Single Page Application (SPA)
 * Kommuniziert über HTTP mit der REST-API des Backends.
-- Backend (FastAPI): 
-* Läuft auf einem Server und stellt eine REST-API bereit, welche die Anwendungslogik implementiert und die Datenverwaltung übernimmt. 
+- Backend (FastAPI):
+* Läuft auf einem Server und stellt eine REST-API bereit, welche die Anwendungslogik implementiert und die Datenverwaltung übernimmt.
 * Verarbeitet Anfragen des Frontends
 * Kommuniziert mit der Datenbank (MySQL) über SQLAlchemy (ORM).
 - Datenbank (MySQL):
