@@ -68,14 +68,9 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 === Definition of Done - Product Backlog Item
 
-<<<<<<< HEAD
 * Alle Sub-Issues (Tasks oder Akzeptanzkriterien) sind abgeschlossen
 * Arbeit ist ins Remote Repository aufgenommen
 * PBI wurde im wöchentlichen Meeting besprochen
-=======
-* Alle Sub-Issues (Tasks und Akzeptanzkriterien) sind abgeschlossen.
-* Der Code wurde reviewed und abgenommen.
->>>>>>> 5aba976 (Definition of Done angepasst)
 
 == Deployment
 
