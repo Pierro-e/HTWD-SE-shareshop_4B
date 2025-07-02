@@ -123,10 +123,10 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | Einkaufsarchiv
 | Abgeschlossener Einkauf einer Liste (Historie).
-| `id` INT + 
-`listen_id` INT + 
+| `id` INT +
+`listen_id` INT +
 `getatigt_von` INT +
-`getatigt_am` DATE + 
+`getatigt_am` DATE +
 `gesamtpreis` DECIMAL(10,2)
 |  `id` PK  +
  `listen_id` FK → `Listen.id`  +
@@ -137,7 +137,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | eingekaufte_Produkte
 | Produkte, die in einem bestimmten Einkauf gekauft wurden.
 | `einkauf_id` INT +
-`produkt_id` INT + 
+`produkt_id` INT +
 `produkt_menge` DECIMAL(10,2) +
 `einheit_id` INT, `produkt_preis` DECIMAL(10,2) +
 `hinzugefugt_von` INT
@@ -178,40 +178,40 @@ hide methods
 
 ' === Grundklassen ===
 class Nutzer {
-  +id 
-  +email 
-  +name 
-  +passwortHash 
+  +id
+  +email
+  +name
+  +passwortHash
 }
 
 class Liste {
-  +id 
-  +name 
-  +ersteller 
-  +datum 
+  +id
+  +name
+  +ersteller
+  +datum
 }
 
 class ListeMitglied {
-  +listen_id 
-  +nutzer_id 
-  +beigetreten_am 
+  +listen_id
+  +nutzer_id
+  +beigetreten_am
 }
 
 class Produkt {
-  +id 
-  +name 
+  +id
+  +name
 }
 
 class Einheit {
-  +id 
-  +name 
-  +abkürzung 
+  +id
+  +name
+  +abkürzung
 }
 
 class Listeneintrag {
-  +listen_id 
-  +produkt_id 
-  +produkt_menge 
+  +listen_id
+  +produkt_id
+  +produkt_menge
   +einheit_id
   +hinzugefügt_von
   +beschreibung
