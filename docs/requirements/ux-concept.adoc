@@ -309,6 +309,14 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 // Fügen Sie Wireframes als Bilder oder als Link (z.B. zu einem Miroboard) ein
 // Beziehen Sie ihre Wireframes auf konkrete User Stories oder Epics.
 
+image::0.jpg[width=100%,alt="Wirefraame_0"]
+image::1.jpg[width=100%,alt="Wirefraame_1"]
+image::2.jpg[width=100%,alt="Wirefraame_2"]
+image::3.jpg[width=100%,alt="Wirefraame_3"]
+image::4.jpg[width=100%,alt="Wirefraame_4"]
+image::5.jpg[width=100%,alt="Wirefraame_5"]
+
+
 // Wireframes sind Skizzen, die den Aufbau und die Struktur der Benutzeroberfläche zeigen.
 // Sie zeigen das Layout und die Anordnung der Bedienelemente.
 // Wollen wir das hier in Form von Bildern machen oder in Miro?
