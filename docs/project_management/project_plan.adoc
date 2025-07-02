@@ -68,7 +68,8 @@ Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und 
 
 === Definition of Done - Product Backlog Item
 
-* Alle Sub-Issues (Tasks oder Akzeptanzkriterien) sind abgeschlossen
+* Alle Sub-Issues (Tasks und Akzeptanzkriterien) sind abgeschlossen.
+* Der Code wurde reviewed und abgenommen.
 
 == Deployment
 
