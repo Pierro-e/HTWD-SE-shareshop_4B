@@ -171,6 +171,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 == Domänenmodell
 
 [plantuml, "{diagramsdir}/syntax-example1", svg]
+
 ....
 @startuml Domänenmodell
 hide methods
