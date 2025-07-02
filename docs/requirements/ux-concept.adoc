@@ -293,7 +293,7 @@ In diesem Dokument werden die Benutzeroberflächen des Systems {project-system-n
 ** Nutzung durch beeinträchtigte Personen: Barrierefreiheit ist wichtig, um eine breite Nutzerbasis zu erreichen
 
 * *Systemplattformen*:
-** derzeit: IOS, Android, WebApp
+** plattformunabhängig
 //** Zukünftig: Desktop-Anwendung (Windows, MacOS, Linux) und Smartwatch
 
 //keine Ahnung ob wir das machen wollen
