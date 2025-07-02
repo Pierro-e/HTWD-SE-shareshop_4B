@@ -71,11 +71,9 @@
       </div>
     </div>
   </div>
-
   <div v-if="errorMessage" class="error">
     {{ errorMessage }}
   </div>
-
   <div class="produkte-grid">
     <div
       v-for="(produkt, index) in listenprodukte"
@@ -117,6 +115,8 @@
       </p>
     </div>
   </div>
+=======
+>>>>>>> main
 </template>
 
 <script>

@@ -16,7 +16,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | *Artikel*
 | Gegenstand, welcher eingekauft werden soll
-| -
+| Item
 
 | Einkäufer
 | WG-Mitglied, welcher gerade dabei ist Artikel einzukaufen
@@ -29,6 +29,31 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | WG-Mitglied
 | Nutzer der Software
 | -
+
+
+| Einkaufsliste
+| Strukturierte Liste von Artikeln, die innerhalb einer WG gemeinsam beschafft werden sollen
+| Besorgungslisten
+
+| Produktinformationen
+| Metadaten zu einem Produkt (z. B. Name, Beschreibung, Preis, Kategorie), die dem Benutzer helfen, eine Kauf- bzw. Auswahlentscheidung zu treffen
+| Artikelinformationen
+
+| Benutzer
+| Mensch, der die Software nutzt
+| Anwender, Nutzer
+
+| Einkaufsprozess
+| Abfolge definierter Schritte von der Produktauswahl über Einkauf bis zum zahlvorgang im System.
+| Beschaffungsprozess
+
+| Produktliste
+| Tabelle oder Ansicht aller ausgewählten(zur Einkaufsliste hinzugefügten) Produkte, meist filter- und sortierbar
+| Artikelliste
+
+| Validierung
+| Test, der prüft, ob ein Ergebnis den spezifizierten Anforderungen und dem Nutzerbedarf entspricht
+| Überprüfung, Verifizierung
 |===
 
 == Abkürzungen und Akronyme
@@ -37,17 +62,10 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Abkürzung | Bedeutung | Erläuterung
 
-| PB
-| Product Backlog
-| ein SCRUM-Artefakt
+| WG
+| Wohngemeinschaft
+| Gruppe von Personen, die gemeinsam wohnen und Kosten teilen
 
-| SP
-| Sprint Backlog
-| ein SCRUM-Artefakt
-
-| PBI
-| Product Backlog Item
-| Elemente des Product Backlog
 |===
 
 == Verzeichnis der Datenstrukturen
@@ -56,11 +74,178 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Bezeichnung | Definition | Format | Gültigkeitsregeln | Aliase
 
-| Anmeldedaten
-| Zusammensetzung von Benutzername und Passwort.
-| String
-| Emailadresse muss `@`-Zeichen und `.` Punkt enthalten.
-| Login
+| Nutzer
+| Registrierter Benutzer der Anwendung mit Login- und Profildaten.
+| `id` INT +
+`email` VARCHAR(255) +
+`name` VARCHAR(150) +
+`passwort_hash` VARCHAR(255)
+|  `id` ist Primärschlüssel (PK) und eindeutig  +
+ `email` muss eindeutig sein und sowohl `@` als auch `.` enthalten  +
+ alle Felder not null
+| User
+
+| Listen
+| Einkaufsliste, die von einem Nutzer angelegt wird.
+| `id` INT +
+`name` VARCHAR(150) +
+`ersteller` INT +
+`datum` DATE
+|  `id` PK, eindeutig  +
+ `name` darf nicht leer sein  +
+ `ersteller` referenziert `Nutzer.id`  +
+ `datum` muss gültiges Datum sein
+| ShoppingList
+
+| ListenMitglieder
+| Verknüpfung, welche Nutzer Teil welcher Liste sind.
+| `listen_id` INT +
+`nutzer_id` INT +
+`beigetreten_am` DATE
+|  Zusammengesetzter PK (`listen_id`,`nutzer_id`)  +
+ `listen_id` FK → `Listen.id`  +
+ `nutzer_id` FK → `Nutzer.id`
+| ListMembers
+
+| ListeProdukte
+| Produkte, die zu einer Liste gehören, inkl. Menge & Beschreibung.
+| `listen_id` INT +
+`produkt_id` INT +
+`produkt_menge` DECIMAL(10,2) +
+`einheit_id` INT +
+`hinzugefugt_von` INT +
+`beschreibung` TEXT
+|  PK (`listen_id`,`produkt_id`)  +
+ `einheit_id` FK → `Einheiten.id`  +
+ `hinzugefugt_von` FK → `Nutzer.id`  +
+ Mengenwert ≥ 0
+| ListItems
+
+| Einkaufsarchiv
+| Abgeschlossener Einkauf einer Liste (Historie).
+| `id` INT +
+`listen_id` INT +
+`getatigt_von` INT +
+`getatigt_am` DATE +
+`gesamtpreis` DECIMAL(10,2)
+|  `id` PK  +
+ `listen_id` FK → `Listen.id`  +
+ `getatigt_von` FK → `Nutzer.id`  +
+ `gesamtpreis` ≥ 0 +
+| Purchase
+
+| eingekaufte_Produkte
+| Produkte, die in einem bestimmten Einkauf gekauft wurden.
+| `einkauf_id` INT +
+`produkt_id` INT +
+`produkt_menge` DECIMAL(10,2) +
+`einheit_id` INT, `produkt_preis` DECIMAL(10,2) +
+`hinzugefugt_von` INT
+| PK (`einkauf_id`,`produkt_id`)  +
+ `einkauf_id` FK → `Einkaufsarchiv.id`  +
+ `produkt_id` FK → `Produkt.id`  +
+ `einheit_id` FK → `Einheiten.id`  +
+ Preis & Menge ≥ 0 +
+| PurchasedItems
+
+| Produkt
+| Katalogeintrag eines verfügbaren Produkts.
+| `id` INT +
+`name` VARCHAR(255)
+|  `id` PK  +
+ `name` unique, not null +
+| Item
+
+| Einheiten
+| Maßeinheiten für Mengenangaben.
+| `id` INT +
+`name` VARCHAR(20) +
+`abkurzung` VARCHAR(10)
+|  `id` PK  +
+ `name` unique, not null +
+ `abkurzung` not null +
+| Units
 |===
 
+
 == Domänenmodell
+
+[plantuml, "{diagramsdir}/syntax-example1", svg]
+....
+@startuml Domänenmodell
+hide methods
+
+
+' === Grundklassen ===
+class Nutzer {
+  +id
+  +email
+  +name
+  +passwortHash
+}
+
+class Liste {
+  +id
+  +name
+  +ersteller
+  +datum
+}
+
+class ListeMitglied {
+  +listen_id
+  +nutzer_id
+  +beigetreten_am
+}
+
+class Produkt {
+  +id
+  +name
+}
+
+class Einheit {
+  +id
+  +name
+  +abkürzung
+}
+
+class Listeneintrag {
+  +listen_id
+  +produkt_id
+  +produkt_menge
+  +einheit_id
+  +hinzugefügt_von
+  +beschreibung
+  +abgehakt
+}
+
+class Einkaufsarchiv {
+  +id
+  +listen_id
+  +getätigt_von
+  +getätigt_am
+  +gesamtpreis
+}
+
+class EingekaufteProdukte {
+  +einkauf_id
+  +produkt_id
+  +produkt_menge
+  +einheit_id
+  +produkt_preis
+  +hinzugefügt_von
+}
+
+' === Beziehungen ===
+Nutzer "1" --> "0..*" Liste : erstellt
+Nutzer "0..*" -- "0..*" Liste : Nutzer ist Mitglied --> ListeMitglied
+Liste "1" --> "1..*" Listeneintrag
+Liste "1" --> "0..*" Einkaufsarchiv
+Listeneintrag "0..*" --> "1" Produkt
+Listeneintrag "0..*" --> "1" Einheit
+Listeneintrag "0..*" --> "1" Nutzer : hinzugefügt_von
+Einkaufsarchiv "1" --> "1..*" EingekaufteProdukte
+EingekaufteProdukte "0..*" --> "1" Produkt
+EingekaufteProdukte "0..*" --> "1" Einheit
+EingekaufteProdukte "0..*" --> "1" Nutzer : hinzugefügt_von
+@enduml
+....

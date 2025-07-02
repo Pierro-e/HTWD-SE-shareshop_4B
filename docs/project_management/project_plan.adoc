@@ -12,7 +12,7 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 [cols="1,1,1"]
 |===
-| Name | Kontaktdaten | SCRUM-Rolle| Verantwortlichkeiten
+| Name | Kontaktdaten | SCRUM-Rolle
 
 |*Maximilian Paul*
 |s87085@htw-dresden.de
@@ -48,7 +48,7 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 |https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git[*GitHub*]
 
 | kollaboratives Arbeiten (z.B Brainstorming)
-|https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git[*GitHub*]
+|https://miro.com/app/board/uXjVIEJUxFI=/[*Miro*]
 
 | Online Meetings
 | https://discord.gg/33mhPr53[*Discord*]
@@ -73,4 +73,20 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 == Deployment
 
+* aktuellen Zustand im wöchentlichen Meeting besprechen
+* bei Bedarf Remote "Developer" Branch in Remote "Main" Branch mergen
+
 == Erkenntnisse (Lessons learned)
+
+=== Version Control System Workflow
+
+Version Control Software unterstützt und ermöglicht unabhängige bis zu "chaotischen" Arbeitsweisen.
+Dennoch ist habe wir festgestellt, dass es hilfreich sein kann eine Workflow zu defninieren, welcher zusätzlichen Arbeitsaufwand minimiert.
+
+include::./version_control_system_workflow.adoc[]
+
+=== Fortschritt visulaisieren
+
+Im Gegensatz zu existierenden Objekten ist Software mit Sprache als Material eine Abstraktion.
+Dem entsprechend schwierig ist die Visulaisierung des aktuellen Standes.
+Hier muss sich noch eine System zur besseren Zusammenarbeit ausgedacht werden.
