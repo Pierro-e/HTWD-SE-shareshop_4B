@@ -125,9 +125,9 @@ image::C4-Modell_Level_2.png[width=60%,alt="C4-Modell Level 2"]
 === Verteilungsdiagramm (Deployment Diagramm)
 //Beschreibt die physischen Knoten (Rechner) des Systems und Komponenten, die in diesen Knoten ausgeführt werden. Diese Sicht wird nicht benötigt, wenn das System in einem einzelnen Prozess oder Thread ausgeführt wird.
 
-Server-Setup:
-- Ein Server (VM der Hochschule) beherbergt:
-* Nginx-Webserver für das Frontend
-* FastAPI-Backend  via uvicorn
-* MySQL-Datenbank  lokal installiert
+- Server-Setup:
+* Ein Server (VM der Hochschule) beherbergt:
+** Nginx-Webserver für das Frontend (stellt SPA bereit)
+** FastAPI-Backend  via uvicorn
+** MySQL-Datenbank  lokal installiert
 - Nutzer greifen über Webbrowser (PC, Tablet, Smartphone) auf das System zu
