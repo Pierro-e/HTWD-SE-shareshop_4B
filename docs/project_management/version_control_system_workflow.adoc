@@ -1,10 +1,10 @@
-Zu Beginn einer Task stellt man sicher, dass der locale "Developer" Branch auf aktuellem Stand ist.
-.Klone das gitRepo auf VSC, dort gibst du ins Terminal folgendes ein:
+. Sicherstellen, dass der locale Branch, welcher mit dem Remote Branch "developer" verbunden ist, sich auf aktuellem Stand befindet.
+
+.alternativ ``git switch``
 
 [source,bash]
-
-git checkout developer              //auf Branch developer wechseln
-git pull origin developer           //neueste developer-version aus dem git holen
+git checkout <local-developer-name>
+git pull origin developer
 
 .Erstelle dann eine neue Task, an der du arbeiten möchstest z.B.:
 
@@ -12,7 +12,7 @@ git pull origin developer           //neueste developer-version aus dem git hole
 
 git checkout -b task/<DeinName_Name deiner Task> //innerhalb der <> keine leerzeichen!
 
-=== Änderungen committen
+==== Änderungen committen
 
 Jetzt arbeitest du in VSCode wie sonst auch. Wenn du fertig bist:
 
