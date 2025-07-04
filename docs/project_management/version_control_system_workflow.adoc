@@ -1,87 +1,48 @@
 . Sicherstellen, dass der locale Branch, welcher mit dem Remote Branch "developer" verbunden ist, sich auf aktuellem Stand befindet.
-
-.alternativ ``git switch``
-
 [source,bash]
 git checkout <local-developer-name>
 git pull origin developer
 
-.Erstelle dann eine neue Task, an der du arbeiten möchstest z.B.:
-
+. Erstelle einen neuen lokalen Branches für die Task und füge ihm dem Remote Repository hinzu.
 [source,bash]
+git checkout -b <task-name>
+git push --set-upstream origin <task-name>
 
-git checkout -b task/<DeinName_Name deiner Task> //innerhalb der <> keine leerzeichen!
-
-==== Änderungen committen
-
-Jetzt arbeitest du in VSCode wie sonst auch. Wenn du fertig bist:
-
-
-Um zu committen:
-
-    . Source Control-Icon (Strg+Shift+G)
-    . Geänderte Dateien werden gelistet. "+" bei den Dateien ab, die in den Commit sollen.
-    . Oben im Eingabefeld eine Commit-Nachricht schreiben und commit
-
-
-=== Task-Branch auf GitHub pushen
-
-. gib im Terminal (immer von vsc!) folgendes ein:
-
+. Dokumentiere Regelmäßig deskriptiv deinen Fortschritt.
 [source,bash]
+git add ...
+git commit ...
 
-git push -u origin task/<DeinName_Name deiner Task>
-
-=== Merge von deinem Task-branch auf developer
-.Lokal mergen
-
+. Wenn die Task abgeschlossen ist, dann verbindest du ihn mit deinem lokalem Developer.
 [source,bash]
+git checkout developer
+git pull
+git merge --no-ff <task-name>
 
-git checkout developer                  //wechselt auf die Ansicht von developer
-git pull origin developer               //holt neueste developer-version von git
-git merge --no-ff task/<DeinName_Name deiner Task> -m "Merge von task in developer"
-git push origin developer               //pusht deine änderungen auf den developer-Branch in git
+. Wenn dann auch alles funktioinert, kannst du deine Ergebnisse "hochladen".
+git push
 
-=== task-Branch löschen (optional)
-[source, bash]
-
-git push origin --delete task/<DeinName_Name deiner Task>       //löscht den remote-branch der Task auf git
-git branch -d task/<DeinName_Name deiner Task>                  //löscht den lokalen Branch
-
-
-== Für REVIEWER von developer-Code zusätzlich: Merge von developer → main
-
+. Nun musst du nur noche aufräumen.
 [source,bash]
+git push origin -d <task-name>
+git branch -d <task-name>
 
-git checkout main           //in main wechseln
-git pull origin main        //main aktualisieren
-git merge --no-ff developer -m "Merge developer into main"  //kein fast-foreward-merge, sondern immer neuer merge-commit
-git push origin main         //lokaler merge in git pushen
+---
 
-== Kurzübersicht der Befehle
+.main Branch aktuallisieren
+[source,bash]
+git checkout main
+git pull origin main
+git merge --no-ff developer
+git push origin main
 
+---
+
+.Befehls Anmerkungen
 [cols="1,1",options="header"]
 |===
-|Aktion |Terminal-Befehl
+| Befehl | Anmerkung
 
-|lokale branches auflisten (-a local & remote Branches)(-r remote-branches)
-|git branch -a
-
-|Repository klonen
-|git clone <repo-url>
-
-|Neuen Branch anlegen
-|git checkout -b <name>
-
-|Änderungen committen
-|git add . && git commit -m "msg"
-
-|Branch pushen
-|git push -u origin <branch>
-
-|Merge durchführen
-|git merge --no-ff <branch>
-
-|Branch löschen
-|git branch -d <branch> + git push --delete origin <branch>
+|git merge
+|Flag ``--no-ff`` nutzen
 |===
