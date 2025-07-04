@@ -76,6 +76,7 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 * aktuellen Zustand im wöchentlichen Meeting besprechen
 * bei Bedarf Remote "Developer" Branch in Remote "Main" Branch mergen
+* "Export Directory" von Vue auf Virtuelle Maschine kopieren
 
 == Erkenntnisse (Lessons learned)
 
@@ -100,3 +101,26 @@ Wenn man alleine ein Idee in einem Projekt umsetzt, fällt es oft einfach (bzw. 
 Im Austausch mit anderen fällt jedoch oft auf, dass dies nicht der einzige Weg ist.
 Nicht jeder hat die selbe Vorstellung von gut und jeder Mensch hat einen individuellen "Programmier Style".
 Dies muss man sich bewusst werden.
+
+=== Code Review
+
+Dies ist ein wichtiger Teil im Entwicklungs Prozess.
+Für uns hat sich das bis jetzt, aber noch ein bisschen ineffizient angefühlt.
+Wir sind also noch auf der Suche nach einem gutem Zwischenweg.
+Im Moment finden diese nur sehr unregelmäßig statt.
+
+=== Von mündlich zu schiftlich
+
+Am Anfang haben wir vieles (z.B. Zuordnen der Aufgaben) mündlich umgesetzt.
+Wir haben aber gemerkt, dass es gerade für den mentalen Frieden wichtig ist, Sachen auch an einem Ort schriftlich festzuhalten.
+
+=== Hilfsbereitschaft
+
+Die Hilfsbereitschaft innerhalb des Teams hat sich über die Zeit zu sehr gut hin entwickelt.
+Das liegt unter Anderem auch daran, dass man die Erfahrung gamacht hat, dass auch die anderen Teammitglieder gerne helfen und es für sie kein "unangenehmer Mehraufwand" ist.
+Zudem hat sich auch die Verbindung der Team-Mitglieder zueinander verbessert.
+
+=== Deadlines
+
+Man kann sich innerhalb des Teams auf das Einhalten von Deadlines verlassen.
+Eine Verbesserung, die noch angestrebt wird, ist, mehr zeitlichen Puffer einzuplan, da öfter Overhead angefallen ist.
