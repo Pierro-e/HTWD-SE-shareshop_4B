@@ -65,7 +65,6 @@ include::{docs-requirements}/vision.adoc[lines=1..1;4..-1,leveloffset=+1]
 <<<
 // Glossar und Domänenmodell
 [[glossary]]
-[#glossary]
 include::{docs-requirements}/glossary.adoc[lines=1..1;4..-1,leveloffset=+1]
 <<<
 [[ux]]
