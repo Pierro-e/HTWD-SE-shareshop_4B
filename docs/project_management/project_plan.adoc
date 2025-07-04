@@ -44,7 +44,7 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 | Remote Repository
 |https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git[*GitHub*]
 
-| Projektmanagement
+| Projektmanagement (inkl. PB, SB, Risk-Board)
 |https://github.com/users/Pierro-e/projects/3/views/14[*GitHub*]
 
 | kollaboratives Arbeiten (z.B Brainstorming)
@@ -86,6 +86,12 @@ Version Control Software unterstützt und ermöglicht unabhängige bis zu "chaot
 Dennoch ist habe wir festgestellt, dass es hilfreich sein kann eine Workflow zu defninieren, welcher zusätzlichen Arbeitsaufwand minimiert.
 
 include::./version_control_system_workflow.adoc[]
+
+=== Fortschritt visulaisieren
+
+Im Gegensatz zu existierenden Objekten ist Software mit Sprache als Material eine Abstraktion.
+Dem entsprechend schwierig ist die Visulaisierung des aktuellen Standes.
+Hier muss sich noch eine System zur besseren Zusammenarbeit ausgedacht werden.
 
 === Austausch über Fortschritt
 
