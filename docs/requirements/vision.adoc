@@ -70,10 +70,11 @@ Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei d
 Die Verfeinerung der Stakeholder erfolgt mittels <<persona, Personas>>.
 // links funktionieren erstmal nur in Belegabgabe.adoc
 
-
 == Produktüberblick
 
-=== Bedarfe und Hauptfunktionen [[anforderungen]]
+[[anforderungen]]
+
+=== Bedarfe und Hauptfunktionen Anforderungen
 //Vermeiden Sie Angaben zum Entwurf. Nennen wesentliche Features (Produktmerkmale) auf allgemeiner Ebene. Fokussieren Sie sich auf die benötigten Fähigkeiten des Systems und warum (nicht wie!) diese realisiert werden sollen. Geben Sie die von den Stakeholdern vorgegebenen Prioritäten an.
 
 [%header, cols="4,1,4"]

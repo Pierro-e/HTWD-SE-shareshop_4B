@@ -23,7 +23,7 @@ git merge --no-ff <task-name>
 [source,bash]
 git push
 
-. Nun musst du nur noche aufräumen.
+. Nun musst du nur noch aufräumen.
 [source,bash]
 git push origin -d <task-name>
 git branch -d <task-name>

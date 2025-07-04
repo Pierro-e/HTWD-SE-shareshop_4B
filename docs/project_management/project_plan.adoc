@@ -84,7 +84,7 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 === Version Control System Workflow
 
 Version Control Software unterstützt und ermöglicht unabhängige bis zu "chaotischen" Arbeitsweisen.
-Dennoch ist habe wir festgestellt, dass es hilfreich sein kann eine Workflow zu defninieren, welcher zusätzlichen Arbeitsaufwand minimiert.
+Dennoch habe wir festgestellt, dass es hilfreich sein kann eine Workflow zu defninieren, welcher zusätzlichen Arbeitsaufwand minimiert.
 
 include::./version_control_system_workflow.adoc[]
 
