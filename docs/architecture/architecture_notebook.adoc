@@ -40,7 +40,7 @@ Die arichitektur-relevanten Anforderungen sind in der <<../requirements/vision.a
 //[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
 - die Anwendung wird als Webanwendung bereitgestellt (im späteren Verlauf wird sie um PWA-Funktionalität erweitert), da es Betriebssystem unabhängig ist und auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann
-- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM 
+- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM
 - Vue.js bietet eine klare Proejktstruktur und sorgt für eine klare Trennung der Komponenten
 - das Frontend ist eine Single Page Application (SPA), die im Browser des Nutzers läuft, was kurze Ladezeiten mit sich bringt
 - REST-API im Backend wird mit Python mit FastAPI enwtickelt und läuft auch auf der VM

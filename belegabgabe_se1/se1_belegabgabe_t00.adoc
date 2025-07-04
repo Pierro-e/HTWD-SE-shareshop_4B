@@ -1,10 +1,7 @@
-// --- 1. Projektthema -------------------------
 = SE I - Belegabgabe: {project-name}
-// --- 2. Teammitglieder -----------------------
 Erik Wenke <erik.wenke@stud.htw-dresden.de>; Maximilian Paul <s87085@htw-dresden.de>; Marlene Fritz <s87181@htw-dresden.de>; Levin Heirich <s87139@htw-dresden.de>; Pierre Kißling <s86388@htw-dresden.de>;
-// --- 3. Abgabedatum --------------------------
-01. Januar 2025
-// ---------------------------------------------
+04. Juli 2025
+
 :docs: ../docs
 include::{docs}/_includes/default-attributes.inc.adoc[]
 // ---
@@ -40,7 +37,6 @@ include::{docs}/_includes/default-attributes.inc.adoc[]
 
 // --- Projektdokumentation ---
 = Projektdokumentation
-* Projektplan
 
 :imagesdir: {docs-project-management}/images
 
