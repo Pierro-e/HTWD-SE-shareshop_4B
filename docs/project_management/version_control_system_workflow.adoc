@@ -20,6 +20,7 @@ git pull
 git merge --no-ff <task-name>
 
 . Wenn dann auch alles funktioinert, kannst du deine Ergebnisse "hochladen".
+[source,bash]
 git push
 
 . Nun musst du nur noche aufräumen.
