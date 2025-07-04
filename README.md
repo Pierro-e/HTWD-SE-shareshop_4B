@@ -41,37 +41,6 @@ docs
 ```
 
 
-### Bilder und Diagramme einbinden
-
-In dem Dokumentenattribut `:imagesdir: images` ist das Standardverzeichnis
-**images** für die Bilder festgelegt. Somit reicht es, in den jeweiligen
-Dokumenten, die Bilder ohne Angabe des **images** Verzeichnis einzubinden:
-
-```asciidoc
-// vision.adoc
-image::example.jpg[Beispielbild]
-```
-
-In dem Dokumentenattribut `:plantumlsdir: plantuml` ist das Standardverzeichnis
-**plantuml** für die Diagramme in plantUML-Notation festgelegt. Im
-Dokumentenattribut `:diagramsdir: diagrams` ist das Verzeichnis für die
-generierten Diagramme angegeben, welches unter dem `:imagesdir:` angelegt
-wird.
-
-```asciidoc
-requirements
-├── images
-│   ├── diagrams
-│   │   └── diagram.jpg
-│   └── example.jpg
-├── plantuml
-│   └── diagram.puml
-├── ...
-└── vision.adoc
-```
-
-## Belegabgabe in SE I
-
 Im Verzeichnis **belegabgabe_se1** finden Sie die Vorlagedatei
 _se1_belegabgabe_t00.adoc_, welche alle Ihre erzeugten Dokumente für die Abgabe
 als PDF in <ins>ein</ins> Dokument bündelt.
