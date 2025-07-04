@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Zu Beginn einer Task stellt man sicher, dass der locale "Developer" Branch auf aktuellem Stand ist.
 .Klone das gitRepo auf VSC, dort gibst du ins Terminal folgendes ein:
 
@@ -84,4 +85,53 @@ git push origin main         //lokaler merge in git pushen
 
 |Branch löschen
 |git branch -d <branch> + git push --delete origin <branch>
+=======
+. Sicherstellen, dass der locale Branch, welcher mit dem Remote Branch "developer" verbunden ist, sich auf aktuellem Stand befindet.
+[source,bash]
+git checkout <local-developer-name>
+git pull origin developer
+
+. Erstelle einen neuen lokalen Branches für die Task und füge ihm dem Remote Repository hinzu.
+[source,bash]
+git checkout -b <task-name>
+git push --set-upstream origin <task-name>
+
+. Dokumentiere Regelmäßig deskriptiv deinen Fortschritt.
+[source,bash]
+git add ...
+git commit ...
+
+. Wenn die Task abgeschlossen ist, dann verbindest du ihn mit deinem lokalem Developer.
+[source,bash]
+git checkout developer
+git pull
+git merge --no-ff <task-name>
+
+. Wenn dann auch alles funktioinert, kannst du deine Ergebnisse "hochladen".
+git push
+
+. Nun musst du nur noche aufräumen.
+[source,bash]
+git push origin -d <task-name>
+git branch -d <task-name>
+
+---
+
+.main Branch aktuallisieren
+[source,bash]
+git checkout main
+git pull origin main
+git merge --no-ff developer
+git push origin main
+
+---
+
+.Befehls Anmerkungen
+[cols="1,1",options="header"]
+|===
+| Befehl | Anmerkung
+
+|git merge
+|Flag ``--no-ff`` nutzen
+>>>>>>> developer
 |===

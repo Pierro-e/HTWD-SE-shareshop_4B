@@ -3,8 +3,8 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Einführung
 
-Dieser Projektplan beschreibt das kollaborative Zusammenarbeiten innerhalb des Projektes.
-Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsatz von Tools zur effektiven Zusammenarbeit.
+Dieses Dokument beschreibt das kollaborative Zusammenarbeiten innerhalb des Projektes.
+Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsatz von Tools zur effektiven Zusammenarbeit.
 
 == Projektorganisation
 
@@ -45,7 +45,7 @@ Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und 
 |https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git[*GitHub*]
 
 | Projektmanagement
-|https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git[*GitHub*]
+|https://github.com/users/Pierro-e/projects/3/views/14[*GitHub*]
 
 | kollaboratives Arbeiten (z.B Brainstorming)
 |https://miro.com/app/board/uXjVIEJUxFI=/[*Miro*]
@@ -58,18 +58,24 @@ Das Dokument erläutert die Projektorganisation, verwendete Arbeitsmethoden und 
 |===
 
 == Praktiken und Bewertung
+
 * wöchentliches *Online Meeting* - Freitag 12:00 bis 13:30
 
 === Definition of Ready - Product Backlog Item
 
-* Product Backlog Item muss vom Product Owner angenommen werden -> kein Label "vorschlag"
-* Field "Status" ist auf "ready" gesetzt
-* Akzeptankriterien sind ausgearbeitet und prüfbar
+* PBI wurde von PO in PB aufgenommen (kein Label "vorschlag")
+* Aktzeptanzkriterien sind ausgearbeitet
 
 === Definition of Done - Product Backlog Item
 
+<<<<<<< HEAD
 * Alle Sub-Issues (Tasks und Akzeptanzkriterien) sind abgeschlossen.
 * Der Code wurde reviewed und abgenommen.
+=======
+* Alle Sub-Issues (Tasks oder Akzeptanzkriterien) sind abgeschlossen
+* Arbeit ist ins Remote Repository aufgenommen
+* PBI wurde im wöchentlichen Meeting besprochen
+>>>>>>> developer
 
 == Deployment
 
@@ -85,8 +91,25 @@ Dennoch ist habe wir festgestellt, dass es hilfreich sein kann eine Workflow zu 
 
 include::./version_control_system_workflow.adoc[]
 
+<<<<<<< HEAD
 === Fortschritt visulaisieren
 
 Im Gegensatz zu existierenden Objekten ist Software mit Sprache als Material eine Abstraktion.
 Dem entsprechend schwierig ist die Visulaisierung des aktuellen Standes.
 Hier muss sich noch eine System zur besseren Zusammenarbeit ausgedacht werden.
+=======
+=== Austausch über Fortschritt
+
+Im Gegensatz zu existierenden Objekten ist das Material aus dem Software besteht Sprache.
+Die zwei Hauptproblem die ein solches Material mit sich bringt sind Komplexität und Abstraktion.
+Dem entsprechend schwierig ist die Visulaisierung des internen Standes des Projektes.
+Es kann schwer sein nur durch das schauen auf ein Stück Quellcode zu erfassen, was der momentante Fortschritt ist.
+Man sollte sich also innerhalb des Teams regelmäßig darüber austauschen, was der aktuelle Stand des Projektes ist und auf gute Dokumentation auch innerhalb des Codes achten.
+
+=== Was ist gut?
+
+Wenn man alleine ein Idee in einem Projekt umsetzt, fällt es oft einfach (bzw. es kommt natürlich) in welchem Maße man etwas implementiert.
+Im Austausch mit anderen fällt jedoch oft auf, dass dies nicht der einzige Weg ist.
+Nicht jeder hat die selbe Vorstellung von gut und jeder Mensch hat einen individuellen "Programmier Style".
+Dies muss man sich bewusst werden.
+>>>>>>> developer
