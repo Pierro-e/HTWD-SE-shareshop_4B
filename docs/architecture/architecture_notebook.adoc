@@ -1,8 +1,5 @@
 = Architecture Notebook: {project-name}
-Erik Wenke <erik.wenke@stud.htw-dresden.de>; Maximilian Paul <s87085@htw-dresden.de>; Marlene Fritz <s87181@htw-dresden.de>; Levin Heirich <s87139@htw-dresden.de>; Mohsen Hosseinzadehyousefi <s87722@htw-dresden.de>; Pierre Kißling <s86388@htw-dresden.de>; Astemir Sheriev <s87009@htw-dresden.de>;{localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
-// Platzhalter für weitere Dokumenten-Attribute
-
 
 == Zweck
 Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Begründungen, wesentliche Elemente und andere übergreifende Aspekte des Systems, die Einfluss auf Entwurf und Implementierung haben.
@@ -81,38 +78,33 @@ Diese Struktur ermöglicht eine klare Trennung von Verantwortlichkeiten und erle
 
 image::C4-Modell_Level_1.png[width=60%,alt="C4-Modell Level 1"]
 
-//Level 1 im C4-Modell
 Das System ist eine Webanwendung zur Organisation von Einkäufen in Wohngemeinschaften.
 
-- interagierende Personen und Systeme:
+* interagierende Personen und Systeme:
 * Nutzer (WG-Mitglieder): greifen über das Frontend im Browser auf die Anwendung zu
 
 === Container
-//Level 2 im C4-Modell
 
 image::C4-Modell_Level_2.png[width=60%,alt="C4-Modell Level 2"]
 
-
-- Frontend (Vue.js):
-* Läuft im Browser und übernimmt die Benutzerinteraktionen, sowie die Darstellung der Anwendung.
-* realisiert als Single Page Application (SPA)
-* Kommuniziert über HTTP mit der REST-API des Backends.
-- Backend (FastAPI):
-* Läuft auf einem Server und stellt eine REST-API bereit, welche die Anwendungslogik implementiert und die Datenverwaltung übernimmt.
-* Verarbeitet Anfragen des Frontends
-* Kommuniziert mit der Datenbank (MySQL) über SQLAlchemy (ORM).
-- Datenbank (MySQL):
-* Läuft auf dem Server und speichert alle persistente Daten.
+* Frontend (Vue.js):
+** Läuft im Browser und übernimmt die Benutzerinteraktionen, sowie die Darstellung der Anwendung.
+** realisiert als Single Page Application (SPA)
+** Kommuniziert über HTTP mit der REST-API des Backends.
+* Backend (FastAPI):
+** Läuft auf einem Server und stellt eine REST-API bereit, welche die Anwendungslogik implementiert und die Datenverwaltung übernimmt.
+** Verarbeitet Anfragen des Frontends
+** Kommuniziert mit der Datenbank (MySQL) über SQLAlchemy (ORM).
+* Datenbank (MySQL):
+** Läuft auf dem Server und speichert alle persistente Daten.
 * Stellt die Daten für das Backend bereit
 
-- Zusätzlich:
-* Server (VM) für das Hosting von Frontend, Backend und Datenbank
-* (geplant) PWA-Funktionalität für Offline-Nutzung des Frontends
-
-
+* Zusätzlich:
+** Server (VM) für das Hosting von Frontend, Backend und Datenbank
+** (geplant) PWA-Funktionalität für Offline-Nutzung des Frontends
 
 === Components
-//Level 3 im C4-Modell
+
 - Komponenten im Frontend (SPA = PWA):
 * CreateAccount: Komponente zur Erstellung eines neuen Nutzerkontos
 * Login: Komponente für die Anmeldung eines Nutzers

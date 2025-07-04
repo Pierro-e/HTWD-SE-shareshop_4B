@@ -40,17 +40,6 @@ docs
     └── test_cases.adoc
 ```
 
-- **Projektname** `:project-name:`: Enthält das Belegthema inklusive der Projekt-ID
-- **Systemname** `:project-system-name:`: Enthält den Systemnamen der Software
-
-```asciidoc
-// Meta
-:project-name: <Projektname (T00)>
-:project-system-name: <Projektname-System>
-```
-
-- `T` ... steht als Platzhalter für `I` ein internes bzw. `E` für ein externes Projektthema
-- `<Platzhalter>` ... die Platzhalter inkl. der `<` und `>` ersetzen
 
 ### Bilder und Diagramme einbinden
 

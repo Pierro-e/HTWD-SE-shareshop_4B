@@ -1,5 +1,5 @@
 // Meta
-:project-name: ShareShop (T4.B)
+:project-name: ShareShop (I4B)
 :project-system-name: FairShop
 // Settings:
 :toc:
