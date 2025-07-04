@@ -44,7 +44,7 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 | Remote Repository
 |https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git[*GitHub*]
 
-| Projektmanagement
+| Projektmanagement (inkl. PB, SB, Risk-Board)
 |https://github.com/users/Pierro-e/projects/3/views/14[*GitHub*]
 
 | kollaboratives Arbeiten (z.B Brainstorming)
@@ -68,14 +68,10 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 === Definition of Done - Product Backlog Item
 
-<<<<<<< HEAD
-* Alle Sub-Issues (Tasks und Akzeptanzkriterien) sind abgeschlossen.
-* Der Code wurde reviewed und abgenommen.
-=======
 * Alle Sub-Issues (Tasks oder Akzeptanzkriterien) sind abgeschlossen
 * Arbeit ist ins Remote Repository aufgenommen
 * PBI wurde im wöchentlichen Meeting besprochen
->>>>>>> developer
+
 
 == Deployment
 
@@ -92,13 +88,13 @@ Dennoch ist habe wir festgestellt, dass es hilfreich sein kann eine Workflow zu 
 
 include::./version_control_system_workflow.adoc[]
 
-<<<<<<< HEAD
+
 === Fortschritt visulaisieren
 
 Im Gegensatz zu existierenden Objekten ist Software mit Sprache als Material eine Abstraktion.
 Dem entsprechend schwierig ist die Visulaisierung des aktuellen Standes.
 Hier muss sich noch eine System zur besseren Zusammenarbeit ausgedacht werden.
-=======
+
 === Austausch über Fortschritt
 
 Im Gegensatz zu existierenden Objekten ist das Material aus dem Software besteht Sprache.
