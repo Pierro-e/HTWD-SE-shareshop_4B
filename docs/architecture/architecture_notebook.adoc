@@ -42,14 +42,14 @@ Die arichitektur-relevanten Anforderungen sind in der <<../requirements/vision.a
 == Entscheidungen, Nebenbedingungen und Begründungen
 //[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
-- die Anwendung wird als Webanwendung bereitgestellt (im späteren Verlauf wird sie um PWA-Funktionalität erweitert)
-- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM um einen simplen Aufruf per Mobilegerät zu ermöglichen
-- mittels Vue.js werden die Komponenten der Benutzeroberfläche klar strukturiert und modular aufgebaut, mit dem Ziel einen übersichtlichen und wartbaren Code zu haben
-- das Frontend ist eine Single Page Application (SPA), die im Browser des Nutzers läuft
+- die Anwendung wird als Webanwendung bereitgestellt (im späteren Verlauf wird sie um PWA-Funktionalität erweitert), da es Betriebssystem unabhängig ist und auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann
+- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM 
+- Vue.js bietet eine klare Proejktstruktur und sorgt für eine klare Trennung der Komponenten
+- das Frontend ist eine Single Page Application (SPA), die im Browser des Nutzers läuft, was kurze Ladezeiten mit sich bringt
 - REST-API im Backend wird mit Python mit FastAPI enwtickelt und läuft auch auf der VM
+- FastAPI ermöglicht eine schnelle Entwicklung von APIs und bietet eine gute Performance, zudem harmoniert es mit MySQL über SQLAlchemy
 - Datenerhaltung erfolgt über eine relationale Datenbank mit MySQL, ebenfalls auf der VM
-- Python und MySQL wurden gewählt, da sie über SQL-Alchemy gut zusammenarbeiten
-
+- MySQL ist optimal für unsere Datenstruktur (Nutzer, Produkte, Listen, ...) geeignet
 
 == Schichten oder Architektur-Framework
 //[Describe the architectural pattern that you will use or how the architecture will be consistent and uniform. This could be a simple reference to an existing or well-known architectural pattern, such as the Layer framework, a reference to a high-level model of the framework, or a description of how the major system components should be put together.]
@@ -116,6 +116,11 @@ image::C4-Modell_Level_2.png[width=60%,alt="C4-Modell Level 2"]
 - Komponenten im Frontend (SPA = PWA):
 * CreateAccount: Komponente zur Erstellung eines neuen Nutzerkontos
 * Login: Komponente für die Anmeldung eines Nutzers
+* List: Komponente zur Anzeige und Verwaltung einer einzelnen Einkaufsliste mit Anzeige der enthaltenen Produkte
+* ListOverview: Komponente zur Anzeige aller Listen eines Nutzers
+* ListCreator: Komponente zur Erstellung einer neuen Einkaufsliste (zusammen mit Komponente NewListForm)
+* ProductDetail: Komponente zur Bearbeitung der Details (Menge, Beschreibung, ...) eines einzelnen Produkts
+* UserSettings: Komponente zur Verwaltung der Nutzereinstellungen (z.B. Name, E-Mail, Passwort)
 
 === Verteilungsdiagramm (Deployment Diagramm)
 //Beschreibt die physischen Knoten (Rechner) des Systems und Komponenten, die in diesen Knoten ausgeführt werden. Diese Sicht wird nicht benötigt, wenn das System in einem einzelnen Prozess oder Thread ausgeführt wird.
