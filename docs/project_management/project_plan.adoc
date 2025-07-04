@@ -76,7 +76,8 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 * aktuellen Zustand im wöchentlichen Meeting besprechen
 * bei Bedarf Remote "Developer" Branch in Remote "Main" Branch mergen
-* "Export Directory" von Vue auf Virtuelle Maschine kopieren
+* Projekt lokal testen
+* zum Abschluss das aktuelle Produkt über den verpackten "/dist" Ordner, welcher durch _npm run dev_ erstellt wird, auf VM exportieren und auf den Webserver hochladen
 
 == Erkenntnisse (Lessons learned)
 
