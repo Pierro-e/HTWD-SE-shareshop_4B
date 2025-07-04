@@ -8,16 +8,13 @@ Engineering I und II benötigt. Im Detail sind das:
 - Templates der benötigten Dokumente (AsciiDoc-Format)
 - Vorlage für die Belegabgabe in SE I (AsciiDoc-Format)
 
-> [!NOTE]
-> Dieses Repository enthält keinen Code.
-
 **Inhaltsverzeichnis**
 
 - [Projektstruktur](#projektstruktur)
-- [Dokumentvorlagen](#dokumentvorlagen)
+- [Lizenz](#lizenz)
+
 - [Hinweise zu den AsciiDoc-Vorlagen](#hinweise-zu-den-asciidoc-vorlagen)
 - [Belegabgabe in SE I](#belegabgabe-in-se-i)
-- [Lizenz](#lizenz)
 
 ## Projektstruktur
 
@@ -42,29 +39,6 @@ docs
 └── test
     └── test_cases.adoc
 ```
-
-## Dokumentvorlagen
-
-Dieses Repository enthält Vorlagen im AsciiDoc-Format zur Dokumentation der verschiedenen Arbeitsergebnisse. Sie sind vereinfachte Varianten der Vorlagen aus dem Open Unified Process, Version 1.5.
-
-### Hinweis
-
-Falls Sie Fehler korrigieren oder Verbesserungen machen möchten, können Sie
-dies gern über einen _Pull Request_ tun.
-
-## Hinweise zu den AsciiDoc-Vorlagen
-
-Die Datei _default-attributes.inc.adoc_ im **docs/\_includes** Verzeichnis
-enthält die gemeinsamen Dokumentenattribute für alle AsciiDoc-Dokumente. In
-jedem Dokument selbst können, nach dem include der Datei, entsprechend noch
-extra benötigte Attribute mit aufgenommen werden.
-
-### Projektname und Systemname definieren
-
-In der _default-attributes.inc.adoc_ Datei ist am Anfang der **Projektname**
-und der **Systemname** als Attribute global definiert. Diese können über
-`{project-name}` und `{project-system-name}` in der Dokumentation an beliebiger
-Stelle verwendet werden.
 
 - **Projektname** `:project-name:`: Enthält das Belegthema inklusive der Projekt-ID
 - **Systemname** `:project-system-name:`: Enthält den Systemnamen der Software
@@ -207,7 +181,6 @@ Folgende Schritte sind für eine Belegabgabe durchzuführen:
 Die Templates im Ordner `docs` und `belegabgabe_se1` unterliegen der
 [CC-BY-4.0](https://choosealicense.com/licenses/cc-by-4.0/) Lizenz.
 
-### Quellcode / Anderes
+### Quellcode
 
-Für das Repository bzw. die entstehende Software kann/muss eine separate Lizenz
-festgelegt werden.
+Aller weitere Quelltexte eingeschlossen Quellcode unterliegen der [MIT Lizenz](https://choosealicense.com/licenses/mit/).
