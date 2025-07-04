@@ -78,15 +78,15 @@ Die Verfeinerung der Stakeholder erfolgt mittels <<ux-concept.adoc#persona, Pers
 |===
 | Bedarf | Priorität | Features / Funktionen
 | WG möchte Einkäufe zusammen organisieren | hoch | gemeinsame Einkaufsliste (jeder kann bearbeiten) und Kalender für Einkaufsrythmen
-| Mitglieder möchten Kosten für Einkauf teilen | hoch | nachvollziehbare Rechnung zur Kostenverteilung 
-| Im Supermarkt ist schlechte Internetverbindung | mittel | Liste auch offline bereitstellen 
-| Person möchte beim Einkaufen die Übersicht behalten  | hoch | Sortiermöglichkeit und abhaken der Items 
+| Mitglieder möchten Kosten für Einkauf teilen | hoch | nachvollziehbare Rechnung zur Kostenverteilung
+| Im Supermarkt ist schlechte Internetverbindung | mittel | Liste auch offline bereitstellen
+| Person möchte beim Einkaufen die Übersicht behalten  | hoch | Sortiermöglichkeit und abhaken der Items
 | ShareShop soll dem Nutzer Arbeit abnehmen / Planung erleichtern | hoch | Bedarfsvorhersage basierend auf Nutzungsmuster
-| WG-Mitglied will individuelle Bedürfnisse kennzeichnen | hoch | personalisierte Tags 
-| Überblick über gemeinsame Ausgaben gewünscht | mittel | Ausgabenstatistik pro Person und Haushalt (evtl. Budgetfunktion) 
-| Nächstes Item am Anfang der Liste  | xx | Manuelles sortieren (+ Sortieralgorithmus ?) 
-| umweltbewusste Nutzer wollen nachhaltig einkaufen | niedrig | Nachhaltigkeits-Tracking mit CO2- und Verpackungsstatistik 
-| Vorräte sollen verwaltet werden | niedrig | Inventarliste 
+| WG-Mitglied will individuelle Bedürfnisse kennzeichnen | hoch | personalisierte Tags
+| Überblick über gemeinsame Ausgaben gewünscht | mittel | Ausgabenstatistik pro Person und Haushalt (evtl. Budgetfunktion)
+| Nächstes Item am Anfang der Liste  | xx | Manuelles sortieren (+ Sortieralgorithmus ?)
+| umweltbewusste Nutzer wollen nachhaltig einkaufen | niedrig | Nachhaltigkeits-Tracking mit CO2- und Verpackungsstatistik
+| Vorräte sollen verwaltet werden | niedrig | Inventarliste
 |===
 
 === Zusätzliche Produktanforderungen
@@ -97,13 +97,13 @@ Die Verfeinerung der Stakeholder erfolgt mittels <<ux-concept.adoc#persona, Pers
 . Definieren Sie grob die Qualitätsanforderungen für Leistung, Robustheit, Ausfalltoleranz, Benutzbarkeit und ähnliche Merkmale, die Qualitätsanforderungen an das geplante Produkt beschreiben.
 . Notieren Sie alle Entwurfseinschränkungen, externe Einschränkungen, Annahmen oder andere Abhängigkeiten, die wenn Sie geändert werden, das Visions-Dokument beeinflussen. Ein Beispiel wäre die Annahme, dass ein bestimmtes Betriebssystem für die vom System erforderliche Hardware verfügbar ist. Ist das Betriebssystem nicht verfügbar, muss das Visions-Dokument angepasst werden.
 . Definieren Sie alle Dokumentationsanforderugen, inkl. Benutzerhandbücher, Onlinehilfe, Installations-, Kennzeichnungs- und Auslieferungsanforderungen.
-. Definieren Sie die Priorität für diese zusätzlichen Produktanforderungen. Ergänzen Sie, falls sinnvoll, Angaben zu Stabilität, Nutzen, Aufwand und Risiko für diese Anforderungen. 
+. Definieren Sie die Priorität für diese zusätzlichen Produktanforderungen. Ergänzen Sie, falls sinnvoll, Angaben zu Stabilität, Nutzen, Aufwand und Risiko für diese Anforderungen.
 ////
 
 
 [%header, cols="4,1"]
 |===
-| Anforderung | Priorität 
+| Anforderung | Priorität
 | Betriebssystem unabhängig | sehr hoch
 | Browser-Support | Hoch
 | DSGVO-Konformität | Hoch
