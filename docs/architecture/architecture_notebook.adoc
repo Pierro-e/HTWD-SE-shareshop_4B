@@ -33,7 +33,8 @@ Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Be
 == Architektur-relevante Anforderungen
 //Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
 
-Die arichitektur-relevanten Anforderungen sind in der <<../requirements/vision.adoc#anforderungen, Vision.adoc>> unter Produktüberblick beschrieben.
+Die arichitektur-relevanten Anforderungen sind in der <<anforderungen, Vision.adoc>> unter Produktüberblick beschrieben.
+// links funktionieren erstmal nur in Belegabgabe.adoc
 
 
 == Entscheidungen, Nebenbedingungen und Begründungen

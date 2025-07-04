@@ -67,7 +67,9 @@ Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei d
 | Sie garantieren Qualität der genutzten Arbeitsmittel.
 |===
 
-Die Verfeinerung der Stakeholder erfolgt mittels <<ux-concept.adoc#persona, Personas>>.
+Die Verfeinerung der Stakeholder erfolgt mittels <<persona, Personas>>.
+// links funktionieren erstmal nur in Belegabgabe.adoc
+
 
 == Produktüberblick
 
