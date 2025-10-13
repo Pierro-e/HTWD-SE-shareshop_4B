@@ -6,12 +6,12 @@
         </div>
         <form @submit.prevent="onSubmit">
             <div class="create_email">
-                <label for="email" class="create_block">Email: </label>
+                <label for="email" class="create_block">E-Mail: </label>
                 <input
                     v-model="email"
                     type="email"
                     id="email"
-                    placeholder="Email"
+                    placeholder="E-Mail"
                     required
                 >
             </div>

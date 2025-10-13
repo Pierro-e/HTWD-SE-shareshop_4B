@@ -8,7 +8,7 @@
           v-model="email"
           type="email"
           id="email"
-          placeholder="Email"
+          placeholder="E-Mail"
           required
         />
       </div>
