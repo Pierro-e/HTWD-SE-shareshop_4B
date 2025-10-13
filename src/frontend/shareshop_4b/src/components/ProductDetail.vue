@@ -153,6 +153,7 @@ export default {
 
 <style scoped>
 .product-detail {
+  min-width: 300px;
   max-width: 720px;
   margin: 2rem auto;
   padding: 2rem 2.5rem;
@@ -173,8 +174,13 @@ export default {
   width: 100%;
 }
 
-form {
-  width: 100%;
+form div {
+  align-items: left;
+  gap: 0;
+}
+
+form label {
+  text-align: center;
 }
 
 .form-group {
@@ -277,6 +283,12 @@ select:focus {
   box-shadow: 0 0 8px #3399ff88;
 }
   */
+
+input,
+textarea,
+select {
+  width: 125%
+}
 
 .success,
 .error {

@@ -1,14 +1,19 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <label for="list_name">Name</label>
-    <input
-      v-model="name"
-      type="text"
-      id="list_name"
-      placeholder="WG Alberplatz"
-      required
-    />
+    <div class="form-content">
+      <div>
+        <label for="list_name">Name: </label>
+        <input
+          v-model="name"
+          type="text"
+          id="list_name"
+          placeholder="WG Alberplatz"
+          required
+        />
+      </div>
+    </div>
     <button class="button-submit" type="submit">Einkaufsliste erstellen</button>
+    <button class="button-cancel" @click="$router.push(`/listen`)">Abbrechen</button>
   </form>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 </template>
@@ -54,7 +59,7 @@ export default {
         ) {
           this.errorMessage = error.response.data.detail;
         } else {
-          this.errorMessage = "List konnte nicht erstellt werden";
+          this.errorMessage = "Liste konnte nicht erstellt werden";
         }
       }
     },
@@ -62,4 +67,10 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+  form label {
+    width: 50px;
+  }
+
+</style>

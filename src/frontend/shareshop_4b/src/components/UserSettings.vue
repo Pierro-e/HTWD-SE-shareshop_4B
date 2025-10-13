@@ -168,29 +168,6 @@ export default {
   font-size: 0.95rem;
 }
 
-.form-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 5px;
-}
-
-form div {
-  display: flex;
-  align-items: center;
-  gap: 1em;
-}
-
-form label {
-  width: 125px;
-  text-align: right; 
-}
-
-form input {
-  flex: 1; /* Rest ausfüllen */
-  box-sizing: border-box;
-}
-
 </style>
 
 
