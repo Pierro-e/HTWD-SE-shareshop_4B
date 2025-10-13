@@ -110,27 +110,6 @@ form {
   font-weight: 500;
 }
 
-input[type="email"],
-input[type="password"] {
-  padding: 0.6em 0.8em;
-  border-radius: 0.4em;
-  border: 1px solid transparent;
-  font-size: 1em;
-  box-sizing: border-box;
-  background-color: #3a3a3a;
-  color: white;
-  transition:
-    background-color 0.25s,
-    border-color 0.25s;
-}
-
-input[type="email"]:focus,
-input[type="password"]:focus {
-  outline: none;
-  background-color: #505050;
-  border: 1px solid #646cff;
-}
-
 .error {
   margin-top: 1em;
   font-weight: 600;

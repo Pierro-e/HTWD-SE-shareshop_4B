@@ -3,7 +3,7 @@
     <h2>Profil bearbeiten</h2>
 
     <div class="current-user-data">
-      <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier deine E-mail, deinen Namen und dein Passwort ändern</strong></p>
+      <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier deine E-Mail, deinen Namen und dein Passwort ändern</strong></p>
       <p><strong>Aktuelle E-Mail:</strong> {{ email }}</p>
       
     </div>
@@ -11,7 +11,7 @@
     <form @submit.prevent="updateUser">
       
       <div>
-        <label for="name">Neuer Name:</label>
+        <label for="name">Neuer Name: </label>
         <input v-model="name" 
             type="name" 
             id="name"            
@@ -19,7 +19,7 @@
       </div>
       
       <div>
-        <label for="email">Neue E-Mail:</label>
+        <label for="email">Neue E-Mail: </label>
         <input v-model="email" 
             type="email" 
             id="email" 
@@ -28,7 +28,7 @@
       </div>
 
       <div>
-        <label for="password">Neues Passwort:</label>
+        <label for="password">Neues Passwort: </label>
         <input v-model="password" 
             type="password" 
             id="password"
@@ -165,6 +165,30 @@ export default {
   color: #ddd;
   font-size: 0.95rem;
 }
+
+form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.5rem; /* Abstand zwischen allen direkten Kindern */
+}
+
+form div {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+form label {
+  width: 125px;
+  text-align: right; 
+}
+
+form input {
+  flex: 1; /* Rest ausfüllen */
+  box-sizing: border-box;
+}
+
 </style>
 
 

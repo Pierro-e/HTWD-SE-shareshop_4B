@@ -29,7 +29,7 @@
           @click="openListPopup()"
           class="button button-settings"
         >
-          Listeneininformationen
+          Listeninformationen
         </button>
 
         <button
@@ -596,6 +596,7 @@ export default {
   margin-top: 0px;
 }
 
+/*
 .input-product {
   width: 100%;
   padding: 0.5em;
@@ -604,6 +605,12 @@ export default {
   background-color: #3a3a3a;
   color: white;
   font-size: 1em;
+  box-sizing: border-box;
+}
+*/
+
+.input {
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -628,6 +635,7 @@ export default {
   padding: 1em 2em;
   border-radius: 0.5em;
   min-width: 300px;
+  max-width: 300px;
   text-align: center;
   /* Klicks nur auf das Popup zulassen */
   pointer-events: auto;
