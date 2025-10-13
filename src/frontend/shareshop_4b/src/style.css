@@ -122,8 +122,7 @@ input:focus {
   border: 1px solid #646cff;
 }
 
-/* Formular */
-
+/* Formular (nur gut geeignet, wenn Label: [Textbox]*/
 .form-content {
   display: flex;
   flex-direction: column;

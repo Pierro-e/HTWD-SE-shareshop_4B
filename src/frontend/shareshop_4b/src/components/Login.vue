@@ -3,7 +3,7 @@
     <h2>Login</h2>
     <form @submit.prevent="onSubmit">
       <div class="login_email">
-        <label for="email" class="login_block">Email</label>
+        <label for="email" class="login_block">Email: </label>
         <input
           v-model="email"
           type="email"
@@ -13,7 +13,7 @@
         />
       </div>
       <div class="login_pw">
-        <label for="password" class="login_block">Passwort</label>
+        <label for="password" class="login_block">Passwort: </label>
         <input
           v-model="password"
           type="password"
@@ -97,6 +97,14 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1.2em;
+}
+
+form div {
+  gap: 0;
+}
+
+form label {
+  width: auto;
 }
 
 .login_email,
