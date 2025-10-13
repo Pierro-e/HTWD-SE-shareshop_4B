@@ -9,33 +9,35 @@
     </div>
 
     <form @submit.prevent="updateUser">
-      
-      <div>
-        <label for="name">Neuer Name: </label>
-        <input v-model="name" 
-            type="name" 
-            id="name"            
-        />
-      </div>
-      
-      <div>
-        <label for="email">Neue E-Mail: </label>
-        <input v-model="email" 
-            type="email" 
-            id="email" 
-            required 
-        />
-      </div>
+      <div class="form-content">
+        <div>
+          <label for="name">Neuer Name: </label>
+          <input v-model="name" 
+              type="name" 
+              id="name"            
+          />
+        </div>
+        
+        <div>
+          <label for="email">Neue E-Mail: </label>
+          <input v-model="email" 
+              type="email" 
+              id="email" 
+              required 
+          />
+        </div>
 
-      <div>
-        <label for="password">Neues Passwort: </label>
-        <input v-model="password" 
-            type="password" 
-            id="password"
-            />
+        <div>
+          <label for="password">Neues Passwort: </label>
+          <input v-model="password" 
+              type="password" 
+              id="password"
+              />
+        </div>
       </div>
 
       <button class="button-submit" type="submit">Änderungen speichern</button>
+      <button class="button-cancel" @click="$router.push(`/listen`)">Abbrechen</button>
     </form>
 
     <div v-if="message" class="success">{{ message }}</div>
@@ -166,11 +168,11 @@ export default {
   font-size: 0.95rem;
 }
 
-form {
+.form-content {
   display: flex;
   flex-direction: column;
-
-  gap: 0.5rem; /* Abstand zwischen allen direkten Kindern */
+  gap: 0.5rem;
+  margin-bottom: 5px;
 }
 
 form div {
