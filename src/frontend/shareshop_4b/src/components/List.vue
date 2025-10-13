@@ -588,6 +588,7 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px; /* Abstand zwischen Buttons */
+  z-index: 1000; /* immer ganz oben */
 }
 
 .button-einkauf-tätigen {

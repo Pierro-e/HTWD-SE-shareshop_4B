@@ -114,7 +114,7 @@ input[type="email"],
 input[type="password"] {
   padding: 0.6em 0.8em;
   border-radius: 0.4em;
-  border: none;
+  border: 1px solid transparent;
   font-size: 1em;
   box-sizing: border-box;
   background-color: #3a3a3a;
