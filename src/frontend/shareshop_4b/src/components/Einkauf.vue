@@ -41,7 +41,7 @@
             @click="product_details(produkt)"
             class="button button-product-settings"
           >
-            |||
+            ✏️
           </button>
         </div>
 

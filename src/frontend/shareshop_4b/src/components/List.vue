@@ -129,7 +129,7 @@
             @click="product_settings(produkt)"
             class="button button-product-settings"
           >
-            |||
+            ✏️
           </button>
         </div>
 
