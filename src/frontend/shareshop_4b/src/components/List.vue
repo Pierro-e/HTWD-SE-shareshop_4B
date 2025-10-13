@@ -76,7 +76,7 @@
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
         <input
-          class="input-product"
+          class="input"
           v-model="new_product"
           type="text"
           placeholder="Produktname"
@@ -96,7 +96,7 @@
       <div class="popup-content">
         <h3>Mitglied hinzufügen</h3>
         <input
-          class="input-product"
+          class="input"
           v-model="new_member_email"
           type="text"
           placeholder="E-Mail"
@@ -596,7 +596,7 @@ export default {
   margin-top: 0px;
 }
 
-/*
+/* Unnötig, schon in style.css definiert!
 .input-product {
   width: 100%;
   padding: 0.5em;

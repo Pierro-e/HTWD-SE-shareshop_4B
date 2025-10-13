@@ -165,25 +165,6 @@ export default {
   align-items: center;
 }
 
-.button-cancel {
-  align-self: center;
-  background-color: #6c757d;
-  color: #f0f0f0;
-  border: none;
-  padding: 0.5rem 1.5rem;
-  font-weight: 600;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  min-width: 120px;
-}
-
-.button-cancel:hover,
-.button-cancel:focus {
-  background-color: #565e64;
-}
-
 .product-name {
   font-weight: 700;
   font-size: 2rem;
@@ -208,28 +189,6 @@ label {
   color: #ccc;
 }
 
-input[type="number"],
-textarea,
-select {
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  border: 1.5px solid #444;
-  border-radius: 5px;
-  background-color: #222;
-  color: #eee;
-  font-family: inherit;
-  resize: vertical;
-  transition: border-color 0.3s ease;
-}
-
-input[type="number"]:focus,
-textarea:focus,
-select:focus {
-  border-color: #3399ff;
-  outline: none;
-  box-shadow: 0 0 8px #3399ff88;
-}
-
 textarea {
   min-height: 80px;
 }
@@ -240,6 +199,26 @@ textarea {
   gap: 1rem;
   margin-top: 2rem;
   width: 100%;
+}
+
+/* unnötig, schon in style.css definiert!
+.button-cancel {
+  align-self: center;
+  background-color: #6c757d;
+  color: #f0f0f0;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  min-width: 120px;
+}
+
+.button-cancel:hover,
+.button-cancel:focus {
+  background-color: #565e64;
 }
 
 button.button-delete,
@@ -275,6 +254,29 @@ button.button-delete:hover,
 button.button-delete:focus {
   background-color: #b02a2a;
 }
+
+input[type="number"],
+textarea,
+select {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1.5px solid #444;
+  border-radius: 5px;
+  background-color: #222;
+  color: #eee;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.3s ease;
+}
+
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+  border-color: #3399ff;
+  outline: none;
+  box-shadow: 0 0 8px #3399ff88;
+}
+  */
 
 .success,
 .error {
