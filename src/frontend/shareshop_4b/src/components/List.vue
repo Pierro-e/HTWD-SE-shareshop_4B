@@ -596,19 +596,6 @@ export default {
   margin-top: 0px;
 }
 
-/* Unnötig, schon in style.css definiert!
-.input-product {
-  width: 100%;
-  padding: 0.5em;
-  border-radius: 0.25em;
-  border: none;
-  background-color: #3a3a3a;
-  color: white;
-  font-size: 1em;
-  box-sizing: border-box;
-}
-*/
-
 .input {
   width: 100%;
   box-sizing: border-box;
@@ -630,7 +617,7 @@ export default {
 }
 
 .popup-content {
-  background: black;
+  background: #2a2a2a;
   color: white;
   padding: 1em 2em;
   border-radius: 0.5em;
