@@ -148,6 +148,10 @@ export default {
 
 
 <style scoped>
+form label {
+  width: 101px;
+}
+
 .success {
   color: green;
 }

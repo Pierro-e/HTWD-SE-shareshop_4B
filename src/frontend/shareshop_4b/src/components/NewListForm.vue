@@ -7,7 +7,7 @@
           v-model="name"
           type="text"
           id="list_name"
-          placeholder="WG Alberplatz"
+          placeholder="WG Albertplatz"
           required
         />
       </div>
@@ -70,7 +70,7 @@ export default {
 <style scoped>
 
   form label {
-    width: 50px;
+    width: 35px;
   }
 
 </style>

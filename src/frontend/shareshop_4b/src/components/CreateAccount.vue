@@ -128,7 +128,7 @@ form {
 }
 
 form label {
-  width: 70px;
+  width: 60px;
 }
 
 button.button-submit {
