@@ -3,7 +3,7 @@
     <h2>Login</h2>
     <form @submit.prevent="onSubmit">
       <div class="login_email">
-        <label for="email" class="login_block">Email: </label>
+        <label for="email" class="login_block">E-Mail: </label>
         <input
           v-model="email"
           type="email"

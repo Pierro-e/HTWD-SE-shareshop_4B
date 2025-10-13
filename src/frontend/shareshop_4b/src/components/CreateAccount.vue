@@ -127,26 +127,8 @@ form {
   font-size: 1rem;
 }
 
-input[type="email"],
-input[type="text"],
-input[type="password"] {
-  width: 100%;
-  padding: 0.5em 0.75em;
-  border-radius: 0.4em;
-  border: 1px solid #555;
-  background-color: #3a3a3a;
-  color: white;
-  font-size: 1rem;
-  font-family: inherit;
-  transition: border-color 0.25s;
-}
-
-input[type="email"]:focus,
-input[type="text"]:focus,
-input[type="password"]:focus {
-  outline: none;
-  border-color: #646cff;
-  box-shadow: 0 0 5px #646cff;
+form label {
+  width: 70px;
 }
 
 button.button-submit {
