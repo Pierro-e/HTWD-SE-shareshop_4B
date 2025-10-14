@@ -61,9 +61,9 @@ export default {
     return {
       name: '',
       currentName: '',
+      currentEmail:'',
       email: '',
       password: '',
-      //currentEmail: '',//gebraucht?
       message: '',
       errorMessage: ''
     };
@@ -110,16 +110,26 @@ export default {
 
     // Trim, damit Leerzeichen ignoriert werden
     const trimmedName = this.name.trim();
+    const trimmedemail = this.email
     const trimmedPassword = this.password.trim();
 
     // Name ändern, wenn anders als vorher
-    if (trimmedName !== '') {
+    if (trimmedName !== '' && trimmedName !== this.currentName) {
       promises.push(
         axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/name`, {
           neuer_name: trimmedName
         })
       );
     }
+
+    // Email ändern, wenn anders als vorher
+    if (trimmedemail !== '' && trimmedemail !== this.currentEmail) { 
+      promises.push(
+        axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/email`, { 
+          neue_email: trimmedemail
+        })  
+      );
+    }  
 
      // Passwort ändern, wenn etwas eingegeben wurde
     if (trimmedPassword !=='') {
