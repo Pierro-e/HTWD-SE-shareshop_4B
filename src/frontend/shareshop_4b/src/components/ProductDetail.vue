@@ -213,26 +213,8 @@ select {
   width: 125%
 }
 
-.success,
-.error {
-  margin-top: 1.5rem;
-  padding: 0.8rem 1rem;
-  border-radius: 5px;
-  font-weight: 600;
-  text-align: center;
-  width: 100%;
-}
-
-.success {
-  background-color: #264d26;
-  border: 1.5px solid #4caf50;
-  color: #c8facc;
-}
-
-.error {
-  background-color: #4d2626;
-  border: 1.5px solid #e55353;
-  color: #f9c8c8;
+.success, .error {
+  max-width: 250px;
 }
 
 @media (max-width: 480px) {

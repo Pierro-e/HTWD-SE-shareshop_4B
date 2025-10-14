@@ -145,6 +145,32 @@ form input {
   box-sizing: border-box;
 }
 
+/* Erfolg- und Fehlerboxen */
+.success, .error {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.4rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  text-align: center;
+  width: 100%;
+}
+
+.success {
+  background-color: #264d26;
+  border: 1.5px solid #4caf50;
+  color: #a4ffac;
+  width: calc(100% - 2rem);
+  margin: 1.5rem auto 0 auto;
+}
+
+.error {
+  background-color: #4d2626;
+  border: 1.5px solid #e55353;
+  color: #f9c8c8;
+  width: calc(100% - 2rem);
+}
+
 .card {
   padding: 2em;
 }
@@ -174,9 +200,4 @@ form input {
   a:hover {
     color: #747bff;
   }
-}
-
-.error {
-  color: red;
-  margin-top: 10px;
 }

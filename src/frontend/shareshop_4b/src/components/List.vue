@@ -134,12 +134,9 @@
         </div>
 
         <div class="produkt-info" v-if="produkt.produkt_menge">
-          <span v-if="produkt.produkt_menge">
-            <strong>Menge:</strong> {{ produkt.produkt_menge }}
-          </span>
-          <span v-if="produkt.einheit_abk">
-            {{ produkt.einheit_abk }}
-          </span>
+          <div v-if="produkt.produkt_menge" >
+            <strong>Menge:</strong> {{ produkt.produkt_menge }} {{ produkt.einheit_abk }}
+          </div>
         </div>
         <div class="produkt-info" v-else>
           <span style="visibility: hidden">Platzhalter</span>

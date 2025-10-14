@@ -118,9 +118,9 @@ form label {
   font-weight: 500;
 }
 
-.error {
-  margin-top: 1em;
-  font-weight: 600;
+.success, .error {
+  width: calc(100% - 2rem);
+  margin-bottom: 0;
 }
 
 .create_account {

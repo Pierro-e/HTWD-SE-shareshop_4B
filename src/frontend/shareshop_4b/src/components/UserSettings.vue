@@ -152,15 +152,8 @@ form label {
   width: 101px;
 }
 
-.success {
-  color: green;
-}
-
-.error {
-  color: #ff4c4c;
-  margin-top: 0.8rem;
-  text-align: center;
-  font-weight: 600;
+.success {  
+  max-width: 300px;
 }
 
 .current-user-data {
