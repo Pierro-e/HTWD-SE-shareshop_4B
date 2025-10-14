@@ -2,6 +2,10 @@
   <div class="user-settings">
     <h2>Profil bearbeiten</h2>
 
+    <div>
+      <button class="button-cancel" @click="$router.push('/listen')">Zurück zu den Listen</button>
+    </div>
+
     <div class="current-user-data">
       <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier deine E-mail, deinen Namen und dein Passwort ändern</strong></p>
       <p><strong>Aktuelle E-Mail:</strong> {{ email }}</p>
@@ -37,6 +41,10 @@
 
       <button class="button-submit" type="submit">Änderungen speichern</button>
     </form>
+
+    <div>
+      <button class="button-submit" @click="logout()">Abmelden</button>
+    </div>
 
     <div v-if="message" class="success">{{ message }}</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -139,7 +147,14 @@ export default {
         this.errorMessage = err.response?.data?.detail || 'Fehler beim Aktualisieren'
         this.message = ''
       }
-    }
+    },
+
+    logout() {
+      // Einfaches Logout: Seite neu laden und User-Daten löschen
+      this.user.id = null
+      this.user.name = ''
+      this.user.email = ''
+      this.$router.push(`/`,);    }
   }
 };
 </script>
