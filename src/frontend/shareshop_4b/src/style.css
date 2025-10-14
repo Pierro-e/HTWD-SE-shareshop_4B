@@ -116,13 +116,13 @@ input, textarea, select {
     border-color 0.25s;
 }
 
-input:focus {
+input:focus, textarea:focus, select:focus {
   outline: none;
   background-color: #505050;
   border: 1px solid #646cff;
 }
 
-/* Formular (nur gut geeignet, wenn Label: [Textbox]*/
+/* Formular (besser geeignet, wenn Label: [Textbox])*/
 .form-content {
   display: flex;
   flex-direction: column;
