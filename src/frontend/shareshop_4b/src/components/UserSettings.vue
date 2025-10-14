@@ -61,7 +61,7 @@ export default {
     return {
       name: '',
       currentName: '',
-      currentEmail:'',
+      currentEmail: '',
       email: '',
       password: '',
       message: '',
@@ -69,28 +69,28 @@ export default {
     };
   },
 
-
- 
   async mounted() {
-    // Beim Laden: Werte aus globalem User setzen
     if (this.user?.id) {
       await this.loadUserData()
-      //this.name = this.user.name
-      //this.email = this.user.email
-    }  else {
-      // Für Test: User-ID auf 1 setzen und laden
+    } else {
       this.user.id = 1
       await this.loadUserData()
     }
   },
 
   methods: {
+    async hashPassword(password) {
+      // Passwort mit SHA-256 hashen
+      const encoder = new TextEncoder()
+      const data = encoder.encode(password)
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+      const hashArray = Array.from(new Uint8Array(hashBuffer))
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+    },
 
     async loadUserData() {
       try {
-        
         const response = await axios.get(`http://141.56.137.83:8000/nutzer/by-id?id=${this.user.id}`)
-        
         this.currentEmail = response.data.email
         this.name = response.data.name
         this.currentName = response.data.name
@@ -100,73 +100,66 @@ export default {
       }
     },
 
-  async updateUser() {
-      
+    async updateUser() {
       this.message = ''
       this.errorMessage = ''
-      
-    try {
-      const promises = []
 
-    // Trim, damit Leerzeichen ignoriert werden
-    const trimmedName = this.name.trim();
-    const trimmedemail = this.email.trim()
-    const trimmedPassword = this.password.trim();
+      try {
+        const promises = []
+        const trimmedName = this.name.trim()
+        const trimmedEmail = this.email.trim()
+        const trimmedPassword = this.password.trim()
 
-    // Name ändern, wenn anders als vorher
-    if (trimmedName !== '' && trimmedName !== this.currentName) {
-      promises.push(
-        axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/name`, {
-          neuer_name: trimmedName
-        })
-      );
-    }
+        // Name ändern
+        if (trimmedName !== '' && trimmedName !== this.currentName) {
+          promises.push(
+            axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/name`, {
+              neuer_name: trimmedName
+            })
+          )
+        }
 
-    // Email ändern, wenn anders als vorher
-    if (trimmedemail !== '' && trimmedemail !== this.currentEmail) { 
-      promises.push(
-        axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/email`, { 
-          neue_email: trimmedemail
-        })  
-      );
-    }  
+        // Email ändern
+        if (trimmedEmail !== '' && trimmedEmail !== this.currentEmail) {
+          promises.push(
+            axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/email`, {
+              neue_email: trimmedEmail
+            })
+          )
+        }
 
-     // Passwort ändern, wenn etwas eingegeben wurde
-    if (trimmedPassword !=='') {
-      promises.push(
-        axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/passwort`, {
-          neues_passwort: trimmedPassword
-        })
-      );
-    }
+        // Passwort ändern
+        if (trimmedPassword !== '') {
+          const passwortHash = await this.hashPassword(trimmedPassword)
+          promises.push(
+            axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/passwort`, {
+              neues_passwort: passwortHash
+            })
+          )
+        }
 
-      // Warten, bis alle API-Aufrufe abgeschlossen sind
-      await Promise.all(promises);
+        await Promise.all(promises)
 
-
-      this.message = 'Daten erfolgreich aktualisiert!'
+        this.message = 'Daten erfolgreich aktualisiert!'
         this.errorMessage = ''
-
-        // Optional: globalen Benutzer aktualisieren
         this.user.email = this.email
         this.user.name = trimmedName
-
         this.password = ''
-
       } catch (err) {
         this.errorMessage = err.response?.data?.detail || 'Fehler beim Aktualisieren'
         this.message = ''
       }
+      this.loadUserData();
     },
 
     logout() {
-      // Einfaches Logout: Seite neu laden und User-Daten löschen
       this.user.id = null
       this.user.name = ''
       this.user.email = ''
-      this.$router.push(`/`,);    }
+      this.$router.push('/')
+    }
   }
-};
+}
 </script>
 
 
