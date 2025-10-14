@@ -110,7 +110,7 @@ export default {
 
     // Trim, damit Leerzeichen ignoriert werden
     const trimmedName = this.name.trim();
-    const trimmedemail = this.email
+    const trimmedemail = this.email.trim()
     const trimmedPassword = this.password.trim();
 
     // Name ändern, wenn anders als vorher
