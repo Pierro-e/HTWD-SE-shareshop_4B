@@ -626,6 +626,8 @@ export default {
 }
 
 .produkte-grid {
+  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
+  box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;

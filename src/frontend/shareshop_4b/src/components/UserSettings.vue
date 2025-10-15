@@ -152,7 +152,7 @@ form label {
 }
 
 .success {  
-  max-width: 300px;
+  max-width: 250px;
 }
 
 .current-user-data {
@@ -162,6 +162,12 @@ form label {
   border-radius: 0.5rem;
   color: #ddd;
   font-size: 0.95rem;
+}
+
+@media (max-width: 480px) {
+  input {
+    max-width: 200px;
+  }
 }
 
 </style>

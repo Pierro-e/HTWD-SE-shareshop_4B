@@ -87,7 +87,6 @@ export default {
   border-radius: 0.6em;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
   color: rgba(255, 255, 255, 0.9);
-  font-family: inherit;
   text-align: left;
 }
 
@@ -102,7 +101,7 @@ export default {
   margin: 0;
   flex-grow: 1;
   text-align: center;
-  font-size: 2.8rem;
+  font-size: 26.4px;
   font-weight: 600;
 }
 
@@ -123,12 +122,15 @@ form {
 .create_block {
   display: block;
   margin-bottom: 0.3rem;
-  font-weight: 600;
   font-size: 1rem;
 }
 
 form label {
-  width: 60px;
+  width: 70px;
+}
+
+input {
+  width: 100%;
 }
 
 button.button-submit {
@@ -136,12 +138,5 @@ button.button-submit {
   padding: 0.6em 2em;
   font-size: 1.1rem;
   margin-top: 1rem;
-}
-
-.error {
-  color: #ff4c4c;
-  margin-top: 0.8rem;
-  text-align: center;
-  font-weight: 600;
 }
 </style>

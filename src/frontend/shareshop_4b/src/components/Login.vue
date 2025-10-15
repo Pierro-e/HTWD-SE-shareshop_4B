@@ -76,6 +76,7 @@ export default {
 
 <style scoped>
 .login_container {
+  min-width: 200px;
   max-width: 400px;
   margin: 3em auto;
   padding: 2em;
@@ -91,6 +92,7 @@ h2 {
   margin-top: 0;
   margin-bottom: 1.2em;
   font-weight: 600;
+  font-size: 26.4px;
 }
 
 form {

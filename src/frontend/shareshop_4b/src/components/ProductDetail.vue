@@ -153,14 +153,10 @@ export default {
 
 <style scoped>
 .product-detail {
-  min-width: 300px;
   max-width: 720px;
-  margin: 2rem auto;
-  padding: 2rem 2.5rem;
+  padding: 1rem 1.2rem;
   background-color: #2a2a2a;
   border-radius: 8px;
-  color: #eee;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -169,7 +165,6 @@ export default {
 .product-name {
   font-weight: 700;
   font-size: 2rem;
-  margin-bottom: 2rem;
   text-align: center;
   width: 100%;
 }
@@ -210,16 +205,17 @@ textarea {
 input,
 textarea,
 select {
-  width: 125%
+  width: 100%
 }
 
 .success, .error {
-  max-width: 250px;
+  max-width: 210px;
 }
 
 @media (max-width: 480px) {
   .product-detail {
-    padding: 1rem 1.2rem;
+    min-width: 250px;
+    padding: 1rem 1rem;
   }
 
   .button-row {
