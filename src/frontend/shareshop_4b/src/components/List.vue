@@ -618,11 +618,17 @@ export default {
   color: white;
   padding: 1em 2em;
   border-radius: 0.5em;
-  min-width: 300px;
+  min-width: 250px;
   max-width: 300px;
   text-align: center;
   /* Klicks nur auf das Popup zulassen */
   pointer-events: auto;
+}
+
+@media (max-width: 480px) {
+  .popup-content {
+    max-width: 250px;
+  }
 }
 
 .produkte-grid {
@@ -712,7 +718,6 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.2em 0;
 }
 
 .button-delete-member {

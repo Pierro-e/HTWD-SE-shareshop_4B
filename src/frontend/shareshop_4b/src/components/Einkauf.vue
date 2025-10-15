@@ -17,7 +17,7 @@
     </div>
 
     <div v-if="errorMessage" class="error">
-      {{ errorMessage }}
+    {{ errorMessage }}
     </div>
 
     <div class="produkte-grid">
@@ -70,9 +70,6 @@
         </div>
       </div>
     </div>
-  </div>
-  <div v-if="errorMessage" class="error">
-    {{ errorMessage }}
   </div>
 </template>
 
@@ -362,18 +359,7 @@ export default {
 }
 
 .error {
-  position: fixed;
-  top: 110px; /* Direkt unter dem Header, der 100px hoch ist */
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #ffe6e6; /* hellroter Hintergrund */
-  padding: 10px 20px;
-  border: 1px solid #cc0000;
-  border-radius: 6px;
-  font-weight: bold;
   z-index: 1100; /* höher als der Header */
-  max-width: 90%;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(204, 0, 0, 0.3);
+  max-width: 80%;
 }
 </style>

@@ -153,6 +153,7 @@ export default {
 
 <style scoped>
 .product-detail {
+  min-width: 250px;
   max-width: 720px;
   padding: 1rem 1.3rem;
   background-color: #2a2a2a;
@@ -214,7 +215,6 @@ select {
 
 @media (max-width: 480px) {
   .product-detail {
-    min-width: 250px;
     padding: 1rem 1rem;
   }
 
