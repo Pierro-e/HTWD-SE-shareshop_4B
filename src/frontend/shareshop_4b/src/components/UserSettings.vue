@@ -37,7 +37,6 @@
       </div>
 
       <button class="button-submit" type="submit">Änderungen speichern</button>
-      <button class="button-cancel" @click="$router.push(`/listen`)">Abbrechen</button>
     </form>
 
     <div v-if="message" class="success">{{ message }}</div>
