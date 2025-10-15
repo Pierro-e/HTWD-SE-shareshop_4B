@@ -154,7 +154,7 @@ export default {
 <style scoped>
 .product-detail {
   max-width: 720px;
-  padding: 1rem 1.2rem;
+  padding: 1rem 1.3rem;
   background-color: #2a2a2a;
   border-radius: 8px;
   display: flex;
@@ -205,7 +205,7 @@ textarea {
 input,
 textarea,
 select {
-  width: 100%
+  width: 100%;
 }
 
 .success, .error {
