@@ -359,6 +359,7 @@ export default {
 }
 
 .error {
+  margin-top: 2em;
   z-index: 1100; /* höher als der Header */
   max-width: 80%;
 }

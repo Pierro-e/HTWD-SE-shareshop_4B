@@ -627,7 +627,7 @@ export default {
 
 @media (max-width: 480px) {
   .popup-content {
-    max-width: 250px;
+    max-width: 260px;
   }
 }
 
