@@ -36,6 +36,11 @@ export default {
       localStorage.setItem('user', JSON.stringify(userData))
     }
 
+    function deleteUser(){
+      user.value = { id: null, email: '', name: '' }
+      localStorage.removeItem('user') 
+    }
+
     async function getUser(id) {
       try {
         const response = await axios.get(`http://141.56.137.83:8000/nutzer/by-id`, {
@@ -51,6 +56,7 @@ export default {
     provide('user', user)
     provide('setUser', setUser)
     provide('getUser', getUser)
+    provide('deleteUser', deleteUser)
 
     return {}
   }

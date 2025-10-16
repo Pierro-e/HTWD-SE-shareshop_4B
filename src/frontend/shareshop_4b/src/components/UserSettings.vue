@@ -56,7 +56,7 @@ import axios from 'axios'
 
 export default {
   name: 'UserSettings',
-  inject: ['user'],
+  inject: ['user', 'deleteUser'],
   data() {
     return {
       name: '',
@@ -153,9 +153,7 @@ export default {
     },
 
     logout() {
-      this.user.id = null
-      this.user.name = ''
-      this.user.email = ''
+      this.deleteUser()
       this.$router.push('/')
     }
   }
