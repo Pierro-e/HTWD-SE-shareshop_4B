@@ -7,7 +7,7 @@
       >
         Einkauf abbrechen
       </button>
-      <h2 class="list-title">{{ list_name }}</h2>
+      <h2>{{ list_name }}</h2>
       <button
         @click="einkauf_abschließen"
         class="button button-submit button-submit-header"
@@ -50,10 +50,7 @@
           v-if="produkt.produkt_menge || produkt.einheit_abk"
         >
           <span v-if="produkt.produkt_menge">
-            <strong>Menge:</strong> {{ produkt.produkt_menge }}
-          </span>
-          <span v-if="produkt.einheit_abk">
-            {{ produkt.einheit_abk }}
+            <strong>Menge:</strong> {{ produkt.produkt_menge }} {{ produkt.einheit_abk }}
           </span>
         </div>
         <div class="produkt-info" v-else>
@@ -219,26 +216,6 @@ export default {
   padding-top: 50px;
 }
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100px; /* vorher 60px */
-  background-color: rgb(6, 32, 12);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-.list-title {
-  color: white;
-  font-size: 1.8rem;
-  margin: 0;
-}
-
 .back-button {
   position: absolute;
   left: 20px;
@@ -251,41 +228,6 @@ export default {
   top: 25px;
 }
 
-.produkte-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  padding-top: 140px;
-}
-
-@media (min-width: 768px) {
-  .produkte-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .produkte-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.produkt-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem; /* Abstand zwischen Checkbox und Text */
-}
-
-.produkt-card {
-  background-color: #c8e2c8;
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s ease;
-}
-
 .erledigt {
   opacity: 0.5;
   filter: grayscale(100%);
@@ -294,56 +236,9 @@ export default {
     filter 0.3s ease;
 }
 
-.produkt-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.produkt-name {
-  margin: 0;
-  color: #000000;
-  font-size: 1.2em;
-  font-weight: bold;
-  word-break: break-word;
-}
-
 .produkt-name.erledigt {
   text-decoration: line-through;
   color: #777;
-}
-
-.produkt-info {
-  font-size: 1rem; /* 14px */
-  color: #000000;
-  font-weight: 450;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center; /* Vertikal zentrieren */
-}
-
-.produkt-info strong {
-  font-weight: 600;
-  color: #000000;
-  text-align: left;
-}
-
-.produkt-beschreibung {
-  font-size: 1rem;
-  color: #000000;
-  font-weight: 450;
-  margin-top: 0.5rem;
-  white-space: pre-wrap;
-  text-align: left; /* Linksbündig explizit gesetzt */
-}
-
-.button-product-settings {
-  background: none;
-  color: rgb(61, 57, 53);
-  border: none;
-  font-size: 1.2em;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 10px;
-  line-height: 1; /* optional, für vertikale Ausrichtung */
 }
 
 .produkt-checkbox {

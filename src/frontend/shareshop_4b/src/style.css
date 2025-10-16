@@ -154,6 +154,117 @@ form input {
   box-sizing: border-box;
 }
 
+/* Header für Listen und Einkauf */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px; /* vorher 60px */
+  background-color: rgb(6, 32, 12);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* h2 mittig im Header */
+.header h2 {
+  margin: 0;
+  top: 20px;
+  font-weight: 400;
+  font-size: 1.8rem;
+  color: white;
+  text-align: center;
+  /* Kein position fixed mehr! */
+}
+
+/* Produktgrid und Produktkarten */
+.produkte-grid {
+  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  padding-top: 140px;
+}
+
+@media (min-width: 768px) {
+  .produkte-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .produkte-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.produkt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Button und Name auf gleicher Höhe */
+}
+
+.produkt-card {
+  min-width: 200px;
+  background-color: #c8e2c8;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.produkt-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.produkt-name {
+  margin: 0;
+  color: #000000;
+  font-size: 1.2em;
+  font-weight: bold;
+  word-break: break-word;
+}
+
+.produkt-info {
+  font-size: 1rem; /* 14px */
+  color: #000000;
+  font-weight: 450;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center; /* Vertikal zentrieren */
+}
+
+.produkt-info strong {
+  font-weight: 600;
+  color: #000000;
+  text-align: left;
+}
+
+.produkt-beschreibung {
+  font-size: 1rem;
+  color: #000000;
+  font-weight: 450;
+  margin-top: 0.5rem;
+  white-space: pre-wrap;
+  text-align: left; /* Linksbündig explizit gesetzt */
+}
+
+.button-product-settings {
+  background: none;
+  color: rgb(61, 57, 53);
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 10px;
+  line-height: 1; /* optional, für vertikale Ausrichtung */
+}
+
 /* Erfolg- und Fehlerboxen */
 .success, .error {
   margin-top: 1rem;
@@ -162,7 +273,6 @@ form input {
   border-radius: 5px;
   font-weight: 600;
   text-align: center;
-  width: 100%;
 }
 
 .success {
