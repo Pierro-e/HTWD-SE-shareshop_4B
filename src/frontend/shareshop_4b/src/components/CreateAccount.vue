@@ -1,6 +1,6 @@
 <template>
     <div class="create_account-container">
-        <div class="header">
+        <div class="register-header">
             <button class="button-cancel" @click="$router.push('/')">Zurück</button>
             <h1>Registrieren</h1>
         </div>
@@ -90,14 +90,14 @@ export default {
   text-align: left;
 }
 
-.header {
+.register-header {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.header h1 {
+.register-header h1 {
   margin: 0;
   flex-grow: 1;
   text-align: center;
