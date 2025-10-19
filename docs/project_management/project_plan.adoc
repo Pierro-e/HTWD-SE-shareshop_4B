@@ -16,23 +16,31 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 |*Maximilian Paul*
 |s87085@htw-dresden.de
-|Product Owner
+|SCRUM Master
 
 |*Pierre Kißling*
 |s86388@htw-dresden.de
-|Scrum Master
+|Product Owner
 
 |*Marlene Fritz*
 |s87181@htw-dresden.de
-|Development Team
+|Design Development Team
 
 |*Levin Heinrich*
 |s87139@htw-dresden.de
-|Development Team
+|Functional Development Team
 
 |*Erik Wenke*
 |s86221@htw-dresden.de
-|Development Team
+|Functional Development Team
+
+|*Eric Hübel*
+|sxxxxx@htw-dresden.de
+|Design Development Team
+
+|*Ahmad Alrmih*
+|sxxxxx@htw-dresden.de
+|Functional Development Team
 |===
 
 === Arbeitsumgebung
