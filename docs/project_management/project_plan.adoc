@@ -80,6 +80,7 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 * Arbeit ist ins Remote Repository aufgenommen
 * PBI wurde im wöchentlichen Meeting besprochen
 
+
 == Deployment
 
 * aktuellen Zustand im wöchentlichen Meeting besprechen

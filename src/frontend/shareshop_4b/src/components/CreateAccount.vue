@@ -1,17 +1,17 @@
 <template>
     <div class="create_account-container">
-        <div class="header">
+        <div class="register-header">
             <button class="button-cancel" @click="$router.push('/')">Zurück</button>
             <h1>Registrieren</h1>
         </div>
         <form @submit.prevent="onSubmit">
             <div class="create_email">
-                <label for="email" class="create_block">Email: </label>
+                <label for="email" class="create_block">E-Mail: </label>
                 <input
                     v-model="email"
                     type="email"
                     id="email"
-                    placeholder="Email"
+                    placeholder="E-Mail"
                     required
                 >
             </div>
@@ -87,22 +87,21 @@ export default {
   border-radius: 0.6em;
   box-shadow: 0 0 10px rgba(0,0,0,0.3);
   color: rgba(255, 255, 255, 0.9);
-  font-family: inherit;
   text-align: left;
 }
 
-.header {
+.register-header {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
-.header h1 {
+.register-header h1 {
   margin: 0;
   flex-grow: 1;
   text-align: center;
-  font-size: 2.8rem;
+  font-size: 26.4px;
   font-weight: 600;
 }
 
@@ -123,30 +122,15 @@ form {
 .create_block {
   display: block;
   margin-bottom: 0.3rem;
-  font-weight: 600;
   font-size: 1rem;
 }
 
-input[type="email"],
-input[type="text"],
-input[type="password"] {
+form label {
+  width: 70px;
+}
+
+input {
   width: 100%;
-  padding: 0.5em 0.75em;
-  border-radius: 0.4em;
-  border: 1px solid #555;
-  background-color: #3a3a3a;
-  color: white;
-  font-size: 1rem;
-  font-family: inherit;
-  transition: border-color 0.25s;
-}
-
-input[type="email"]:focus,
-input[type="text"]:focus,
-input[type="password"]:focus {
-  outline: none;
-  border-color: #646cff;
-  box-shadow: 0 0 5px #646cff;
 }
 
 button.button-submit {
@@ -154,12 +138,5 @@ button.button-submit {
   padding: 0.6em 2em;
   font-size: 1.1rem;
   margin-top: 1rem;
-}
-
-.error {
-  color: #ff4c4c;
-  margin-top: 0.8rem;
-  text-align: center;
-  font-weight: 600;
 }
 </style>

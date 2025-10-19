@@ -3,36 +3,37 @@
     <h2>Profil bearbeiten</h2>
 
     <div class="current-user-data">
-      <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier deine E-mail, deinen Namen und dein Passwort ändern</strong></p>
+      <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier deine E-Mail, deinen Namen und dein Passwort ändern</strong></p>
       <p><strong>Aktuelle E-Mail:</strong> {{ email }}</p>
       
     </div>
 
     <form @submit.prevent="updateUser">
-      
-      <div>
-        <label for="name">Neuer Name:</label>
-        <input v-model="name" 
-            type="name" 
-            id="name"            
-        />
-      </div>
-      
-      <div>
-        <label for="email">Neue E-Mail:</label>
-        <input v-model="email" 
-            type="email" 
-            id="email" 
-            required 
-        />
-      </div>
+      <div class="form-content">
+        <div>
+          <label for="name">Neuer Name: </label>
+          <input v-model="name" 
+              type="name" 
+              id="name"            
+          />
+        </div>
+        
+        <div>
+          <label for="email">Neue E-Mail: </label>
+          <input v-model="email" 
+              type="email" 
+              id="email" 
+              required 
+          />
+        </div>
 
-      <div>
-        <label for="password">Neues Passwort:</label>
-        <input v-model="password" 
-            type="password" 
-            id="password"
-            />
+        <div>
+          <label for="password">Neues Passwort: </label>
+          <input v-model="password" 
+              type="password" 
+              id="password"
+              />
+        </div>
       </div>
 
       <button class="button-submit" type="submit">Änderungen speichern</button>
@@ -146,15 +147,12 @@ export default {
 
 
 <style scoped>
-.success {
-  color: green;
+form label {
+  width: 101px;
 }
 
-.error {
-  color: #ff4c4c;
-  margin-top: 0.8rem;
-  text-align: center;
-  font-weight: 600;
+.success {  
+  max-width: 250px;
 }
 
 .current-user-data {
@@ -165,6 +163,13 @@ export default {
   color: #ddd;
   font-size: 0.95rem;
 }
+
+@media (max-width: 480px) {
+  input {
+    max-width: 200px;
+  }
+}
+
 </style>
 
 

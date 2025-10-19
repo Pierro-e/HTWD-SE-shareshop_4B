@@ -3,17 +3,17 @@
     <h2>Login</h2>
     <form @submit.prevent="onSubmit">
       <div class="login_email">
-        <label for="email" class="login_block">Email</label>
+        <label for="email" class="login_block">E-Mail: </label>
         <input
           v-model="email"
           type="email"
           id="email"
-          placeholder="Email"
+          placeholder="E-Mail"
           required
         />
       </div>
       <div class="login_pw">
-        <label for="password" class="login_block">Passwort</label>
+        <label for="password" class="login_block">Passwort: </label>
         <input
           v-model="password"
           type="password"
@@ -76,6 +76,7 @@ export default {
 
 <style scoped>
 .login_container {
+  min-width: 200px;
   max-width: 400px;
   margin: 3em auto;
   padding: 2em;
@@ -91,12 +92,21 @@ h2 {
   margin-top: 0;
   margin-bottom: 1.2em;
   font-weight: 600;
+  font-size: 26.4px;
 }
 
 form {
   display: flex;
   flex-direction: column;
   gap: 1.2em;
+}
+
+form div {
+  gap: 0;
+}
+
+form label {
+  width: auto;
 }
 
 .login_email,
@@ -110,30 +120,9 @@ form {
   font-weight: 500;
 }
 
-input[type="email"],
-input[type="password"] {
-  padding: 0.6em 0.8em;
-  border-radius: 0.4em;
-  border: none;
-  font-size: 1em;
-  box-sizing: border-box;
-  background-color: #3a3a3a;
-  color: white;
-  transition:
-    background-color 0.25s,
-    border-color 0.25s;
-}
-
-input[type="email"]:focus,
-input[type="password"]:focus {
-  outline: none;
-  background-color: #505050;
-  border: 1px solid #646cff;
-}
-
-.error {
-  margin-top: 1em;
-  font-weight: 600;
+.success, .error {
+  width: calc(100% - 2rem);
+  margin-bottom: 0;
 }
 
 .create_account {

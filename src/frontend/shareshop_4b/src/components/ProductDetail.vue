@@ -153,47 +153,30 @@ export default {
 
 <style scoped>
 .product-detail {
+  min-width: 250px;
   max-width: 720px;
-  margin: 2rem auto;
-  padding: 2rem 2.5rem;
+  padding: 1rem 1.3rem;
   background-color: #2a2a2a;
   border-radius: 8px;
-  color: #eee;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.button-cancel {
-  align-self: center;
-  background-color: #6c757d;
-  color: #f0f0f0;
-  border: none;
-  padding: 0.5rem 1.5rem;
-  font-weight: 600;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  min-width: 120px;
-}
-
-.button-cancel:hover,
-.button-cancel:focus {
-  background-color: #565e64;
-}
-
 .product-name {
   font-weight: 700;
   font-size: 2rem;
-  margin-bottom: 2rem;
   text-align: center;
   width: 100%;
 }
 
-form {
-  width: 100%;
+form div {
+  align-items: left;
+  gap: 0;
+}
+
+form label {
+  text-align: center;
 }
 
 .form-group {
@@ -208,28 +191,6 @@ label {
   color: #ccc;
 }
 
-input[type="number"],
-textarea,
-select {
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  border: 1.5px solid #444;
-  border-radius: 5px;
-  background-color: #222;
-  color: #eee;
-  font-family: inherit;
-  resize: vertical;
-  transition: border-color 0.3s ease;
-}
-
-input[type="number"]:focus,
-textarea:focus,
-select:focus {
-  border-color: #3399ff;
-  outline: none;
-  box-shadow: 0 0 8px #3399ff88;
-}
-
 textarea {
   min-height: 80px;
 }
@@ -242,65 +203,19 @@ textarea {
   width: 100%;
 }
 
-button.button-delete,
-button.button-submit {
-  flex: 1;
-  font-size: 1.1rem;
-  padding: 0.6rem 0;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  color: #eee;
-  user-select: none;
-  min-width: 140px;
-  transition: background-color 0.3s ease;
-}
-
-button.button-submit {
-  background-color: #3399ff;
-}
-
-button.button-submit:hover,
-button.button-submit:focus {
-  background-color: #1a73e8;
-}
-
-button.button-delete {
-  background-color: #e55353;
-}
-
-button.button-delete:hover,
-button.button-delete:focus {
-  background-color: #b02a2a;
-}
-
-.success,
-.error {
-  margin-top: 1.5rem;
-  padding: 0.8rem 1rem;
-  border-radius: 5px;
-  font-weight: 600;
-  text-align: center;
+input,
+textarea,
+select {
   width: 100%;
 }
 
-.success {
-  background-color: #264d26;
-  border: 1.5px solid #4caf50;
-  color: #c8facc;
-}
-
-.error {
-  background-color: #4d2626;
-  border: 1.5px solid #e55353;
-  color: #f9c8c8;
+.success, .error {
+  max-width: 210px;
 }
 
 @media (max-width: 480px) {
   .product-detail {
-    padding: 1rem 1.2rem;
+    padding: 1rem 1rem;
   }
 
   .button-row {

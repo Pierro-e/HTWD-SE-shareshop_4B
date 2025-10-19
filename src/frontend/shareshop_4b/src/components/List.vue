@@ -9,7 +9,7 @@
         Zurück
       </button>
 
-      <h2 class="list-title">{{ list_name }}</h2>
+      <h2>{{ list_name }}</h2>
 
       <button
         :disabled="showpopup_product || showpopup_list || showpopup_add_member"
@@ -29,7 +29,7 @@
           @click="openListPopup()"
           class="button button-settings"
         >
-          Listeneininformationen
+          Listeninformationen
         </button>
 
         <button
@@ -76,7 +76,7 @@
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
         <input
-          class="input-product"
+          class="input"
           v-model="new_product"
           type="text"
           placeholder="Produktname"
@@ -96,7 +96,7 @@
       <div class="popup-content">
         <h3>Mitglied hinzufügen</h3>
         <input
-          class="input-product"
+          class="input"
           v-model="new_member_email"
           type="text"
           placeholder="E-Mail"
@@ -129,17 +129,14 @@
             @click="product_settings(produkt)"
             class="button button-product-settings"
           >
-            |||
+            ✏️
           </button>
         </div>
 
         <div class="produkt-info" v-if="produkt.produkt_menge">
-          <span v-if="produkt.produkt_menge">
-            <strong>Menge:</strong> {{ produkt.produkt_menge }}
-          </span>
-          <span v-if="produkt.einheit_abk">
-            {{ produkt.einheit_abk }}
-          </span>
+          <div v-if="produkt.produkt_menge" >
+            <strong>Menge:</strong> {{ produkt.produkt_menge }} {{ produkt.einheit_abk }}
+          </div>
         </div>
         <div class="produkt-info" v-else>
           <span style="visibility: hidden">Platzhalter</span>
@@ -526,20 +523,6 @@ export default {
   padding-top: 50px;
 }
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100px; /* vorher 60px */
-  background-color: rgb(6, 32, 12);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
 /* Zurück-Button links */
 .back-button {
   position: absolute;
@@ -554,21 +537,9 @@ export default {
   top: 25px;
 }
 
-/* h2 mittig im Header */
-.header h2 {
-  margin: 0;
-  top: 20px;
-  font-weight: 400;
-  font-size: 2rem;
-  color: white;
-  text-align: center;
-  /* Kein position fixed mehr! */
-}
-
-.list-title {
-  color: white;
-  font-size: 1.8rem;
-  margin: 0;
+.button-einkauf-tätigen {
+  position: relative;
+  margin-top: 0px;
 }
 
 /* Settings-Container fixiert unter der Überschrift mittig */
@@ -577,32 +548,17 @@ export default {
   top: 100px; /* vorher 60px */
   left: 0;
   width: 100%;
-  z-index: 1100;
+  z-index: 1000;
   padding: 5px 0;
   display: flex;
+  flex-direction: column;
+  gap: 10px; /* Abstand zwischen Buttons */
   justify-content: center;
   align-items: center;
 }
 
-.settings-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* Abstand zwischen Buttons */
-}
-
-.button-einkauf-tätigen {
-  position: relative;
-  margin-top: 0px;
-}
-
-.input-product {
+.input {
   width: 100%;
-  padding: 0.5em;
-  border-radius: 0.25em;
-  border: none;
-  background-color: #3a3a3a;
-  color: white;
-  font-size: 1em;
   box-sizing: border-box;
 }
 
@@ -622,102 +578,27 @@ export default {
 }
 
 .popup-content {
-  background: black;
+  background: #2a2a2a;
   color: white;
   padding: 1em 2em;
   border-radius: 0.5em;
-  min-width: 300px;
+  width: 100%;
+  min-width: 250px;
+  max-width: 300px;
   text-align: center;
   /* Klicks nur auf das Popup zulassen */
   pointer-events: auto;
 }
 
-.produkte-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  padding-top: 140px;
-}
-
-@media (min-width: 768px) {
-  .produkte-grid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 480px) {
+  .popup-content {
+    max-width: 260px;
   }
-}
-
-@media (min-width: 1024px) {
-  .produkte-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.produkt-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* Button und Name auf gleicher Höhe */
-}
-
-.produkt-card {
-  background-color: #c8e2c8;
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s ease;
-}
-
-.produkt-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.produkt-name {
-  margin: 0;
-  color: #000000;
-  font-size: 1.2em;
-  font-weight: bold;
-  word-break: break-word;
-}
-
-.produkt-info {
-  font-size: 1rem; /* 14px */
-  color: #000000;
-  font-weight: 450;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center; /* Vertikal zentrieren */
-}
-
-.produkt-info strong {
-  font-weight: 600;
-  color: #000000;
-  text-align: left;
-}
-
-.produkt-beschreibung {
-  font-size: 1rem;
-  color: #000000;
-  font-weight: 450;
-  margin-top: 0.5rem;
-  white-space: pre-wrap;
-  text-align: left; /* Linksbündig explizit gesetzt */
-}
-
-.button-product-settings {
-  background: none;
-  color: rgb(61, 57, 53);
-  border: none;
-  font-size: 1.2em;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 10px;
-  line-height: 1; /* optional, für vertikale Ausrichtung */
 }
 
 .mitglieder-anzeige {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0.2em 0;
 }
 
 .button-delete-member {
