@@ -1,10 +1,7 @@
 = Projektplan: {project-name}
 include::../_includes/default-attributes.inc.adoc[]
 
-== Einführung
-
 Dieses Dokument beschreibt das kollaborative Zusammenarbeiten innerhalb des Projektes.
-Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsatz von Tools zur effektiven Zusammenarbeit.
 
 == Projektorganisation
 
@@ -59,7 +56,7 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 == Praktiken und Bewertung
 
-* wöchentliches *Online Meeting* - Freitag 12:00 bis 13:30
+* wöchentliches *Online Meeting*: Sonntag 18:00 - 19:30
 
 === Definition of Ready - Product Backlog Item
 
