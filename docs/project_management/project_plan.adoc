@@ -24,23 +24,23 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 |*Marlene Fritz*
 |s87181@htw-dresden.de
-|Design Development Team
+|Design Development
 
 |*Levin Heinrich*
 |s87139@htw-dresden.de
-|Functional Development Team
+|Functional Development
 
 |*Erik Wenke*
 |s86221@htw-dresden.de
-|Functional Development Team
+|Functional Development
 
 |*Eric Hübel*
-|sxxxxx@htw-dresden.de
-|Design Development Team
+|s86462@htw-dresden.de
+|Design Development
 
 |*Ahmad Alrmih*
-|sxxxxx@htw-dresden.de
-|Functional Development Team
+|s86396@htw-dresden.de
+|Functional Development
 |===
 
 === Arbeitsumgebung
