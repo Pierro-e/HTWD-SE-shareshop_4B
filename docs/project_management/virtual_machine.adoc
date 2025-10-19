@@ -1,0 +1,9 @@
+= Verbindung mit VM
+
+== Linux
+
+. (Fingerprint-Erstellung genehmigen)
+. ssh Tool aufrufen mit "ssh seproject@iseproject03.informatik.htw-dresden.de"
+. Passwort: steht im Discord-Channel "allgemein"
+. (ssh key-pair erzeugen)
+. (public-key nach "~/.ssh/authorized_keys" auf der VM kopieren)

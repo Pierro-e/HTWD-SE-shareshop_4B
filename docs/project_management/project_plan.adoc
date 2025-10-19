@@ -16,23 +16,31 @@ Es erläutert die Projektorganisation, verwendete Arbeitsmethoden und den Einsat
 
 |*Maximilian Paul*
 |s87085@htw-dresden.de
-|Product Owner
+|SCRUM Master
 
 |*Pierre Kißling*
 |s86388@htw-dresden.de
-|Scrum Master
+|Product Owner
 
 |*Marlene Fritz*
 |s87181@htw-dresden.de
-|Development Team
+|Design Development
 
 |*Levin Heinrich*
 |s87139@htw-dresden.de
-|Development Team
+|Functional Development
 
 |*Erik Wenke*
 |s86221@htw-dresden.de
-|Development Team
+|Functional Development
+
+|*Eric Hübel*
+|s86462@htw-dresden.de
+|Design Development
+
+|*Ahmad Alrmih*
+|s86396@htw-dresden.de
+|Functional Development
 |===
 
 === Arbeitsumgebung
@@ -88,7 +96,6 @@ Version Control Software unterstützt und ermöglicht unabhängige bis zu "chaot
 Dennoch habe wir festgestellt, dass es hilfreich sein kann eine Workflow zu defninieren, welcher zusätzlichen Arbeitsaufwand minimiert.
 
 include::./version_control_system_workflow.adoc[]
-
 
 === Fortschritt visulaisieren
 
