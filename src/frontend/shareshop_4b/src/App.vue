@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { ref, provide, onMounted } from 'vue'
+import { ref, provide, onMounted, watch } from 'vue'
 import axios from 'axios'
 
 // TODO: formal der Options API von Vue.js anpassen
@@ -18,6 +18,8 @@ export default {
       name: '',
     })
 
+    const theme = ref('Dunkel'); // Standardwert
+
     // User beim Start aus localStorage laden
     onMounted(() => {
       const storedUser = localStorage.getItem('user')
@@ -28,7 +30,19 @@ export default {
           localStorage.removeItem('user')
         }
       }
-    })
+    
+    document.documentElement.setAttribute('css-theme', theme.value); // Thema setzen
+    }),
+
+    // schauen ob sich Thema geändert hat und setzen
+    watch(theme, () => {
+      const theme = localStorage.getItem("theme");
+      if (theme === null){ // Default setzen
+        localStorage.setItem("theme", "Dunkel");
+      }
+
+      document.documentElement.setAttribute("css-theme", theme); // Thema setzen
+    });
 
     function setUser(userData) {
       user.value = userData
