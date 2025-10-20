@@ -210,7 +210,6 @@ class BedarfsvorhersageRead(BaseModel):
     last_update: Optional[date] = None
 
 class BedarfvorhersageCreate(BaseModel):
-    nutzer_id: int
     produkt_id: int
     counter: Decimal
 
@@ -445,14 +444,15 @@ def delete_produkt(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_
 
 
 # --- FavProdukte ---
-@app.get("/fav_produkte/{nutzer_id}", response_model=List[FavProdukteRead])
+
+@app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
 def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     fav_produkte = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id).all()
     return fav_produkte
 
 
-@app.post("/fav_produkte_create/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
+@app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
 
     vorhandenes_fav_produkt = db.query(FavProdukte).filter(
@@ -478,7 +478,7 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
     return neues_fav_produkt
 
 
-@app.delete("/fav_produkte/{nutzer_id}/produkt/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/fav_produkte_delete/nutzer/{nutzer_id}/produkt/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
@@ -489,6 +489,52 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     db.delete(fav_produkt)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+# --- Bedarfsvorhersage ---
+
+# gibt alle Bedarfsvorhersage-Einträge für einen Nutzer zurück
+@app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
+def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    eintraege = db.query(Bedarfsvorhersage).filter(
+        Bedarfsvorhersage.nutzer_id == nutzer_id).all()
+    return eintraege    
+
+# gibt einen spezifischen Bedarfsvorhersage-Eintrag für einen Nutzer und ein Produkt zurück
+@app.get("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
+def get_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    eintrag = db.query(Bedarfsvorhersage).filter(
+        Bedarfsvorhersage.nutzer_id == nutzer_id,
+        Bedarfsvorhersage.produkt_id == produkt_id
+    ).first()
+    if not eintrag:
+        raise HTTPException(status_code=404, detail="Eintrag nicht gefunden")
+    return eintrag
+
+# erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
+# der Counter wird erstmal im Body mit übergeben
+@app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
+def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
+
+    vorhandener_eintrag = db.query(Bedarfsvorhersage).filter(
+        Bedarfsvorhersage.nutzer_id == nutzer_id,
+        Bedarfsvorhersage.produkt_id == eintrag_data.produkt_id
+    ).first()
+
+    if vorhandener_eintrag:
+        vorhandener_eintrag.counter += eintrag_data.counter
+        db.commit()
+        db.refresh(vorhandener_eintrag)
+        return vorhandener_eintrag
+    else:
+        neuer_eintrag = Bedarfsvorhersage(
+        nutzer_id=nutzer_id,
+        produkt_id=eintrag_data.produkt_id,
+        counter=eintrag_data.counter
+        )
+        db.add(neuer_eintrag)
+        db.commit()
+        db.refresh(neuer_eintrag)   
+        return neuer_eintrag
 
 # --- Listen ---
 
