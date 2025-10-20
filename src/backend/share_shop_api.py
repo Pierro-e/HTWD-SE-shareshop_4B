@@ -69,6 +69,15 @@ class ListeProdukte(Base):
     einheit_id = Column(Integer, nullable=True)
     beschreibung = Column(String, nullable=True)
 
+
+class FavProdukte(Base):
+    __tablename__ = "fav_Produkte"
+    nutzer_id = Column(Integer, ForeignKey("Nutzer.id"), primary_key=True)
+    produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
+    menge = Column(Numeric(10, 2), nullable=True)
+    einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
+    beschreibung = Column(String, nullable=True)
+
 # --- Pydantic-Modelle ---
 
 
@@ -169,6 +178,22 @@ class ListeDatumUpdate(BaseModel):
 class ProduktDeleteRequest(BaseModel):
     hinzugefügt_von: int
 
+
+class FavProdukteRead(BaseModel):
+    nutzer_id: int
+    produkt_id: int
+    menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    beschreibung: Optional[str] = None
+
+
+class FavProdukteCreate(BaseModel):
+    nutzer_id: int
+    produkt_id: int
+    menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    beschreibung: Optional[str] = None
+    
 
 class PasswortÄndern(BaseModel):
     neues_passwort: str
