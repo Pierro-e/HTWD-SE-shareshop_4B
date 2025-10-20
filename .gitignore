@@ -2,6 +2,15 @@
 
 node_modules
 
+# Python virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # General
 .DS_Store
 *~
