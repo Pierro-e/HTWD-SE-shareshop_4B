@@ -160,6 +160,7 @@ class LoginRequest(BaseModel):
 
 class ProduktInListeRead(BaseModel):
     produkt_id: int
+    produkt_name: Optional[str] = None
     produkt_menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
     hinzugefügt_von: int
@@ -683,8 +684,20 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
 
-    produkte = db.query(ListeProdukte).filter(
-        ListeProdukte.listen_id == listen_id).all()
+    # JOIN zwischen ListeProdukte und Produkt
+    produkte = (
+        db.query(
+            ListeProdukte.produkt_id,
+            Produkt.name.label("produkt_name"),   # hier holen wir den Namen
+            ListeProdukte.produkt_menge,
+            ListeProdukte.einheit_id,
+            ListeProdukte.hinzugefügt_von,
+            ListeProdukte.beschreibung
+        )
+        .join(Produkt, Produkt.id == ListeProdukte.produkt_id)
+        .filter(ListeProdukte.listen_id == listen_id)
+        .all()
+    )
     return produkte
 
 
