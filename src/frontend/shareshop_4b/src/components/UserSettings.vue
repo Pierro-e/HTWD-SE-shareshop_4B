@@ -226,11 +226,10 @@ form label {
 }
 
 .info-block {
-  background-color: #333;
+  background-color: var(--box-bg-color);
   padding: 1rem;
   margin-bottom: 1rem;
   border-radius: 0.5rem;
-  color: #ddd;
   font-size: 0.95rem;
 }
 

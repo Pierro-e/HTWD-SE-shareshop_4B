@@ -80,7 +80,7 @@ export default {
   max-width: 400px;
   margin: 3em auto;
   padding: 2em;
-  background-color: #2a2a2a;
+  background-color: var(--box-bg-color);
   border-radius: 0.75em;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   color: inherit;

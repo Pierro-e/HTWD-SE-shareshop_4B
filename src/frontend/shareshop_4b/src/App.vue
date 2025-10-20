@@ -18,7 +18,7 @@ export default {
       name: '',
     })
 
-    const theme = ref('Dunkel'); // Standardwert
+    const theme = ref('');
 
     // User beim Start aus localStorage laden
     onMounted(() => {
@@ -31,7 +31,11 @@ export default {
         }
       }
     
-    document.documentElement.setAttribute('css-theme', theme.value); // Thema setzen
+    const theme = localStorage.getItem("theme");
+      if (theme === null){ // Default setzen
+        localStorage.setItem("theme", "Dunkel");
+      }
+    document.documentElement.setAttribute('css-theme', theme); // Thema setzen
     }),
 
     // schauen ob sich Thema geändert hat und setzen
