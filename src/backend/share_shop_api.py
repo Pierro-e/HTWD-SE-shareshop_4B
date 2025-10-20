@@ -1,6 +1,6 @@
 from fastapi import Body
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, func
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
 from typing import List, Optional
@@ -72,11 +72,20 @@ class ListeProdukte(Base):
 
 class FavProdukte(Base):
     __tablename__ = "fav_Produkte"
-    nutzer_id = Column(Integer, ForeignKey("Nutzer.id"), primary_key=True)
+    nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True)
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
     beschreibung = Column(String, nullable=True)
+
+
+class Bedarfsvorhersage(Base):
+    __tablename__ = "Bedarfsvorhersage"
+    nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True )
+    produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
+    counter = Column(Numeric(10, 2), default=0.00)
+    last_update = Column(DateTime, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
+
 
 # --- Pydantic-Modelle ---
 
@@ -193,6 +202,17 @@ class FavProdukteCreate(BaseModel):
     einheit_id: Optional[int] = None
     beschreibung: Optional[str] = None
     
+
+class BedarfsvorhersageRead(BaseModel):
+    nutzer_id: int
+    produkt_id: int
+    counter: Decimal
+    last_update: Optional[date] = None
+
+class BedarfvorhersageCreate(BaseModel):
+    nutzer_id: int
+    produkt_id: int
+    counter: Decimal
 
 class PasswortÄndern(BaseModel):
     neues_passwort: str
