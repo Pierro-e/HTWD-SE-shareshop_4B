@@ -261,27 +261,15 @@ export default {
           `http://141.56.137.83:8000/listen/${id}/produkte`,
         );
         this.listenprodukte = response.data;
+        //console.log(JSON.stringify(response.data, null, 2));
 
         for (const produkt of this.listenprodukte) {
           // Produktname holen
-          try {
-            const res1 = await axios.get(
-              `http://141.56.137.83:8000/produkte/by-id/${produkt.produkt_id}`,
-            );
-            produkt.name = res1.data.name;
-          } catch (innerError) {
-            produkt.name = "[Fehler beim Laden]";
-          }
+          //console.log(produkt.produkt_name);
+          produkt.name = produkt.produkt_name;
 
           // Einheit holen
-          try {
-            const res2 = await axios.get(
-              `http://141.56.137.83:8000/einheiten/${produkt.einheit_id}`,
-            );
-            produkt.einheit_abk = res2.data.abkürzung;
-          } catch (innerError) {
-            produkt.einheit_abk = "";
-          }
+          produkt.einheit_abk = produkt.einheit_abk;
 
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (

@@ -103,48 +103,44 @@ export default {
       }
     },
 
-    async get_products(id) {
+   async get_products(id) {
       this.errorMessage = "";
       try {
         const response = await axios.get(
           `http://141.56.137.83:8000/listen/${id}/produkte`,
         );
         this.listenprodukte = response.data;
+        //console.log(JSON.stringify(response.data, null, 2));
 
         for (const produkt of this.listenprodukte) {
-          try {
-            const res1 = await axios.get(
-              `http://141.56.137.83:8000/produkte/by-id/${produkt.produkt_id}`,
-            );
-            produkt.name = res1.data.name;
-          } catch {
-            produkt.name = "[Fehler beim Laden]";
-          }
+          // Produktname holen
+          //console.log(produkt.produkt_name);
+          produkt.name = produkt.produkt_name;
 
-          try {
-            const res2 = await axios.get(
-              `http://141.56.137.83:8000/einheiten/${produkt.einheit_id}`,
-            );
-            produkt.einheit_abk = res2.data.abkürzung;
-          } catch {
-            produkt.einheit_abk = "";
-          }
+          // Einheit holen
+          produkt.einheit_abk = produkt.einheit_abk;
 
+          // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
             produkt.produkt_menge !== undefined &&
             produkt.produkt_menge !== null
           ) {
             const menge = Number(produkt.produkt_menge);
+            // Prüfen ob die Zahl eine ganze Zahl ist
             if (Number.isInteger(menge)) {
-              produkt.produkt_menge = menge.toString();
+              produkt.produkt_menge = menge.toString(); // z.B. 5 statt 5.00
             } else {
+              // andernfalls auf 2 Nachkommastellen runden (falls notwendig)
               produkt.produkt_menge = menge.toFixed(2);
             }
           }
-          produkt.erledigt = false;
         }
       } catch (error) {
-        if (error.response?.data?.detail) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
           this.errorMessage = error.response.data.detail;
         } else {
           this.errorMessage = "Fehler beim Laden der Produkte";
