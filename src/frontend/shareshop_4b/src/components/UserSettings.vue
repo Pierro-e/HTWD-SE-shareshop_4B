@@ -2,6 +2,10 @@
   <div class="user-settings">
     <h2>Profil bearbeiten</h2>
 
+    <div>
+      <button class="button-cancel" @click="$router.push('/listen')">Zurück zu den Listen</button>
+    </div>
+
     <div class="current-user-data">
       <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier deine E-Mail, deinen Namen und dein Passwort ändern</strong></p>
       <p><strong>Aktuelle E-Mail:</strong> {{ email }}</p>
@@ -39,6 +43,10 @@
       <button class="button-submit" type="submit">Änderungen speichern</button>
     </form>
 
+    <div>
+      <button class="button-submit" @click="logout()">Abmelden</button>
+    </div>
+
     <div v-if="message" class="success">{{ message }}</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
@@ -49,41 +57,32 @@ import axios from 'axios'
 
 export default {
   name: 'UserSettings',
-  inject: ['user'],
+  inject: ['user', 'deleteUser'],
   data() {
     return {
       name: '',
       currentName: '',
+      currentEmail: '',
       email: '',
       password: '',
-      //currentEmail: '',//gebraucht?
       message: '',
       errorMessage: ''
     };
   },
 
-
- 
   async mounted() {
-    // Beim Laden: Werte aus globalem User setzen
     if (this.user?.id) {
       await this.loadUserData()
-      //this.name = this.user.name
-      //this.email = this.user.email
-    }  else {
-      // Für Test: User-ID auf 1 setzen und laden
+    } else {
       this.user.id = 1
       await this.loadUserData()
     }
   },
 
   methods: {
-
     async loadUserData() {
       try {
-        
         const response = await axios.get(`http://141.56.137.83:8000/nutzer/by-id?id=${this.user.id}`)
-        
         this.currentEmail = response.data.email
         this.name = response.data.name
         this.currentName = response.data.name
@@ -93,56 +92,63 @@ export default {
       }
     },
 
-  async updateUser() {
-      
+    async updateUser() {
       this.message = ''
       this.errorMessage = ''
-      
-    try {
-      const promises = []
 
-    // Trim, damit Leerzeichen ignoriert werden
-    const trimmedName = this.name.trim();
-    const trimmedPassword = this.password.trim();
+      try {
+        const promises = []
+        const trimmedName = this.name.trim()
+        const trimmedEmail = this.email.trim()
+        const trimmedPassword = this.password.trim()
 
-    // Name ändern, wenn anders als vorher
-    if (trimmedName !== '') {
-      promises.push(
-        axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/name`, {
-          neuer_name: trimmedName
-        })
-      );
-    }
+        // Name ändern
+        if (trimmedName !== '' && trimmedName !== this.currentName) {
+          promises.push(
+            axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/name`, {
+              neuer_name: trimmedName
+            })
+          )
+        }
 
-     // Passwort ändern, wenn etwas eingegeben wurde
-    if (trimmedPassword !=='') {
-      promises.push(
-        axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/passwort`, {
-          neues_passwort: trimmedPassword
-        })
-      );
-    }
+        // Email ändern
+        if (trimmedEmail !== '' && trimmedEmail !== this.currentEmail) {
+          promises.push(
+            axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/email`, {
+              neue_email: trimmedEmail
+            })
+          )
+        }
 
-      // Warten, bis alle API-Aufrufe abgeschlossen sind
-      await Promise.all(promises);
+        // Passwort ändern
+        if (trimmedPassword !== '') {
+          promises.push(
+            axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/passwort`, {
+              neues_passwort: trimmedPassword
+            })
+          )
+        }
 
+        await Promise.all(promises)
 
-      this.message = 'Daten erfolgreich aktualisiert!'
+        this.message = 'Daten erfolgreich aktualisiert!'
         this.errorMessage = ''
-
-        // Optional: globalen Benutzer aktualisieren
         this.user.email = this.email
         this.user.name = trimmedName
-
         this.password = ''
-
       } catch (err) {
         this.errorMessage = err.response?.data?.detail || 'Fehler beim Aktualisieren'
         this.message = ''
       }
+      this.loadUserData();
+    },
+
+    logout() {
+      this.deleteUser()
+      this.$router.push('/')
     }
   }
-};
+}
 </script>
 
 
