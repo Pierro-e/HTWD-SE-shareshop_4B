@@ -1,6 +1,6 @@
 from fastapi import Body
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, func
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
 from typing import List, Optional
@@ -8,6 +8,7 @@ from datetime import date
 from decimal import Decimal
 from sqlalchemy import or_
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 
 
 DATABASE_URL = "mysql+pymysql://userAdmin:xdb_Admin890!@141.56.137.83/share_shop"
@@ -68,6 +69,24 @@ class ListeProdukte(Base):
     produkt_menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, nullable=True)
     beschreibung = Column(String, nullable=True)
+
+
+class FavProdukte(Base):
+    __tablename__ = "fav_Produkte"
+    nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True)
+    produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
+    menge = Column(Numeric(10, 2), nullable=True)
+    einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
+    beschreibung = Column(String, nullable=True)
+
+
+class Bedarfsvorhersage(Base):
+    __tablename__ = "Bedarfsvorhersage"
+    nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True )
+    produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
+    counter = Column(Numeric(10, 2), default=0.00)
+    last_update = Column(DateTime, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
+
 
 # --- Pydantic-Modelle ---
 
@@ -169,6 +188,31 @@ class ListeDatumUpdate(BaseModel):
 class ProduktDeleteRequest(BaseModel):
     hinzugefügt_von: int
 
+
+class FavProdukteRead(BaseModel):
+    nutzer_id: int
+    produkt_id: int
+    menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    beschreibung: Optional[str] = None
+
+
+class FavProdukteCreate(BaseModel):
+    produkt_id: int
+    menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    beschreibung: Optional[str] = None
+    
+
+class BedarfsvorhersageRead(BaseModel):
+    nutzer_id: int
+    produkt_id: int
+    counter: Decimal
+    last_update: Optional[datetime] = None
+
+class BedarfvorhersageCreate(BaseModel):
+    produkt_id: int
+    counter: Decimal
 
 class PasswortÄndern(BaseModel):
     neues_passwort: str
@@ -409,15 +453,109 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
     return db_produkt
 
 
-@app.delete("/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_produkt(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    produkt = db.query(Produkt).filter(Produkt.id == produkt_id).first()
-    if not produkt:
-        raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
+# --- FavProdukte ---
+
+@app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
+def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    fav_produkte = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id).all()
+    return fav_produkte
+
+
+@app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
+def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
+
+    vorhandenes_fav_produkt = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id,
+        FavProdukte.produkt_id == fav_produkt.produkt_id
+    ).first()
+
+    if vorhandenes_fav_produkt:
+        raise HTTPException(
+            status_code=400, detail="Das Produkt ist bereits in den Favoriten vorhanden")
+
+    neues_fav_produkt = FavProdukte(
+        nutzer_id=nutzer_id,
+        produkt_id=fav_produkt.produkt_id,
+        menge=fav_produkt.menge,
+        einheit_id=fav_produkt.einheit_id,
+        beschreibung=fav_produkt.beschreibung
+    )
+
+    db.add(neues_fav_produkt)
+    db.commit()
+    db.refresh(neues_fav_produkt)
+    return neues_fav_produkt
+
+
+@app.delete("/fav_produkte_delete/nutzer/{nutzer_id}/produkt/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    fav_produkt = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id,
+        FavProdukte.produkt_id == produkt_id
+    ).first()
+    if not fav_produkt:
+        raise HTTPException(status_code=404, detail="Favorisiertes Produkt nicht gefunden")
+    db.delete(fav_produkt)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+# --- Bedarfsvorhersage ---
+
+# gibt alle Bedarfsvorhersage-Einträge für einen Nutzer zurück
+@app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
+def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    eintraege = db.query(Bedarfsvorhersage).filter(
+        Bedarfsvorhersage.nutzer_id == nutzer_id).all()
+    return eintraege    
+
+# gibt einen spezifischen Bedarfsvorhersage-Eintrag für einen Nutzer und ein Produkt zurück
+@app.get("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
+def get_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    eintrag = db.query(Bedarfsvorhersage).filter(
+        Bedarfsvorhersage.nutzer_id == nutzer_id,
+        Bedarfsvorhersage.produkt_id == produkt_id
+    ).first()
+    if not eintrag:
+        raise HTTPException(status_code=404, detail="Eintrag nicht gefunden")
+    return eintrag
+
+# erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
+# der Counter wird erstmal im Body mit übergeben
+@app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
+def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
+
+     # Prüfen, ob Eintrag existiert
+    eintrag = db.query(Bedarfsvorhersage).filter(
+        Bedarfsvorhersage.nutzer_id == nutzer_id,
+        Bedarfsvorhersage.produkt_id == eintrag_data.produkt_id
+    ).first()
+
+    if eintrag:
+        eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(eintrag_data.counter)
     else:
-        db.delete(produkt)
+        eintrag = Bedarfsvorhersage(
+            nutzer_id=nutzer_id,
+            produkt_id=eintrag_data.produkt_id,
+            counter=Decimal(eintrag_data.counter)
+        )
+        db.add(eintrag)
+
+    db.commit()
+    db.refresh(eintrag)
+
+    # Top-10 Einträge nach counter
+    alle_eintraege = db.query(Bedarfsvorhersage)\
+        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)\
+        .order_by(Bedarfsvorhersage.counter.desc())\
+        .all()
+
+    if len(alle_eintraege) > 10:
+        for e in alle_eintraege[10:]:
+            db.delete(e)
         db.commit()
-        return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+    return eintrag
 
 
 # --- Listen ---
