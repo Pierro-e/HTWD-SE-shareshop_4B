@@ -1,12 +1,12 @@
 from fastapi import Body
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import date
 from decimal import Decimal
-from sqlalchemy import or_
+from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 
@@ -163,6 +163,7 @@ class ProduktInListeRead(BaseModel):
     produkt_name: Optional[str] = None
     produkt_menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
+    einheit_abk: Optional[str] = None
     hinzugefügt_von: int
     beschreibung: Optional[str] = None
 
@@ -684,17 +685,19 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
 
-    # JOIN zwischen ListeProdukte und Produkt
+    # JOIN zwischen ListeProdukte, Produkt und Einheit, um die Produktnamen und Einheitenabkürzungen direkt zu holen
     produkte = (
         db.query(
             ListeProdukte.produkt_id,
-            Produkt.name.label("produkt_name"),   # hier holen wir den Namen
+            Produkt.name.label("produkt_name"),
             ListeProdukte.produkt_menge,
             ListeProdukte.einheit_id,
+            case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),  # gucken ob einheit_id NULL ist
             ListeProdukte.hinzugefügt_von,
             ListeProdukte.beschreibung
         )
         .join(Produkt, Produkt.id == ListeProdukte.produkt_id)
+        .outerjoin(Einheit, Einheit.id == ListeProdukte.einheit_id)
         .filter(ListeProdukte.listen_id == listen_id)
         .all()
     )
