@@ -79,15 +79,6 @@ export default {
   },
 
   methods: {
-    async hashPassword(password) {
-      // Passwort mit SHA-256 hashen
-      const encoder = new TextEncoder()
-      const data = encoder.encode(password)
-      const hashBuffer = await crypto.subtle.digest('SHA-256', data)
-      const hashArray = Array.from(new Uint8Array(hashBuffer))
-      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
-    },
-
     async loadUserData() {
       try {
         const response = await axios.get(`http://141.56.137.83:8000/nutzer/by-id?id=${this.user.id}`)
@@ -130,10 +121,9 @@ export default {
 
         // Passwort ändern
         if (trimmedPassword !== '') {
-          const passwortHash = await this.hashPassword(trimmedPassword)
           promises.push(
             axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/passwort`, {
-              neues_passwort: passwortHash
+              neues_passwort: trimmedPassword
             })
           )
         }
