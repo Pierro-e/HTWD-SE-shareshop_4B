@@ -431,9 +431,9 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
         FavProdukte.nutzer_id == nutzer_id).all()
     return fav_produkte
 
-# --- FavProdukte erstellen --- 
+
 @app.post("/fav_produkte_create/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
-def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate, db: Session = Depends(get_db)):
+def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
 
     vorhandenes_fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
@@ -456,6 +456,19 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
     db.commit()
     db.refresh(neues_fav_produkt)
     return neues_fav_produkt
+
+
+@app.delete("/fav_produkte/{nutzer_id}/produkt/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    fav_produkt = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id,
+        FavProdukte.produkt_id == produkt_id
+    ).first()
+    if not fav_produkt:
+        raise HTTPException(status_code=404, detail="Favorisiertes Produkt nicht gefunden")
+    db.delete(fav_produkt)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 # --- Listen ---
 
