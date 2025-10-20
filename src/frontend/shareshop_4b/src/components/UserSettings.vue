@@ -73,9 +73,6 @@ export default {
   async mounted() {
     if (this.user?.id) {
       await this.loadUserData()
-    } else {
-      this.user.id = 1
-      await this.loadUserData()
     }
   },
 
