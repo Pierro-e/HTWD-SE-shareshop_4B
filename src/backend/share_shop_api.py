@@ -8,6 +8,7 @@ from datetime import date
 from decimal import Decimal
 from sqlalchemy import or_
 from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime
 
 
 DATABASE_URL = "mysql+pymysql://userAdmin:xdb_Admin890!@141.56.137.83/share_shop"
@@ -207,7 +208,7 @@ class BedarfsvorhersageRead(BaseModel):
     nutzer_id: int
     produkt_id: int
     counter: Decimal
-    last_update: Optional[date] = None
+    last_update: Optional[datetime] = None
 
 class BedarfvorhersageCreate(BaseModel):
     produkt_id: int
@@ -515,42 +516,38 @@ def get_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: 
 @app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
 
-    vorhandener_eintrag = db.query(Bedarfsvorhersage).filter(
+     # Prüfen, ob Eintrag existiert
+    eintrag = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id,
         Bedarfsvorhersage.produkt_id == eintrag_data.produkt_id
     ).first()
 
-    eintrag = db.query(Bedarfsvorhersage).filter(
-            Bedarfsvorhersage.nutzer_id == nutzer_id,
-            Bedarfsvorhersage.produkt_id == eintrag_data.produkt_id
-        ).first()
-
     if eintrag:
-        eintrag.counter += eintrag_data.counter
+        eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(eintrag_data.counter)
     else:
         eintrag = Bedarfsvorhersage(
             nutzer_id=nutzer_id,
             produkt_id=eintrag_data.produkt_id,
-            counter=eintrag_data.counter
+            counter=Decimal(eintrag_data.counter)
         )
         db.add(eintrag)
 
     db.commit()
     db.refresh(eintrag)
 
-    # Top-10 größten counter prüfen 
+    # Top-10 Einträge nach counter
     alle_eintraege = db.query(Bedarfsvorhersage)\
         .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)\
         .order_by(Bedarfsvorhersage.counter.desc())\
         .all()
 
-    # Mehr als 10 Einträge: die mit den kleinsten counter löschen
     if len(alle_eintraege) > 10:
         for e in alle_eintraege[10:]:
             db.delete(e)
         db.commit()
 
     return eintrag
+
 
 # --- Listen ---
 
