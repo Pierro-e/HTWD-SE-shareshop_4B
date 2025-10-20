@@ -188,7 +188,6 @@ class FavProdukteRead(BaseModel):
 
 
 class FavProdukteCreate(BaseModel):
-    nutzer_id: int
     produkt_id: int
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
@@ -424,6 +423,39 @@ def delete_produkt(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_
         db.commit()
         return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+
+# --- FavProdukte ---
+@app.get("/fav_produkte/{nutzer_id}", response_model=List[FavProdukteRead])
+def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    fav_produkte = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id).all()
+    return fav_produkte
+
+# --- FavProdukte erstellen --- 
+@app.post("/fav_produkte_create/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
+def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate, db: Session = Depends(get_db)):
+
+    vorhandenes_fav_produkt = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id,
+        FavProdukte.produkt_id == fav_produkt.produkt_id
+    ).first()
+
+    if vorhandenes_fav_produkt:
+        raise HTTPException(
+            status_code=400, detail="Das Produkt ist bereits in den Favoriten vorhanden")
+
+    neues_fav_produkt = FavProdukte(
+        nutzer_id=nutzer_id,
+        produkt_id=fav_produkt.produkt_id,
+        menge=fav_produkt.menge,
+        einheit_id=fav_produkt.einheit_id,
+        beschreibung=fav_produkt.beschreibung
+    )
+
+    db.add(neues_fav_produkt)
+    db.commit()
+    db.refresh(neues_fav_produkt)
+    return neues_fav_produkt
 
 # --- Listen ---
 
