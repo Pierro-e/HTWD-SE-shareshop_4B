@@ -433,17 +433,6 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
     return db_produkt
 
 
-@app.delete("/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_produkt(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    produkt = db.query(Produkt).filter(Produkt.id == produkt_id).first()
-    if not produkt:
-        raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
-    else:
-        db.delete(produkt)
-        db.commit()
-        return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-
 # --- FavProdukte ---
 
 @app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
