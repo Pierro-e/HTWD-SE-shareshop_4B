@@ -1,12 +1,44 @@
 <template>
-  <div class="user-settings">
-    <h2>Profil bearbeiten</h2>
+  <h1>Einstellungen</h1>
 
-    <div class="current-user-data">
-      <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier deine E-Mail, deinen Namen und dein Passwort ändern</strong></p>
-      <p><strong>Aktuelle E-Mail:</strong> {{ email }}</p>
-      
+  <div class="info-block">
+      <p><strong>Hallo </strong>{{name}}<strong>, du hier Einstellungen zur Ansicht und zum Profil ändern.</strong></p>
+      <p>
+        <strong>Aktuelle E-Mail:</strong> {{ email }}
+      </p>
+  </div>
+
+  <div class="appearance-settings">
+    <h2>Ansicht</h2>
+
+  <form @submit.prevent="applyAppearance">
+    <div class="form-content">
+      <div>
+        <label for="theme-select">Thema: </label>
+        <select id="theme-select" v-model="theme">
+          <option>Dunkel</option>
+          <option>Hell</option>
+          <option>Automatisch</option>
+        </select>
+      </div>
+      <div>
+        <label for="accent-select">Akzentfarbe: </label>
+        <select id="accent-select" v-model="accent">
+          <option style="color: #646cff">Blau</option>
+          <option style="color: #c04cff">Lila</option>
+          <option style="color: #4ca6a6">Grün</option>
+          <option style="color: #b25050">Rot</option>
+          <option style="color: #cc5c00">Orange</option>
+        </select>
+      </div>
     </div>
+
+  <button class="button-submit" type="submit">Änderungen übernehmen</button>
+  </form>
+  </div>
+
+  <div class="user-settings">
+    <h2>Profil</h2>
 
     <form @submit.prevent="updateUser">
       <div class="form-content">
@@ -39,6 +71,8 @@
       <button class="button-submit" type="submit">Änderungen speichern</button>
     </form>
 
+
+
     <div v-if="message" class="success">{{ message }}</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
@@ -52,19 +86,22 @@ export default {
   inject: ['user'],
   data() {
     return {
+      theme: '',
+      accent: '',
+
       name: '',
       currentName: '',
       email: '',
       password: '',
       //currentEmail: '',//gebraucht?
       message: '',
+
       errorMessage: ''
     };
   },
 
-
- 
   async mounted() {
+    this.loadAppearanceData();
     // Beim Laden: Werte aus globalem User setzen
     if (this.user?.id) {
       await this.loadUserData()
@@ -78,6 +115,20 @@ export default {
   },
 
   methods: {
+    async loadAppearanceData() {
+      this.theme = localStorage.getItem("theme");
+      if (this.theme === null){ // Default setzen
+        localStorage.setItem("theme", "Dunkel");
+        this.theme = "Dunkel";
+      }
+
+      this.accent = localStorage.getItem("accent-color");
+       if (this.accent === null){ // Default setzen
+        localStorage.setItem("accent-color", "Blau");
+        this.accent = "Blau";
+      }
+
+    },
 
     async loadUserData() {
       try {
@@ -93,8 +144,15 @@ export default {
       }
     },
 
-  async updateUser() {
-      
+    async applyAppearance(){
+      this.errorMessage = "Thema: " + this.theme + " | Akzent: " + this.accent;
+      localStorage.setItem("theme", this.theme);
+      localStorage.setItem("accent-color", this.accent);
+
+      document.documentElement.setAttribute("css-theme", this.theme); // Thema setzen
+    },
+
+    async updateUser() {
       this.message = ''
       this.errorMessage = ''
       
@@ -126,7 +184,6 @@ export default {
       // Warten, bis alle API-Aufrufe abgeschlossen sind
       await Promise.all(promises);
 
-
       this.message = 'Daten erfolgreich aktualisiert!'
         this.errorMessage = ''
 
@@ -155,7 +212,7 @@ form label {
   max-width: 250px;
 }
 
-.current-user-data {
+.info-block {
   background-color: #333;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -169,7 +226,6 @@ form label {
     max-width: 200px;
   }
 }
-
 </style>
 
 
