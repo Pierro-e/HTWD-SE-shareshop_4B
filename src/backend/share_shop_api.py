@@ -520,21 +520,37 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
         Bedarfsvorhersage.produkt_id == eintrag_data.produkt_id
     ).first()
 
-    if vorhandener_eintrag:
-        vorhandener_eintrag.counter += eintrag_data.counter
-        db.commit()
-        db.refresh(vorhandener_eintrag)
-        return vorhandener_eintrag
+    eintrag = db.query(Bedarfsvorhersage).filter(
+            Bedarfsvorhersage.nutzer_id == nutzer_id,
+            Bedarfsvorhersage.produkt_id == eintrag_data.produkt_id
+        ).first()
+
+    if eintrag:
+        eintrag.counter += eintrag_data.counter
     else:
-        neuer_eintrag = Bedarfsvorhersage(
-        nutzer_id=nutzer_id,
-        produkt_id=eintrag_data.produkt_id,
-        counter=eintrag_data.counter
+        eintrag = Bedarfsvorhersage(
+            nutzer_id=nutzer_id,
+            produkt_id=eintrag_data.produkt_id,
+            counter=eintrag_data.counter
         )
-        db.add(neuer_eintrag)
+        db.add(eintrag)
+
+    db.commit()
+    db.refresh(eintrag)
+
+    # Top-10 größten counter prüfen 
+    alle_eintraege = db.query(Bedarfsvorhersage)\
+        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)\
+        .order_by(Bedarfsvorhersage.counter.desc())\
+        .all()
+
+    # Mehr als 10 Einträge: die mit den kleinsten counter löschen
+    if len(alle_eintraege) > 10:
+        for e in alle_eintraege[10:]:
+            db.delete(e)
         db.commit()
-        db.refresh(neuer_eintrag)   
-        return neuer_eintrag
+
+    return eintrag
 
 # --- Listen ---
 
