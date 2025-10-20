@@ -578,8 +578,7 @@ export default {
 }
 
 .popup-content {
-  background: #2a2a2a;
-  color: white;
+  background: var(--box-bg-color);
   padding: 1em 2em;
   border-radius: 0.5em;
   width: 100%;
@@ -588,6 +587,7 @@ export default {
   text-align: center;
   /* Klicks nur auf das Popup zulassen */
   pointer-events: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 480px) {
