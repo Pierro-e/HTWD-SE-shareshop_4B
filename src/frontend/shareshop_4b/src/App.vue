@@ -31,18 +31,20 @@ export default {
         }
       }
     
-    const theme = localStorage.getItem("theme");
+    var theme = localStorage.getItem("theme");
       if (theme === null){ // Default setzen
         localStorage.setItem("theme", "Dunkel");
+        theme = "Dunkel";
       }
     document.documentElement.setAttribute('css-theme', theme); // Thema setzen
     }),
 
     // schauen ob sich Thema geändert hat und setzen
     watch(theme, () => {
-      const theme = localStorage.getItem("theme");
+      var theme = localStorage.getItem("theme");
       if (theme === null){ // Default setzen
         localStorage.setItem("theme", "Dunkel");
+        theme = "Dunkel";
       }
 
       document.documentElement.setAttribute("css-theme", theme); // Thema setzen
