@@ -1,7 +1,7 @@
 <template>
   <header>
     <h1>{{ user.name }}'s Einkaufslisten</h1>
-    <button @click="newList" id="newlist">+</button>
+    <button @click="newList" id="newlist" class="button-add">+</button>
   </header>
   <main>
     <ListButton
@@ -9,10 +9,11 @@
       :key="list.id"
       :id="list.id"
       :name="list.name"
+      
     />
   </main>
   <footer>
-    <button class="button-edit" @click="$router.push('/settings')">
+    <button class=button-submit @click="$router.push('/settings')">
       Zu den Profileinstellungen
     </button>
   </footer>

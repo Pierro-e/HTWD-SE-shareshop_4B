@@ -8,14 +8,17 @@
           type="text"
           id="list_name"
           placeholder="WG Albertplatz"
-          required
         />
       </div>
+
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </div>
-    <button class="button-submit" type="submit">Einkaufsliste erstellen</button>
     <button class="button-cancel" @click="$router.push(`/listen`)">Abbrechen</button>
+    <button class="button-submit" type="submit">Erstellen</button>
+
+    
   </form>
-  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+  
 </template>
 
 <script>
@@ -33,6 +36,13 @@ export default {
   methods: {
     async onSubmit() {
       this.errorMessage = "";
+      
+      if (this.name === ""){
+        console.log("EMPTY")
+        this.errorMessage = "Listenname darf nicht leer sein";
+        return;
+      }
+
       try {
         // eine freie ID für die neue Liste bestimmen
         let new_id = 1;
@@ -68,6 +78,9 @@ export default {
 </script>
 
 <style scoped>
+  .error {
+    max-width: 80%;
+  }
 
   form label {
     width: 35px;

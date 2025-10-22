@@ -49,20 +49,25 @@
         <h3>Listeninformationen</h3>
         <p>Name der Liste: {{ list_name }}</p>
         <p>Ersteller: {{ list_creator_name }}</p>
-        <p><u>Mitglieder</u></p>
+
+        <br></br>
+        <h4>Mitglieder</h4>
+        
         <div
           v-for="mitglied in mitglieder"
           :key="mitglied.id"
           class="mitglieder-anzeige"
         >
-          <p>{{ mitglied.name }}</p>
+          <div>{{ mitglied.name }}</div>
           <button
             @click="mitglied_entfernen(mitglied.id)"
             class="button button-delete-member"
           >
             Entfernen
           </button>
+          
         </div>
+        
         <button @click="showpopup_list = false" class="button button-cancel">
           Schließen
         </button>
@@ -86,7 +91,7 @@
         <button @click="cancel_product_popup" class="button button-cancel">
           Abbrechen
         </button>
-        <button @click="add_product" class="button button-add">
+        <button @click="add_product" class="button button-submit">
           Hinzufügen
         </button>
       </div>
@@ -109,7 +114,7 @@
         >
           Abbrechen
         </button>
-        <button @click="mitglied_hinzufügen" class="button button-add">
+        <button @click="mitglied_hinzufügen" class="button button-submit">
           Hinzufügen
         </button>
       </div>
@@ -587,12 +592,13 @@ export default {
 .mitglieder-anzeige {
   display: flex;
   justify-content: space-between;
+  margin-block: 15px;
 }
 
 .button-delete-member {
   background-color: transparent;
   border: none;
-  color: red;
+  color: #dc3545;
   font-weight: bold;
   cursor: pointer;
   padding: 0 0.5em;

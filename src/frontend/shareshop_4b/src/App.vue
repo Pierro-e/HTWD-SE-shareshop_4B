@@ -19,6 +19,7 @@ export default {
     })
 
     const theme = ref('');
+    const accent = ref('');
 
     // User beim Start aus localStorage laden
     onMounted(() => {
@@ -31,23 +32,45 @@ export default {
         }
       }
     
-    var theme = localStorage.getItem("theme");
+      // Theme laden
+      var theme = localStorage.getItem("theme")
       if (theme === null){ // Default setzen
-        localStorage.setItem("theme", "Dunkel");
-        theme = "Dunkel";
+        localStorage.setItem("theme", "Dunkel")
+        theme = "Dunkel"
       }
-    document.documentElement.setAttribute('css-theme', theme); // Thema setzen
-    }),
+
+      document.documentElement.setAttribute('css-theme', theme) // Thema setzen
+
+      // Akzentfarbe laden
+      var accent = localStorage.getItem("accent-color");
+      if (accent === null){ // Default setzen
+        localStorage.setItem("accent-color", "Blau");
+        accent = "Blau";
+      }
+
+      document.documentElement.setAttribute('css-accent', accent) // Farbe setzen
+    });
 
     // schauen ob sich Thema geändert hat und setzen
     watch(theme, () => {
-      var theme = localStorage.getItem("theme");
+      var theme = localStorage.getItem("theme")
       if (theme === null){ // Default setzen
-        localStorage.setItem("theme", "Dunkel");
-        theme = "Dunkel";
+        localStorage.setItem("theme", "Dunkel")
+        theme = "Dunkel"
       }
 
-      document.documentElement.setAttribute("css-theme", theme); // Thema setzen
+      document.documentElement.setAttribute("css-theme", theme) // Thema setzen
+    });
+
+    // schauen ob sich Akzentfarbe geändert hat und setzen
+    watch(accent, () => {
+      var accent = localStorage.getItem("accent-color");
+        if (accent === null){ // Default setzen
+          localStorage.setItem("accent-color", "Blau");
+          accent = "Blau";
+        }
+
+      document.documentElement.setAttribute('css-accent', accent) // Farbe setzen
     });
 
     function setUser(userData) {

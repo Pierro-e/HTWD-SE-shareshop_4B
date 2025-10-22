@@ -1,12 +1,12 @@
 <template>
   <h1>Einstellungen</h1>
 
-    <div>
-      <button class="button-cancel" @click="$router.push('/listen')">Zurück zu den Listen</button>
-    </div>
+  <div>
+    <button class="button-cancel" @click="$router.push('/listen')">Zurück zu den Listen</button>
+  </div>
 
   <div class="info-block">
-      <p><strong>Hallo </strong>{{name}}<strong>, du hier Einstellungen zur Ansicht und zum Profil ändern.</strong></p>
+      <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier Einstellungen zur Ansicht und zum Profil ändern.</strong></p>
       <p>
         <strong>Aktuelle E-Mail:</strong> {{ email }}
       </p>
@@ -29,10 +29,10 @@
         <label for="accent-select">Akzentfarbe: </label>
         <select id="accent-select" v-model="accent">
           <option style="color: #646cff">Blau</option>
-          <option style="color: #c04cff">Lila</option>
+          <option style="color: #9d60ff">Lila</option>
           <option style="color: #4ca6a6">Grün</option>
           <option style="color: #b25050">Rot</option>
-          <option style="color: #cc5c00">Orange</option>
+          <option style="color: #ca7631">Orange</option>
         </select>
       </div>
     </div>
@@ -76,7 +76,7 @@
     </form>
 
     <div>
-      <button class="button-submit" @click="logout()">Abmelden</button>
+      <button @click="logout()">Abmelden</button>
     </div>
 
 
@@ -148,11 +148,12 @@ export default {
     },
 
     async applyAppearance(){
-      this.errorMessage = "Thema: " + this.theme + " | Akzent: " + this.accent;
+      //this.errorMessage = "Thema: " + this.theme + " | Akzent: " + this.accent;
       localStorage.setItem("theme", this.theme);
       localStorage.setItem("accent-color", this.accent);
 
       document.documentElement.setAttribute("css-theme", this.theme); // Thema setzen
+      document.documentElement.setAttribute("css-accent", this.accent); // Farbe setzen
     },
 
     async updateUser() {
@@ -222,7 +223,7 @@ form label {
 }
 
 .success {  
-  max-width: 250px;
+  max-width: 75%;
 }
 
 .info-block {
