@@ -114,6 +114,7 @@
     --inputbox-focus-bg-color: #dfdfdf;
 
     --box-bg-color: #c5c5c5;
+    --box-shadow-color: rgba(0, 0, 0, 0.3);
 
     --success-color: #29692e;
     --success-bg-color: #aff0af;
@@ -134,6 +135,7 @@
     --inputbox-focus-bg-color: #505050;
 
     --box-bg-color: #2a2a2a;
+    --box-shadow-color: rgba(255, 255, 255, 0.3);
 
     --success-color: #a4ffac;
     --success-bg-color: #264d26;
