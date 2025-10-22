@@ -82,7 +82,7 @@ export default {
   padding: 2em;
   background-color: var(--box-bg-color);
   border-radius: 0.75em;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px var(--box-shadow-color);
   color: inherit;
   font-size: 1.1rem;
   text-align: left;

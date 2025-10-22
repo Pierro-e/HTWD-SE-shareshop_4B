@@ -161,7 +161,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px var(--box-shadow-color);
 }
 
 .product-name {

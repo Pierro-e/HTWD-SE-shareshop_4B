@@ -580,7 +580,7 @@ export default {
   text-align: center;
   /* Klicks nur auf das Popup zulassen */
   pointer-events: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px var(--box-shadow-color);
 }
 
 @media (max-width: 480px) {
