@@ -45,7 +45,7 @@
     </div>
 
     <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
 
     <div v-if="showpopup_list" class="popup-overlay">
       <div class="popup-content">
