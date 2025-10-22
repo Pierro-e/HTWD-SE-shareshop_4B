@@ -6,10 +6,13 @@
   </div>
 
   <div class="info-block">
-      <p><strong>Hallo </strong>{{name}}<strong>, du kannst hier Einstellungen zur Ansicht und zum Profil ändern.</strong></p>
-      <p>
-        <strong>Aktuelle E-Mail:</strong> {{ email }}
-      </p>
+    <div v-if="loadingActive" class="loading">Laden...</div>
+    <p v-if="!loadingActive">
+      <strong>Hallo </strong>{{name}}<strong>, du kannst hier Einstellungen zur Ansicht und zum Profil ändern.</strong>
+    </p>
+    <p v-if="!loadingActive">
+      <strong>Aktuelle E-Mail:</strong> {{ email }}
+    </p>
   </div>
 
   <div class="appearance-settings">
@@ -79,8 +82,6 @@
       <button @click="logout()">Abmelden</button>
     </div>
 
-
-
     <div v-if="message" class="success">{{ message }}</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
@@ -104,7 +105,8 @@ export default {
       password: '',
       message: '',
 
-      errorMessage: ''
+      errorMessage: '',
+      loadingActive: true
     };
   },
 
@@ -142,9 +144,18 @@ export default {
         this.name = response.data.name
         this.currentName = response.data.name
         this.email = response.data.email
-      } catch (err) {
-        this.errorMessage = 'Fehler beim Laden der Daten'
+      }  catch (error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
+          this.errorMessage = error.response.data.detail;
+        } else {
+          this.errorMessage = "Fehler beim Laden der Daten";
+        }
       }
+      this.loadingActive = false;
     },
 
     async applyAppearance(){
