@@ -16,9 +16,8 @@
       </button>
     </div>
 
-    <div v-if="errorMessage" class="error">
-    {{ errorMessage }}
-    </div>
+    <div v-if="loadingActive" class="loading">Laden...</div>
+    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 
     <div class="produkte-grid">
       <div
@@ -82,6 +81,7 @@ export default {
     return {
       list_name: "",
       errorMessage: "",
+      loadingActive: true,
       listenprodukte: [],
       userData: null,
     };
@@ -101,6 +101,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Liste";
         }
       }
+      loadingActive = false;
     },
 
    async get_products(id) {

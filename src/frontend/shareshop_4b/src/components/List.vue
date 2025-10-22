@@ -44,6 +44,9 @@
       </div>
     </div>
 
+    <div v-if="loadingActive" class="loading">Laden...</div>
+    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+
     <div v-if="showpopup_list" class="popup-overlay">
       <div class="popup-content">
         <h3>Listeninformationen</h3>
@@ -174,6 +177,7 @@ export default {
       list_creator_id: null,
       list_creator_name: "",
       errorMessage: "",
+      loadingActive: true,
       showpopup_product: false,
       showpopup_list: false,
       showpopup_delete_member: false,
@@ -212,6 +216,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Liste";
         }
       }
+      this.loadingActive = false;
     },
 
     async get_list_members(id) {
@@ -367,6 +372,7 @@ export default {
         return;
       }
 
+      this.loadingActive = true;
       try {
         await axios.post(
           `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`,
@@ -382,6 +388,7 @@ export default {
         }
       }
       this.get_products(list_id);
+      this.loadingActive = false;
     },
 
     cancel_product_popup() {

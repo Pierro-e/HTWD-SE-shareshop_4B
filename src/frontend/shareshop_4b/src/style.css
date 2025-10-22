@@ -418,7 +418,7 @@ form select {
 }
 
 /* Erfolg- und Fehlerboxen */
-.success, .error {
+.success, .error, .loading {
   margin-left: auto;
   margin-right: auto;
   margin-top: 0.5rem;
@@ -442,6 +442,11 @@ form select {
   border: 1.5px solid var(--error-border-color);
   color: var(--error-color);
   width: calc(100% - 2rem);
+}
+
+.loading {
+  font-weight: bold;
+  font-size: larger;
 }
 
 .card {
