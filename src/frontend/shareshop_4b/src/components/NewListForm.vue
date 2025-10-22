@@ -10,15 +10,12 @@
           placeholder="WG Albertplatz"
         />
       </div>
-
-      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </div>
+    
     <button class="button-cancel" @click="$router.push(`/listen`)">Abbrechen</button>
     <button class="button-submit" type="submit">Erstellen</button>
-
-    
   </form>
-  
+  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 </template>
 
 <script>
@@ -79,11 +76,11 @@ export default {
 
 <style scoped>
   .error {
-    max-width: 80%;
+    width: 80%;
   }
 
   form label {
-    width: 35px;
+    width: 40px;
   }
 
 </style>

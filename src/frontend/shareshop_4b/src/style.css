@@ -419,6 +419,8 @@ form select {
 
 /* Erfolg- und Fehlerboxen */
 .success, .error {
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
   padding: 0.4rem 1rem;
