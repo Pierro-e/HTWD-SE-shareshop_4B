@@ -101,7 +101,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Liste";
         }
       }
-      loadingActive = false;
+      this.loadingActive = false;
     },
 
    async get_products(id) {
@@ -147,6 +147,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Produkte";
         }
       }
+      loadingActive = false;
     },
 
     einkauf_abbrechen() {
