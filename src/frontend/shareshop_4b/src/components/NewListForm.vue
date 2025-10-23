@@ -35,7 +35,6 @@ export default {
       this.errorMessage = "";
       
       if (this.name === ""){
-        console.log("EMPTY")
         this.errorMessage = "Listenname darf nicht leer sein";
         return;
       }

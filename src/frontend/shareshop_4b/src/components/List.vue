@@ -313,7 +313,7 @@ export default {
       this.errorMessage = "";
       this.showpopup_list = true;
       this.showpopup_product = false;
-      this.get_list_members(this.list_id);
+      //this.get_list_members(this.list_id);
     },
 
     openProductPopup() {
