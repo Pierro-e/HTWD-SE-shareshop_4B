@@ -1,6 +1,7 @@
 <template>
   <!-- The outer <button> gives us native button semantics (focus, keyboard, etc.) -->
   <button
+    class="star-button"
     :style="{ '--size': size + 'px', '--color': color }"
     @click="$emit('click')"
   >
@@ -9,24 +10,38 @@
 </template>
 
 <script setup>
+/**
+ * Props
+ *  - size   : Number – side length of the star (default 48 px)
+ *  - color  : String – fill colour of the star (default #ffcc00)
+ */
 defineProps({
   size: { type: Number, default: 48 },
   color: { type: String, default: '#ffcc00' }
 })
+
+// Emit a native click event so the parent can listen with @click
+defineEmits(['click'])
 </script>
 
 <style scoped>
-button {
+.star-button {
+  /* Use CSS variables for easy theming */
   --size: 48px;
   --color: #ffcc00;
 
+  /* Basic button reset */
   background: none;
   border: none;
   padding: 0;
   cursor: pointer;
   outline: none;
+
+  /* Size the container */
   width: var(--size);
   height: var(--size);
+
+  /* Center the star shape */
   display: flex;
   align-items: center;
   justify-content: center;
