@@ -1,6 +1,7 @@
 <template>
   <div class="product-detail">
     <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">abbrechen</button>
+    <FavButton/>
 
     <h2 class="product-name">{{ name }}</h2>
 
@@ -12,19 +13,19 @@
 
       <div class="form-group">
         <label for="menge">Menge:</label>
-        <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
+        <input id="menge" type="number" step="0.01" min="0" v-model.number="menge"/>
       </div>
 
       <div class="form-group">
         <label for="einheit">Einheit:</label>
         <select id="einheit" v-model="einheit">
           <option disabled value="">Bitte wählen</option>
-          <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
+          <option v-for="e in einheiten" :key="e.id" :value="e.id"> {{ e.name }} </option>
         </select>
       </div>
 
       <div class="button-row">
-        <button type="button" class="button-delete" @click="deleteProduct">Löschen</button>
+        <button type="button" class="button-delete" @click="deleteProduct"> Löschen </button>
         <button type="submit" class="button-submit">Speichern</button>
       </div>
     </form>
@@ -36,8 +37,10 @@
 
 <script>
 import axios from "axios";
+import FavButton from "./FavButton.vue";
 
 export default {
+  components: {FavButton},
   props: ["produktId", "listenId", "nutzerId"],
   data() {
     return {
@@ -62,13 +65,13 @@ export default {
     async fetchProduct() {
       try {
         const response = await axios.get(
-          `http://141.56.137.83:8000/listen/${this.listenId}/produkte`
+          `http://141.56.137.83:8000/listen/${this.listenId}/produkte`,
         );
         const produkte = response.data;
         const produkt = produkte.find(
           (p) =>
             p.produkt_id === parseInt(this.produktId) &&
-            p.hinzugefügt_von === parseInt(this.nutzerId)
+            p.hinzugefügt_von === parseInt(this.nutzerId),
         );
         if (!produkt) {
           this.errorMessage = "Produkt in dieser Liste nicht gefunden.";
@@ -93,7 +96,7 @@ export default {
     async fetchProduktName() {
       try {
         const response = await axios.get(
-          `http://141.56.137.83:8000/produkte/by-id/${this.produkt_id}`
+          `http://141.56.137.83:8000/produkte/by-id/${this.produkt_id}`,
         );
         this.name = response.data.name;
       } catch {
@@ -105,7 +108,7 @@ export default {
       this.errorMessage = "";
 
       // Validierung: Menge > 0 aber keine Einheit ausgewählt
-      if (this.menge > 0 && (!this.einheit || this.einheit === "" || this.einheit === 0)) {
+      if ( this.menge > 0 && (!this.einheit || this.einheit === "" || this.einheit === 0)) {
         this.errorMessage = "Bitte wählen Sie eine Einheit aus, wenn eine Menge angegeben ist.";
         return; // abbrechen
       }
@@ -122,7 +125,7 @@ export default {
       try {
         await axios.put(
           `http://141.56.137.83:8000/listen/${this.listenId}/produkte/${this.produkt_id}/nutzer/${this.hinzugefügt_von}`,
-          daten
+          daten,
         );
         this.message = "Produkt erfolgreich aktualisiert.";
         this.$router.push(`/list/${this.listenId}`);
