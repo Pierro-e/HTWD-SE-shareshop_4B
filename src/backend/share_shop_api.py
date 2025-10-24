@@ -204,7 +204,7 @@ class FavProdukteCreate(BaseModel):
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
     beschreibung: Optional[str] = None
-    
+
 
 class BedarfsvorhersageRead(BaseModel):
     nutzer_id: int
@@ -374,7 +374,7 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
     db.commit()
     db.refresh(nutzer)
 
-    return nutzer   
+    return nutzer
 
 
 @app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
@@ -509,7 +509,7 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     eintraege = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id).all()
-    return eintraege    
+    return eintraege
 
 # gibt einen spezifischen Bedarfsvorhersage-Eintrag für einen Nutzer und ein Produkt zurück
 @app.get("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
