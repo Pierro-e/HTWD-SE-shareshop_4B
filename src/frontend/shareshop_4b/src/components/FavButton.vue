@@ -1,24 +1,15 @@
 <template>
-  <button
-    class="active"
-    @click="$emit('click')"
-  >
-    <slot />
-  </button>
+  <button :class="fav_flag && 'fav'"/>
 </template>
 
 <script setup>
 const props = defineProps({
-  fav_flag: { type: Boolean, default: true},
-  color: { type: String, default: '#ffcc00' }
+  fav_flag: { type: Boolean, default: false}, // true := product is a favorite
 });
-
-// Emit a native click event so the parent can listen with @click
-defineEmits(['click'])
 </script>
 
 <style scoped>
-/* General Styling of the FavButton */
+/* general styling */
 button{
   background: none;
   outline: none;
@@ -50,7 +41,8 @@ button::before {
   );
 }
 
-button:active::before {
+/* color ★ if product is a favorite */
+.fav::before{
   background: #ffcc00;
 }
 </style>
