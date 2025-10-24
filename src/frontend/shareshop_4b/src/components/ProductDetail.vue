@@ -1,7 +1,11 @@
 <template>
   <div class="product-detail">
     <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">abbrechen</button>
-    <FavButton/>
+
+    <FavButton
+      :fav_flag="isFav"
+      @changedFav="updateFav"
+    />
 
     <h2 class="product-name">{{ name }}</h2>
 
@@ -37,6 +41,7 @@
 
 <script>
 import axios from "axios";
+import { ref } from "vue";
 import FavButton from "./FavButton.vue";
 
 export default {
@@ -53,6 +58,7 @@ export default {
       einheiten: [],
       errorMessage: "",
       message: "",
+      isFav: false,
     };
   },
   async mounted() {
@@ -60,8 +66,56 @@ export default {
     await this.fetchEinheiten();
     await this.fetchProduct();
     await this.fetchProduktName();
+    await this.fetchFavorit();
   },
   methods: {
+    updateFav(){
+      try{
+        // Produkt-Favorit-Makierung anpassen
+        this.isFav = !this.isFav;
+
+        if (this.isFav) {
+          // neuen Favoriten hinzufügen
+          const new_fav_produkt = {
+            nutzer_id:    this.nutzerId,
+            produkt_id:   this.produktId,
+            menge:        parseInt(this.menge),
+            einheit_id:   parseInt(this.einheit),
+            beschreibung: this.beschreibung
+          }
+          const response = axios.post(
+            `http://141.56.137.83:8000/fav_produkte_create/nutzer/${this.nutzerId}`,
+            new_fav_produkt
+          );
+        }
+        else {
+          // Favoriten löschen
+          const response = axios.delete(
+            `http://141.56.137.83:8000/fav_produkte_delete/nutzer/${this.nutzerId}/produkt/${this.produktId}`
+          );
+        }
+      } catch (error) {
+        console.log("Fehler beim Updaten der Favoriten.");
+      }
+    },
+    async fetchFavorit(){
+      try{
+        // festellen, ob Produkt Favorit ist
+        const response = await axios.get(
+          `http://141.56.137.83:8000/fav_produkte/nutzer/${this.nutzerId}`
+        );
+        const favorit = response.data.find(
+          (p) =>
+            p.produkt_id === parseInt(this.produktId) &&
+            p.nutzer_id === parseInt(this.nutzerId)
+        );
+
+        // Produkt-Favorit-Makierung einfärben
+        if (favorit) this.isFav = true;
+      } catch (error) {
+        this.errorMessage = error.response?.data?.detail || "Fehler beim Laden der Favoriten.";
+      }
+    },
     async fetchProduct() {
       try {
         const response = await axios.get(
