@@ -16,6 +16,8 @@ export default {
       id: null,
       email: '',
       name: '',
+      theme: null,
+      color: null
     })
 
     const theme = ref('');
@@ -31,7 +33,7 @@ export default {
           localStorage.removeItem('user')
         }
       }
-    
+
       // Theme laden
       var theme = localStorage.getItem("theme")
       if (theme === null){ // Default setzen
