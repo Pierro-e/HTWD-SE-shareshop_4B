@@ -392,6 +392,21 @@ def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends
             status_code=404, detail="Keine Listen für diesen Nutzer gefunden")
     return listen
 
+# -- Funktion, in der die Ansichtseinstellungen des Nutzer geändert werden können ---
+@app.put("/nutzer_change/{nutzer_id}/theme_color", status_code=status.HTTP_200_OK)
+def change_theme_color(nutzer_id: int, theme: int = Body(...), color: int = Body(...), db: Session = Depends(get_db)):
+    nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
+
+    if not nutzer:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+    nutzer.theme = theme
+    nutzer.color = color
+    db.commit()
+    db.refresh(nutzer)
+
+    return nutzer       
+
 
 # --- Einheiten ---
 
