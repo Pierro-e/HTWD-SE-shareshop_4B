@@ -17,11 +17,8 @@ export default {
       email: '',
       name: '',
       theme: null,
-      color: null
+      accent: null
     })
-
-    const theme = ref('');
-    const accent = ref('');
 
     // User beim Start aus localStorage laden
     onMounted(() => {
