@@ -73,13 +73,16 @@ export default {
     });
 
     function setUser(userData) {
-      user.value = userData
+      user.value = {
+        ...userData,
+        accent: userData.color  // color in accent übernehmen
+      }
       // User auch im localStorage speichern
-      localStorage.setItem('user', JSON.stringify(userData))
+      localStorage.setItem('user', JSON.stringify(user.value))
     }
-
+    
     function deleteUser(){
-      user.value = { id: null, email: '', name: '' }
+      user.value = { id: null, email: '', name: '', theme: null, accent: null }
       localStorage.removeItem('user') 
     }
 
