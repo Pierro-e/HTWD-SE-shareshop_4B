@@ -20,6 +20,10 @@ export default {
       accent: null
     })
 
+    const theme = ref(null)
+    const accent = ref(null)
+
+
     // User beim Start aus localStorage laden
     onMounted(() => {
       const storedUser = localStorage.getItem('user')
@@ -80,7 +84,7 @@ export default {
       // User auch im localStorage speichern
       localStorage.setItem('user', JSON.stringify(user.value))
     }
-    
+
     function deleteUser(){
       user.value = { id: null, email: '', name: '', theme: null, accent: null }
       localStorage.removeItem('user') 
