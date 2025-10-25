@@ -1,54 +1,34 @@
 <template>
   <div class="einkauf">
     <div class="header">
-      <button
-        @click="einkauf_abbrechen"
-        class="button button-cancel back-button"
-      >
+      <button @click="einkauf_abbrechen" class="button button-cancel back-button">
         Einkauf abbrechen
       </button>
       <h2>{{ list_name }}</h2>
-      <button
-        @click="einkauf_abschließen"
-        class="button button-submit button-submit-header"
-      >
+      <button @click="einkauf_abschließen" class="button button-submit button-submit-header">
         Einkauf abschließen
       </button>
     </div>
 
     <div v-if="errorMessage" class="error">
-    {{ errorMessage }}
+      {{ errorMessage }}
     </div>
 
     <div class="produkte-grid">
-      <div
-        v-for="(produkt, index) in listenprodukte"
-        :key="index"
-        class="produkt-card"
-        :class="{ erledigt: produkt.erledigt }"
-      >
+      <div v-for="(produkt, index) in listenprodukte" :key="index" class="produkt-card"
+        :class="{ erledigt: produkt.erledigt }">
         <div class="produkt-header">
-          <input
-            type="checkbox"
-            :id="`check-${index}`"
-            class="produkt-checkbox"
-            @change="toggle_Erledigt(produkt, $event)"
-          />
+          <input type="checkbox" :id="`check-${index}`" class="produkt-checkbox"
+            @change="toggle_Erledigt(produkt, $event)" />
           <h3 class="produkt-name" :class="{ erledigt: produkt.erledigt }">
             {{ produkt.name || "Unbekanntes Produkt" }}
           </h3>
-          <button
-            @click="product_details(produkt)"
-            class="button button-product-settings"
-          >
+          <button @click="product_details(produkt)" class="button button-product-settings">
             ✏️
           </button>
         </div>
 
-        <div
-          class="produkt-info"
-          v-if="produkt.produkt_menge || produkt.einheit_abk"
-        >
+        <div class="produkt-info" v-if="produkt.produkt_menge || produkt.einheit_abk">
           <span v-if="produkt.produkt_menge">
             <strong>Menge:</strong> {{ produkt.produkt_menge }} {{ produkt.einheit_abk }}
           </span>
@@ -165,10 +145,17 @@ export default {
       produkt.erledigt = event.target.checked;
     },
 
+
     async einkauf_abschließen() {
       this.errorMessage = "";
       const list_id = this.list_id || this.$route.params.listenId;
       try {
+
+
+        if (!this.listenprodukte || this.listenprodukte.length === 0) {
+          this.errorMessage = "Keine Produkte vorhanden!";
+          return;
+        }
         const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
 
         if (erledigteProdukte.length === 0) {
@@ -201,6 +188,10 @@ export default {
       }
     },
   },
+
+
+
+
   mounted() {
     this.errorMessage = "";
     const id = this.list_id || this.$route.params.listenId;
@@ -255,6 +246,7 @@ export default {
 
 .error {
   margin-top: 2em;
-  z-index: 1100; /* höher als der Header */
+  z-index: 1100;
+  /* höher als der Header */
 }
 </style>
