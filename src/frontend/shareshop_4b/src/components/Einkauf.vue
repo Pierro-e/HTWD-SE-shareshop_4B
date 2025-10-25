@@ -189,9 +189,6 @@ export default {
     },
   },
 
-
-
-
   mounted() {
     this.errorMessage = "";
     const id = this.list_id || this.$route.params.listenId;
