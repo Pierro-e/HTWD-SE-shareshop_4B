@@ -26,6 +26,8 @@ class Nutzer(Base):
     email = Column(String, unique=True, index=True, nullable=False)
     name = Column(String, nullable=False)
     passwort_hash = Column(String, nullable=False)
+    theme = Column(Integer, default=0)
+    color = Column(Integer, default=0)
 
 
 class Einheit(Base):
@@ -96,6 +98,8 @@ class NutzerRead(BaseModel):
     email: str
     name: str
     passwort_hash: str
+    theme: int
+    color: int
 
     class Config:
         from_attributes = True
