@@ -111,22 +111,13 @@ export default {
         this.errorMessage = "Bitte wählen Sie eine Einheit aus, wenn eine Menge angegeben ist.";
         return; // abbrechen
       }
+
       // Validierung: Menge = 0 aber Einheit ausgewählt
       if (this.einheit && (!this.menge || this.menge === 0)) {
         this.errorMessage = "Bitte geben Sie eine Menge an, wenn eine Einheit ausgewählt ist.";
-        return; // abbrechen
-      }
-      // Validierung: Einheit stück, Menge= Dezimalzahl
-      if (this.einheit) {
-        const selectedEinheit = this.einheiten.find(e => e.id === this.einheit);
-        if (selectedEinheit && selectedEinheit.name.toLowerCase() === "stück") {
-          if (this.menge && !Number.isInteger(this.menge)) {
-            this.errorMessage = "Für die Einheit 'Stück' muss die Menge eine ganze Zahl sein.";
-            return; // abbrechen
-          }
-        }
-      }
-      
+        return; 
+      } 
+
 
       let menge = this.menge == null || this.menge == 0 ? 0 : this.menge;
       let einheit_id = menge === 0 ? 0 : this.einheit;
