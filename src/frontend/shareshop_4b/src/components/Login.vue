@@ -40,6 +40,7 @@ import axios from "axios";
 
 export default {
   name: "Login",
+  inject: ["setUser", 'getThemeText', 'getAccentText', 'deleteUser'], // theme, accent, setUser aus app.vue injizieren
   data() {
     return {
       email: "",
@@ -50,7 +51,6 @@ export default {
       accent: ''
     };
   },
-  inject: ["setUser", 'getThemeText', 'getAccentText'], // theme, accent, setUser aus app.vue injizieren
   methods: {
     async onSubmit() {
       this.errorMessage = "";
@@ -84,6 +84,9 @@ export default {
 
       this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
     },
+  },
+  mounted() {
+    this.deleteUser() // Vor dem Login sicherstellen, dass kein User eingeloggt ist
   },
 };
 </script>
