@@ -45,9 +45,12 @@ export default {
       email: "",
       password: "",
       errorMessage: "",
+
+      theme: '',
+      accent: ''
     };
   },
-  inject: ["setUser"], // setUser aus app.vue injizieren
+  inject: ["setUser", 'getThemeText', 'getAccentText'], // theme, accent, setUser aus app.vue injizieren
   methods: {
     async onSubmit() {
       this.errorMessage = "";
@@ -57,6 +60,15 @@ export default {
           passwort: this.password,
         });
         this.setUser(response.data); // Benutzerdaten setzen
+
+        // Theme setzen
+        const json = response.data
+        this.theme = this.getThemeText(json.theme)
+        this.accent = this.getAccentText(json.color)
+
+        document.documentElement.setAttribute("css-theme", this.theme) // Thema setzen
+        document.documentElement.setAttribute('css-accent', this.accent) // Farbe setzen
+
         this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
       } catch (error) {
         if (

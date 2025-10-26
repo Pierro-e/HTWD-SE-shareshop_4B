@@ -23,9 +23,9 @@
       <div>
         <label for="theme-select">Thema: </label>
         <select id="theme-select" v-model="theme">
+          <option>Automatisch</option>
           <option>Dunkel</option>
           <option>Hell</option>
-          <option>Automatisch</option>
         </select>
       </div>
       <div>
@@ -92,7 +92,7 @@ import axios from 'axios'
 
 export default {
   name: 'UserSettings',
-  inject: ['user', 'deleteUser'],
+  inject: ['user', 'deleteUser', 'getThemeText', 'getAccentText'],
   data() {
     return {
       theme: '',
@@ -123,17 +123,13 @@ export default {
 
   methods: {
     async loadAppearanceData() {
-      this.theme = localStorage.getItem("theme");
-      if (this.theme === null){ // Default setzen
-        localStorage.setItem("theme", "Dunkel");
-        this.theme = "Dunkel";
-      }
+      // Theme laden
+      this.theme = this.getThemeText(this.user.theme)
+      document.documentElement.setAttribute('css-theme', this.theme) // Thema setzen
 
-      this.accent = localStorage.getItem("accent-color");
-       if (this.accent === null){ // Default setzen
-        localStorage.setItem("accent-color", "Blau");
-        this.accent = "Blau";
-      }
+      // Akzentfarbe laden
+      this.accent = this.getAccentText(this.user.color)
+      document.documentElement.setAttribute('css-accent', this.accent) // Farbe setzen
 
     },
 
@@ -159,12 +155,51 @@ export default {
     },
 
     async applyAppearance(){
-      //this.errorMessage = "Thema: " + this.theme + " | Akzent: " + this.accent;
-      localStorage.setItem("theme", this.theme);
-      localStorage.setItem("accent-color", this.accent);
+       try {
+          await axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/theme_color`, {
+            theme: this.getThemeNumber(this.theme),
+            color: this.getAccentNumber(this.accent)
+          })
+      } catch(error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
+          this.errorMessage = error.response.data.detail;
+        } else {
+          this.errorMessage = "Konnte Ansicht nicht hochladen!";
+        }
+      }
+
+      // localStorage User aktualisieren
+      this.user.theme = this.getThemeNumber(this.theme)
+      this.user.color = this.getAccentNumber(this.accent)
+      localStorage.setItem('user', JSON.stringify(this.user)) 
 
       document.documentElement.setAttribute("css-theme", this.theme); // Thema setzen
       document.documentElement.setAttribute("css-accent", this.accent); // Farbe setzen
+    },
+
+    // Integerwert als Farbe interpretieren
+    getAccentNumber(userAccent) {
+      switch (userAccent){
+        case "Blau": return 0;
+        case "Lila": return 1;
+        case "Grün": return 2; 
+        case "Rot": return 3;
+        case "Orange": return 4;
+        default: return 0 // Default setzen
+      }
+    },
+
+    getThemeNumber(userTheme) {
+      switch (userTheme){
+        case "Automatisch": return 0;
+        case "Dunkel": return 1;
+        case "Hell": return 2;
+        default: return 0 // Default setzen
+      }
     },
 
     async updateUser() {

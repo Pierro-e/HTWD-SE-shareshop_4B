@@ -20,66 +20,61 @@ export default {
       accent: null
     })
 
-    const theme = ref(null)
-    const accent = ref(null)
-
+    var theme = ref(null)
+    var accent = ref(null)
 
     // User beim Start aus localStorage laden
     onMounted(() => {
-      const storedUser = localStorage.getItem('user')
+      let storedUser = localStorage.getItem('user')
       if (storedUser) {
         try {
           user.value = JSON.parse(storedUser)
         } catch {
-          localStorage.removeItem('user')
+          user.value = { id: null, email: '', name: '', theme: null, accent: null }
+          localStorage.setItem('user', JSON.stringify(user.value))
         }
+      }
+      else { // Leerwerte setzen
+        user.value = { id: null, email: '', name: '', theme: null, accent: null }
+        localStorage.setItem('user', JSON.stringify(user.value))
+        
+        storedUser = localStorage.getItem('user') // user erneut laden
       }
 
       // Theme laden
-      var theme = localStorage.getItem("theme")
-      if (theme === null){ // Default setzen
-        localStorage.setItem("theme", "Dunkel")
-        theme = "Dunkel"
-      }
-
+      theme = getThemeText(storedUser.theme)
       document.documentElement.setAttribute('css-theme', theme) // Thema setzen
 
       // Akzentfarbe laden
-      var accent = localStorage.getItem("accent-color");
-      if (accent === null){ // Default setzen
-        localStorage.setItem("accent-color", "Blau");
-        accent = "Blau";
-      }
-
+      accent = getAccentText(storedUser.color)
       document.documentElement.setAttribute('css-accent', accent) // Farbe setzen
     });
 
-    // schauen ob sich Thema geändert hat und setzen
-    watch(theme, () => {
-      var theme = localStorage.getItem("theme")
-      if (theme === null){ // Default setzen
-        localStorage.setItem("theme", "Dunkel")
-        theme = "Dunkel"
+    // Integerwert als Thema interpretieren
+    function getThemeText(userTheme) {
+      switch (userTheme){
+        case 0: return "Automatisch"
+        case 1: return "Dunkel"
+        case 2: return "Hell"
+        default: return "Automatisch" // Default setzen
       }
+    }
 
-      document.documentElement.setAttribute("css-theme", theme) // Thema setzen
-    });
-
-    // schauen ob sich Akzentfarbe geändert hat und setzen
-    watch(accent, () => {
-      var accent = localStorage.getItem("accent-color");
-        if (accent === null){ // Default setzen
-          localStorage.setItem("accent-color", "Blau");
-          accent = "Blau";
-        }
-
-      document.documentElement.setAttribute('css-accent', accent) // Farbe setzen
-    });
+    // Integerwert als Farbe interpretieren
+    function getAccentText(userAccent) {
+      switch (userAccent){
+        case 0: return "Blau";
+        case 1: return "Lila";
+        case 2: return "Grün"; 
+        case 3: return "Rot";
+        case 4: return "Orange";
+        default: return "Blau" // Default setzen
+      }
+    }
 
     function setUser(userData) {
       user.value = {
-        ...userData,
-        accent: userData.color  // color in accent übernehmen
+        ...userData
       }
       // User auch im localStorage speichern
       localStorage.setItem('user', JSON.stringify(user.value))
@@ -87,7 +82,16 @@ export default {
 
     function deleteUser(){
       user.value = { id: null, email: '', name: '', theme: null, accent: null }
-      localStorage.removeItem('user') 
+      localStorage.setItem('user', JSON.stringify(user.value))
+
+      // Theme zurücksetzen
+      let storedUser = localStorage.getItem('user')
+      //console.log("Theme reset: " + storedUser)
+      theme = getThemeText(storedUser.theme)
+      accent = getAccentText(storedUser.color)
+
+      document.documentElement.setAttribute("css-theme", theme) // Thema setzen
+      document.documentElement.setAttribute('css-accent', accent) // Farbe setzen
     }
 
     async function getUser(id) {
@@ -106,6 +110,8 @@ export default {
     provide('setUser', setUser)
     provide('getUser', getUser)
     provide('deleteUser', deleteUser)
+    provide('getThemeText', getThemeText)
+    provide('getAccentText', getAccentText)
 
     return {}
   }
