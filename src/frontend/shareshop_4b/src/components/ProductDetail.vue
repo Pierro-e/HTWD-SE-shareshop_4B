@@ -118,6 +118,16 @@ export default {
         return; 
       } 
 
+     // Validierung: Einheit stück, Menge= Dezimalzahl
+      if (this.einheit) {
+        const selectedEinheit = this.einheiten.find(e => e.id === this.einheit);
+        if (selectedEinheit && selectedEinheit.name.toLowerCase() === "stück") {
+          if (this.menge && !Number.isInteger(this.menge)) {
+            this.errorMessage = "Für die Einheit 'Stück' muss die Menge eine ganze Zahl sein.";
+            return; 
+          }
+        }
+      }
 
       let menge = this.menge == null || this.menge == 0 ? 0 : this.menge;
       let einheit_id = menge === 0 ? 0 : this.einheit;
