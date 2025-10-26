@@ -4,8 +4,9 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+
+  color: var(--text-color);
+  background-color: var(--bg-color);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,11 +14,144 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+[css-accent="Blau"] {
+  --accent-color: #646cff;
+  --accent-button-color: #3350d4;
+  --accent-button-cancel-color: #66688d;
+
+  --accent-product-card-color: #bccae2;
+
+  --accent-header-bg-color: #1a1c3b;
+}
+
+[css-accent="Lila"] {
+  --accent-color: #9d60ff;
+  --accent-button-color: #6728cc;
+  --accent-button-cancel-color: #7e7194;
+
+  --accent-product-card-color: #d7cde7;
+
+  --accent-header-bg-color: #221438;
+}
+
+[css-accent="Grün"] {
+  --accent-color: #359191;
+  --accent-button-color: #126862;
+  --accent-button-cancel-color: #688383;
+
+  --accent-product-card-color: #c6e2d5;
+
+  --accent-header-bg-color: #123131;
+}
+
+[css-accent="Rot"] {
+  --accent-color: #b25050;
+  --accent-button-color: #9e2f2f;
+  --accent-button-cancel-color: #b48686;
+  
+  --accent-product-card-color: #e4cccc;
+
+  --accent-header-bg-color: #300f0f;
+}
+
+[css-accent="Orange"] {
+  --accent-color: #ca7631;
+  --accent-button-color: #cc5c00;
+  --accent-button-cancel-color: #d89d6c;
+
+  --accent-product-card-color: #d8c7b9;
+  
+  --accent-header-bg-color: #3d1b00;
+  
+}
+
+[css-theme="Hell"] {
+  --bg-color: #ececec;
+  --text-color: #000000;
+
+  --inputbox-color: #000000;
+  --inputbox-bg-color: #e6e6e6;
+  --inputbox-focus-bg-color: #dfdfdf;
+
+  --box-bg-color: #c5c5c5;
+  --box-shadow-color: rgba(0, 0, 0, 0.3);
+
+  --success-color: #29692e;
+  --success-bg-color: #aff0af;
+  --success-border-color: #4caf50;
+  --error-color: #692d2d;
+  --error-bg-color: #f0adb3;
+  --error-border-color: #c0392b;
+}
+
+[css-theme="Dunkel"] {
+  --bg-color: #111111;
+  --text-color: #ffffff;
+
+  --inputbox-color: #ffffff;
+  --inputbox-bg-color: #3a3a3a;
+  --inputbox-focus-bg-color: #505050;
+
+  --box-bg-color: #2a2a2a;
+  --box-shadow-color: rgba(220, 220, 220, 0.3);
+
+  --success-color: #a4ffac;
+  --success-bg-color: #264d26;
+  --success-border-color: #4caf50;
+  --error-color: #f9c8c8;
+  --error-border-color: #e55353;
+  --error-bg-color: #4d2626;
+}
+
+
+@media (prefers-color-scheme: light) {
+  [css-theme="Automatisch"] {
+    --bg-color: #ececec;
+    --text-color: #000000;
+
+    --inputbox-color: #000000;
+    --inputbox-bg-color: #e6e6e6;
+    --inputbox-focus-bg-color: #dfdfdf;
+
+    --box-bg-color: #c5c5c5;
+    --box-shadow-color: rgba(0, 0, 0, 0.3);
+
+    --success-color: #29692e;
+    --success-bg-color: #aff0af;
+    --success-border-color: #4caf50;
+    --error-color: #692d2d;
+    --error-bg-color: #f0adb3;
+    --error-border-color: #c0392b;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [css-theme="Automatisch"] {
+    --bg-color: #111111;
+    --text-color: #ffffff;
+
+    --inputbox-color: #ffffff;
+    --inputbox-bg-color: #3a3a3a;
+    --inputbox-focus-bg-color: #505050;
+
+    --box-bg-color: #2a2a2a;
+    --box-shadow-color: rgba(255, 255, 255, 0.3);
+
+    --success-color: #a4ffac;
+    --success-bg-color: #264d26;
+    --success-border-color: #4caf50;
+    --error-color: #f9c8c8;
+    --error-border-color: #e55353;
+    --error-bg-color: #4d2626;
+  }
+}
+
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--accent-color);
   text-decoration: inherit;
 }
+
 a:hover {
   color: #535bf2;
 }
@@ -48,9 +182,9 @@ h1 {
 button {
    /*Legt einen Rahmen mit 1 Pixel Breite, durchgehend (solid), aber unsichtbar an */
   border: 1px solid transparent;
-  background-color: #166762;
+  background-color: var(--accent-button-color);
   /*Textfarbe*/
-  color: rgb(235, 236, 230);
+  color: white;
   /*Wieviel Padding rund um Schrift -> beeinflusst Groesse des Buttons*/
   padding: 0.6em 1.2em;
   /*Runde Ecken*/
@@ -71,16 +205,19 @@ button {
   cursor: pointer;
   /*Animation des Rahmens über 0.25 sek*/
   transition: border-color 0.25s;
+
+  transform: translateZ(0) scale(1);
+  transition: transform .15s;
 }
 
 /*wirkt nur bei <button>-Elementen mit class="button-add"*/
 .button-add {
-  background-color: #28a745; 
+  background-color: #259740; 
 }
 
 .button-cancel {
-  background-color: #ffc107; 
-  color: black;
+  background-color: var(--accent-button-cancel-color); 
+  color: white;
 }
 
 .button-delete {
@@ -88,20 +225,20 @@ button {
 }
 
 .button-edit {
-  background-color: #007bff; 
+  background-color: #0069da; 
 }
 
 .button-submit {
-  background-color: #646cff;
+  background-color: var(--accent-color);
 }
 
 button:hover {
-  /* Vergrößert das Element um 5% */
-  transform: scale(1.05); 
+  /* Vergrößert das Element um 3% */
+  transform: scale(1.03);
   /* Fügt einen Schatten hinzu */
-  box-shadow: 0 0.3em 0.6em rgba(0, 0, 0, 0.1); 
+  box-shadow: 0 0.3em 0.6em var(--box-shadow-color); 
   /*ändert Randfarbe*/
-  border-color: #646cff;
+  border-color: var(--accent-color);
 }
 
 button:focus,
@@ -109,15 +246,19 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+button:active {
+  transform: scale(0.97);
+}
+
 /* Eingabefelder */
 input, textarea, select {
   padding: 0.6em 0.8em;
   border-radius: 0.4em;
-  border: 1px solid transparent;
+  border: 1px solid gray;
   font-size: 1em;
   box-sizing: border-box;
-  background-color: #3a3a3a;
-  color: white;
+  background-color: var(--inputbox-bg-color);
+  color: var(--inputbox-color);
   font-family: inherit;
   resize: vertical;
   transition:
@@ -125,10 +266,15 @@ input, textarea, select {
     border-color 0.25s;
 }
 
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  background-color: #505050;
-  border: 1px solid #646cff;
+input:focus, textarea:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -1px;
+  background-color: var(--inputbox-focus-bg-color);
+}
+
+select:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -1px;
 }
 
 /* Formular (besser geeignet, wenn Label: [Textbox])*/
@@ -143,6 +289,7 @@ form div {
   display: flex;
   align-items: center;
   gap: 1em;
+  width: 100%; 
 }
 
 form label {
@@ -154,6 +301,11 @@ form input {
   box-sizing: border-box;
 }
 
+form select {
+  flex: 1; /* Rest ausfüllen */
+  box-sizing: border-box;
+}
+
 /* Header für Listen und Einkauf */
 .header {
   position: fixed;
@@ -161,12 +313,12 @@ form input {
   left: 0;
   width: 100%;
   height: 100px; /* vorher 60px */
-  background-color: rgb(6, 32, 12);
+  background-color: var(--accent-header-bg-color);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 5px var(--box-shadow-color);
 }
 
 /* h2 mittig im Header */
@@ -209,17 +361,17 @@ form input {
 }
 
 .produkt-card {
-  min-width: 200px;
-  background-color: #c8e2c8;
+  min-width: 225px;
+  background-color: var(--accent-product-card-color);
   border: 1px solid #e5e7eb;
   border-radius: 1rem;
   padding: 1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px var(--box-shadow-color);
   transition: box-shadow 0.3s ease;
 }
 
 .produkt-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--box-shadow-color);
 }
 
 .produkt-name {
@@ -266,9 +418,11 @@ form input {
 }
 
 /* Erfolg- und Fehlerboxen */
-.success, .error {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+.success, .error, .loading {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
   padding: 0.4rem 1rem;
   border-radius: 5px;
   font-weight: 600;
@@ -276,40 +430,25 @@ form input {
 }
 
 .success {
-  background-color: #264d26;
-  border: 1.5px solid #4caf50;
-  color: #a4ffac;
+  background-color: var(--success-bg-color);
+  border: 1.5px solid var(--success-border-color);
+  color: var(--success-color);
   width: calc(100% - 2rem);
   margin: 1.5rem auto 0 auto;
 }
 
 .error {
-  background-color: #4d2626;
-  border: 1.5px solid #e55353;
-  color: #f9c8c8;
+  background-color: var(--error-bg-color);
+  border: 1.5px solid var(--error-border-color);
+  color: var(--error-color);
   width: calc(100% - 2rem);
+}
+
+.loading {
+  font-weight: bold;
+  font-size: larger;
 }
 
 .card {
   padding: 2em;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: rgba(0, 0, 0, 0.87);
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-}
-
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    background-color: #000000;
-  }
-  a:hover {
-    color: #747bff;
-  }
 }

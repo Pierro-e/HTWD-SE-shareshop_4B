@@ -40,24 +40,26 @@ import axios from "axios";
 
 export default {
   name: "Login",
+  inject: ["setUser", 'getThemeText', 'getAccentText', 'deleteUser'], // theme, accent, setUser aus app.vue injizieren
   data() {
     return {
       email: "",
       password: "",
       errorMessage: "",
+
+      theme: '',
+      accent: ''
     };
   },
-  inject: ["setUser"], // setUser aus app.vue injizieren
   methods: {
     async onSubmit() {
       this.errorMessage = "";
+      let response;
       try {
-        const response = await axios.post("http://141.56.137.83:8000/login", {
+        response = await axios.post("http://141.56.137.83:8000/login", {
           email: this.email,
           passwort: this.password,
         });
-        this.setUser(response.data); // Benutzerdaten setzen
-        this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
       } catch (error) {
         if (
           error.response &&
@@ -68,8 +70,23 @@ export default {
         } else {
           this.errorMessage = "Falsche Zugangsdaten";
         }
+        return
       }
+      this.setUser(response.data); // Benutzerdaten setzen
+
+      // Theme setzen
+      const json = response.data
+      this.theme = this.getThemeText(json.theme)
+      this.accent = this.getAccentText(json.color)
+
+      document.documentElement.setAttribute("css-theme", this.theme) // Thema setzen
+      document.documentElement.setAttribute('css-accent', this.accent) // Farbe setzen
+
+      this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
     },
+  },
+  mounted() {
+    this.deleteUser() // Vor dem Login sicherstellen, dass kein User eingeloggt ist
   },
 };
 </script>
@@ -80,9 +97,9 @@ export default {
   max-width: 400px;
   margin: 3em auto;
   padding: 2em;
-  background-color: #2a2a2a;
+  background-color: var(--box-bg-color);
   border-radius: 0.75em;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px var(--box-shadow-color);
   color: inherit;
   font-size: 1.1rem;
   text-align: left;

@@ -156,11 +156,12 @@ export default {
   min-width: 250px;
   max-width: 720px;
   padding: 1rem 1.3rem;
-  background-color: #2a2a2a;
+  background-color: var(--box-bg-color);
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 4px 12px var(--box-shadow-color);
 }
 
 .product-name {
@@ -188,7 +189,6 @@ form label {
 label {
   font-weight: 600;
   margin-bottom: 0.35rem;
-  color: #ccc;
 }
 
 textarea {

@@ -44,25 +44,33 @@
       </div>
     </div>
 
+    <div v-if="loadingActive" class="loading">Laden...</div>
+    <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
+
     <div v-if="showpopup_list" class="popup-overlay">
       <div class="popup-content">
         <h3>Listeninformationen</h3>
         <p>Name der Liste: {{ list_name }}</p>
         <p>Ersteller: {{ list_creator_name }}</p>
-        <p><u>Mitglieder</u></p>
+
+        <br></br>
+        <h4>Mitglieder</h4>
+        
         <div
           v-for="mitglied in mitglieder"
           :key="mitglied.id"
           class="mitglieder-anzeige"
         >
-          <p>{{ mitglied.name }}</p>
+          <div>{{ mitglied.name }}</div>
           <button
             @click="mitglied_entfernen(mitglied.id)"
             class="button button-delete-member"
           >
             Entfernen
           </button>
+          
         </div>
+        
         <button @click="showpopup_list = false" class="button button-cancel">
           Schließen
         </button>
@@ -86,7 +94,7 @@
         <button @click="cancel_product_popup" class="button button-cancel">
           Abbrechen
         </button>
-        <button @click="add_product" class="button button-add">
+        <button @click="add_product" class="button button-submit">
           Hinzufügen
         </button>
       </div>
@@ -109,7 +117,7 @@
         >
           Abbrechen
         </button>
-        <button @click="mitglied_hinzufügen" class="button button-add">
+        <button @click="mitglied_hinzufügen" class="button button-submit">
           Hinzufügen
         </button>
       </div>
@@ -169,6 +177,7 @@ export default {
       list_creator_id: null,
       list_creator_name: "",
       errorMessage: "",
+      loadingActive: true,
       showpopup_product: false,
       showpopup_list: false,
       showpopup_delete_member: false,
@@ -207,6 +216,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Liste";
         }
       }
+      this.loadingActive = false;
     },
 
     async get_list_members(id) {
@@ -261,27 +271,15 @@ export default {
           `http://141.56.137.83:8000/listen/${id}/produkte`,
         );
         this.listenprodukte = response.data;
+        //console.log(JSON.stringify(response.data, null, 2));
 
         for (const produkt of this.listenprodukte) {
           // Produktname holen
-          try {
-            const res1 = await axios.get(
-              `http://141.56.137.83:8000/produkte/by-id/${produkt.produkt_id}`,
-            );
-            produkt.name = res1.data.name;
-          } catch (innerError) {
-            produkt.name = "[Fehler beim Laden]";
-          }
+          //console.log(produkt.produkt_name);
+          produkt.name = produkt.produkt_name;
 
           // Einheit holen
-          try {
-            const res2 = await axios.get(
-              `http://141.56.137.83:8000/einheiten/${produkt.einheit_id}`,
-            );
-            produkt.einheit_abk = res2.data.abkürzung;
-          } catch (innerError) {
-            produkt.einheit_abk = "";
-          }
+          produkt.einheit_abk = produkt.einheit_abk;
 
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
@@ -315,7 +313,7 @@ export default {
       this.errorMessage = "";
       this.showpopup_list = true;
       this.showpopup_product = false;
-      this.get_list_members(this.list_id);
+      //this.get_list_members(this.list_id);
     },
 
     openProductPopup() {
@@ -374,6 +372,7 @@ export default {
         return;
       }
 
+      this.loadingActive = true;
       try {
         await axios.post(
           `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`,
@@ -389,6 +388,7 @@ export default {
         }
       }
       this.get_products(list_id);
+      this.loadingActive = false;
     },
 
     cancel_product_popup() {
@@ -578,8 +578,7 @@ export default {
 }
 
 .popup-content {
-  background: #2a2a2a;
-  color: white;
+  background: var(--box-bg-color);
   padding: 1em 2em;
   border-radius: 0.5em;
   width: 100%;
@@ -588,6 +587,7 @@ export default {
   text-align: center;
   /* Klicks nur auf das Popup zulassen */
   pointer-events: auto;
+  box-shadow: 0 4px 12px var(--box-shadow-color);
 }
 
 @media (max-width: 480px) {
@@ -599,12 +599,13 @@ export default {
 .mitglieder-anzeige {
   display: flex;
   justify-content: space-between;
+  margin-block: 15px;
 }
 
 .button-delete-member {
   background-color: transparent;
   border: none;
-  color: red;
+  color: #dc3545;
   font-weight: bold;
   cursor: pointer;
   padding: 0 0.5em;

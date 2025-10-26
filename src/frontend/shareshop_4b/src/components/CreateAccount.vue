@@ -81,12 +81,10 @@ export default {
 /* dein CSS bleibt unverändert */
 .create_account-container {
   max-width: 400px;
-  margin: 2rem auto;
   padding: 2rem;
-  background-color: #2a2a2a;
+  background-color: var(--box-bg-color);
   border-radius: 0.6em;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 12px var(--box-shadow-color);
   text-align: left;
 }
 
