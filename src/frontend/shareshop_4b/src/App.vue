@@ -16,8 +16,8 @@ export default {
       id: null,
       email: '',
       name: '',
-      theme: null,
-      accent: null
+      theme: 0,
+      accent: 0
     })
 
     var theme = ref(null)
@@ -41,12 +41,13 @@ export default {
         storedUser = localStorage.getItem('user') // user erneut laden
       }
 
+      let userJson = JSON.parse(storedUser)
       // Theme laden
-      theme = getThemeText(storedUser.theme)
+      theme = getThemeText(userJson.theme)
       document.documentElement.setAttribute('css-theme', theme) // Thema setzen
 
       // Akzentfarbe laden
-      accent = getAccentText(storedUser.color)
+      accent = getAccentText(userJson.color)
       document.documentElement.setAttribute('css-accent', accent) // Farbe setzen
     });
 
