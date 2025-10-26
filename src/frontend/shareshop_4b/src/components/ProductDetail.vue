@@ -10,10 +10,7 @@
         <textarea id="beschreibung" v-model="beschreibung"></textarea>
       </div>
 
-      <div class="form-group">
-        <label for="menge">Menge:</label>
-        <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
-      </div>
+
 
       <div class="form-group">
         <label for="einheit">Einheit:</label>
@@ -21,6 +18,11 @@
           <option disabled value="">Bitte wählen</option>
           <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
         </select>
+      </div>
+
+      <div class="form-group">
+        <label for="menge">Menge:</label>
+        <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
       </div>
 
       <div class="button-row">
@@ -108,6 +110,23 @@ export default {
       if (this.menge > 0 && (!this.einheit || this.einheit === "" || this.einheit === 0)) {
         this.errorMessage = "Bitte wählen Sie eine Einheit aus, wenn eine Menge angegeben ist.";
         return; // abbrechen
+      }
+
+      // Validierung: Menge = 0 aber Einheit ausgewählt
+      if (this.einheit && (!this.menge || this.menge === 0)) {
+        this.errorMessage = "Bitte geben Sie eine Menge an, wenn eine Einheit ausgewählt ist.";
+        return; 
+      } 
+
+     // Validierung: Einheit stück, Menge= Dezimalzahl
+      if (this.einheit) {
+        const selectedEinheit = this.einheiten.find(e => e.id === this.einheit);
+        if (selectedEinheit && selectedEinheit.name.toLowerCase() === "stück") {
+          if (this.menge && !Number.isInteger(this.menge)) {
+            this.errorMessage = "Für die Einheit 'Stück' muss die Menge eine ganze Zahl sein.";
+            return; 
+          }
+        }
       }
 
       let menge = this.menge == null || this.menge == 0 ? 0 : this.menge;
