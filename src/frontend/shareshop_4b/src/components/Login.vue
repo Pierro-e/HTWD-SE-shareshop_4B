@@ -54,22 +54,12 @@ export default {
   methods: {
     async onSubmit() {
       this.errorMessage = "";
+      let response;
       try {
-        const response = await axios.post("http://141.56.137.83:8000/login", {
+        response = await axios.post("http://141.56.137.83:8000/login", {
           email: this.email,
           passwort: this.password,
         });
-        this.setUser(response.data); // Benutzerdaten setzen
-
-        // Theme setzen
-        const json = response.data
-        this.theme = this.getThemeText(json.theme)
-        this.accent = this.getAccentText(json.color)
-
-        document.documentElement.setAttribute("css-theme", this.theme) // Thema setzen
-        document.documentElement.setAttribute('css-accent', this.accent) // Farbe setzen
-
-        this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
       } catch (error) {
         if (
           error.response &&
@@ -80,7 +70,19 @@ export default {
         } else {
           this.errorMessage = "Falsche Zugangsdaten";
         }
+        return
       }
+      this.setUser(response.data); // Benutzerdaten setzen
+
+      // Theme setzen
+      const json = response.data
+      this.theme = this.getThemeText(json.theme)
+      this.accent = this.getAccentText(json.color)
+
+      document.documentElement.setAttribute("css-theme", this.theme) // Thema setzen
+      document.documentElement.setAttribute('css-accent', this.accent) // Farbe setzen
+
+      this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
     },
   },
 };
