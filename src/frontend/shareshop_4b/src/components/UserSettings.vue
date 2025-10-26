@@ -115,9 +115,6 @@ export default {
     // Beim Laden: Werte aus globalem User setzen
     if (this.user?.id) {
       await this.loadUserData()
-    } else {
-      this.user.id = 1
-      await this.loadUserData()
     }
   },
 
