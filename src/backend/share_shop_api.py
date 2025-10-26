@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from fastapi import Body
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
@@ -11,7 +13,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 
 
-DATABASE_URL = "mysql+pymysql://userAdmin:xdb_Admin890!@141.56.137.83/share_shop"
+load_dotenv()
+DATABASE_URL = f"mysql+pymysql://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@{os.environ['DB_HOST']}/{os.environ['DB_NAME']}"
+
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=True)
