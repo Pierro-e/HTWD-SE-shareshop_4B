@@ -439,6 +439,14 @@ export default {
       }
       console.log(`Suche nach E-Mail: ${user_email}`);
 
+      // email prüfen
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(user_email)) {
+        this.errorMessage = "Bitte eine gültige E-Mail-Adresse eingeben!";
+        return;
+      }
+
       try {
         const userResponse = await axios.get(
           `http://141.56.137.83:8000/nutzer/by-email`,
