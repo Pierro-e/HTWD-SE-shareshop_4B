@@ -155,7 +155,6 @@ export default {
       mitglieder_ids: [],
       mitglieder: [],
       userData: null, // hier speichern wir den injecteten user
-      confirmDeleteVisible: false,
     };
   },
 
@@ -479,7 +478,7 @@ export default {
 
       this.$router.push(`/list/${list_id}/einkauf`);
     },
-    // liste löschen Funktion hier hinzufügen
+    // liste löschen Funktion hinzgefügt
     async liste_löschen() {
       this.errorMessage = "";
 
@@ -619,7 +618,7 @@ export default {
   color: darkred;
 }
 
-/* für List-button  */
+/* für delete-List-button  */
 .button-delete {
   background-color: #dc3545;
   border: none;
