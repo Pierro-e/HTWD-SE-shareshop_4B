@@ -1,51 +1,36 @@
 <template>
   <div class="liste">
     <div class="header">
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="$router.push('/listen')"
-        class="button button-cancel back-button"
-      >
+      <button :disabled="showpopup_product || showpopup_list || showpopup_add_member" @click="$router.push('/listen')"
+        class="button button-cancel back-button">
         Zurück
       </button>
 
       <h2>{{ list_name }}</h2>
 
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="openProductPopup()"
-        class="button button-add button-add-header"
-      >
+      <button :disabled="showpopup_product || showpopup_list || showpopup_add_member" @click="openProductPopup()"
+        class="button button-add button-add-header">
         Produkt hinzufügen
       </button>
     </div>
 
     <div class="settings-section">
       <div class="settings-container">
-        <button
-          :disabled="
-            showpopup_product || showpopup_list || showpopup_add_member
-          "
-          @click="openListPopup()"
-          class="button button-settings"
-        >
+        <button :disabled="showpopup_product || showpopup_list || showpopup_add_member
+          " @click="openListPopup()" class="button button-settings">
           Listeninformationen
         </button>
 
-        <button
-          :disabled="
-            showpopup_product || showpopup_list || showpopup_add_member
-          "
-          @click="einkauf_abschließen"
-          class="button button-submit button-einkauf-tätigen"
-        >
+        <button :disabled="showpopup_product || showpopup_list || showpopup_add_member
+          " @click="einkauf_abschließen" class="button button-submit button-einkauf-tätigen">
           Einkauf
         </button>
       </div>
     </div>
 
     <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
+    <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{
+      errorMessage }}</div>
 
     <div v-if="showpopup_list" class="popup-overlay">
       <div class="popup-content">
@@ -55,41 +40,34 @@
 
         <br></br>
         <h4>Mitglieder</h4>
-        
-        <div
-          v-for="mitglied in mitglieder"
-          :key="mitglied.id"
-          class="mitglieder-anzeige"
-        >
+
+        <div v-for="mitglied in mitglieder" :key="mitglied.id" class="mitglieder-anzeige">
           <div>{{ mitglied.name }}</div>
-          <button
-            @click="mitglied_entfernen(mitglied.id)"
-            class="button button-delete-member"
-          >
+          <button @click="mitglied_entfernen(mitglied.id)" class="button button-delete-member">
             Entfernen
           </button>
-          
+
         </div>
-        
+
         <button @click="showpopup_list = false" class="button button-cancel">
           Schließen
         </button>
         <button @click="mitglied_hinzufügen_popup()" class="button button-add">
           Mitglied hinzufügen
         </button>
+        <button @click="liste_löschen" class="button button-delete">
+          Liste löschen
+        </button>
+         <div v-if="errorMessage" class="error" style="margin-top: 10px;">
+      {{ errorMessage }}
+    </div>
       </div>
     </div>
 
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
-        <input
-          class="input"
-          v-model="new_product"
-          type="text"
-          placeholder="Produktname"
-          maxlength="30"
-        />
+        <input class="input" v-model="new_product" type="text" placeholder="Produktname" maxlength="30" />
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <button @click="cancel_product_popup" class="button button-cancel">
           Abbrechen
@@ -97,52 +75,39 @@
         <button @click="add_product" class="button button-submit">
           Hinzufügen
         </button>
+
       </div>
     </div>
 
     <div v-if="showpopup_add_member" class="popup-overlay">
       <div class="popup-content">
         <h3>Mitglied hinzufügen</h3>
-        <input
-          class="input"
-          v-model="new_member_email"
-          type="text"
-          placeholder="E-Mail"
-          maxlength="30"
-        />
+        <input class="input" v-model="new_member_email" type="text" placeholder="E-Mail" maxlength="30" />
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-        <button
-          @click="cancel_mitglied_hinzufügen"
-          class="button button-cancel"
-        >
+        <button @click="cancel_mitglied_hinzufügen" class="button button-cancel">
           Abbrechen
         </button>
         <button @click="mitglied_hinzufügen" class="button button-submit">
           Hinzufügen
         </button>
       </div>
+
     </div>
 
+
     <div class="produkte-grid">
-      <div
-        v-for="(produkt, index) in listenprodukte"
-        :key="index"
-        class="produkt-card"
-      >
+      <div v-for="(produkt, index) in listenprodukte" :key="index" class="produkt-card">
         <div class="produkt-header">
           <h3 class="produkt-name">
             {{ produkt.name || "Unbekanntes Produkt" }}
           </h3>
-          <button
-            @click="product_settings(produkt)"
-            class="button button-product-settings"
-          >
+          <button @click="product_settings(produkt)" class="button button-product-settings">
             ✏️
           </button>
         </div>
 
         <div class="produkt-info" v-if="produkt.produkt_menge">
-          <div v-if="produkt.produkt_menge" >
+          <div v-if="produkt.produkt_menge">
             <strong>Menge:</strong> {{ produkt.produkt_menge }} {{ produkt.einheit_abk }}
           </div>
         </div>
@@ -190,6 +155,7 @@ export default {
       mitglieder_ids: [],
       mitglieder: [],
       userData: null, // hier speichern wir den injecteten user
+      confirmDeleteVisible: false,
     };
   },
 
@@ -513,6 +479,32 @@ export default {
 
       this.$router.push(`/list/${list_id}/einkauf`);
     },
+    // liste löschen Funktion hier hinzufügen
+    async liste_löschen() {
+      this.errorMessage = "";
+
+      if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
+        return;
+      }
+
+      try {
+        const id = this.list_id || this.$route.params.id;
+        const response = await axios.delete(`http://141.56.137.83:8000/listen/${id}`);
+
+        if (response.status === 200 || response.status === 204) {
+          this.errorMessage = "✅ Liste wurde erfolgreich gelöscht!";
+          setTimeout(() => {
+            this.$router.push("/listen"); // Nach kurzer Zeit zur Übersicht navigieren
+          }, 3000);
+        } else {
+          this.errorMessage = "⚠️ Fehler beim Löschen der Liste.";
+        }
+      } catch (error) {
+        console.error(error);
+        this.errorMessage = "❌ Serverfehler beim Löschen der Liste.";
+      }
+    }
+
   },
   mounted() {
     this.errorMessage = "";
@@ -553,14 +545,16 @@ export default {
 /* Settings-Container fixiert unter der Überschrift mittig */
 .settings-container {
   position: fixed;
-  top: 100px; /* vorher 60px */
+  top: 100px;
+  /* vorher 60px */
   left: 0;
   width: 100%;
   z-index: 1000;
   padding: 5px 0;
   display: flex;
   flex-direction: column;
-  gap: 10px; /* Abstand zwischen Buttons */
+  gap: 10px;
+  /* Abstand zwischen Buttons */
   justify-content: center;
   align-items: center;
 }
@@ -623,5 +617,22 @@ export default {
 
 .button-delete-member:hover {
   color: darkred;
+}
+
+/* für List-button  */
+.button-delete {
+  background-color: #dc3545;
+  border: none;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.5em 1em;
+  font-size: 0.9rem;
+  border-radius: 0.3rem;
+  transition: background-color 0.3s ease;
+}
+
+.button-delete:hover {
+  background-color: darkred;
 }
 </style>
