@@ -90,6 +90,33 @@
           placeholder="Produktname"
           maxlength="30"
         />
+        <br><br></br>
+        <v-select
+          v-model="selected"
+          :options="[
+            { label: 'Favoriten', header: true },
+            { label: 'Apfel' },
+            { label: 'Banane' },
+            { label: 'Mango' },
+            { label: 'Pfirsich' },
+            { label: 'Weitere', header: true },
+            { label: 'Milch'},
+            { label: 'Brot' },
+            { label: 'Butter' },
+            { label: 'Käse'},
+            { label: 'Wurst' },
+            { label: 'Joghurt' },
+          ]"
+          taggable
+          :clearable="false"
+          placeholder="Produkt eingeben..."
+          :selectable="option => option.header != true"
+        >
+          <template #no-options>
+            Keine Optionen verfügbar
+          </template>
+      </v-select>
+
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <button @click="cancel_product_popup" class="button button-cancel">
           Abbrechen
@@ -190,6 +217,7 @@ export default {
       mitglieder_ids: [],
       mitglieder: [],
       userData: null, // hier speichern wir den injecteten user
+      selected: null,
     };
   },
 
@@ -313,13 +341,18 @@ export default {
       this.errorMessage = "";
       this.showpopup_list = true;
       this.showpopup_product = false;
-      //this.get_list_members(this.list_id);
     },
 
     openProductPopup() {
       this.errorMessage = "";
       this.showpopup_product = true;
       this.showpopup_list = false;
+
+      this.$nextTick(() => { // warten bis das Popup da ist
+        const input = document.getElementsByClassName("vs__search")[0];
+        console.log(input);
+        if (input) input.setAttribute("maxlength", 30); // Länge begrenzen von Suchfeld
+      });
     },
 
     async add_product() {
