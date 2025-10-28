@@ -501,6 +501,13 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
 @app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
 
+    anzahl_favoriten = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id).count() 
+    
+    if anzahl_favoriten >= 10:
+        raise HTTPException(
+            status_code=400, detail="Maximale Anzahl von 10 Favoriten erreicht")
+
     vorhandenes_fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
         FavProdukte.produkt_id == fav_produkt.produkt_id
