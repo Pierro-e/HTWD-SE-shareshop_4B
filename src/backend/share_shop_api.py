@@ -212,6 +212,11 @@ class FavProdukteCreate(BaseModel):
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
     beschreibung: Optional[str] = None
+
+class FavProdukteUpdate(BaseModel):
+    menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    beschreibung: Optional[str] = None
     
 
 class BedarfsvorhersageRead(BaseModel):
@@ -545,7 +550,7 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 
 
 @app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=FavProdukteRead)
-def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
+def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteUpdate = Body(...), db: Session = Depends(get_db)):
     fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
         FavProdukte.produkt_id == produkt_id
