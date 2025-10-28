@@ -543,6 +543,24 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+
+@app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=FavProdukteRead)
+def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
+    fav_produkt = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id,
+        FavProdukte.produkt_id == produkt_id
+    ).first()
+    if not fav_produkt:
+        raise HTTPException(status_code=404, detail="Favorisiertes Produkt nicht gefunden")
+
+    fav_produkt.menge = fav_produkt_update.menge
+    fav_produkt.einheit_id = fav_produkt_update.einheit_id
+    fav_produkt.beschreibung = fav_produkt_update.beschreibung
+
+    db.commit()
+    db.refresh(fav_produkt)
+    return fav_produkt
+
 # --- Bedarfsvorhersage ---
 
 # gibt alle Bedarfsvorhersage-Einträge für einen Nutzer zurück
