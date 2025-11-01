@@ -90,6 +90,18 @@
           placeholder="Produktname"
           maxlength="30"
         />
+         
+         <!-- Vorschlagsliste -->
+        <ul v-if="suggestions.length > 0" class="suggestions-list">
+          <li
+            v-for="(item, index) in suggestions"
+            :key="index"
+            @click="selectSuggestionAndAdd(item)"
+          >
+            {{ item.name }}
+          </li>
+        </ul>
+
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <button @click="cancel_product_popup" class="button button-cancel">
           Abbrechen
@@ -187,10 +199,35 @@ export default {
       listenprodukte: [],
       listenprodukte_names: [],
       listenprodukte_einheiten: [],
+      suggestions: [],
+      _suggestionTimeout: null,
       mitglieder_ids: [],
       mitglieder: [],
       userData: null, // hier speichern wir den injecteten user
     };
+  },
+
+  watch: {
+    //Wenn nutzer aufhört zu tippen 1sec wartezeit bis request an DB, wenn weiter getippt wird timer zurücksetzen
+    new_product(newVal) {
+      clearTimeout(this._suggestionTimeout); // alten Timer lösche
+      // Suche nur, wenn Eingabe mindestens 2 Zeichen
+      if (newVal.length < 2) {
+        this.suggestions = [];
+        return;
+      } 
+
+      // neuen Timer starten (1 Sekunde)
+      this._suggestionTimeout = setTimeout(() => {
+        this.fetchProductSuggestions(newVal);
+      }, 1000);
+
+    }
+  },
+
+  beforeUnmount() {
+    // Timer aufräumen, wenn Komponente zerstört wird
+    clearTimeout(this._suggestionTimeout);
   },
 
   methods: {
@@ -320,6 +357,33 @@ export default {
       this.errorMessage = "";
       this.showpopup_product = true;
       this.showpopup_list = false;
+    },
+
+    async fetchProductSuggestions(query) {
+      if (!query) {
+      this.suggestions = [];
+      return;
+      }
+      try {
+        const response = await axios.get(
+          `http://141.56.137.83:8000/produkte/by-name/${encodeURIComponent(query)}`,
+          //{ params: { query } }
+        );
+        //this.suggestions = response.data;
+        this.suggestions = response.data ? [response.data] : [];
+      } catch (error) {
+        this.suggestions = [];
+      }
+    },
+
+    //wenn vorschlag ausgewählt wird, wird der name des produkts in das eingabefeld geschrieben
+    async selectSuggestionAndAdd(item) {
+      this.new_product = item.name;
+      this.suggestions = [];
+
+      // Direkt Produkt zur Liste hinzufügen
+      await this.add_product();
+  
     },
 
     async add_product() {
