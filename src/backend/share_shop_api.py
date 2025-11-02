@@ -212,6 +212,11 @@ class FavProdukteCreate(BaseModel):
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
     beschreibung: Optional[str] = None
+
+class FavProdukteUpdate(BaseModel):
+    menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    beschreibung: Optional[str] = None
     
 
 class BedarfsvorhersageRead(BaseModel):
@@ -501,6 +506,13 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
 @app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
 
+    anzahl_favoriten = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id).count() 
+    
+    if anzahl_favoriten >= 10:
+        raise HTTPException(
+            status_code=400, detail="Maximale Anzahl von 10 Favoriten erreicht")
+
     vorhandenes_fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
         FavProdukte.produkt_id == fav_produkt.produkt_id
@@ -535,6 +547,24 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     db.delete(fav_produkt)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=FavProdukteRead)
+def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteUpdate = Body(...), db: Session = Depends(get_db)):
+    fav_produkt = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id,
+        FavProdukte.produkt_id == produkt_id
+    ).first()
+    if not fav_produkt:
+        raise HTTPException(status_code=404, detail="Favorisiertes Produkt nicht gefunden")
+
+    fav_produkt.menge = fav_produkt_update.menge
+    fav_produkt.einheit_id = fav_produkt_update.einheit_id
+    fav_produkt.beschreibung = fav_produkt_update.beschreibung
+
+    db.commit()
+    db.refresh(fav_produkt)
+    return fav_produkt
 
 # --- Bedarfsvorhersage ---
 
