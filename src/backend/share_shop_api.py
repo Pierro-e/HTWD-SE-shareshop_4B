@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
-from fastapi import Body
-from fastapi import FastAPI, Depends, Path, status, HTTPException, Response
+from fastapi import FastAPI, Depends, Path, status, HTTPException, Response, Body, Query
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
@@ -15,7 +14,6 @@ from datetime import datetime
 
 load_dotenv()
 DATABASE_URL = f"mysql+pymysql://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@{os.environ['DB_HOST']}/{os.environ['DB_NAME']}"
-
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=True)
@@ -134,7 +132,6 @@ class ProduktRead(BaseModel):
 
 class ProduktCreate(BaseModel):
     name: str
-
 
 class ListeRead(BaseModel):
     id: int
@@ -473,9 +470,16 @@ def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get
 
 @app.post("/produkte_create", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
+    cleaned_name = produkt.name.strip()
+
+    if not cleaned_name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Der Produktname darf nicht leer sein."
+        )
     # Formatierter Produktname
     formatted_name = ' '.join([word.capitalize()
-                              for word in produkt.name.split()])
+                              for word in cleaned_name.split()])
 
     # Prüfen, ob Produkt mit dem formatierten Namen schon existiert
     existing = db.query(Produkt).filter(func.lower(
@@ -492,6 +496,29 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_produkt)
     return db_produkt
+
+
+# -- Funktion, um Produkte zu suchen anahnd des Namen aber mit 'LIKE' (fur die Suchvorschläge) ---
+@app.get("/produkte/suche", response_model=List[ProduktRead])
+def search_products(
+    query: str = Query(..., min_length=1, description="Suchstring für Produktnamen"),
+    db: Session = Depends(get_db)
+):
+    if not query.strip():  # leerer String oder nur Leerzeichen
+        raise HTTPException(status_code=400, detail="Der Suchstring darf nicht leer sein.")
+
+    produkte = (
+        db.query(Produkt)
+        .filter(func.lower(Produkt.name).like(f"{query.lower()}%"))  # nur Anfangsstring
+        .limit(10)
+        .all()
+    )
+
+    if not produkte:  # keine Treffer gefunden
+        raise HTTPException(status_code=404, detail="Keine Produkte gefunden, die mit diesem Suchstring beginnen.")
+
+    return produkte
+
 
 
 # --- FavProdukte ---
