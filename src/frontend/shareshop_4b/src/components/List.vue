@@ -366,11 +366,11 @@ export default {
       }
       try {
         const response = await axios.get(
-          `http://141.56.137.83:8000/produkte/by-name/${encodeURIComponent(query)}`,
-          //{ params: { query } }
+          `http://141.56.137.83:8000/produkte/suche`,
+          { params: { query } }
         );
-        //this.suggestions = response.data;
-        this.suggestions = response.data ? [response.data] : [];
+        this.suggestions = response.data;
+        
       } catch (error) {
         this.suggestions = [];
       }
@@ -378,8 +378,8 @@ export default {
 
     //wenn vorschlag ausgewählt wird, wird der name des produkts in das eingabefeld geschrieben
     async selectSuggestionAndAdd(item) {
-      this.new_product = item.name;
-      this.suggestions = [];
+      //this.new_product = item.name;
+      //this.suggestions = [];
 
       // Direkt Produkt zur Liste hinzufügen
       await this.add_product();
