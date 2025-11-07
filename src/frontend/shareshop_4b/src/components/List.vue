@@ -92,25 +92,13 @@
         />
         <br><br></br>
         <v-select
-          v-model="selected"
-          :options="[
-            { label: 'Favoriten', header: true },
-            { label: 'Apfel' },
-            { label: 'Banane' },
-            { label: 'Mango' },
-            { label: 'Pfirsich' },
-            { label: 'Weitere', header: true },
-            { label: 'Milch'},
-            { label: 'Brot' },
-            { label: 'Butter' },
-            { label: 'Käse'},
-            { label: 'Wurst' },
-            { label: 'Joghurt' },
-          ]"
+          v-model="dropdownSelected"
+          :options="dropdownOptions"
           taggable
           :clearable="false"
           placeholder="Produkt eingeben..."
           :selectable="option => option.header != true"
+          @search="onSearch"
         >
           <template #no-options>
             Keine Optionen verfügbar
@@ -217,10 +205,11 @@ export default {
       mitglieder_ids: [],
       mitglieder: [],
       userData: null, // hier speichern wir den injecteten user
-      selected: null,
+      dropdownSelected: null,
+      dropdownOptions: [],
+      lastDate: 0
     };
   },
-
   methods: {
     async get_list(id) {
       this.errorMessage = "";
@@ -343,16 +332,91 @@ export default {
       this.showpopup_product = false;
     },
 
-    openProductPopup() {
+    async openProductPopup() {
       this.errorMessage = "";
       this.showpopup_product = true;
       this.showpopup_list = false;
 
       this.$nextTick(() => { // warten bis das Popup da ist
         const input = document.getElementsByClassName("vs__search")[0];
-        console.log(input);
         if (input) input.setAttribute("maxlength", 30); // Länge begrenzen von Suchfeld
       });
+
+      this.loadDropdownList(0, "");
+    },
+
+    async loadDropdownList(type, searchText){
+      if (type == 0) { // Bedarfsvorhersage/Favoriten
+        // TODO: Favoriten!!!
+        try {
+          const response = await axios.get(
+            `http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
+          
+
+          var recommendedProducts = response.data;
+          this.dropdownOptions = [];
+          
+          this.dropdownOptions.push({label: "Favoriten", header: true})
+          this.dropdownOptions.push({label: "TODO"})
+          this.dropdownOptions.push({label: "Vorschläge", header: true})
+          for (const product of recommendedProducts){
+            this.dropdownOptions.push({label: `ID: ${product.produkt_id} Cnt: ${product.counter} Date: ${product.last_update}`})
+          }
+          
+          console.log(this.dropdownOptions)
+        
+        } catch (error) {
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.detail
+          ) {
+            this.errorMessage = error.response.data.detail;
+            
+          } else {
+            this.errorMessage = "Fehler beim Laden von Favoriten/Bedarfsvorhersage";
+          } 
+        }
+      } else if (type == 1) { // Suchvorschläge > mind. 1 Zeichen eingegeben
+          // verhindern, dass Suche gespammt werden kann, nur jede Sek.
+          if (Date.now() - this.lastDate >= 1000){
+            this.lastDate = Date.now();
+
+            this.dropdownOptions = [];
+            try {
+            
+              const response = await axios.get(
+                `http://141.56.137.83:8000/produkte/suche/`,
+                { params: { query: searchText } }
+              );
+              var suggestions = response.data;
+
+              for (const product of suggestions){
+                  this.dropdownOptions.push({label: `${product.name}`})
+              }
+              } catch (error) {
+                if (
+                  error.response &&
+                  error.response.data &&
+                  error.response.data.detail
+                ) {
+                  this.errorMessage = error.response.data.detail;
+                  
+                } else {
+                  this.errorMessage = "Fehler beim Laden der Vorschläge";
+                } 
+            }
+        }
+      }
+    },
+
+    async onSearch(searchText){ // aufgerufen, wenn was ins Dropdown eingegeben wird
+        if (searchText.length === 0){ // Bedarfsvorhersage/Favoriten
+          this.loadDropdownList(0, "");
+        }
+        else { // Suchvorschläge > mind. 1 Zeichen eingegeben
+          this.loadDropdownList(1, searchText);
+        }
     },
 
     async add_product() {
