@@ -83,6 +83,7 @@
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
+        <!--
         <input
           class="input"
           v-model="new_product"
@@ -91,6 +92,8 @@
           maxlength="30"
         />
         <br><br></br>
+        -->
+        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <v-select
           v-model="dropdownSelected"
           :options="dropdownOptions"
@@ -103,9 +106,8 @@
           <template #no-options>
             Keine Optionen verfügbar
           </template>
-      </v-select>
+        </v-select>
 
-        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <button @click="cancel_product_popup" class="button button-cancel">
           Abbrechen
         </button>
@@ -347,14 +349,15 @@ export default {
 
     async loadDropdownList(type, searchText){
       if (type == 0) { // Bedarfsvorhersage/Favoriten
+        this.errorMessage = ""
         // TODO: Favoriten!!!
+        this.dropdownOptions = [];
         try {
           const response = await axios.get(
             `http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
           
 
           var recommendedProducts = response.data;
-          this.dropdownOptions = [];
           
           this.dropdownOptions.push({label: "Favoriten", header: true})
           this.dropdownOptions.push({label: "TODO"})
@@ -378,19 +381,19 @@ export default {
           } 
         }
       } else if (type == 1) { // Suchvorschläge > mind. 1 Zeichen eingegeben
-          // verhindern, dass Suche gespammt werden kann, nur jede Sek.
-          if (Date.now() - this.lastDate >= 1000){
+          // verhindern, dass Suche gespammt werden kann, nur jede Sek., erste Eingabe ist immer gültig
+          if (Date.now() - this.lastDate >= 1000 || searchText.length == 1){
             this.lastDate = Date.now();
+            this.errorMessage = ""
 
             this.dropdownOptions = [];
             try {
-            
               const response = await axios.get(
                 `http://141.56.137.83:8000/produkte/suche/`,
                 { params: { query: searchText } }
               );
               var suggestions = response.data;
-
+              
               for (const product of suggestions){
                   this.dropdownOptions.push({label: `${product.name}`})
               }
@@ -424,6 +427,7 @@ export default {
       const user_id = this.user.id;
 
       this.errorMessage = "";
+      this.new_product = this.dropdownSelected.label;
 
       if (this.new_product.trim() === "") {
         this.errorMessage = "Produktname darf nicht leer sein";
@@ -431,7 +435,7 @@ export default {
       }
 
       let produkt_Id;
-
+      
       try {
         // Produkt existiert schon?
         const responseCheck = await axios.get(
