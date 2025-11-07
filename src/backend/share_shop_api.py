@@ -1,7 +1,6 @@
 import os
 from dotenv import load_dotenv
-from fastapi import Body
-from fastapi import FastAPI, Depends, Path, status, HTTPException, Response
+from fastapi import FastAPI, Depends, Path, status, HTTPException, Response, Body, Query
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
@@ -15,7 +14,6 @@ from datetime import datetime
 
 load_dotenv()
 DATABASE_URL = f"mysql+pymysql://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@{os.environ['DB_HOST']}/{os.environ['DB_NAME']}"
-
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=True)
@@ -135,7 +133,6 @@ class ProduktRead(BaseModel):
 class ProduktCreate(BaseModel):
     name: str
 
-
 class ListeRead(BaseModel):
     id: int
     name: str
@@ -209,6 +206,11 @@ class FavProdukteRead(BaseModel):
 
 class FavProdukteCreate(BaseModel):
     produkt_id: int
+    menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    beschreibung: Optional[str] = None
+
+class FavProdukteUpdate(BaseModel):
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
     beschreibung: Optional[str] = None
@@ -468,9 +470,16 @@ def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get
 
 @app.post("/produkte_create", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
+    cleaned_name = produkt.name.strip()
+
+    if not cleaned_name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Der Produktname darf nicht leer sein."
+        )
     # Formatierter Produktname
     formatted_name = ' '.join([word.capitalize()
-                              for word in produkt.name.split()])
+                              for word in cleaned_name.split()])
 
     # Prüfen, ob Produkt mit dem formatierten Namen schon existiert
     existing = db.query(Produkt).filter(func.lower(
@@ -489,6 +498,29 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
     return db_produkt
 
 
+# -- Funktion, um Produkte zu suchen anahnd des Namen aber mit 'LIKE' (fur die Suchvorschläge) ---
+@app.get("/produkte/suche", response_model=List[ProduktRead])
+def search_products(
+    query: str = Query(..., min_length=1, description="Suchstring für Produktnamen"),
+    db: Session = Depends(get_db)
+):
+    if not query.strip():  # leerer String oder nur Leerzeichen
+        raise HTTPException(status_code=400, detail="Der Suchstring darf nicht leer sein.")
+
+    produkte = (
+        db.query(Produkt)
+        .filter(func.lower(Produkt.name).like(f"{query.lower()}%"))  # nur Anfangsstring
+        .limit(10)
+        .all()
+    )
+
+    if not produkte:  # keine Treffer gefunden
+        raise HTTPException(status_code=404, detail="Keine Produkte gefunden, die mit diesem Suchstring beginnen.")
+
+    return produkte
+
+
+
 # --- FavProdukte ---
 
 @app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
@@ -500,6 +532,13 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
 
 @app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
+
+    anzahl_favoriten = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id).count() 
+    
+    if anzahl_favoriten >= 10:
+        raise HTTPException(
+            status_code=400, detail="Maximale Anzahl von 10 Favoriten erreicht")
 
     vorhandenes_fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
@@ -535,6 +574,24 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     db.delete(fav_produkt)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=FavProdukteRead)
+def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteUpdate = Body(...), db: Session = Depends(get_db)):
+    fav_produkt = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id,
+        FavProdukte.produkt_id == produkt_id
+    ).first()
+    if not fav_produkt:
+        raise HTTPException(status_code=404, detail="Favorisiertes Produkt nicht gefunden")
+
+    fav_produkt.menge = fav_produkt_update.menge
+    fav_produkt.einheit_id = fav_produkt_update.einheit_id
+    fav_produkt.beschreibung = fav_produkt_update.beschreibung
+
+    db.commit()
+    db.refresh(fav_produkt)
+    return fav_produkt
 
 # --- Bedarfsvorhersage ---
 
