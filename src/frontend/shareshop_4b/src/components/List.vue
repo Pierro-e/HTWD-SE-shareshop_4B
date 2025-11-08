@@ -351,25 +351,23 @@ export default {
     async loadDropdownList(type, searchText){
       if (type == 0) { // Bedarfsvorhersage/Favoriten
         clearTimeout(this.searchTimeout);
-        this.errorMessage = ""
         // TODO: Favoriten!!!
-        this.dropdownOptions = [];
         try {
           const response = await axios.get(
             `http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
           
-
           var recommendedProducts = response.data;
+          var tempOptions = [];
           
-          this.dropdownOptions.push({label: "Favoriten", header: true})
-          this.dropdownOptions.push({label: "TODO"})
-          this.dropdownOptions.push({label: "Vorschläge", header: true})
+          tempOptions.push({label: "Favoriten", header: true})
+          tempOptions.push({label: "TODO"})
+          tempOptions.push({label: "Vorschläge", header: true})
           for (const product of recommendedProducts){
-            this.dropdownOptions.push({label: `ID: ${product.produkt_id} Cnt: ${product.counter} Date: ${product.last_update}`})
+            tempOptions.push({label: `ID: ${product.produkt_id} Cnt: ${product.counter} Date: ${product.last_update}`})
           }
           
-          console.log(this.dropdownOptions)
-        
+          this.dropdownOptions = tempOptions;
+          this.errorMessage = "";
         } catch (error) {
           if (
             error.response &&
@@ -386,19 +384,20 @@ export default {
           // verhindern, dass Suche gespammt werden kann (nur jede Sek.), erste Eingabe ist immer gültig
           if (Date.now() - this.lastDate >= 1000 || searchText.length == 1){
             this.lastDate = Date.now();
-            this.errorMessage = ""
 
-            this.dropdownOptions = [];
             try {
               const response = await axios.get(
                 `http://141.56.137.83:8000/produkte/suche/`,
                 { params: { query: searchText } }
               );
               var suggestions = response.data;
+              var tempOptions = [];
               
               for (const product of suggestions){
-                  this.dropdownOptions.push({label: `${product.name}`})
+                  tempOptions.push({label: `${product.name}`})
               }
+              this.dropdownOptions = tempOptions;
+              this.errorMessage = ""
               } catch (error) {
                 if (
                   error.response &&
