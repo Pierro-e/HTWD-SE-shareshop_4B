@@ -209,7 +209,8 @@ export default {
       userData: null, // hier speichern wir den injecteten user
       dropdownSelected: null,
       dropdownOptions: [],
-      lastDate: 0
+      lastDate: 0,
+      searchTimeout: 0
     };
   },
   methods: {
@@ -349,6 +350,7 @@ export default {
 
     async loadDropdownList(type, searchText){
       if (type == 0) { // Bedarfsvorhersage/Favoriten
+        clearTimeout(this.searchTimeout);
         this.errorMessage = ""
         // TODO: Favoriten!!!
         this.dropdownOptions = [];
@@ -381,7 +383,7 @@ export default {
           } 
         }
       } else if (type == 1) { // Suchvorschläge > mind. 1 Zeichen eingegeben
-          // verhindern, dass Suche gespammt werden kann, nur jede Sek., erste Eingabe ist immer gültig
+          // verhindern, dass Suche gespammt werden kann (nur jede Sek.), erste Eingabe ist immer gültig
           if (Date.now() - this.lastDate >= 1000 || searchText.length == 1){
             this.lastDate = Date.now();
             this.errorMessage = ""
@@ -409,6 +411,14 @@ export default {
                   this.errorMessage = "Fehler beim Laden der Vorschläge";
                 } 
             }
+        }
+        else {
+          // sonst die verbleibende Zeit warten und dann automatisch letzte Suche abschicken
+          clearTimeout(this.searchTimeout);
+          this.searchTimeout = setTimeout(() => {
+            this.loadDropdownList(1, searchText);
+          }, 1000 - (Date.now() - this.lastDate))
+          
         }
       }
     },
