@@ -209,8 +209,8 @@ export default {
       userData: null, // hier speichern wir den injecteten user
       dropdownSelected: null,
       dropdownOptions: [],
-      lastDate: 0,
-      searchTimeout: 0
+      searchTimeout: 0,
+      prevSearchText: ""
     };
   },
   methods: {
@@ -350,7 +350,6 @@ export default {
 
     async loadDropdownList(type, searchText){
       if (type == 0) { // Bedarfsvorhersage/Favoriten
-        clearTimeout(this.searchTimeout);
         // TODO: Favoriten!!!
         try {
           const response = await axios.get(
@@ -380,55 +379,52 @@ export default {
             this.errorMessage = "Fehler beim Laden von Favoriten/Bedarfsvorhersage";
           } 
         }
-      } else if (type == 1) { // Suchvorschläge > mind. 1 Zeichen eingegeben
-          // verhindern, dass Suche gespammt werden kann (nur jede Sek.), erste Eingabe ist immer gültig
-          if (Date.now() - this.lastDate >= 1000 || searchText.length == 1){
-            this.lastDate = Date.now();
-
-            try {
-              const response = await axios.get(
-                `http://141.56.137.83:8000/produkte/suche/`,
-                { params: { query: searchText } }
-              );
-              var suggestions = response.data;
-              var tempOptions = [];
-              
-              for (const product of suggestions){
-                  tempOptions.push({label: `${product.name}`})
-              }
-              this.dropdownOptions = tempOptions;
-              this.errorMessage = ""
-              } catch (error) {
-                if (
-                  error.response &&
-                  error.response.data &&
-                  error.response.data.detail
-                ) {
-                  this.errorMessage = error.response.data.detail;
-                  
-                } else {
-                  this.errorMessage = "Fehler beim Laden der Vorschläge";
-                } 
-            }
-        }
-        else {
-          // sonst die verbleibende Zeit warten und dann automatisch letzte Suche abschicken
-          clearTimeout(this.searchTimeout);
-          this.searchTimeout = setTimeout(() => {
-            this.loadDropdownList(1, searchText);
-          }, 1000 - (Date.now() - this.lastDate))
+      } 
+      else if (type == 1) { // Suchvorschläge > mind. 1 Zeichen eingegeben
+        try {
+          const response = await axios.get(
+            `http://141.56.137.83:8000/produkte/suche/`,
+            { params: { query: searchText } }
+          );
+          var suggestions = response.data;
+          var tempOptions = [];
           
+          for (const product of suggestions){
+              tempOptions.push({label: `${product.name}`})
+          }
+          this.dropdownOptions = tempOptions;
+          this.errorMessage = ""
+        } catch (error) {
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.detail
+          ) {
+            this.errorMessage = error.response.data.detail;
+            
+          } else {
+            this.errorMessage = "Fehler beim Laden der Vorschläge";
+          } 
         }
       }
     },
 
     async onSearch(searchText){ // aufgerufen, wenn was ins Dropdown eingegeben wird
-        if (searchText.length === 0){ // Bedarfsvorhersage/Favoriten
-          this.loadDropdownList(0, "");
-        }
-        else { // Suchvorschläge > mind. 1 Zeichen eingegeben
+      clearTimeout(this.searchTimeout);
+
+      if (searchText.length === 0){ // Bedarfsvorhersage/Favoriten
+        this.loadDropdownList(0, "");
+      }
+      else { // Suchvorschläge > mind. 1 Zeichen eingegeben
+        if (searchText.length === 1 && this.prevSearchText.length != 2){ // sofort bei erster Eingabe suchen, nicht beim zurücklöschen
           this.loadDropdownList(1, searchText);
         }
+        
+        this.searchTimeout = setTimeout(() => { // sonst max. jede Sekunde, um Spammen zu verhindern
+          this.loadDropdownList(1, searchText);
+        }, 1000)
+        this.prevSearchText = searchText
+      }
     },
 
     async add_product() {
