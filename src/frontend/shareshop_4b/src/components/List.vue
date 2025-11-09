@@ -207,7 +207,7 @@ export default {
       mitglieder_ids: [],
       mitglieder: [],
       userData: null, // hier speichern wir den injecteten user
-      dropdownSelected: null,
+      dropdownSelected: "",
       dropdownOptions: [],
       searchTimeout: 0,
       prevSearchText: ""
@@ -339,6 +339,7 @@ export default {
       this.errorMessage = "";
       this.showpopup_product = true;
       this.showpopup_list = false;
+      this.dropdownSelected = "";
 
       this.$nextTick(() => { // warten bis das Popup da ist
         const input = document.getElementsByClassName("vs__search")[0];
@@ -362,7 +363,7 @@ export default {
           tempOptions.push({label: "TODO"})
           tempOptions.push({label: "Vorschläge", header: true})
           for (const product of recommendedProducts){
-            tempOptions.push({label: `ID: ${product.produkt_id} Cnt: ${product.counter} Date: ${product.last_update}`})
+            tempOptions.push({label: `ID: ${product.produkt_id} Cnt: ${product.counter} (${product.last_update})`})
           }
           
           this.dropdownOptions = tempOptions;
@@ -434,7 +435,7 @@ export default {
       this.errorMessage = "";
       this.new_product = this.dropdownSelected.label;
 
-      if (this.new_product.trim() === "") {
+      if (this.new_product == null) {
         this.errorMessage = "Produktname darf nicht leer sein";
         return;
       }

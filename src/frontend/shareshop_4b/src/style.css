@@ -277,7 +277,6 @@ select:focus {
   outline-offset: -2px;
 }
 
-
 /* Vue Select */
 :root {
   --vs-controls-color: var(--text-color);
@@ -285,14 +284,15 @@ select:focus {
   --vs-border-radius: 0.4em;
   --vs-border-width: 2px;
 
-  --vs-dropdown-bg: #3a3a3a;
+  --vs-dropdown-bg: var(--inputbox-focus-bg-color);
   --vs-dropdown-color: var(--text-color);
   --vs-dropdown-option-color: var(--text-color);
-  --vs-dropdown-max-height: 175px;
+  --vs-dropdown-max-height: 170px;
 
   --vs-selected-bg: var(--accent-color);
   --vs-selected-color: var(--text-color);
 
+  --vs-search-input-bg: rgb(255, 255, 255);
   --vs-line-height: 1.7;
 
   --vs-state-disabled-bg: var(--box-shadow-color); 
@@ -303,7 +303,7 @@ select:focus {
   --vs-dropdown-option--active-bg: var(--accent-color);
   --vs-dropdown-option--active-color: white;
 
-   --vs-transition-duration: 100ms;
+  --vs-transition-duration: 150ms;
 }
 
 .v-select .vs__search::placeholder { /* Placeholderfarbe des Browsers */
@@ -329,25 +329,36 @@ select:focus {
   padding-left: 0.2em;
   background-color: var(--inputbox-bg-color);
   box-sizing: border-box;
+
+  transition:
+    background-color var(--vs-transition-duration),
+    border-color var(--vs-transition-duration);
+}
+
+.vs__fade-leave-from { /* eigenes Fading - davor */
+  border-color: var(--accent-color);
+  opacity: 1;
+}
+
+.vs__fade-leave-to { /* eigenes Fading - danach */
+  border-color: transparent;
+  opacity: 0;
+}
+
+.vs__fade-leave-active { /* eigenes Fading */
+  transition:
+    border-color var(--vs-transition-duration),
+    opacity var(--vs-transition-duration);
 }
 
 .v-select:focus-within .vs__dropdown-toggle { /* Eingabefeld fokussiert */
   outline: 2px solid var(--accent-color);
   outline-offset: -2px; /* sitzt direkt auf dem Rand */
   background-color: var(--inputbox-focus-bg-color);
-
-  transition:
-    background-color 0.25s,
-    border-color 0.25s;
 }
 
  .v-select.vs--open .vs__dropdown-menu { /* Dropdownmenü */
   border-color: var(--accent-color);
-  background-color: var(--inputbox-focus-bg-color);
-
-  transition:
-    background-color 0.25s,
-    border-color 0.25s;
 }
 
 /* Hack: Input immer zwei Pixel größer (bei Platzhalter oder keinem), damit es nicht verrutscht */
