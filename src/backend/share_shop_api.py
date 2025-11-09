@@ -617,16 +617,22 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Sessio
 
     return eintraege    
 
-# gibt einen spezifischen Bedarfsvorhersage-Eintrag für einen Nutzer und ein Produkt zurück
-@app.get("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
-def get_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+# zum Löschen eines Bedarfvorhersage-Produkt
+@app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
+def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     eintrag = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id,
         Bedarfsvorhersage.produkt_id == produkt_id
     ).first()
+
     if not eintrag:
         raise HTTPException(status_code=404, detail="Eintrag nicht gefunden")
-    return eintrag
+    
+    db.delete(eintrag)
+    db.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
 
 # erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
 # der Counter wird erstmal im Body mit übergeben
