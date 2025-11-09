@@ -10,7 +10,7 @@ from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
-
+import re
 
 load_dotenv()
 DATABASE_URL = f"mysql+pymysql://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@{os.environ['DB_HOST']}/{os.environ['DB_NAME']}"
@@ -236,7 +236,8 @@ class NameAendern(BaseModel):
 class EmailAendern(BaseModel):
     neue_email: str
 
-
+class MitgliedEmail(BaseModel): #
+    email: str
 # --- FastAPI-App ---
 
 app = FastAPI()
@@ -743,7 +744,16 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
 
     if not vorhanden:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+    # NEU: PRÜFUNG AUF DOPPELTE MITGLIEDSCHAFT HINZUFÜGEN
+    vorhandenes_mitglied = db.query(ListeMitglieder).filter(
+        ListeMitglieder.listen_id == listen_id,
+        ListeMitglieder.nutzer_id == nutzer_id
+    ).first()
 
+    if vorhandenes_mitglied:
+        raise HTTPException(
+            status_code=400, detail="Der Nutzer ist bereits Mitglied der Liste")
+    
     neues_mitglied = ListeMitglieder(
         listen_id=listen_id,
         nutzer_id=nutzer_id,
@@ -753,7 +763,37 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
     db.commit()
     db.refresh(neues_mitglied)
     return neues_mitglied
+# --- Mitglied per E-Mail hinzufügen ---
+email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+@app.post("/listen/{listen_id}/mitglieder/by-email", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
+def add_mitglied_by_email(listen_id: int = Path(..., gt=0), email: str = Body(...), db: Session = Depends(get_db)):
+    if not re.match(email_regex, email):
+        raise HTTPException(status_code=400, detail="Ungültiges E-Mail-Format")
 
+    nutzer = db.query(Nutzer).filter(func.lower(
+        Nutzer.email) == email.lower()).first()
+
+    if not nutzer:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+    vorhandenes_mitglied = db.query(ListeMitglieder).filter(
+        ListeMitglieder.listen_id == listen_id,
+        ListeMitglieder.nutzer_id == nutzer.id
+    ).first()
+
+    if vorhandenes_mitglied:
+        raise HTTPException(
+            status_code=400, detail="Der Nutzer ist bereits Mitglied der Liste")
+
+    neues_mitglied = ListeMitglieder(
+        listen_id=listen_id,
+        nutzer_id=nutzer.id,
+        beigetreten_am=date.today()
+    )
+    db.add(neues_mitglied)
+    db.commit()
+    db.refresh(neues_mitglied)
+    return neues_mitglied
 
 @app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
