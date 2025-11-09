@@ -219,6 +219,7 @@ class FavProdukteUpdate(BaseModel):
 class BedarfsvorhersageRead(BaseModel):
     nutzer_id: int
     produkt_id: int
+    produkt_name: Optional[str] = None
     counter: Decimal
     last_update: Optional[datetime] = None
 
@@ -600,6 +601,20 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     eintraege = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id).all()
+    
+    eintraege = (
+        db.query(
+        Bedarfsvorhersage.nutzer_id,
+        Bedarfsvorhersage.produkt_id,
+        Produkt.name.label("produkt_name"),
+        Bedarfsvorhersage.counter,
+        Bedarfsvorhersage.last_update
+        )
+        .join(Produkt, Produkt.id == Bedarfsvorhersage.produkt_id)
+        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)
+        .all()
+    )
+
     return eintraege    
 
 # gibt einen spezifischen Bedarfsvorhersage-Eintrag für einen Nutzer und ein Produkt zurück
