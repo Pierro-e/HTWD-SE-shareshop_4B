@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numer
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
@@ -595,27 +595,38 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     return fav_produkt
 
 # --- Bedarfsvorhersage ---
+# Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
+def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
+    # Alle Bedarfsvorhersage-Objekte des Nutzers holen
+    eintraege = db.query(Bedarfsvorhersage,
+                         Produkt.name.label("produkt_name")).filter(
+        Bedarfsvorhersage.nutzer_id == nutzer_id
+    ).all()
 
-# gibt alle Bedarfsvorhersage-Einträge für einen Nutzer zurück
+    now = datetime.utcnow()
+    decay_rate = 0.05  # Zerfallsrate pro Tag
+
+    for eintrag in eintraege:
+        # Tage seit last_update
+        delta_days = (now - eintrag.last_update).days if eintrag.last_update else 0
+        if delta_days <= 0:
+            continue
+
+        new_counter = float(eintrag.counter) * max(0, (1 - decay_rate * delta_days)) # neuen Counter berechnen
+        eintrag.counter = Decimal(round(new_counter, 2))
+        eintrag.last_update = now
+
+    db.commit()
+    return eintraege  # jetzt sind es echte SQLAlchemy-Objekte   
+
+
+# Abrufen der Bedarfsvorhersage für einen Nutzer
 @app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
 def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    eintraege = db.query(Bedarfsvorhersage).filter(
-        Bedarfsvorhersage.nutzer_id == nutzer_id).all()
-    
-    eintraege = (
-        db.query(
-        Bedarfsvorhersage.nutzer_id,
-        Bedarfsvorhersage.produkt_id,
-        Produkt.name.label("produkt_name"),
-        Bedarfsvorhersage.counter,
-        Bedarfsvorhersage.last_update
-        )
-        .join(Produkt, Produkt.id == Bedarfsvorhersage.produkt_id)
-        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)
-        .all()
-    )
+    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, db)
 
-    return eintraege    
+    return aktualisierte_einträge
+
 
 # zum Löschen eines Bedarfvorhersage-Produkt
 @app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
@@ -647,11 +658,13 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
 
     if eintrag:
         eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(eintrag_data.counter)
+        eintrag.last_update = func.current_timestamp()
     else:
         eintrag = Bedarfsvorhersage(
             nutzer_id=nutzer_id,
             produkt_id=eintrag_data.produkt_id,
-            counter=Decimal(eintrag_data.counter)
+            counter=Decimal(eintrag_data.counter),
+            last_update=func.current_timestamp()
         )
         db.add(eintrag)
 
