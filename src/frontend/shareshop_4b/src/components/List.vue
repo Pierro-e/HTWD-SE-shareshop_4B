@@ -351,16 +351,21 @@ export default {
 
     async loadDropdownList(type, searchText){
       if (type == 0) { // Bedarfsvorhersage/Favoriten
-        // TODO: Favoriten!!!
         try {
-          const response = await axios.get(
+          var response = await axios.get(
             `http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
-          
           var recommendedProducts = response.data;
+
+          response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${this.user.id}`);
+          var favoriteProducts = response.data;
+
           var tempOptions = [];
           
+          // TODO: Fav./Vorschläge nicht anzeigen, wenn keine vorhanden sind
           tempOptions.push({label: "Favoriten", header: true})
-          tempOptions.push({label: "TODO"})
+          for (const product of favoriteProducts){
+            tempOptions.push({label: `ID: ${product.produkt_id} Amnt: ${product.menge}`})
+          }
           tempOptions.push({label: "Vorschläge", header: true})
           for (const product of recommendedProducts){
             tempOptions.push({label: `ID: ${product.produkt_id} Cnt: ${product.counter} (${product.last_update})`})
