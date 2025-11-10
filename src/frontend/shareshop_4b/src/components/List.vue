@@ -369,6 +369,7 @@ export default {
           this.dropdownOptions = tempOptions;
           this.errorMessage = "";
         } catch (error) {
+          this.dropdownOptions = [];
           if (
             error.response &&
             error.response.data &&
@@ -391,11 +392,13 @@ export default {
           var tempOptions = [];
           
           for (const product of suggestions){
-              tempOptions.push({label: `${product.name}`})
+            tempOptions.push({label: `${product.name}`})
           }
+
           this.dropdownOptions = tempOptions;
           this.errorMessage = ""
         } catch (error) {
+          this.dropdownOptions = [];
           if (
             error.response &&
             error.response.data &&
@@ -413,11 +416,11 @@ export default {
     async onSearch(searchText){ // aufgerufen, wenn was ins Dropdown eingegeben wird
       clearTimeout(this.searchTimeout);
 
-      if (searchText.length === 0){ // Bedarfsvorhersage/Favoriten
+      if (searchText.length == 0){ // Bedarfsvorhersage/Favoriten
         this.loadDropdownList(0, "");
       }
       else { // Suchvorschläge > mind. 1 Zeichen eingegeben
-        if (searchText.length === 1 && this.prevSearchText.length != 2){ // sofort bei erster Eingabe suchen, nicht beim zurücklöschen
+        if (searchText.length == 1 && this.prevSearchText.length != 2){ // sofort bei erster Eingabe suchen, nicht beim zurücklöschen
           this.loadDropdownList(1, searchText);
         }
         
