@@ -2,6 +2,7 @@
   <header>
     <h1>{{ user.name }}'s Einkaufslisten</h1>
     <button @click="newList" id="newlist" class="button-add">+</button>
+    <button @click="$router.push('/fav')">Favorit</button>
   </header>
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -11,7 +12,6 @@
       :key="list.id"
       :id="list.id"
       :name="list.name"
-      
     />
   </main>
   <footer>
@@ -61,7 +61,7 @@ export default {
       } else {
         this.errorMessage = "Fehler beim Laden der Listen";
       }
-      
+
     }
     this.loadingActive = false;
   },
