@@ -49,8 +49,7 @@ class Liste(Base):
     __tablename__ = "Listen"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(150), nullable=False)
-    ersteller = Column(Integer, ForeignKey(
-        'Nutzer.id', ondelete='SET NULL'), nullable=True)
+    ersteller = Column(Integer, ForeignKey('Nutzer.id', ondelete='SET NULL'), nullable=True)
     datum = Column(Date)
 
 
@@ -90,6 +89,24 @@ class Bedarfsvorhersage(Base):
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     counter = Column(Numeric(10, 2), default=0.00)
     last_update = Column(DateTime, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
+
+class Einkaufsarchiv(Base):
+    __tablename__ = "Einkaufsarchiv"
+    einkauf_id = Column(Integer, primary_key=True, nullable=False)
+    listen_id = Column(Integer, ForeignKey("Listen.id", ondelete="CASCADE"), nullable=False)
+    eingekauft_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
+    eingekauft_am = Column(Date, nullable=False)
+    gesamtpreis = Column(Numeric(10, 2), nullable=True)
+
+class EingekaufteProdukte(Base):
+    __tablename__ = "eingekaufte_Produkte"
+    einkauf_id = Column(Integer, ForeignKey("Einkaufsarchiv.einkauf_id", ondelete="CASCADE"), primary_key=True) # AUTO_INCREMENT in DB
+    produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
+    produkt_menge = Column(Numeric(10, 2), nullable=True)
+    einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
+    produkt_preis = Column(Numeric(10, 2), nullable=True)
+    hinzugefuegt_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
+
 
 
 # --- Pydantic-Modelle ---
@@ -238,6 +255,45 @@ class NameAendern(BaseModel):
 class EmailAendern(BaseModel):
     neue_email: str
 
+class EinkaufsarchivRead(BaseModel):
+    einkauf_id: int
+    listen_id: int
+    listen_name: Optional[str] = None
+    eingekauft_von: Optional[int] = None
+    einkäufer_name: Optional[str] = None
+    eingekauft_am: date
+    gesamtpreis: Optional[Decimal] = None
+
+    class Config:
+        from_attributes = True
+
+class EinkaufsarchivCreate(BaseModel):
+    listen_id: int
+    eingekauft_von: Optional[int] = None
+    eingekauft_am: date
+    gesamtpreis: Optional[Decimal] = None
+
+class eingekaufteProdukteRead(BaseModel):
+    einkauf_id: int
+    produkt_id: int
+    produkt_name: Optional[str] = None
+    produkt_menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    einheit_abk: Optional[str] = None
+    produkt_preis: Optional[Decimal] = None
+    hinzugefuegt_von: Optional[int] = None
+    hinzufueger_name: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+        
+class eingekaufteProdukteCreate(BaseModel):
+    einkauf_id: int
+    produkt_id: int
+    produkt_menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    produkt_preis: Optional[Decimal] = None
+    hinzugefuegt_von: Optional[int] = None
 
 # --- FastAPI-App ---
 
