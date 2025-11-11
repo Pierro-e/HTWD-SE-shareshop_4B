@@ -199,6 +199,7 @@ class ProduktDeleteRequest(BaseModel):
 class FavProdukteRead(BaseModel):
     nutzer_id: int
     produkt_id: int
+    produkt_name: Optional[str] = None
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
     beschreibung: Optional[str] = None
@@ -526,10 +527,30 @@ def search_products(
 
 @app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
 def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    fav_produkte = db.query(FavProdukte).filter(
-        FavProdukte.nutzer_id == nutzer_id).all()
-    return fav_produkte
+    
+    user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
+    if not user:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+     # JOIN zwischen FavProdukte und Produkt, um die Produktnamen direkt zu holen
+    
+    fav_produkte = (
+        db.query(
+            FavProdukte.produkt_id,
+            Produkt.name.label("produkt_name"),
+            FavProdukte.menge,
+            FavProdukte.einheit_id,
+            case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),
+            FavProdukte.hinzugefuegt_von,
+            Produkt.beschreibung
+        )
+        .join(Produkt, FavProdukte.produkt_id == Produkt.id)
+        .outerjoin(Einheit, Einheit.id == FavProdukte.einheit_id)
+        .filter(FavProdukte.nutzer_id == nutzer_id)
+        .all()
+    )
+    return fav_produkte
 
 @app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
@@ -598,10 +619,18 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 # Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
 def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
     # Alle Bedarfsvorhersage-Objekte des Nutzers holen
-    eintraege = db.query(Bedarfsvorhersage,
-                         Produkt.name.label("produkt_name")).filter(
-        Bedarfsvorhersage.nutzer_id == nutzer_id
-    ).all()
+    eintraege = (
+        db.query(
+            Bedarfsvorhersage.nutzer_id,
+            Bedarfsvorhersage.produkt_id,
+            Produkt.name.label("produkt_name"),
+            Bedarfsvorhersage.counter,
+            Bedarfsvorhersage.last_update
+        )
+        .join(Produkt, Bedarfsvorhersage.produkt_id == Produkt.id)
+        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)
+        .all()
+    )
 
     now = datetime.utcnow()
     decay_rate = 0.05  # Zerfallsrate pro Tag
@@ -609,8 +638,8 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
     for eintrag in eintraege:
         # Tage seit last_update
         delta_days = (now - eintrag.last_update).days if eintrag.last_update else 0
-        if delta_days <= 0:
-            continue
+        # if delta_days <= 0: --------------------------------------------------------------------------muss dann wieder hinzugeügt werden-------------------------------------------------
+        #   continue
 
         new_counter = float(eintrag.counter) * max(0, (1 - decay_rate * delta_days)) # neuen Counter berechnen
         eintrag.counter = Decimal(round(new_counter, 2))
