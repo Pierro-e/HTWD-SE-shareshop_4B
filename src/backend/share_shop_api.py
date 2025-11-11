@@ -55,20 +55,16 @@ class Liste(Base):
 
 class ListeMitglieder(Base):
     __tablename__ = "ListeMitglieder"
-    listen_id = Column(Integer, ForeignKey(
-        'Listen.id', ondelete='CASCADE'), primary_key=True)
-    nutzer_id = Column(Integer, ForeignKey(
-        'Nutzer.id', ondelete='Cascade'), primary_key=True)
+    listen_id = Column(Integer, ForeignKey('Listen.id', ondelete='CASCADE'), primary_key=True)
+    nutzer_id = Column(Integer, ForeignKey('Nutzer.id', ondelete='Cascade'), primary_key=True)
     beigetreten_am = Column(Date)
 
 
 class ListeProdukte(Base):
     __tablename__ = "ListeProdukte"
-    listen_id = Column(Integer, ForeignKey(
-        'Listen.id', ondelete='Cascade'), primary_key=True)
+    listen_id = Column(Integer, ForeignKey('Listen.id', ondelete='Cascade'), primary_key=True)
     produkt_id = Column(Integer, ForeignKey('Produkt.id'), primary_key=True)
-    hinzugefügt_von = Column(Integer, ForeignKey(
-        'Nutzer.id', ondelete='SET NULL'), nullable=True)
+    hinzugefügt_von = Column(Integer, ForeignKey('Nutzer.id', ondelete='SET NULL'), nullable=True)
     produkt_menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, nullable=True)
     beschreibung = Column(String, nullable=True)
@@ -219,7 +215,10 @@ class FavProdukteRead(BaseModel):
     produkt_name: Optional[str] = None
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
+    einheit_abk: Optional[str] = None
     beschreibung: Optional[str] = None
+    class Config:
+        from_attributes = True
 
 
 class FavProdukteCreate(BaseModel):
@@ -240,6 +239,8 @@ class BedarfsvorhersageRead(BaseModel):
     produkt_name: Optional[str] = None
     counter: Decimal
     last_update: Optional[datetime] = None
+    class Config:
+        from_attributes = True
 
 class BedarfvorhersageCreate(BaseModel):
     produkt_id: int
@@ -286,7 +287,7 @@ class eingekaufteProdukteRead(BaseModel):
 
     class Config:
         from_attributes = True
-        
+
 class eingekaufteProdukteCreate(BaseModel):
     einkauf_id: int
     produkt_id: int
@@ -593,13 +594,13 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
     
     fav_produkte = (
         db.query(
+            FavProdukte.nutzer_id,
             FavProdukte.produkt_id,
             Produkt.name.label("produkt_name"),
             FavProdukte.menge,
             FavProdukte.einheit_id,
             case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),
-            FavProdukte.hinzugefuegt_von,
-            Produkt.beschreibung
+            FavProdukte.beschreibung
         )
         .join(Produkt, FavProdukte.produkt_id == Produkt.id)
         .outerjoin(Einheit, Einheit.id == FavProdukte.einheit_id)
@@ -675,18 +676,9 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 # Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
 def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
     # Alle Bedarfsvorhersage-Objekte des Nutzers holen
-    eintraege = (
-        db.query(
-            Bedarfsvorhersage.nutzer_id,
-            Bedarfsvorhersage.produkt_id,
-            Produkt.name.label("produkt_name"),
-            Bedarfsvorhersage.counter,
-            Bedarfsvorhersage.last_update
-        )
-        .join(Produkt, Bedarfsvorhersage.produkt_id == Produkt.id)
-        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)
-        .all()
-    )
+    eintraege =db.query(Bedarfsvorhersage).filter(
+            Bedarfsvorhersage.nutzer_id == nutzer_id
+        ).all()
 
     now = datetime.utcnow()
     decay_rate = 0.05  # Zerfallsrate pro Tag
@@ -702,7 +694,20 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
         eintrag.last_update = now
 
     db.commit()
-    return eintraege  # jetzt sind es echte SQLAlchemy-Objekte   
+    aktualisierte_einträge = []
+    for eintrag in eintraege:
+        produkt = db.query(Produkt).filter(Produkt.id == eintrag.produkt_id).first()
+        aktualisierte_einträge.append(
+            BedarfsvorhersageRead(
+                nutzer_id=eintrag.nutzer_id,
+                produkt_id=eintrag.produkt_id,
+                produkt_name=produkt.name if produkt else None,
+                counter=eintrag.counter,
+                last_update=eintrag.last_update
+            )
+        )
+
+    return aktualisierte_einträge
 
 
 # Abrufen der Bedarfsvorhersage für einen Nutzer
