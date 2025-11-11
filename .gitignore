@@ -4,7 +4,7 @@ node_modules
 
 # Python virtual environment
 venv/
-.env
+.env/
 env/
 .venv/
 
