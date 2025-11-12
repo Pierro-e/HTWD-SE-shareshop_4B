@@ -152,7 +152,7 @@ input {
 
 }
 .password-toggle-icon {
-  color: lightgray;
+  color: gray;
   position: absolute;
   right: 10px;
   cursor: pointer;
