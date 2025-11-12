@@ -3,13 +3,14 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response, Body, Query
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import List, Optional
 from datetime import date
 from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+import re
 
 
 load_dotenv()
@@ -108,8 +109,9 @@ class NutzerRead(BaseModel):
 
 
 class NutzerCreate(BaseModel):
-    email: str
-    name: str
+    #email: str
+    email: EmailStr
+    name: str = Field (min_length=1)
     passwort_hash: str
 
 
@@ -236,7 +238,18 @@ class NameAendern(BaseModel):
 class EmailAendern(BaseModel):
     neue_email: str
 
-
+def contains_at_least_one_letter(s: str) -> bool:
+    # Nur die Buchstabenprüfung
+    return any(c.isalpha() or c in 'äöüÄÖÜß' for c in s)
+# Namensvalidierung 2: Prüft, ob der String Buchstaben enthält (z.B. bei "123")
+@field_validator('name', mode='after') 
+@classmethod
+def validate_name_content(cls, value):
+    if not contains_at_least_one_letter(value):
+        raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
+        
+    # Gibt den Wert ohne führende/nachfolgende Leerzeichen zurück
+    return value.strip()
 # --- FastAPI-App ---
 
 app = FastAPI()
