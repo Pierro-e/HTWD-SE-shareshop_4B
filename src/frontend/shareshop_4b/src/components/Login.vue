@@ -24,7 +24,7 @@
           required
         />
         <span class="password-toggle-icon" @click="togglePasswordVisibility">
-          {{ passwordFieldType === 'password' ? '👁️' : '🕳️' }}
+          <font-awesome-icon :icon="passwordFieldType === 'password' ? 'eye' : 'eye-slash'" />
         </span>
       </div>  
       </div>
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
 
 export default {
@@ -135,17 +136,23 @@ form label {
   width: auto;
 }
 
+input {
+  width: 100%;
+}
+
 .login_email,
 .login_pw {
   display: flex;
   flex-direction: column;
 }
+
 .password-input-container {
   position: relative;
   display: flex;
-  align-items: center;
+
 }
 .password-toggle-icon {
+  color: lightgray;
   position: absolute;
   right: 10px;
   cursor: pointer;
@@ -154,10 +161,8 @@ form label {
 }
 /* falls passwörter lange sind */
 .password-input-container input {
-    width: 100%;
-    padding-right: 2.5em; /* Platz für das Icon */
+    padding-right: 2.5em;
 }
-
 
 .login_block {
   margin-bottom: 0.4em;
