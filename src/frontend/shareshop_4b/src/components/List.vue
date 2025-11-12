@@ -53,6 +53,10 @@
         <p>Name der Liste: {{ list_name }}</p>
         <p>Ersteller: {{ list_creator_name }}</p>
 
+        <div v-if="infoMessage" class="success">{{ infoMessage }}</div>
+        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+
+
         <br></br>
         <h4>Mitglieder</h4>
         
@@ -76,6 +80,9 @@
         </button>
         <button @click="mitglied_hinzufügen_popup()" class="button button-add">
           Mitglied hinzufügen
+        </button>
+        <button v-if="user.name == list_creator_name" @click="delete_list()" class="button-delete">
+          Liste löschen 
         </button>
       </div>
     </div>
@@ -177,6 +184,7 @@ export default {
       list_creator_id: null,
       list_creator_name: "",
       errorMessage: "",
+      infoMessage: "",
       loadingActive: true,
       showpopup_product: false,
       showpopup_list: false,
@@ -513,6 +521,40 @@ export default {
 
       this.$router.push(`/list/${list_id}/einkauf`);
     },
+        async delete_list() {
+        
+        if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
+            return;
+        }
+        this.errorMessage = "";
+        this.infoMessage = ""; // Nachricht vor dem Versuch löschen
+        
+        try {
+            // Sicherstellen, dass die ID korrekt verwendet wird
+            const list_id = this.list_id || this.$route.params.id;
+            await axios.delete(`http://141.56.137.83:8000/listen/${list_id}`);
+
+            // Erfolgsfall (Rückgabe 204 No Content führt hier zur erfolgreichen Ausführung)
+            this.infoMessage = "Liste wurde erfolgreich gelöscht!";
+            setTimeout(() => {
+                this.$router.push("/listen");
+            }, 2000);
+
+        } catch (error) {
+            console.error("Fehler beim Löschvorgang:", error);
+            // zentralistiertte Fehlerbehandlung basierend auf der Backend-Antwort
+            if (
+                error.response &&
+                error.response.status === 404
+            ) {
+                // Fehlermeldung vom Backend: "Liste nicht gefunden"
+                this.errorMessage = error.response.data.detail || "Liste nicht gefunden.";
+            } else {
+                // Generischer Fehler
+                this.errorMessage = "Serverfehler oder unerwarteter Fehler beim Löschen der Liste.";
+            }
+        }
+  },
   },
   mounted() {
     this.errorMessage = "";
