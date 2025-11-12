@@ -113,6 +113,13 @@ class NutzerCreate(BaseModel):
     email: EmailStr
     name: str = Field (min_length=1)
     passwort_hash: str
+    # Namensvalidierung 2: Prüft, ob der String Buchstaben enthält (z.B. bei "123")
+@field_validator('name', mode='after') 
+@classmethod
+def validate_name_content(cls, value):
+    if not contains_at_least_one_letter(value):
+        raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
+    return value.strip()
 
 
 class EinheitRead(BaseModel):
@@ -238,18 +245,10 @@ class NameAendern(BaseModel):
 class EmailAendern(BaseModel):
     neue_email: str
 
+
 def contains_at_least_one_letter(s: str) -> bool:
     # Nur die Buchstabenprüfung
     return any(c.isalpha() or c in 'äöüÄÖÜß' for c in s)
-# Namensvalidierung 2: Prüft, ob der String Buchstaben enthält (z.B. bei "123")
-@field_validator('name', mode='after') 
-@classmethod
-def validate_name_content(cls, value):
-    if not contains_at_least_one_letter(value):
-        raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
-        
-    # Gibt den Wert ohne führende/nachfolgende Leerzeichen zurück
-    return value.strip()
 # --- FastAPI-App ---
 
 app = FastAPI()
