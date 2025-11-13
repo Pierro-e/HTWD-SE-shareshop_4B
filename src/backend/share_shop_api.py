@@ -95,33 +95,6 @@ class Bedarfsvorhersage(Base):
 
 # --- Pydantic-Modelle ---
 
-
-class NutzerRead(BaseModel):
-    id: int
-    email: str
-    name: str
-    passwort_hash: str
-    theme: int
-    color: int
-
-    class Config:
-        from_attributes = True
-
-
-class NutzerCreate(BaseModel):
-    #email: str
-    email: EmailStr
-    name: str = Field (min_length=1)
-    passwort_hash: str
-    # Namensvalidierung 2: Prüft, ob der String Buchstaben enthält (z.B. bei "123")
-@field_validator('name', mode='after') 
-@classmethod
-def validate_name_content(cls, value):
-    if not contains_at_least_one_letter(value):
-        raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
-    return value.strip()
-
-
 class EinheitRead(BaseModel):
     id: int
     name: str
@@ -246,8 +219,42 @@ class EmailAendern(BaseModel):
     neue_email: str
 
 
+class NutzerRead(BaseModel):
+    id: int
+    email: str
+    name: str
+    passwort_hash: str
+    theme: int
+    color: int
+
+    class Config:
+        from_attributes = True
+
+class NutzerCreate(BaseModel):
+    #email: str
+    email: EmailStr
+    name: str = Field (min_length=1)
+    passwort_hash: str
+    # es ist eine Validierungs-Methode die Prüft, ob der Name Buchstaben enthält.
+    # Sie wird NACH der initialen Zuweisung (mode='after') und NACH min_length=1 ausgeführt.
+    @field_validator('name', mode='after') 
+    @classmethod
+    def validate_name_content(cls, value):
+        if not contains_at_least_one_letter(value):
+            raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
+        return value.strip()
+
+# --- Hilfsfunktion zur Buchstabenprüfung ---
 def contains_at_least_one_letter(s: str) -> bool:
-    # Nur die Buchstabenprüfung
+    """
+    Prüft, ob der übergebene String mindestens einen Buchstaben enthält (A-Z, äöü).
+
+    Anwendung: Wird im @field_validator des Pydantic-Modells 'NutzerCreate' 
+                für das Feld 'name' verwendet, um reine Zahlen oder Symbole 
+                (z.B. '123' oder '!!!') abzufangen.
+
+    Rückgabe: True, wenn ein Buchstabe gefunden wird, sonst False.
+    """
     return any(c.isalpha() or c in 'äöüÄÖÜß' for c in s)
 # --- FastAPI-App ---
 
