@@ -91,7 +91,7 @@ class Einkaufsarchiv(Base):
     einkauf_id = Column(Integer, primary_key=True, nullable=False)
     listen_id = Column(Integer, ForeignKey("Listen.id", ondelete="CASCADE"), nullable=False)
     eingekauft_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
-    eingekauft_am = Column(Date, nullable=False)
+    eingekauft_am = Column(DateTime, server_default=func.now(), nullable=False)  
     gesamtpreis = Column(Numeric(10, 2), nullable=True)
 
 class EingekaufteProdukte(Base):
@@ -261,17 +261,15 @@ class EinkaufsarchivRead(BaseModel):
     listen_id: int
     listen_name: Optional[str] = None
     eingekauft_von: Optional[int] = None
-    einkäufer_name: Optional[str] = None
-    eingekauft_am: date
+    einkaeufer_name: Optional[str] = None
+    eingekauft_am: Optional[date] = None  
     gesamtpreis: Optional[Decimal] = None
 
     class Config:
         from_attributes = True
 
 class EinkaufsarchivCreate(BaseModel):
-    listen_id: int
     eingekauft_von: Optional[int] = None
-    eingekauft_am: date
     gesamtpreis: Optional[Decimal] = None
 
 class eingekaufteProdukteRead(BaseModel):
@@ -1026,4 +1024,71 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
             status_code=404, detail="Produkt in Liste nicht gefunden")
     db.delete(eintrag)
     db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@app.get("/einkaufsarchiv/list/{listen_id}", response_model=List[EinkaufsarchivRead])
+def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+    # Prüfen, ob die Liste existiert
+    liste = db.query(Liste).filter(Liste.id == listen_id).first()
+    if not liste:
+        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
+    
+    einkaeufe = (
+        db.query(
+            Einkaufsarchiv.einkauf_id,
+            Einkaufsarchiv.listen_id,
+            Liste.name.label("listen_name"),
+            Einkaufsarchiv.eingekauft_von,
+            Nutzer.name.label("einkaeufer_name"),
+            func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
+            Einkaufsarchiv.gesamtpreis
+        )
+        .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
+        .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
+        .filter(Einkaufsarchiv.listen_id == listen_id)
+        .all()
+    )
+
+
+    return einkaeufe
+
+@app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
+def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
+
+    liste = db.query(Liste).filter(Liste.id == listen_id).first()
+    if not liste:
+        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
+    
+    if einkauf.eingekauft_von is not None:
+        nutzer = db.query(Nutzer).filter(Nutzer.id == einkauf.eingekauft_von).first()
+        if not nutzer:
+            raise HTTPException(status_code=400, detail="Eingekäufer nicht gefunden")
+    
+    neuer_einkauf = Einkaufsarchiv(
+        listen_id = listen_id,
+        eingekauft_von = einkauf.eingekauft_von,
+        eingekauft_am=datetime.utcnow(),         # aktuelles Datum/Uhrzeit in UTC
+        gesamtpreis = einkauf.gesamtpreis
+    )
+
+    db.add(neuer_einkauf)
+    db.commit()
+    db.refresh(neuer_einkauf)
+    return neuer_einkauf
+
+@app.delete("/delete/einkaufsarchiv/list/{listen_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    einkaeufe = db.query(Einkaufsarchiv).filter(
+        Einkaufsarchiv.listen_id == listen_id
+    ).all()
+    if not einkaeufe:
+        raise HTTPException(status_code=404, detail="Keine Einkäufe für diese Liste gefunden")
+    
+    for einkauf in einkaeufe:
+        db.delete(einkauf)   # die eingekauften Produkte werden in der DB gelöscht da ein ON DELETE CASCADE auf den Fremdschlüssel einkauf_id gesetzt ist
+
+    db.commit()
+
     return Response(status_code=status.HTTP_204_NO_CONTENT)
