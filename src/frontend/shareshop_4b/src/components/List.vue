@@ -496,7 +496,6 @@ export default {
         );
         this.showpopup_product = false;
         this.errorMessage = "";
-        this.new_product = "";
       } catch (error) {
         if (error.response) {
           this.errorMessage =
@@ -504,6 +503,40 @@ export default {
             "Unbekannter Fehler beim Hinzufügen des Produkts zur Liste";
         }
       }
+      // ist neues Produkt ein Favorit?
+      const response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${user_id}`);
+      var favoriteProducts = response.data;
+
+      var favFound = false
+      var favData = null
+      var favID = 0
+
+      for (const product of favoriteProducts){
+        if (product.produkt_name === this.new_product.trim()){
+          favID = product.produkt_id;
+          favData = {
+            produkt_menge: product.menge,
+            einheit_id: product.einheit_id,
+            beschreibung: product.beschreibung,
+          }
+          favFound = true
+          break
+        }
+      }
+
+      // bei Favorit: Produkt mit Beschreibung, Menge+Einheit updaten!
+      if (favFound){
+        try {
+          await axios.put(
+            `http://141.56.137.83:8000/listen/${list_id}/produkte/${favID}/nutzer/${user_id}`,
+            favData
+          );
+        } catch (error) {
+          this.errorMessage = error.response?.data?.detail || "Fehler beim Speichern";
+        }
+      }
+
+      this.new_product = "";
       this.get_products(list_id);
       this.loadingActive = false;
     },
