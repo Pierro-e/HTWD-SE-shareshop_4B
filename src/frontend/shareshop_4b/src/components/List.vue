@@ -104,7 +104,7 @@
           @search="onSearch"
         >
           <template #no-options>
-            Keine Optionen verfügbar
+            Keine Favoriten/Vorschläge
           </template>
         </v-select>
 
@@ -352,23 +352,25 @@ export default {
     async loadDropdownList(type, searchText){
       if (type == 0) { // Bedarfsvorhersage/Favoriten
         try {
-          var response = await axios.get(
-            `http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
+          var response = await axios.get(`http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
           var recommendedProducts = response.data;
 
           response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${this.user.id}`);
           var favoriteProducts = response.data;
 
           var tempOptions = [];
-          
-          // TODO: Fav./Vorschläge nicht anzeigen, wenn keine vorhanden sind
-          tempOptions.push({label: "Favoriten", header: true})
-          for (const product of favoriteProducts){
-            tempOptions.push({label: `ID: ${product.produkt_id} Amnt: ${product.menge}`})
+          if (favoriteProducts.length != 0){
+            tempOptions.push({label: "Favoriten", header: true})
+            for (const product of favoriteProducts){
+              tempOptions.push({label: `${product.produkt_name}`})
+            }
           }
-          tempOptions.push({label: "Vorschläge", header: true})
-          for (const product of recommendedProducts){
-            tempOptions.push({label: `ID: ${product.produkt_id} Cnt: ${product.counter} (${product.last_update})`})
+
+          if (recommendedProducts.length != 0){
+            tempOptions.push({label: "Vorschläge", header: true})
+            for (const product of recommendedProducts){
+              tempOptions.push({label: `${product.produkt_name}`})
+            }
           }
           
           this.dropdownOptions = tempOptions;
