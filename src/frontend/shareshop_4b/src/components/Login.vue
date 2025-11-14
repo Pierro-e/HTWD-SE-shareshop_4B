@@ -14,14 +14,19 @@
       </div>
       <div class="login_pw">
         <label for="password" class="login_block">Passwort: </label>
+        <div class="password-input-container">
         <input
           v-model="password"
-          type="password"
+          :type="passwordFieldType" 
           id="password"
           maxlength="30"
           placeholder="Passwort"
           required
         />
+        <span class="password-toggle-icon" @click="togglePasswordVisibility">
+          <font-awesome-icon :icon="passwordFieldType === 'password' ? 'eye' : 'eye-slash'" />
+        </span>
+      </div>  
       </div>
       <button class="button-submit" type="submit">Einloggen</button>
     </form>
@@ -46,12 +51,16 @@ export default {
       email: "",
       password: "",
       errorMessage: "",
-
+      passwordFieldType: "password",
       theme: '',
       accent: ''
     };
   },
   methods: {
+    togglePasswordVisibility() {
+      this.passwordFieldType =
+        this.passwordFieldType === "password" ? "text" : "password";
+    },
     async onSubmit() {
       this.errorMessage = "";
       let response;
@@ -126,10 +135,32 @@ form label {
   width: auto;
 }
 
+input {
+  width: 100%;
+}
+
 .login_email,
 .login_pw {
   display: flex;
   flex-direction: column;
+}
+
+.password-input-container {
+  position: relative;
+  display: flex;
+
+}
+.password-toggle-icon {
+  color: gray;
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 1.2em;
+}
+/* falls passwörter lange sind */
+.password-input-container input {
+    padding-right: 2.5em;
 }
 
 .login_block {

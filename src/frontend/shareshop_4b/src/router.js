@@ -8,6 +8,7 @@ import List from "./components/List.vue";
 import UserSettings from "./components/UserSettings.vue";
 import ProductDetail from "./components/ProductDetail.vue";
 import Einkauf from "./components/Einkauf.vue";
+import Favorites from "./components/Favorites.vue"
 
 const routes = [
   { path: "/", component: Login },
@@ -17,6 +18,7 @@ const routes = [
   { path: "/listen", component: ListOverview },
   { path: "/neueliste/", component: ListCreator },
   { path: "/list/:id", component: List, props: true },
+  { path: "/fav", component: Favorites },
   {
     path: "/listen/:listenId/produkte/:produktId/nutzer/:nutzerId",
     component: ProductDetail,

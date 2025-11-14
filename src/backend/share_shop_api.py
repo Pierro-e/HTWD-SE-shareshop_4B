@@ -1,12 +1,11 @@
 import os
 from dotenv import load_dotenv
-from fastapi import Body
-from fastapi import FastAPI, Depends, Path, status, HTTPException, Response
+from fastapi import FastAPI, Depends, Path, status, HTTPException, Response, Body, Query
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel
 from typing import List, Optional
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
@@ -15,7 +14,6 @@ from datetime import datetime
 
 load_dotenv()
 DATABASE_URL = f"mysql+pymysql://{os.environ['DB_USER']}:{os.environ['DB_PASSWORD']}@{os.environ['DB_HOST']}/{os.environ['DB_NAME']}"
-
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=True)
@@ -135,7 +133,6 @@ class ProduktRead(BaseModel):
 class ProduktCreate(BaseModel):
     name: str
 
-
 class ListeRead(BaseModel):
     id: int
     name: str
@@ -202,6 +199,7 @@ class ProduktDeleteRequest(BaseModel):
 class FavProdukteRead(BaseModel):
     nutzer_id: int
     produkt_id: int
+    produkt_name: Optional[str] = None
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
     beschreibung: Optional[str] = None
@@ -212,11 +210,17 @@ class FavProdukteCreate(BaseModel):
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
     beschreibung: Optional[str] = None
+
+class FavProdukteUpdate(BaseModel):
+    menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    beschreibung: Optional[str] = None
     
 
 class BedarfsvorhersageRead(BaseModel):
     nutzer_id: int
     produkt_id: int
+    produkt_name: Optional[str] = None
     counter: Decimal
     last_update: Optional[datetime] = None
 
@@ -468,9 +472,16 @@ def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get
 
 @app.post("/produkte_create", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
+    cleaned_name = produkt.name.strip()
+
+    if not cleaned_name:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Der Produktname darf nicht leer sein."
+        )
     # Formatierter Produktname
     formatted_name = ' '.join([word.capitalize()
-                              for word in produkt.name.split()])
+                              for word in cleaned_name.split()])
 
     # Prüfen, ob Produkt mit dem formatierten Namen schon existiert
     existing = db.query(Produkt).filter(func.lower(
@@ -489,17 +500,67 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
     return db_produkt
 
 
+# -- Funktion, um Produkte zu suchen anahnd des Namen aber mit 'LIKE' (fur die Suchvorschläge) ---
+@app.get("/produkte/suche", response_model=List[ProduktRead])
+def search_products(
+    query: str = Query(..., min_length=1, description="Suchstring für Produktnamen"),
+    db: Session = Depends(get_db)
+):
+    if not query.strip():  # leerer String oder nur Leerzeichen
+        raise HTTPException(status_code=400, detail="Der Suchstring darf nicht leer sein.")
+
+    produkte = (
+        db.query(Produkt)
+        .filter(func.lower(Produkt.name).like(f"{query.lower()}%"))  # nur Anfangsstring
+        .limit(10)
+        .all()
+    )
+
+    if not produkte:  # keine Treffer gefunden
+        raise HTTPException(status_code=404, detail="Keine Produkte gefunden, die mit diesem Suchstring beginnen.")
+
+    return produkte
+
+
+
 # --- FavProdukte ---
 
 @app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
 def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    fav_produkte = db.query(FavProdukte).filter(
-        FavProdukte.nutzer_id == nutzer_id).all()
-    return fav_produkte
+    
+    user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
+    if not user:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+     # JOIN zwischen FavProdukte und Produkt, um die Produktnamen direkt zu holen
+    
+    fav_produkte = (
+        db.query(
+            FavProdukte.produkt_id,
+            Produkt.name.label("produkt_name"),
+            FavProdukte.menge,
+            FavProdukte.einheit_id,
+            case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),
+            FavProdukte.hinzugefuegt_von,
+            Produkt.beschreibung
+        )
+        .join(Produkt, FavProdukte.produkt_id == Produkt.id)
+        .outerjoin(Einheit, Einheit.id == FavProdukte.einheit_id)
+        .filter(FavProdukte.nutzer_id == nutzer_id)
+        .all()
+    )
+    return fav_produkte
 
 @app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
+
+    anzahl_favoriten = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id).count() 
+    
+    if anzahl_favoriten >= 10:
+        raise HTTPException(
+            status_code=400, detail="Maximale Anzahl von 10 Favoriten erreicht")
 
     vorhandenes_fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
@@ -536,25 +597,89 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-# --- Bedarfsvorhersage ---
 
-# gibt alle Bedarfsvorhersage-Einträge für einen Nutzer zurück
+@app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=FavProdukteRead)
+def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteUpdate = Body(...), db: Session = Depends(get_db)):
+    fav_produkt = db.query(FavProdukte).filter(
+        FavProdukte.nutzer_id == nutzer_id,
+        FavProdukte.produkt_id == produkt_id
+    ).first()
+    if not fav_produkt:
+        raise HTTPException(status_code=404, detail="Favorisiertes Produkt nicht gefunden")
+
+    fav_produkt.menge = fav_produkt_update.menge
+    fav_produkt.einheit_id = fav_produkt_update.einheit_id
+    fav_produkt.beschreibung = fav_produkt_update.beschreibung
+
+    db.commit()
+    db.refresh(fav_produkt)
+    return fav_produkt
+
+# --- Bedarfsvorhersage ---
+# Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
+def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
+    # Alle Bedarfsvorhersage-Objekte des Nutzers holen
+    eintraege = (
+        db.query(
+            Bedarfsvorhersage.nutzer_id,
+            Bedarfsvorhersage.produkt_id,
+            Produkt.name.label("produkt_name"),
+            Bedarfsvorhersage.counter,
+            Bedarfsvorhersage.last_update
+        )
+        .join(Produkt, Bedarfsvorhersage.produkt_id == Produkt.id)
+        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)
+        .all()
+    )
+
+    now = datetime.utcnow()
+    decay_rate = 0.05  # Zerfallsrate pro Tag
+
+    for eintrag in eintraege:
+        # Tage seit last_update
+        delta_days = (now - eintrag.last_update).days if eintrag.last_update else 0
+        # if delta_days <= 0: --------------------------------------------------------------------------muss dann wieder hinzugeügt werden-------------------------------------------------
+        #   continue
+
+        new_counter = float(eintrag.counter) * max(0, (1 - decay_rate * delta_days)) # neuen Counter berechnen
+        eintrag.counter = Decimal(round(new_counter, 2))
+        eintrag.last_update = now
+
+    db.commit()
+    return eintraege  # jetzt sind es echte SQLAlchemy-Objekte   
+
+
+# Abrufen der Bedarfsvorhersage für einen Nutzer
 @app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
 def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    eintraege = db.query(Bedarfsvorhersage).filter(
-        Bedarfsvorhersage.nutzer_id == nutzer_id).all()
-    return eintraege    
 
-# gibt einen spezifischen Bedarfsvorhersage-Eintrag für einen Nutzer und ein Produkt zurück
-@app.get("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
-def get_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+     # Bedarfsvorhersage-Einträge aktualisieren
+    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, db)
+
+    return aktualisierte_einträge
+
+
+# zum Löschen eines Bedarfvorhersage-Produkt
+@app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
+def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     eintrag = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id,
         Bedarfsvorhersage.produkt_id == produkt_id
     ).first()
+
     if not eintrag:
         raise HTTPException(status_code=404, detail="Eintrag nicht gefunden")
-    return eintrag
+    
+    db.delete(eintrag)
+    db.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
 
 # erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
 # der Counter wird erstmal im Body mit übergeben
@@ -569,11 +694,13 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
 
     if eintrag:
         eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(eintrag_data.counter)
+        eintrag.last_update = func.current_timestamp()
     else:
         eintrag = Bedarfsvorhersage(
             nutzer_id=nutzer_id,
             produkt_id=eintrag_data.produkt_id,
-            counter=Decimal(eintrag_data.counter)
+            counter=Decimal(eintrag_data.counter),
+            last_update=func.current_timestamp()
         )
         db.add(eintrag)
 

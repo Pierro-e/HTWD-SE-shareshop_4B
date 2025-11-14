@@ -37,7 +37,7 @@ export default {
       else { // Leerwerte setzen
         user.value = { id: null, email: '', name: '', theme: null, accent: null }
         localStorage.setItem('user', JSON.stringify(user.value))
-        
+
         storedUser = localStorage.getItem('user') // user erneut laden
       }
 
@@ -66,7 +66,7 @@ export default {
       switch (userAccent){
         case 0: return "Blau";
         case 1: return "Lila";
-        case 2: return "Grün"; 
+        case 2: return "Grün";
         case 3: return "Rot";
         case 4: return "Orange";
         default: return "Blau" // Default setzen
@@ -107,12 +107,25 @@ export default {
       }
     }
 
-    provide('user', user)
-    provide('setUser', setUser)
-    provide('getUser', getUser)
-    provide('deleteUser', deleteUser)
-    provide('getThemeText', getThemeText)
-    provide('getAccentText', getAccentText)
+    // Abfragen der möglichen Einheiten
+    async function fetchUnits() {
+      try {
+        const response = await axios.get(`http://141.56.137.83:8000/einheiten`);
+        const units = response.data;
+        return units;
+      } catch {
+        console.error("Einheiten konnten nicht geladen werden.", error);
+        throw error;
+      }
+    }
+
+    provide("user", user);
+    provide("setUser", setUser);
+    provide("getUser", getUser);
+    provide("deleteUser", deleteUser);
+    provide("getThemeText", getThemeText);
+    provide("getAccentText", getAccentText);
+    provide("fetchUnits", fetchUnits);
 
     return {}
   }
