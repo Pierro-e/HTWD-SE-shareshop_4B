@@ -103,18 +103,6 @@ class EinheitRead(BaseModel):
     class Config:
         from_attributes = True
 
-
-class ProduktRead(BaseModel):
-    id: int
-    name: str
-
-    class Config:
-        from_attributes = True
-
-
-class ProduktCreate(BaseModel):
-    name: str
-
 class ListeRead(BaseModel):
     id: int
     name: str
@@ -243,6 +231,30 @@ class NutzerCreate(BaseModel):
         if not contains_at_least_one_letter(value):
             raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
         return value.strip()
+
+class ProduktRead(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+class ProduktCreate(BaseModel):
+    name: str = Field(min_length=1)
+
+    @field_validator('name', mode='after')
+    @classmethod
+    def validate_name_content(cls, value):
+        if not contains_at_least_one_letter(value):
+            raise ValueError('Der Produktname muss mindestens einen Buchstaben enthalten (A-Z).')
+
+        # Formatierungslogik: Entfernt Leerzeichen und setzt Großbuchstaben
+        cleaned_name = value.strip()
+        formatted_name = ' '.join([word.capitalize()
+                                   for word in cleaned_name.split()])
+
+        # Der formatierte, bereinigte Wert wird an Pydantic zurückgegeben
+        return formatted_name
 
 # --- Hilfsfunktion zur Buchstabenprüfung ---
 def contains_at_least_one_letter(s: str) -> bool:
@@ -489,27 +501,19 @@ def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get
 
 @app.post("/produkte_create", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
-    cleaned_name = produkt.name.strip()
 
-    if not cleaned_name:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Der Produktname darf nicht leer sein."
-        )
-    # Formatierter Produktname
-    formatted_name = ' '.join([word.capitalize()
-                              for word in cleaned_name.split()])
+    # product.name ist bereits validiert und formatiert
 
     # Prüfen, ob Produkt mit dem formatierten Namen schon existiert
     existing = db.query(Produkt).filter(func.lower(
-        Produkt.name) == formatted_name.lower()).first()
+        Produkt.name) == produkt.name.lower()).first()
     if existing:
         raise HTTPException(
             status_code=400, detail="Produkt mit diesem Namen existiert bereits")
 
     # Produkt speichern
     db_produkt = Produkt(
-        name=formatted_name,
+        name=produkt.name,
     )
     db.add(db_produkt)
     db.commit()
@@ -900,8 +904,8 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
         db.commit()
         db.refresh(vorhandenes_produkt)
         return vorhandenes_produkt
-
-
+    
+    
 @app.delete("/listen/{listen_id}/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), deleteRequest: ProduktDeleteRequest = Body(...), db: Session = Depends(get_db)):
     eintrag = db.query(ListeProdukte).filter(
