@@ -26,7 +26,7 @@
     <div v-if="loadingActive" class="loading">Laden...</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 
-    <div class="produkte-grid">
+    <!--<div class="produkte-grid">
       <div v-for="(produkt, index) in listenprodukte" :key="index" class="produkt-card"
         :class="{ erledigt: produkt.erledigt }">
         <div class="produkt-header">
@@ -58,7 +58,26 @@
           <p style="visibility: hidden">Platzhalter</p>
         </div>
       </div>
+    </div>-->
+    
+    <div class="produkte-grid">
+      <ProductCard
+        v-for="(produkt, index) in listenprodukte"
+        :key="index"
+        :produkt="produkt"
+        :onSettings="product_details"
+      >
+        <template #left>
+          <input
+            type="checkbox"
+            :id="`check-${index}`"
+            class="produkt-checkbox"
+            @change="toggle_Erledigt(produkt, $event)"
+          />
+        </template>
+      </ProductCard>
     </div>
+
   </div>
 </template>
 
@@ -66,12 +85,15 @@
 import axios from "axios";
 import { inject } from "vue";
 import AppHeader from "./AppHeader.vue";
+import ProductCard from "./ProductCard.vue";
+
 
 export default {
   name: "Einkauf",
   inject: ["user", "getUser"],
   props: ["list_id"],
-  components: { AppHeader },
+  components: { AppHeader , ProductCard},
+  
   data() {
     return {
       list_name: "",

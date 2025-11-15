@@ -144,7 +144,7 @@
       </div>
     </div>
 
-    <div class="produkte-grid">
+    <!--<div class="produkte-grid">
       <div
         v-for="(produkt, index) in listenprodukte"
         :key="index"
@@ -180,6 +180,14 @@
           <p style="visibility: hidden">Platzhalter</p>
         </div>
       </div>
+    </div>-->
+    <div class="produkte-grid">
+      <ProductCard
+        v-for="(produkt, index) in listenprodukte"
+        :key="index"
+        :produkt="produkt"
+        :onSettings="product_settings"
+      />
     </div>
   </div>
 </template>
@@ -188,12 +196,12 @@
 import axios from "axios";
 import { inject } from "vue";
 import AppHeader from "./AppHeader.vue";
-
+import ProductCard from "./ProductCard.vue";
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
   props: ["list_id"],
-  components: {AppHeader},
+  components: {AppHeader, ProductCard},
   data() {
     return {
       list_name: "",
