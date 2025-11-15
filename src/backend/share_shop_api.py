@@ -572,7 +572,7 @@ def search_products(
     )
 
     if not produkte:  # keine Treffer gefunden
-        raise HTTPException(status_code=404, detail="Keine Produkte gefunden, die mit diesem Suchstring beginnen.")
+        raise HTTPException(status_code=404, detail="Keine Produkte gefunden")
 
     return produkte
 
