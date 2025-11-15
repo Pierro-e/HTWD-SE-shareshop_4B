@@ -90,6 +90,7 @@
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
+        <!--
         <input
           class="input"
           v-model="new_product"
@@ -97,7 +98,23 @@
           placeholder="Produktname"
           maxlength="30"
         />
+        <br><br></br>
+        -->
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+        <v-select
+          v-model="dropdownSelected"
+          :options="dropdownOptions"
+          taggable
+          :clearable="false"
+          placeholder="Produkt eingeben..."
+          :selectable="option => option.header != true"
+          @search="onSearch"
+        >
+          <template #no-options>
+            Keine Favoriten/Vorschläge
+          </template>
+        </v-select>
+
         <button @click="cancel_product_popup" class="button button-cancel">
           Abbrechen
         </button>
@@ -198,9 +215,12 @@ export default {
       mitglieder_ids: [],
       mitglieder: [],
       userData: null, // hier speichern wir den injecteten user
+      dropdownSelected: "",
+      dropdownOptions: [],
+      searchTimeout: 0,
+      prevSearchText: ""
     };
   },
-
   methods: {
     async get_list(id) {
       this.errorMessage = "";
@@ -321,13 +341,109 @@ export default {
       this.errorMessage = "";
       this.showpopup_list = true;
       this.showpopup_product = false;
-      //this.get_list_members(this.list_id);
     },
 
-    openProductPopup() {
+    async openProductPopup() {
       this.errorMessage = "";
       this.showpopup_product = true;
       this.showpopup_list = false;
+      this.dropdownSelected = "";
+
+      this.$nextTick(() => { // warten bis das Popup da ist
+        const input = document.getElementsByClassName("vs__search")[0];
+        if (input) input.setAttribute("maxlength", 30); // Länge begrenzen von Suchfeld
+      });
+
+      this.loadDropdownList(0, "");
+    },
+
+    async loadDropdownList(type, searchText){
+      if (type == 0) { // Bedarfsvorhersage/Favoriten
+        try {
+          var response = await axios.get(`http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
+          var recommendedProducts = response.data;
+
+          response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${this.user.id}`);
+          var favoriteProducts = response.data;
+
+          var tempOptions = [];
+          if (favoriteProducts.length != 0){
+            tempOptions.push({label: "Favoriten", header: true})
+            for (const product of favoriteProducts){
+              tempOptions.push({label: `${product.produkt_name}`})
+            }
+          }
+
+          if (recommendedProducts.length != 0){
+            tempOptions.push({label: "Vorschläge", header: true})
+            for (const product of recommendedProducts){
+              tempOptions.push({label: `${product.produkt_name}`})
+            }
+          }
+          
+          this.dropdownOptions = tempOptions;
+          this.errorMessage = "";
+        } catch (error) {
+          this.dropdownOptions = [];
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.detail
+          ) {
+            this.errorMessage = error.response.data.detail;
+            
+          } else {
+            this.errorMessage = "Fehler beim Laden von Favoriten/Bedarfsvorhersage";
+          } 
+        }
+      } 
+      else if (type == 1) { // Suchvorschläge > mind. 1 Zeichen eingegeben
+        try {
+          const response = await axios.get(
+            `http://141.56.137.83:8000/produkte/suche/`,
+            { params: { query: searchText } }
+          );
+          var suggestions = response.data;
+          var tempOptions = [];
+          
+          for (const product of suggestions){
+            tempOptions.push({label: `${product.name}`})
+          }
+
+          this.dropdownOptions = tempOptions;
+          this.errorMessage = ""
+        } catch (error) {
+          this.dropdownOptions = [];
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.detail
+          ) {
+            this.errorMessage = error.response.data.detail;
+            
+          } else {
+            this.errorMessage = "Fehler beim Laden der Vorschläge";
+          } 
+        }
+      }
+    },
+
+    async onSearch(searchText){ // aufgerufen, wenn was ins Dropdown eingegeben wird
+      clearTimeout(this.searchTimeout);
+
+      if (searchText.length == 0){ // Bedarfsvorhersage/Favoriten
+        this.loadDropdownList(0, "");
+      }
+      else { // Suchvorschläge > mind. 1 Zeichen eingegeben
+        if (searchText.length == 1 && this.prevSearchText.length != 2){ // sofort bei erster Eingabe suchen, nicht beim zurücklöschen
+          this.loadDropdownList(1, searchText);
+        }
+        
+        this.searchTimeout = setTimeout(() => { // sonst max. jede Sekunde, um Spammen zu verhindern
+          this.loadDropdownList(1, searchText);
+        }, 1000)
+        this.prevSearchText = searchText
+      }
     },
 
     async add_product() {
@@ -335,14 +451,15 @@ export default {
       const user_id = this.user.id;
 
       this.errorMessage = "";
+      this.new_product = this.dropdownSelected.label;
 
-      if (this.new_product.trim() === "") {
+      if (this.new_product == null) {
         this.errorMessage = "Produktname darf nicht leer sein";
         return;
       }
 
       let produkt_Id;
-
+      
       try {
         // Produkt existiert schon?
         const responseCheck = await axios.get(
@@ -387,7 +504,6 @@ export default {
         );
         this.showpopup_product = false;
         this.errorMessage = "";
-        this.new_product = "";
       } catch (error) {
         if (error.response) {
           this.errorMessage =
@@ -395,6 +511,40 @@ export default {
             "Unbekannter Fehler beim Hinzufügen des Produkts zur Liste";
         }
       }
+      // ist neues Produkt ein Favorit?
+      const response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${user_id}`);
+      var favoriteProducts = response.data;
+
+      var favFound = false
+      var favData = null
+      var favID = 0
+
+      for (const product of favoriteProducts){
+        if (product.produkt_name === this.new_product.trim()){
+          favID = product.produkt_id;
+          favData = {
+            produkt_menge: product.menge,
+            einheit_id: product.einheit_id,
+            beschreibung: product.beschreibung,
+          }
+          favFound = true
+          break
+        }
+      }
+
+      // bei Favorit: Produkt mit Beschreibung, Menge+Einheit updaten!
+      if (favFound){
+        try {
+          await axios.put(
+            `http://141.56.137.83:8000/listen/${list_id}/produkte/${favID}/nutzer/${user_id}`,
+            favData
+          );
+        } catch (error) {
+          this.errorMessage = error.response?.data?.detail || "Fehler beim Speichern";
+        }
+      }
+
+      this.new_product = "";
       this.get_products(list_id);
       this.loadingActive = false;
     },
