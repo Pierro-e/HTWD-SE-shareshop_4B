@@ -1,6 +1,6 @@
 <template>
   <div class="einkauf">
-    <div class="header">
+    <!--<div class="header">
       <button @click="einkauf_abbrechen" class="button button-cancel back-button">
         Einkauf abbrechen
       </button>
@@ -8,7 +8,20 @@
       <button @click="einkauf_abschließen" class="button button-submit button-submit-header">
         Einkauf abschließen
       </button>
-    </div>
+    </div>-->
+    <AppHeader :title="list_name">
+      <template #left>
+        <button @click="einkauf_abbrechen" class="button button-cancel back-button">
+          Einkauf abbrechen
+        </button>
+      </template>
+
+      <template #right>
+        <button @click="einkauf_abschließen" class="button button-submit button-submit-header">
+          Einkauf abschließen
+        </button>
+      </template>
+    </AppHeader>
 
     <div v-if="loadingActive" class="loading">Laden...</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -52,11 +65,13 @@
 <script>
 import axios from "axios";
 import { inject } from "vue";
+import AppHeader from "./AppHeader.vue";
 
 export default {
   name: "Einkauf",
   inject: ["user", "getUser"],
   props: ["list_id"],
+  components: { AppHeader },
   data() {
     return {
       list_name: "",

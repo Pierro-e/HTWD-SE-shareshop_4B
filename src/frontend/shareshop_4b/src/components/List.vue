@@ -1,6 +1,6 @@
 <template>
   <div class="liste">
-    <div class="header">
+    <!--<div class="header">
       <button
         :disabled="showpopup_product || showpopup_list || showpopup_add_member"
         @click="$router.push('/listen')"
@@ -18,7 +18,28 @@
       >
         Produkt hinzufügen
       </button>
-    </div>
+    </div>-->
+    <AppHeader :title="list_name">
+    <template #left>
+      <button
+        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+        @click="$router.push('/listen')"
+        class="button button-cancel back-button"
+      >
+        Zurück
+      </button>
+    </template>
+
+    <template #right>
+      <button
+        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+        @click="openProductPopup()"
+        class="button button-add button-add-header"
+      >
+        Produkt hinzufügen
+      </button>
+    </template>
+  </AppHeader>
 
     <div class="settings-section">
       <div class="settings-container">
@@ -166,11 +187,13 @@
 <script>
 import axios from "axios";
 import { inject } from "vue";
+import AppHeader from "./AppHeader.vue";
 
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
   props: ["list_id"],
+  components: {AppHeader},
   data() {
     return {
       list_name: "",
