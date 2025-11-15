@@ -287,7 +287,6 @@ class eingekaufteProdukteRead(BaseModel):
         from_attributes = True
 
 class eingekaufteProdukteCreate(BaseModel):
-    einkauf_id: int
     produkt_id: int
     produkt_menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
@@ -1092,3 +1091,58 @@ def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depend
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=List[eingekaufteProdukteRead])
+def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+    einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
+
+    if not einkauf:
+        raise HTTPException(status_code=404, detail="Einkauf nicht gefunden")
+
+    eingekaufte_produkte = (
+        db.query(
+            EingekaufteProdukte.einkauf_id,
+            EingekaufteProdukte.produkt_id,
+            Produkt.name.label("produkt_name"),
+            EingekaufteProdukte.produkt_menge,
+            EingekaufteProdukte.einheit_id,
+            Einheit.abkürzung.label("einheit_abk"),
+            EingekaufteProdukte.produkt_preis,
+            EingekaufteProdukte.hinzugefuegt_von,
+            Nutzer.name.label("hinzufueger_name")
+        )
+        .join(Produkt, Produkt.id == EingekaufteProdukte.produkt_id)
+        .outerjoin(Einheit, Einheit.id == EingekaufteProdukte.einheit_id)
+        .outerjoin(Nutzer, Nutzer.id == EingekaufteProdukte.hinzugefuegt_von)
+        .filter(EingekaufteProdukte.einkauf_id == einkauf_id)
+        .all()
+    )
+
+    return eingekaufte_produkte
+
+@app.post("/create/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=eingekaufteProdukteRead, status_code=status.HTTP_201_CREATED)
+def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_produkt: eingekaufteProdukteCreate = Body(...), db: Session = Depends(get_db)):
+    
+    einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
+
+    if not einkauf:
+        raise HTTPException(status_code=404, detail="Einkauf nicht gefunden")
+    
+    neues_eingekauftes_produkt = EingekaufteProdukte(
+        einkauf_id = einkauf_id,
+        produkt_id = eingekauftes_produkt.produkt_id,
+        produkt_menge = eingekauftes_produkt.produkt_menge,
+        einheit_id = eingekauftes_produkt.einheit_id,
+        produkt_preis = eingekauftes_produkt.produkt_preis,
+        hinzugefuegt_von = eingekauftes_produkt.hinzugefuegt_von
+    )
+
+    db.add(neues_eingekauftes_produkt)
+    db.commit() 
+
+    return neues_eingekauftes_produkt
+
+# delete EingekaufteProdukte fällt weg, da es in der Datenbank durch die Fremdschlüsselbeziehung mit ON DELETE CASCADE automatisch gelöscht wird, wenn der zugehörige Einkauf gelöscht wird
+
+
