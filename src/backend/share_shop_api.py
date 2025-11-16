@@ -94,6 +94,37 @@ class Bedarfsvorhersage(Base):
 
 
 # --- Pydantic-Modelle ---
+class NameBasis(BaseModel):
+    """Kapselt die Validierung und Bereinigung für den Namen (z.B. Nutzer, Produkte)."""
+    
+    # Der Feldname muss 'name' sein, damit der @field_validator in dieser Klasse funktioniert.
+    name: str = Field(min_length=1)
+
+    # Der Validator, der in der Basisklasse bleiben muss:
+    @field_validator('name', mode='after') 
+    @classmethod
+    def validate_name_content(cls, value):
+        # Ruft die externe Hilfsfunktion auf
+        if not contains_at_least_one_letter(value):
+            raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
+        return value.strip()
+    
+class NutzerRead(BaseModel):
+    id: int
+    email: str
+    name: str
+    passwort_hash: str
+    theme: int
+    color: int
+
+    class Config:
+        from_attributes = True
+
+class NutzerCreate(NameBasis):
+    email: EmailStr
+    passwort_hash: str
+    pass
+
 
 class EinheitRead(BaseModel):
     id: int
@@ -102,6 +133,16 @@ class EinheitRead(BaseModel):
 
     class Config:
         from_attributes = True
+
+class ProduktRead(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+class ProduktCreate(NameBasis):
+    pass
 
 class ListeRead(BaseModel):
     id: int
@@ -183,8 +224,7 @@ class FavProdukteCreate(BaseModel):
 class FavProdukteUpdate(BaseModel):
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
-    beschreibung: Optional[str] = None
-    
+    beschreibung: Optional[str] = None  
 
 class BedarfsvorhersageRead(BaseModel):
     nutzer_id: int
@@ -199,62 +239,19 @@ class BedarfvorhersageCreate(BaseModel):
 class PasswortÄndern(BaseModel):
     neues_passwort: str
 
+class NameAendern(NameBasis):
 
-class NameAendern(BaseModel):
-    neuer_name: str
+    # Die Klasse erbt das Feld 'name' und dessen Validierung. gilt für 'NutzerCreate' und 'ProduktCreate'.
+    # Wir überschreiben das Feld nur, wenn es einen anderen Feldnamen braucht,
+    # aber hier verwenden wir das geerbte 'name'-Feld direkt.
+    pass
 
 class EmailAendern(BaseModel):
     neue_email: str
 
 
-class NutzerRead(BaseModel):
-    id: int
-    email: str
-    name: str
-    passwort_hash: str
-    theme: int
-    color: int
 
-    class Config:
-        from_attributes = True
 
-class NutzerCreate(BaseModel):
-    #email: str
-    email: EmailStr
-    name: str = Field (min_length=1)
-    passwort_hash: str
-    # es ist eine Validierungs-Methode die Prüft, ob der Name Buchstaben enthält.
-    # Sie wird NACH der initialen Zuweisung (mode='after') und NACH min_length=1 ausgeführt.
-    @field_validator('name', mode='after') 
-    @classmethod
-    def validate_name_content(cls, value):
-        if not contains_at_least_one_letter(value):
-            raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
-        return value.strip()
-
-class ProduktRead(BaseModel):
-    id: int
-    name: str
-
-    class Config:
-        from_attributes = True
-
-class ProduktCreate(BaseModel):
-    name: str = Field(min_length=1)
-
-    @field_validator('name', mode='after')
-    @classmethod
-    def validate_name_content(cls, value):
-        if not contains_at_least_one_letter(value):
-            raise ValueError('Der Produktname muss mindestens einen Buchstaben enthalten (A-Z).')
-
-        # Formatierungslogik: Entfernt Leerzeichen und setzt Großbuchstaben
-        cleaned_name = value.strip()
-        formatted_name = ' '.join([word.capitalize()
-                                   for word in cleaned_name.split()])
-
-        # Der formatierte, bereinigte Wert wird an Pydantic zurückgegeben
-        return formatted_name
 
 # --- Hilfsfunktion zur Buchstabenprüfung ---
 def contains_at_least_one_letter(s: str) -> bool:
@@ -390,13 +387,13 @@ def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Dep
 
 
 @app.put("/nutzer_change/{nutzer_id}/name", status_code=status.HTTP_200_OK)
-def change_name(nutzer_id: int, name: NameAendern, db: Session = Depends(get_db)):
+def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
-
-    nutzer.name = name.neuer_name
+    # Name validiert durch Pydantic im NameAendern Modell
+    nutzer.name = name_data.name
     db.commit()
     db.refresh(nutzer)
 
