@@ -96,8 +96,9 @@ class Einkaufsarchiv(Base):
 
 class EingekaufteProdukte(Base):
     __tablename__ = "eingekaufte_Produkte"
-    einkauf_id = Column(Integer, ForeignKey("Einkaufsarchiv.einkauf_id", ondelete="CASCADE"), primary_key=True) # AUTO_INCREMENT in DB
-    produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    einkauf_id = Column(Integer, ForeignKey("Einkaufsarchiv.einkauf_id", ondelete="CASCADE"), nullable=False)
+    produkt_id = Column(Integer, ForeignKey("Produkt.id"), nullable=False)
     produkt_menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
     produkt_preis = Column(Numeric(10, 2), nullable=True)
@@ -1026,6 +1027,8 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+# Einkaufsarchiv ------------------------------------
+
 @app.get("/einkaufsarchiv/list/{listen_id}", response_model=List[EinkaufsarchivRead])
 def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
@@ -1091,6 +1094,8 @@ def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depend
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+# eingekaufte Produkte ------------------------------------
 
 @app.get("/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=List[eingekaufteProdukteRead])
 def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
