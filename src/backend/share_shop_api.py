@@ -50,27 +50,22 @@ class Liste(Base):
     __tablename__ = "Listen"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(150), nullable=False)
-    ersteller = Column(Integer, ForeignKey(
-        'Nutzer.id', ondelete='SET NULL'), nullable=True)
+    ersteller = Column(Integer, ForeignKey('Nutzer.id', ondelete='SET NULL'), nullable=True)
     datum = Column(Date)
 
 
 class ListeMitglieder(Base):
     __tablename__ = "ListeMitglieder"
-    listen_id = Column(Integer, ForeignKey(
-        'Listen.id', ondelete='CASCADE'), primary_key=True)
-    nutzer_id = Column(Integer, ForeignKey(
-        'Nutzer.id', ondelete='Cascade'), primary_key=True)
+    listen_id = Column(Integer, ForeignKey('Listen.id', ondelete='CASCADE'), primary_key=True)
+    nutzer_id = Column(Integer, ForeignKey('Nutzer.id', ondelete='Cascade'), primary_key=True)
     beigetreten_am = Column(Date)
 
 
 class ListeProdukte(Base):
     __tablename__ = "ListeProdukte"
-    listen_id = Column(Integer, ForeignKey(
-        'Listen.id', ondelete='Cascade'), primary_key=True)
+    listen_id = Column(Integer, ForeignKey('Listen.id', ondelete='Cascade'), primary_key=True)
     produkt_id = Column(Integer, ForeignKey('Produkt.id'), primary_key=True)
-    hinzugefügt_von = Column(Integer, ForeignKey(
-        'Nutzer.id', ondelete='SET NULL'), nullable=True)
+    hinzugefügt_von = Column(Integer, ForeignKey('Nutzer.id', ondelete='SET NULL'), nullable=True)
     produkt_menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, nullable=True)
     beschreibung = Column(String, nullable=True)
@@ -91,6 +86,25 @@ class Bedarfsvorhersage(Base):
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     counter = Column(Numeric(10, 2), default=0.00)
     last_update = Column(DateTime, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
+
+class Einkaufsarchiv(Base):
+    __tablename__ = "Einkaufsarchiv"
+    einkauf_id = Column(Integer, primary_key=True, nullable=False)
+    listen_id = Column(Integer, ForeignKey("Listen.id", ondelete="CASCADE"), nullable=False)
+    eingekauft_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
+    eingekauft_am = Column(DateTime, server_default=func.now(), nullable=False)  
+    gesamtpreis = Column(Numeric(10, 2), nullable=True)
+
+class EingekaufteProdukte(Base):
+    __tablename__ = "eingekaufte_Produkte"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    einkauf_id = Column(Integer, ForeignKey("Einkaufsarchiv.einkauf_id", ondelete="CASCADE"), nullable=False)
+    produkt_id = Column(Integer, ForeignKey("Produkt.id"), nullable=False)
+    produkt_menge = Column(Numeric(10, 2), nullable=True)
+    einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
+    produkt_preis = Column(Numeric(10, 2), nullable=True)
+    hinzugefuegt_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
+
 
 
 # --- Pydantic-Modelle ---
@@ -213,7 +227,10 @@ class FavProdukteRead(BaseModel):
     produkt_name: Optional[str] = None
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
+    einheit_abk: Optional[str] = None
     beschreibung: Optional[str] = None
+    class Config:
+        from_attributes = True
 
 
 class FavProdukteCreate(BaseModel):
@@ -233,6 +250,8 @@ class BedarfsvorhersageRead(BaseModel):
     produkt_name: Optional[str] = None
     counter: Decimal
     last_update: Optional[datetime] = None
+    class Config:
+        from_attributes = True
 
 class BedarfvorhersageCreate(BaseModel):
     produkt_id: int
@@ -251,6 +270,42 @@ class NameAendern(NameBasis):
 class EmailAendern(BaseModel):
     neue_email: str
 
+class EinkaufsarchivRead(BaseModel):
+    einkauf_id: int
+    listen_id: int
+    listen_name: Optional[str] = None
+    eingekauft_von: Optional[int] = None
+    einkaeufer_name: Optional[str] = None
+    eingekauft_am: Optional[date] = None  
+    gesamtpreis: Optional[Decimal] = None
+
+    class Config:
+        from_attributes = True
+
+class EinkaufsarchivCreate(BaseModel):
+    eingekauft_von: Optional[int] = None
+    gesamtpreis: Optional[Decimal] = None
+
+class eingekaufteProdukteRead(BaseModel):
+    einkauf_id: int
+    produkt_id: int
+    produkt_name: Optional[str] = None
+    produkt_menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    einheit_abk: Optional[str] = None
+    produkt_preis: Optional[Decimal] = None
+    hinzugefuegt_von: Optional[int] = None
+    hinzufueger_name: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class eingekaufteProdukteCreate(BaseModel):
+    produkt_id: int
+    produkt_menge: Optional[Decimal] = None
+    einheit_id: Optional[int] = None
+    produkt_preis: Optional[Decimal] = None
+    hinzugefuegt_von: Optional[int] = None
 
 
 
@@ -537,7 +592,7 @@ def search_products(
     )
 
     if not produkte:  # keine Treffer gefunden
-        raise HTTPException(status_code=404, detail="Keine Produkte gefunden, die mit diesem Suchstring beginnen.")
+        raise HTTPException(status_code=404, detail="Keine Produkte gefunden")
 
     return produkte
 
@@ -557,13 +612,13 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
     
     fav_produkte = (
         db.query(
+            FavProdukte.nutzer_id,
             FavProdukte.produkt_id,
             Produkt.name.label("produkt_name"),
             FavProdukte.menge,
             FavProdukte.einheit_id,
             case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),
-            FavProdukte.hinzugefuegt_von,
-            Produkt.beschreibung
+            FavProdukte.beschreibung
         )
         .join(Produkt, FavProdukte.produkt_id == Produkt.id)
         .outerjoin(Einheit, Einheit.id == FavProdukte.einheit_id)
@@ -639,18 +694,9 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 # Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
 def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
     # Alle Bedarfsvorhersage-Objekte des Nutzers holen
-    eintraege = (
-        db.query(
-            Bedarfsvorhersage.nutzer_id,
-            Bedarfsvorhersage.produkt_id,
-            Produkt.name.label("produkt_name"),
-            Bedarfsvorhersage.counter,
-            Bedarfsvorhersage.last_update
-        )
-        .join(Produkt, Bedarfsvorhersage.produkt_id == Produkt.id)
-        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)
-        .all()
-    )
+    eintraege =db.query(Bedarfsvorhersage).filter(
+            Bedarfsvorhersage.nutzer_id == nutzer_id
+        ).all()
 
     now = datetime.utcnow()
     decay_rate = 0.05  # Zerfallsrate pro Tag
@@ -666,7 +712,20 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
         eintrag.last_update = now
 
     db.commit()
-    return eintraege  # jetzt sind es echte SQLAlchemy-Objekte   
+    aktualisierte_einträge = []
+    for eintrag in eintraege:
+        produkt = db.query(Produkt).filter(Produkt.id == eintrag.produkt_id).first()
+        aktualisierte_einträge.append(
+            BedarfsvorhersageRead(
+                nutzer_id=eintrag.nutzer_id,
+                produkt_id=eintrag.produkt_id,
+                produkt_name=produkt.name if produkt else None,
+                counter=eintrag.counter,
+                last_update=eintrag.last_update
+            )
+        )
+
+    return aktualisierte_einträge
 
 
 # Abrufen der Bedarfsvorhersage für einen Nutzer
@@ -986,3 +1045,129 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
     db.delete(eintrag)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+# Einkaufsarchiv ------------------------------------
+
+@app.get("/einkaufsarchiv/list/{listen_id}", response_model=List[EinkaufsarchivRead])
+def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+    # Prüfen, ob die Liste existiert
+    liste = db.query(Liste).filter(Liste.id == listen_id).first()
+    if not liste:
+        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
+    
+    einkaeufe = (
+        db.query(
+            Einkaufsarchiv.einkauf_id,
+            Einkaufsarchiv.listen_id,
+            Liste.name.label("listen_name"),
+            Einkaufsarchiv.eingekauft_von,
+            Nutzer.name.label("einkaeufer_name"),
+            func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
+            Einkaufsarchiv.gesamtpreis
+        )
+        .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
+        .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
+        .filter(Einkaufsarchiv.listen_id == listen_id)
+        .all()
+    )
+
+
+    return einkaeufe
+
+@app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
+def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
+
+    liste = db.query(Liste).filter(Liste.id == listen_id).first()
+    if not liste:
+        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
+    
+    if einkauf.eingekauft_von is not None:
+        nutzer = db.query(Nutzer).filter(Nutzer.id == einkauf.eingekauft_von).first()
+        if not nutzer:
+            raise HTTPException(status_code=400, detail="Eingekäufer nicht gefunden")
+    
+    neuer_einkauf = Einkaufsarchiv(
+        listen_id = listen_id,
+        eingekauft_von = einkauf.eingekauft_von,
+        eingekauft_am=datetime.utcnow(),         # aktuelles Datum/Uhrzeit in UTC
+        gesamtpreis = einkauf.gesamtpreis
+    )
+
+    db.add(neuer_einkauf)
+    db.commit()
+    db.refresh(neuer_einkauf)
+    return neuer_einkauf
+
+@app.delete("/delete/einkaufsarchiv/list/{listen_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    einkaeufe = db.query(Einkaufsarchiv).filter(
+        Einkaufsarchiv.listen_id == listen_id
+    ).all()
+    if not einkaeufe:
+        raise HTTPException(status_code=404, detail="Keine Einkäufe für diese Liste gefunden")
+    
+    for einkauf in einkaeufe:
+        db.delete(einkauf)   # die eingekauften Produkte werden in der DB gelöscht da ein ON DELETE CASCADE auf den Fremdschlüssel einkauf_id gesetzt ist
+
+    db.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+# eingekaufte Produkte ------------------------------------
+
+@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=List[eingekaufteProdukteRead])
+def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+    einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
+
+    if not einkauf:
+        raise HTTPException(status_code=404, detail="Einkauf nicht gefunden")
+
+    eingekaufte_produkte = (
+        db.query(
+            EingekaufteProdukte.einkauf_id,
+            EingekaufteProdukte.produkt_id,
+            Produkt.name.label("produkt_name"),
+            EingekaufteProdukte.produkt_menge,
+            EingekaufteProdukte.einheit_id,
+            Einheit.abkürzung.label("einheit_abk"),
+            EingekaufteProdukte.produkt_preis,
+            EingekaufteProdukte.hinzugefuegt_von,
+            Nutzer.name.label("hinzufueger_name")
+        )
+        .join(Produkt, Produkt.id == EingekaufteProdukte.produkt_id)
+        .outerjoin(Einheit, Einheit.id == EingekaufteProdukte.einheit_id)
+        .outerjoin(Nutzer, Nutzer.id == EingekaufteProdukte.hinzugefuegt_von)
+        .filter(EingekaufteProdukte.einkauf_id == einkauf_id)
+        .all()
+    )
+
+    return eingekaufte_produkte
+
+@app.post("/create/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=eingekaufteProdukteRead, status_code=status.HTTP_201_CREATED)
+def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_produkt: eingekaufteProdukteCreate = Body(...), db: Session = Depends(get_db)):
+    
+    einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
+
+    if not einkauf:
+        raise HTTPException(status_code=404, detail="Einkauf nicht gefunden")
+    
+    neues_eingekauftes_produkt = EingekaufteProdukte(
+        einkauf_id = einkauf_id,
+        produkt_id = eingekauftes_produkt.produkt_id,
+        produkt_menge = eingekauftes_produkt.produkt_menge,
+        einheit_id = eingekauftes_produkt.einheit_id,
+        produkt_preis = eingekauftes_produkt.produkt_preis,
+        hinzugefuegt_von = eingekauftes_produkt.hinzugefuegt_von
+    )
+
+    db.add(neues_eingekauftes_produkt)
+    db.commit() 
+
+    return neues_eingekauftes_produkt
+
+# delete EingekaufteProdukte fällt weg, da es in der Datenbank durch die Fremdschlüsselbeziehung mit ON DELETE CASCADE automatisch gelöscht wird, wenn der zugehörige Einkauf gelöscht wird
+
+
