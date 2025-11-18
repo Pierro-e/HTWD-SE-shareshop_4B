@@ -2,7 +2,8 @@
   <div class="produkt-card" :class="{ erledigt: produkt.erledigt }">
     <div class="produkt-header">
 
-      <!-- Optionaler Checkbox-Slot (z. B. für Einkauf) -->
+      <!-- Identische Struktur bei Einkauf und Liste, nur Unterschiede bei z.B Checkbox-Slot für Einkauf.
+       dieser wird von List.vue nicht genutzt -->
       <slot name="left"></slot>
 
       <h3 class="produkt-name" :class="{ erledigt: produkt.erledigt }">

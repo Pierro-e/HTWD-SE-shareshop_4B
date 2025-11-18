@@ -1,14 +1,6 @@
 <template>
   <div class="einkauf">
-    <!--<div class="header">
-      <button @click="einkauf_abbrechen" class="button button-cancel back-button">
-        Einkauf abbrechen
-      </button>
-      <h2>{{ list_name }}</h2>
-      <button @click="einkauf_abschließen" class="button button-submit button-submit-header">
-        Einkauf abschließen
-      </button>
-    </div>-->
+    
     <AppHeader :title="list_name">
       <template #left>
         <button @click="einkauf_abbrechen" class="button button-cancel back-button">
@@ -25,47 +17,13 @@
 
     <div v-if="loadingActive" class="loading">Laden...</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-
-    <!--<div class="produkte-grid">
-      <div v-for="(produkt, index) in listenprodukte" :key="index" class="produkt-card"
-        :class="{ erledigt: produkt.erledigt }">
-        <div class="produkt-header">
-          <input type="checkbox" :id="`check-${index}`" class="produkt-checkbox"
-            @change="toggle_Erledigt(produkt, $event)" />
-          <h3 class="produkt-name" :class="{ erledigt: produkt.erledigt }">
-            {{ produkt.name || "Unbekanntes Produkt" }}
-          </h3>
-          <button @click="product_details(produkt)" class="button button-product-settings">
-            ✏️
-          </button>
-        </div>
-
-        <div class="produkt-info" v-if="produkt.produkt_menge || produkt.einheit_abk">
-          <span v-if="produkt.produkt_menge">
-            <strong>Menge:</strong> {{ produkt.produkt_menge }} {{ produkt.einheit_abk }}
-          </span>
-        </div>
-        <div class="produkt-info" v-else>
-          <span style="visibility: hidden">Platzhalter</span>
-        </div>
-
-        <div class="produkt-beschreibung" v-if="produkt.beschreibung">
-          <p v-if="produkt.beschreibung">
-            {{ produkt.beschreibung }}
-          </p>
-        </div>
-        <div class="produkt-beschreibung" v-else>
-          <p style="visibility: hidden">Platzhalter</p>
-        </div>
-      </div>
-    </div>-->
     
     <div class="produkte-grid">
       <ProductCard
         v-for="(produkt, index) in listenprodukte"
         :key="index"
         :produkt="produkt"
-        :onSettings="product_details"
+        :onSettings="product_settings"
       >
         <template #left>
           <input

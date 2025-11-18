@@ -1,24 +1,6 @@
 <template>
   <div class="liste">
-    <!--<div class="header">
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="$router.push('/listen')"
-        class="button button-cancel back-button"
-      >
-        Zurück
-      </button>
-
-      <h2>{{ list_name }}</h2>
-
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="openProductPopup()"
-        class="button button-add button-add-header"
-      >
-        Produkt hinzufügen
-      </button>
-    </div>-->
+   
     <AppHeader :title="list_name">
     <template #left>
       <button
@@ -144,43 +126,6 @@
       </div>
     </div>
 
-    <!--<div class="produkte-grid">
-      <div
-        v-for="(produkt, index) in listenprodukte"
-        :key="index"
-        class="produkt-card"
-      >
-        <div class="produkt-header">
-          <h3 class="produkt-name">
-            {{ produkt.name || "Unbekanntes Produkt" }}
-          </h3>
-          <button
-            @click="product_settings(produkt)"
-            class="button button-product-settings"
-          >
-            ✏️
-          </button>
-        </div>
-
-        <div class="produkt-info" v-if="produkt.produkt_menge">
-          <div v-if="produkt.produkt_menge" >
-            <strong>Menge:</strong> {{ produkt.produkt_menge }} {{ produkt.einheit_abk }}
-          </div>
-        </div>
-        <div class="produkt-info" v-else>
-          <span style="visibility: hidden">Platzhalter</span>
-        </div>
-
-        <div class="produkt-beschreibung" v-if="produkt.beschreibung">
-          <p v-if="produkt.beschreibung">
-            {{ produkt.beschreibung }}
-          </p>
-        </div>
-        <div class="produkt-beschreibung" v-else>
-          <p style="visibility: hidden">Platzhalter</p>
-        </div>
-      </div>
-    </div>-->
     <div class="produkte-grid">
       <ProductCard
         v-for="(produkt, index) in listenprodukte"

@@ -1,5 +1,6 @@
 <template>
   <div class="header">
+    <!--Slots für die unterschiedlichen Buttons in Einkauf und List-->
     <slot name="left"></slot>
 
     <h2>{{ title }}</h2>
