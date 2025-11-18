@@ -3,13 +3,14 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response, Body, Query
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import List, Optional
 from datetime import date, datetime
 from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+import re
 
 
 load_dotenv()
@@ -93,8 +94,21 @@ class Bedarfsvorhersage(Base):
 
 
 # --- Pydantic-Modelle ---
+class NameBasis(BaseModel):
+    """Kapselt die Validierung und Bereinigung für den Namen (z.B. Nutzer, Produkte)."""
+    
+    # Der Feldname muss 'name' sein, damit der @field_validator in dieser Klasse funktioniert.
+    name: str = Field(min_length=1)
 
-
+    # Der Validator, der in der Basisklasse bleiben muss:
+    @field_validator('name', mode='after') 
+    @classmethod
+    def validate_name_content(cls, value):
+        # Ruft die externe Hilfsfunktion auf
+        if not contains_at_least_one_letter(value):
+            raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
+        return value.strip()
+    
 class NutzerRead(BaseModel):
     id: int
     email: str
@@ -106,11 +120,10 @@ class NutzerRead(BaseModel):
     class Config:
         from_attributes = True
 
-
-class NutzerCreate(BaseModel):
-    email: str
-    name: str
+class NutzerCreate(NameBasis):
+    email: EmailStr
     passwort_hash: str
+    pass
 
 
 class EinheitRead(BaseModel):
@@ -121,7 +134,6 @@ class EinheitRead(BaseModel):
     class Config:
         from_attributes = True
 
-
 class ProduktRead(BaseModel):
     id: int
     name: str
@@ -129,9 +141,8 @@ class ProduktRead(BaseModel):
     class Config:
         from_attributes = True
 
-
-class ProduktCreate(BaseModel):
-    name: str
+class ProduktCreate(NameBasis):
+    pass
 
 class ListeRead(BaseModel):
     id: int
@@ -214,8 +225,7 @@ class FavProdukteCreate(BaseModel):
 class FavProdukteUpdate(BaseModel):
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
-    beschreibung: Optional[str] = None
-    
+    beschreibung: Optional[str] = None  
 
 class BedarfsvorhersageRead(BaseModel):
     nutzer_id: int
@@ -231,14 +241,32 @@ class BedarfvorhersageCreate(BaseModel):
 class PasswortÄndern(BaseModel):
     neues_passwort: str
 
+class NameAendern(NameBasis):
 
-class NameAendern(BaseModel):
-    neuer_name: str
+    # Die Klasse erbt das Feld 'name' und dessen Validierung. gilt für 'NutzerCreate' und 'ProduktCreate'.
+    # Wir überschreiben das Feld nur, wenn es einen anderen Feldnamen braucht,
+    # aber hier verwenden wir das geerbte 'name'-Feld direkt.
+    pass
 
 class EmailAendern(BaseModel):
     neue_email: str
 
 
+
+
+
+# --- Hilfsfunktion zur Buchstabenprüfung ---
+def contains_at_least_one_letter(s: str) -> bool:
+    """
+    Prüft, ob der übergebene String mindestens einen Buchstaben enthält (A-Z, äöü).
+
+    Anwendung: Wird im @field_validator des Pydantic-Modells 'NutzerCreate' 
+                für das Feld 'name' verwendet, um reine Zahlen oder Symbole 
+                (z.B. '123' oder '!!!') abzufangen.
+
+    Rückgabe: True, wenn ein Buchstabe gefunden wird, sonst False.
+    """
+    return any(c.isalpha() or c in 'äöüÄÖÜß' for c in s)
 # --- FastAPI-App ---
 
 app = FastAPI()
@@ -361,13 +389,13 @@ def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Dep
 
 
 @app.put("/nutzer_change/{nutzer_id}/name", status_code=status.HTTP_200_OK)
-def change_name(nutzer_id: int, name: NameAendern, db: Session = Depends(get_db)):
+def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
-
-    nutzer.name = name.neuer_name
+    # Name validiert durch Pydantic im NameAendern Modell
+    nutzer.name = name_data.name
     db.commit()
     db.refresh(nutzer)
 
@@ -472,27 +500,19 @@ def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get
 
 @app.post("/produkte_create", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
-    cleaned_name = produkt.name.strip()
 
-    if not cleaned_name:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Der Produktname darf nicht leer sein."
-        )
-    # Formatierter Produktname
-    formatted_name = ' '.join([word.capitalize()
-                              for word in cleaned_name.split()])
+    # product.name ist bereits validiert und formatiert
 
     # Prüfen, ob Produkt mit dem formatierten Namen schon existiert
     existing = db.query(Produkt).filter(func.lower(
-        Produkt.name) == formatted_name.lower()).first()
+        Produkt.name) == produkt.name.lower()).first()
     if existing:
         raise HTTPException(
             status_code=400, detail="Produkt mit diesem Namen existiert bereits")
 
     # Produkt speichern
     db_produkt = Produkt(
-        name=formatted_name,
+        name=produkt.name,
     )
     db.add(db_produkt)
     db.commit()
@@ -951,8 +971,8 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
         db.commit()
         db.refresh(vorhandenes_produkt)
         return vorhandenes_produkt
-
-
+    
+    
 @app.delete("/listen/{listen_id}/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), deleteRequest: ProduktDeleteRequest = Body(...), db: Session = Depends(get_db)):
     eintrag = db.query(ListeProdukte).filter(
