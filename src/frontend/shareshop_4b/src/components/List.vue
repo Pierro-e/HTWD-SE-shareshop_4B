@@ -1,6 +1,8 @@
 <template>
   <div class="liste">
-    <div class="header">
+   
+    <AppHeader :title="list_name">
+    <template #left>
       <button
         :disabled="showpopup_product || showpopup_list || showpopup_add_member"
         @click="$router.push('/listen')"
@@ -8,9 +10,9 @@
       >
         Zurück
       </button>
+    </template>
 
-      <h2>{{ list_name }}</h2>
-
+    <template #right>
       <button
         :disabled="showpopup_product || showpopup_list || showpopup_add_member"
         @click="openProductPopup()"
@@ -18,7 +20,8 @@
       >
         Produkt hinzufügen
       </button>
-    </div>
+    </template>
+  </AppHeader>
 
     <div class="settings-section">
       <div class="settings-container">
@@ -148,41 +151,12 @@
     </div>
 
     <div class="produkte-grid">
-      <div
+      <ProductCard
         v-for="(produkt, index) in listenprodukte"
         :key="index"
-        class="produkt-card"
-      >
-        <div class="produkt-header">
-          <h3 class="produkt-name">
-            {{ produkt.name || "Unbekanntes Produkt" }}
-          </h3>
-          <button
-            @click="product_settings(produkt)"
-            class="button button-product-settings"
-          >
-            ✏️
-          </button>
-        </div>
-
-        <div class="produkt-info" v-if="produkt.produkt_menge">
-          <div v-if="produkt.produkt_menge" >
-            <strong>Menge:</strong> {{ produkt.produkt_menge }} {{ produkt.einheit_abk }}
-          </div>
-        </div>
-        <div class="produkt-info" v-else>
-          <span style="visibility: hidden">Platzhalter</span>
-        </div>
-
-        <div class="produkt-beschreibung" v-if="produkt.beschreibung">
-          <p v-if="produkt.beschreibung">
-            {{ produkt.beschreibung }}
-          </p>
-        </div>
-        <div class="produkt-beschreibung" v-else>
-          <p style="visibility: hidden">Platzhalter</p>
-        </div>
-      </div>
+        :produkt="produkt"
+        :onSettings="product_settings"
+      />
     </div>
   </div>
 </template>
@@ -190,11 +164,13 @@
 <script>
 import axios from "axios";
 import { inject } from "vue";
-
+import AppHeader from "./AppHeader.vue";
+import ProductCard from "./ProductCard.vue";
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
   props: ["list_id"],
+  components: {AppHeader, ProductCard},
   data() {
     return {
       list_name: "",
