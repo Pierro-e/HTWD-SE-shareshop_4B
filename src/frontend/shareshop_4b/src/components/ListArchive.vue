@@ -3,56 +3,77 @@
 
     <AppHeader :title="`Listenarchiv für\n${list_name}`" class="multiline-title">
       <template #left>
-        <button @click="einkauf_abbrechen" class="button button-cancel back-button">
+        <button @click="back_to_list" class="button button-cancel back-button">
           Zurück
         </button>
       </template>
     </AppHeader>
 
     <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
+
+    <div v-else-if="purchases.length === 0" class="info">
+      Es sind noch keine Einkäufe vorhanden.
+    </div>
+
+    <div v-else>
+      <ListButton
+        v-for="purchase in purchases"
+        :key="purchase.id"
+        :id="purchase.id"
+        :name="`Einkauf am ${new Date(purchase.datum).toLocaleDateString()}`"
+      />
+    </div>
+
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import AppHeader from "./AppHeader.vue";
+import ListButton from "./ListButton.vue";
 export default {
-    name: "ListArchive",
-    props: ["list_id"],
-    components: {AppHeader},
+  name: "ListArchive",
+  props: ["list_id"],
+  components: {AppHeader, ListButton},
 
-    data(){
-        return{
-            list_name: "",
-            errorMessage: "",
-            loadingActive: true,
-        };
-    },
+  data(){
+      return{
+          list_name: "",
+          purchases: [],
+          loadingActive: true,
+          errorMessage: "",
+      };
+  },
 
-    methods: {
-        async get_list(id) {
-        this.errorMessage = "";
-        try {
-            const response = await axios.get(
-            `http://141.56.137.83:8000/listen/by-id/${id}`,
-            );
-            this.list_name = response.data.name;
-        } catch (error) {
-            if (error.response?.data?.detail) {
-            this.errorMessage = error.response.data.detail;
-            } else {
-            this.errorMessage = "Fehler beim Laden der Liste";
-            }
-        }
+  methods: {
+    async getData(id) {
+      try {
+        const [listResponse, purchasesResponse] = await Promise.all([
+          axios.get(`http://141.56.137.83:8000/listen/by-id/${id}`),
+          axios.get(`http://141.56.137.83:8000/einkaufsarchiv/list/${id}`)
+        ]);
+
+        this.list_name = listResponse.data.name;
+        this.purchases = purchasesResponse.data;
+
+      } catch (error) {
+        this.errorMessage = error.response?.data?.detail || "Fehler beim Laden der Daten";
+      } finally {
         this.loadingActive = false;
-        },
+      }
     },
-    mounted() {
-        this.errorMessage = "";
-        const id = this.list_id || this.$route.params.listenId;
-        this.get_list(id);
+    
+    back_to_list() {
+        const list_id = this.list_id || this.$route.params.listenId;
+        this.$router.push(`/list/${list_id}`);
     },
+
+  },
+  mounted() {
+    const id = this.list_id || this.$route.params.listenId;
+    this.getData(id);
+  },
 
 
 
