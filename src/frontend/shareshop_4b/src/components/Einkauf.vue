@@ -156,20 +156,33 @@ export default {
           return;
         }
 
-        await axios.post(
+        const response = await axios.post(
           `http://141.56.137.83:8000/create/einkaufsarchiv/list/${list_id}`,
           {
             eingekauft_von: this.userData.id,
             gesamtpreis: 0,
           }
-
         );
+
+        const purchase_id = response.data.einkauf_id;
+
+        await Promise.all(erledigteProdukte.map(produkt =>
+          axios.post(
+            `http://141.56.137.83:8000/create/eingekaufte_produkte/einkauf/${purchase_id}`,
+            {
+              produkt_id: produkt.produkt_id,
+              produkt_menge: produkt.produkt_menge,
+              einheit_id: produkt.einheit_id,
+              hinzugefuegt_von: produkt.hinzugefügt_von,
+            }
+          )
+        ));
 
         await Promise.all(erledigteProdukte.map(produkt =>
           axios.delete(
             `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt.produkt_id}`,
             {
-              data: {
+              data: { 
                 hinzugefügt_von: produkt.hinzugefügt_von,
               }
             }
@@ -177,6 +190,7 @@ export default {
         ));
 
         this.$router.push(`/list/${list_id}`);
+
       } catch (error) {
         if (
           error.response &&
