@@ -13,8 +13,8 @@
     <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
 
     <div v-else-if="purchased_products.length === 0" class="info">
-      Es wurden noch keine Produkte eingekauft.
-    </div>
+      Es wurden noch keine Produkte eingekauft.    <!-- eigentlich unnötig, da ein Einkauf nur existiert, wenn Produkte gekauft wurden -->
+    </div> 
 
     <div v-else>
       <ProductCard
@@ -75,7 +75,6 @@ export default {
     this.purchase_name = this.$route.query.purchase_name;
     this.list_id = this.$route.query.list_id;
     this.getData(this.purchase_id);
-
   }
 
 
