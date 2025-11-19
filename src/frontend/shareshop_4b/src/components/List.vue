@@ -44,6 +44,12 @@
         >
           Einkauf
         </button>
+        <button
+          @click="list_archive"
+          class="button"
+        >
+          Listenarchiv
+        </button>
       </div>
     </div>
 
