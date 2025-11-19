@@ -19,8 +19,6 @@
   --accent-button-color: #3350d4;
   --accent-button-cancel-color: #66688d;
 
-  --accent-product-card-color: #bccae2;
-
   --accent-header-bg-color: #1a1c3b;
 }
 
@@ -28,8 +26,6 @@
   --accent-color: #9d60ff;
   --accent-button-color: #6728cc;
   --accent-button-cancel-color: #7e7194;
-
-  --accent-product-card-color: #d7cde7;
 
   --accent-header-bg-color: #221438;
 }
@@ -39,8 +35,6 @@
   --accent-button-color: #126862;
   --accent-button-cancel-color: #688383;
 
-  --accent-product-card-color: #c6e2d5;
-
   --accent-header-bg-color: #123131;
 }
 
@@ -48,8 +42,6 @@
   --accent-color: #b25050;
   --accent-button-color: #9e2f2f;
   --accent-button-cancel-color: #b48686;
-  
-  --accent-product-card-color: #e4cccc;
 
   --accent-header-bg-color: #300f0f;
 }
@@ -58,8 +50,6 @@
   --accent-color: #ca7631;
   --accent-button-color: #cc5c00;
   --accent-button-cancel-color: #d89d6c;
-
-  --accent-product-card-color: #d8c7b9;
   
   --accent-header-bg-color: #3d1b00;
   
@@ -73,7 +63,8 @@
   --inputbox-bg-color: #e6e6e6;
   --inputbox-focus-bg-color: #dfdfdf;
 
-  --box-bg-color: #c5c5c5;
+  --box-bg-color: #dadada;
+  --box-bg-color2: #cdcdcd;
   --box-shadow-color: rgba(0, 0, 0, 0.3);
 
   --success-color: #29692e;
@@ -93,6 +84,7 @@
   --inputbox-focus-bg-color: #505050;
 
   --box-bg-color: #2a2a2a;
+  --box-bg-color2: #3d3d3d;
   --box-shadow-color: rgba(220, 220, 220, 0.3);
 
   --success-color: #a4ffac;
@@ -113,7 +105,8 @@
     --inputbox-bg-color: #e6e6e6;
     --inputbox-focus-bg-color: #dfdfdf;
 
-    --box-bg-color: #c5c5c5;
+    --box-bg-color: #dadada;
+    --box-bg-color2: #cdcdcd;
     --box-shadow-color: rgba(0, 0, 0, 0.3);
 
     --success-color: #29692e;
@@ -135,6 +128,7 @@
     --inputbox-focus-bg-color: #505050;
 
     --box-bg-color: #2a2a2a;
+    --box-bg-color2: #3d3d3d;
     --box-shadow-color: rgba(255, 255, 255, 0.3);
 
     --success-color: #a4ffac;
@@ -159,7 +153,7 @@ a:hover {
 #app {
   max-width: 1280px;
   margin: 0 auto;
-    padding: 0.5rem;
+  padding: 0.5rem;
   text-align: center;
 }
 
@@ -428,8 +422,8 @@ form select {
 
 .produkt-card {
   min-width: 275px;
-  background-color: var(--accent-product-card-color);
-  border: 1px solid  var(--accent-color);
+  background-color: var(--box-bg-color);
+  border: 1px solid var(--accent-button-color);
   border-radius: 1rem;
   padding: 0.75rem;
   box-shadow: 0 1px 2px var(--box-shadow-color);
@@ -437,12 +431,15 @@ form select {
 }
 
 .produkt-card:hover {
+  background-image: linear-gradient(to top, var(--box-bg-color2), var(--box-bg-color));
+  outline: 2px solid var(--accent-button-color);
+  outline-offset: -1px;
   box-shadow: 0 4px 6px var(--box-shadow-color);
 }
 
 .produkt-name {
   margin: 0;
-  color: #000000;
+  color: var(--text-color);
   font-size: 1.2em;
   font-weight: bold;
   word-break: break-word;
@@ -450,7 +447,7 @@ form select {
 
 .produkt-info {
   font-size: 1rem; /* 14px */
-  color: #000000;
+  color: var(--text-color);
   font-weight: 450;
   display: flex;
   gap: 0.5rem;
@@ -459,13 +456,13 @@ form select {
 
 .produkt-info strong {
   font-weight: 600;
-  color: #000000;
+  color: var(--text-color);
   text-align: left;
 }
 
 .produkt-beschreibung {
   font-size: 1rem;
-  color: #000000;
+  color: var(--text-color);
   font-weight: 450;
   margin-top: 0.5rem;
   white-space: pre-wrap;
