@@ -1150,6 +1150,19 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
 
     return eingekaufte_produkte
 
+@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}/produkt/{produkt_id}/hinzugefuegt_von/{hinzugefuegt_von}", response_model=eingekaufteProdukteRead)
+def get_eingekauftes_produkt(einkauf_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), hinzugefuegt_von: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    eingekauftes_produkt = db.query(EingekaufteProdukte).filter(
+        EingekaufteProdukte.einkauf_id == einkauf_id,
+        EingekaufteProdukte.produkt_id == produkt_id,
+        EingekaufteProdukte.hinzugefuegt_von == hinzugefuegt_von
+    ).first()
+
+    if not eingekauftes_produkt:
+        raise HTTPException(status_code=404, detail="Eingekauftes Produkt nicht gefunden")
+
+    return eingekauftes_produkt
+
 @app.post("/create/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=eingekaufteProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_produkt: eingekaufteProdukteCreate = Body(...), db: Session = Depends(get_db)):
     
