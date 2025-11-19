@@ -40,7 +40,7 @@
 import axios from "axios";
 
 export default {
-  props: ["produktId", "id", "nutzerId", "readonly"],
+  props: ["produktId", "id", "nutzerId", "readonly"],  //readonly für "Modus" der Komponente ----- id kann sowohl list_id als auch purchase_id sein (daher der Name)
   data() {
     return {
       produkt_id: null,

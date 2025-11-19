@@ -37,7 +37,6 @@ import ProductCard from './ProductCard.vue';
 export default {
   name: "ProductArchive",
   props: ["purchase_id"],
-  inject: ["user"],
   components: { AppHeader, ProductCard },
 
   data() {
@@ -47,7 +46,6 @@ export default {
           purchased_products: [],
           loadingActive: true,
           errorMessage: "",
-          userData: null,
       }
   },
 
@@ -79,14 +77,14 @@ export default {
       const nutzer_id = product.hinzugefuegt_von;
 
       this.$router.push({
-        name: "ProductDetail",
-        params: {
+        name: "ProductDetail",    // geht anscheinden auch so, anstatt den kompletten Pfad anzugeben
+        params: {                 // muss nur in router.js so definiert werden 
           id: id,
           produktId: product_id,
           nutzerId: nutzer_id
         },
         query: {
-          readonly: true
+          readonly: true      // wenn readonly = true, dann sind die Felder im ProductDetail nicht editierbar
         }
       });
 
@@ -99,7 +97,6 @@ export default {
     this.purchase_name = this.$route.query.purchase_name;
     this.list_id = this.$route.query.list_id;
     this.getData(this.purchase_id);
-    this.userData = this.user;
   }
 
 

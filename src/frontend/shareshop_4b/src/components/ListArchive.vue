@@ -48,14 +48,11 @@ export default {
 
   methods: {
     async getData(id) {
-      try {
-        const [listResponse, purchasesResponse] = await Promise.all([
-          axios.get(`http://141.56.137.83:8000/listen/by-id/${id}`),
-          axios.get(`http://141.56.137.83:8000/einkaufsarchiv/list/${id}`)
-        ]);
+      try {   
+        const response = await axios.get(`http://141.56.137.83:8000/einkaufsarchiv/list/${id}`);
 
-        this.list_name = listResponse.data.name;
-        this.purchases = purchasesResponse.data;
+        this.purchases = response.data;
+        this.list_name = response.data[0].listen_name;  //alle Einkäufe sind Teil der selben Liste, deshalb nur den Namen des ersten Elements nehmen
 
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Laden der Daten";
@@ -72,7 +69,7 @@ export default {
     formatDate(dateStr) {
     if (!dateStr) return "";
     const date = new Date(dateStr);
-    return date.toLocaleDateString("de-DE");
+    return date.toLocaleDateString("de-DE");  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
     },
   },
   mounted() {
@@ -88,7 +85,7 @@ export default {
 </script>
 
 <style>
-.multiline-title h2 {
+.multiline-title h2 {       /* versucht den Listennamen in der Header-Komponente mehrzeilig darzustellen */
     white-space: pre-line;
 }
 </style>

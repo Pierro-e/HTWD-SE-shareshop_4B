@@ -10,12 +10,12 @@
     },
     methods: {
       openItem() {
-        if (this.item.id) {
+        if (this.item.id) {             // bei Übergabe durch ListOverview hat das Objekt List die Variable id
          this.$router.push({
           name: "List",   
           params: { id: this.item.id }
         });
-        } else if(this.item.einkauf_id){
+        } else if(this.item.einkauf_id){    // bei Übergabe durch ListArchive ist es einkauf_id (noch auf deutsch, da es direkt aus der DB kommt)
           this.$router.push({ 
             name: "ProductArchive", 
             params: { purchase_id: this.item.einkauf_id },
