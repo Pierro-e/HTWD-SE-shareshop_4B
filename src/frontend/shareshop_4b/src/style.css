@@ -406,7 +406,6 @@ form select {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
-  padding-top: 140px;
 }
 
 @media (min-width: 768px) {

@@ -747,6 +747,10 @@ export default {
   }
 }
 
+.produkte-grid {
+  padding-top: 140px;
+}
+
 .mitglieder-anzeige {
   display: flex;
   justify-content: space-between;

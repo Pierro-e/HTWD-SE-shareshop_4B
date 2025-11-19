@@ -19,6 +19,7 @@
     <div v-if="loadingActive" class="loading">Laden...</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     
+    <div :style="{ paddingTop: errorMessage ? '0' : '80px' }"></div>
     <div class="produkte-grid">
       <ProductCard
         v-for="(produkt, index) in listenprodukte"
@@ -193,10 +194,6 @@ export default {
 </script>
 
 <style scoped>
-.einkauf {
-  padding-top: 40px;
-}
-
 .erledigt {
   opacity: 0.5;
   filter: grayscale(100%);
@@ -223,7 +220,7 @@ export default {
 }
 
 .error {
-  margin-top: 2em;
+  margin-top: 4em;
   z-index: 1100;
   /* höher als der Header */
 }
