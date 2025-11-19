@@ -156,16 +156,25 @@ export default {
           return;
         }
 
-        for (const produkt of erledigteProdukte) {
-          await axios.delete(
+        await axios.post(
+          `http://141.56.137.83:8000/create/einkaufsarchiv/list/${list_id}`,
+          {
+            eingekauft_von: this.userData.id,
+            gesamtpreis: 0,
+          }
+
+        );
+
+        await Promise.all(erledigteProdukte.map(produkt =>
+          axios.delete(
             `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt.produkt_id}`,
             {
               data: {
                 hinzugefügt_von: produkt.hinzugefügt_von,
-              },
-            },
-          );
-        }
+              }
+            }
+          )
+        ));
 
         this.$router.push(`/list/${list_id}`);
       } catch (error) {
