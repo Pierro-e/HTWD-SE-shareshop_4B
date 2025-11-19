@@ -15,7 +15,7 @@
           name: "List",   
           params: { id: this.item.id }
         });
-        } else if(this.item.purchase_id){
+        } else if(this.item.einkauf_id){
           this.$router.push({ 
             name: "ProductArchive", 
             params: { purchase_id: this.item.einkauf_id }, 
