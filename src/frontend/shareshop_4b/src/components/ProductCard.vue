@@ -25,10 +25,10 @@
     </div>
 
     <div class="produkt-beschreibung" v-if="produkt.beschreibung">
-      <p>{{ produkt.beschreibung }}</p>
+      <div>{{ produkt.beschreibung }}</div>
     </div>
     <div class="produkt-beschreibung" v-else>
-      <p style="visibility: hidden">Platzhalter</p>
+      <div style="visibility: hidden">Platzhalter</div>
     </div>
   </div>
 </template>

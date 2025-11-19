@@ -454,11 +454,11 @@ form select {
 }
 
 .produkt-card {
-  min-width: 225px;
+  min-width: 275px;
   background-color: var(--accent-product-card-color);
-  border: 1px solid #e5e7eb;
+  border: 1px solid  var(--accent-color);
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 0.75rem;
   box-shadow: 0 1px 2px var(--box-shadow-color);
   transition: box-shadow 0.3s ease;
 }
@@ -496,6 +496,7 @@ form select {
   font-weight: 450;
   margin-top: 0.5rem;
   white-space: pre-wrap;
+  word-wrap: break-word;
   text-align: left; /* Linksbündig explizit gesetzt */
 }
 
@@ -506,7 +507,6 @@ form select {
   font-size: 1.2em;
   cursor: pointer;
   padding: 0;
-  margin-left: 10px;
   line-height: 1; /* optional, für vertikale Ausrichtung */
 }
 
