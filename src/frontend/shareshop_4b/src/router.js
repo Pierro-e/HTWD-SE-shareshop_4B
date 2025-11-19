@@ -9,6 +9,7 @@ import UserSettings from "./components/UserSettings.vue";
 import ProductDetail from "./components/ProductDetail.vue";
 import Einkauf from "./components/Einkauf.vue";
 import Favorites from "./components/Favorites.vue"
+import ListArchive from "./components/ListArchive.vue";
 
 const routes = [
   { path: "/", component: Login },
@@ -25,6 +26,7 @@ const routes = [
     props: true,
   },
   { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
+  { path: "/list/:listenId/archive", component: ListArchive, props: true },
 ];
 const router = createRouter({
   history: createWebHistory(),

@@ -653,6 +653,11 @@ export default {
 
       this.$router.push(`/list/${list_id}/einkauf`);
     },
+
+    list_archive() {
+      const list_id = this.list_id || this.$route.params.id;
+      this.$router.push(`/list/${list_id}/archive`);
+    },
         async delete_list() {
         
         if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
