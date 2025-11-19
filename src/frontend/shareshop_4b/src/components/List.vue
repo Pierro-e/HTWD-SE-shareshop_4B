@@ -286,7 +286,7 @@ export default {
         for (const produkt of this.listenprodukte) {
           // Produktname holen
           //console.log(produkt.produkt_name);
-          produkt.name = produkt.produkt_name;
+          produkt.produkt_name = produkt.produkt_name;
 
           // Einheit holen
           produkt.einheit_abk = produkt.einheit_abk;
@@ -637,15 +637,24 @@ export default {
       this.new_member_email = "";
     },
 
-    product_settings(produkt) {
+    product_settings(product) {
       this.errorMessage = "";
-      const list_id = this.list_id || this.$route.params.id;
-      const product_id = produkt.produkt_id;
-      const nutzer_id = produkt.hinzugefügt_von;
+      const id = this.list_id || this.$route.params.id;
+      const product_id = product.produkt_id;
+      const nutzer_id = product.hinzugefügt_von;
 
-      this.$router.push(
-        `/listen/${list_id}/produkte/${product_id}/nutzer/${nutzer_id}`,
-      );
+      this.$router.push({
+        name: "ProductDetail",
+        params: {
+          id: id,
+          produktId: product_id,
+          nutzerId: nutzer_id
+        },
+        query: {
+          readonly: false
+        }
+      });
+
     },
 
     einkauf_abschließen() {

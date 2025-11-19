@@ -21,6 +21,7 @@
         v-for="product in purchased_products"
         :key="product.produkt_id"
         :product="product"
+        :onSettings="product_settings"
       />
     </div>
 
@@ -32,9 +33,11 @@ import axios from 'axios';
 import AppHeader from './AppHeader.vue';
 import ProductCard from './ProductCard.vue';
 
+
 export default {
   name: "ProductArchive",
   props: ["purchase_id"],
+  inject: ["user"],
   components: { AppHeader, ProductCard },
 
   data() {
@@ -44,6 +47,7 @@ export default {
           purchased_products: [],
           loadingActive: true,
           errorMessage: "",
+          userData: null,
       }
   },
 
@@ -66,7 +70,27 @@ export default {
 
     back_to_listArchive() {
       this.$router.push(`/list/${this.list_id}/archive`);
-    }
+    },
+
+    product_settings(product) {
+      this.errorMessage = "";
+      const id = this.purchase_id;
+      const product_id = product.produkt_id;
+      const nutzer_id = product.hinzugefuegt_von;
+
+      this.$router.push({
+        name: "ProductDetail",
+        params: {
+          id: id,
+          produktId: product_id,
+          nutzerId: nutzer_id
+        },
+        query: {
+          readonly: true
+        }
+      });
+
+    },
         
 
   },
@@ -75,6 +99,7 @@ export default {
     this.purchase_name = this.$route.query.purchase_name;
     this.list_id = this.$route.query.list_id;
     this.getData(this.purchase_id);
+    this.userData = this.user;
   }
 
 

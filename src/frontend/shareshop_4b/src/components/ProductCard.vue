@@ -7,7 +7,7 @@
       <slot name="left"></slot>
 
       <h3 class="produkt-name" :class="{ erledigt: product.erledigt }">
-        {{ product.name || "Unbekanntes Produkt" }}
+        {{ product.produkt_name || "Unbekanntes Produkt" }}
       </h3>
 
       <button @click="onSettings(product)" class="button button-product-settings">

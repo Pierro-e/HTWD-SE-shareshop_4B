@@ -12,6 +12,7 @@ import Favorites from "./components/Favorites.vue"
 import ListArchive from "./components/ListArchive.vue";
 import ProductArchive from "./components/ProductArchive.vue";
 
+
 const routes = [
   { path: "/", component: Login },
   { path: "/einfuehrung", component: ProjektEinführung },
@@ -22,9 +23,15 @@ const routes = [
   { path: "/list/:id", component: List, props: true, name: "List" },
   { path: "/fav", component: Favorites },
   {
-    path: "/listen/:listenId/produkte/:produktId/nutzer/:nutzerId",
+    path: "/detail/:id/produkte/:produktId/nutzer/:nutzerId",  // id ist hier entweder die list_id oder die purchase_id
     component: ProductDetail,
-    props: true,
+    props: route => ({
+      id: route.params.id,
+      produktId: route.params.produktId,
+      nutzerId: route.params.nutzerId,
+      readonly: route.query.readonly === 'true' // wird in query gesetzt
+    }),
+    name: "ProductDetail",
   },
   { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
   { path: "/list/:list_id/archive", component: ListArchive, props: true },

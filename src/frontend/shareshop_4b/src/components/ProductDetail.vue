@@ -1,6 +1,6 @@
 <template>
   <div class="product-detail">
-    <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">abbrechen</button>
+    <button class="button-cancel" @click="$router.push(`/list/${id}`)">abbrechen</button>
 
     <h2 class="product-name">{{ name }}</h2>
 
@@ -40,7 +40,7 @@
 import axios from "axios";
 
 export default {
-  props: ["produktId", "listenId", "nutzerId"],
+  props: ["produktId", "id", "nutzerId", "readonly"],
   data() {
     return {
       produkt_id: null,
@@ -64,7 +64,7 @@ export default {
     async fetchProduct() {
       try {
         const response = await axios.get(
-          `http://141.56.137.83:8000/listen/${this.listenId}/produkte`
+          `http://141.56.137.83:8000/listen/${this.id}/produkte`
         );
         const produkte = response.data;
         const produkt = produkte.find(
@@ -102,6 +102,7 @@ export default {
         console.warn("Name konnte nicht geladen werden.");
       }
     },
+
     async saveProduct() {
       this.message = "";
       this.errorMessage = "";
@@ -140,11 +141,11 @@ export default {
 
       try {
         await axios.put(
-          `http://141.56.137.83:8000/listen/${this.listenId}/produkte/${this.produkt_id}/nutzer/${this.hinzugefügt_von}`,
+          `http://141.56.137.83:8000/listen/${this.id}/produkte/${this.produkt_id}/nutzer/${this.hinzugefügt_von}`,
           daten
         );
         this.message = "Produkt erfolgreich aktualisiert.";
-        this.$router.push(`/list/${this.listenId}`);
+        this.$router.push(`/list/${this.id}`);
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Speichern";
       }
@@ -156,12 +157,12 @@ export default {
       try {
         await axios.request({
           method: "delete",
-          url: `http://141.56.137.83:8000/listen/${this.listenId}/produkte/${this.produkt_id}`,
+          url: `http://141.56.137.83:8000/listen/${this.id}/produkte/${this.produkt_id}`,
           data: { hinzugefügt_von: this.hinzugefügt_von },
           headers: { "Content-Type": "application/json" },
         });
         this.message = "Produkt erfolgreich gelöscht.";
-        this.$router.push(`/list/${this.listenId}`);
+        this.$router.push(`/list/${this.id}`);
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Löschen.";
       }
