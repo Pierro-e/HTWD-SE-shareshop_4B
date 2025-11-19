@@ -48,6 +48,22 @@ export default {
   },
 
   methods: {
+
+    async getData(id) {
+      try {
+        const response = await axios.get(
+          `http://141.56.137.83:8000/eingekaufte_produkte/einkauf/${this.purchase_id}`,
+        );
+
+        this.purchased_products = response.data;
+
+    } catch (error) {
+        this.errorMessage = "Fehler beim Laden der eingekauften Produkte.";
+      } finally {
+        this.loadingActive = false;
+      }
+    },
+
     back_to_listArchive() {
       this.$router.push(`/list/${this.list_id}/archive`);
     }
@@ -58,7 +74,7 @@ export default {
   mounted() {
     this.purchase_name = this.$route.query.purchase_name;
     this.list_id = this.$route.query.list_id;
-    
+    this.getData(this.purchase_id);
 
   }
 
