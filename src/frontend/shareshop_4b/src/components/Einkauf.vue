@@ -2,15 +2,16 @@
   <div class="einkauf">
     
     <AppHeader :title="list_name">
+      
       <template #left>
-        <button @click="einkauf_abbrechen" class="button button-cancel back-button">
-          Einkauf abbrechen
+        <button @click="einkauf_abbrechen" class="button button-cancel">
+          <font-awesome-icon icon='xmark'/>
         </button>
       </template>
 
       <template #right>
-        <button @click="einkauf_abschließen" class="button button-submit button-submit-header">
-          Einkauf abschließen
+        <button @click="einkauf_abschließen" class="button button-submit">
+          <font-awesome-icon icon='check'/>
         </button>
       </template>
     </AppHeader>
@@ -41,7 +42,6 @@
 
 <script>
 import axios from "axios";
-import { inject } from "vue";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
 
@@ -194,19 +194,7 @@ export default {
 
 <style scoped>
 .einkauf {
-  padding-top: 50px;
-}
-
-.back-button {
-  position: absolute;
-  left: 20px;
-  top: 25px;
-}
-
-.button-submit-header {
-  position: absolute;
-  right: 20px;
-  top: 25px;
+  padding-top: 40px;
 }
 
 .erledigt {

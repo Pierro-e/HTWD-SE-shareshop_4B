@@ -8,7 +8,7 @@
         @click="$router.push('/listen')"
         class="button button-cancel back-button"
       >
-        Zurück
+        <font-awesome-icon icon='arrow-left'/>
       </button>
     </template>
 
@@ -18,7 +18,7 @@
         @click="openProductPopup()"
         class="button button-add button-add-header"
       >
-        Produkt hinzufügen
+        <font-awesome-icon icon='plus'/>
       </button>
     </template>
   </AppHeader>
@@ -685,21 +685,7 @@ export default {
 
 <style scoped>
 .liste {
-  padding-top: 50px;
-}
-
-/* Zurück-Button links */
-.back-button {
-  position: absolute;
-  left: 20px;
-  top: 25px;
-}
-
-/* Produkt hinzufügen Button rechts */
-.button-add-header {
-  position: absolute;
-  right: 20px;
-  top: 25px;
+  padding-top: 40px;
 }
 
 .button-einkauf-tätigen {
@@ -710,7 +696,7 @@ export default {
 /* Settings-Container fixiert unter der Überschrift mittig */
 .settings-container {
   position: fixed;
-  top: 100px; /* vorher 60px */
+  top: 75px; /* vorher 60px */
   left: 0;
   width: 100%;
   z-index: 1000;
