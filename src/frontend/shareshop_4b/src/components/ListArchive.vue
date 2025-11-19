@@ -1,15 +1,26 @@
 <template>
   <div class="list-archive">
-    <h2>Listenarchiv für Liste {{ list_id }}</h2>
-    <p>Listenname: {{ list_name }}</p>
+
+    <AppHeader :title="`Listenarchiv für\n${list_name}`" class="multiline-title">
+      <template #left>
+        <button @click="einkauf_abbrechen" class="button button-cancel back-button">
+          Zurück
+        </button>
+      </template>
+    </AppHeader>
+
+    <div v-if="loadingActive" class="loading">Laden...</div>
+    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import AppHeader from "./AppHeader.vue";
 export default {
     name: "ListArchive",
     props: ["list_id"],
+    components: {AppHeader},
 
     data(){
         return{
@@ -49,3 +60,9 @@ export default {
 
 };
 </script>
+
+<style>
+.multiline-title h2 {
+    white-space: pre-line;
+}
+</style>
