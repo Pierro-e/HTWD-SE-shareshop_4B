@@ -284,13 +284,6 @@ export default {
         //console.log(JSON.stringify(response.data, null, 2));
 
         for (const produkt of this.listenprodukte) {
-          // Produktname holen
-          //console.log(produkt.produkt_name);
-          produkt.produkt_name = produkt.produkt_name;
-
-          // Einheit holen
-          produkt.einheit_abk = produkt.einheit_abk;
-
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
             produkt.produkt_menge !== undefined &&
