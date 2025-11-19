@@ -13,12 +13,14 @@
         if (this.item.id) {
          this.$router.push({
           name: "List",   
-          params: { id: this.item.id }
+          params: { id: this.item.id },
+          state: { list: this.item }
         });
         } else if(this.item.einkauf_id){
           this.$router.push({ 
             name: "ProductArchive", 
             params: { purchase_id: this.item.einkauf_id }, 
+            state: { purchase: this.item }
           });
         }
       }
