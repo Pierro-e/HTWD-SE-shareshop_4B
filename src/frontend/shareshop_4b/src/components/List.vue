@@ -631,24 +631,23 @@ export default {
     },
 
     product_settings(product) {
-      this.errorMessage = "";
-      const id = this.list_id || this.$route.params.id;
-      const product_id = product.produkt_id;
-      const nutzer_id = product.hinzugefügt_von;
+      const listenId = this.list_id || this.$route.params.id;
+      const produktId = product.produkt_id;
+      const nutzerId = product.hinzugefügt_von;
 
       this.$router.push({
         name: "ProductDetail",
         params: {
-          id: id,
-          produktId: product_id,
-          nutzerId: nutzer_id
+          listenId,
+          produktId,
+          nutzerId
         },
         query: {
           readonly: false
         }
       });
-
     },
+
 
     einkauf_abschließen() {
       const list_id = this.list_id || this.$route.params.id;

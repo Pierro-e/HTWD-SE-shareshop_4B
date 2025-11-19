@@ -22,16 +22,11 @@ const routes = [
   { path: "/neueliste/", component: ListCreator },
   { path: "/list/:id", component: List, props: true, name: "List" },
   { path: "/fav", component: Favorites },
-  {
-    path: "/detail/:id/produkte/:produktId/nutzer/:nutzerId",  // id ist hier entweder die list_id oder die purchase_id --- nur noch "detail" in der Route, da es sowohl für Listenprodukte als auch für Archivprodukte genutzt wird
-    component: ProductDetail,
-    props: route => ({
-      id: route.params.id,
-      produktId: route.params.produktId,
-      nutzerId: route.params.nutzerId,
-      readonly: route.query.readonly === 'true' // wird in query gesetzt
-    }),
-    name: "ProductDetail",
+  { 
+    path: "/liste/:listenId/produkte/:produktId/nutzer/:nutzerId", 
+    component: ProductDetail, 
+    props: true,
+    name: "ProductDetail"
   },
   { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
   { path: "/list/:list_id/archive", component: ListArchive, props: true },

@@ -87,23 +87,7 @@ export default {
     },
 
     product_settings(product) {
-      this.errorMessage = "";
-      const id = this.purchase_id;
-      const product_id = product.produkt_id;
-      const nutzer_id = product.hinzugefuegt_von;
-
-      this.$router.push({
-        name: "ProductDetail",    // geht anscheinden auch so, anstatt den kompletten Pfad anzugeben
-        params: {                 // muss nur in router.js so definiert werden 
-          id: id,
-          produktId: product_id,
-          nutzerId: nutzer_id
-        },
-        query: {
-          readonly: true      // wenn readonly = true, dann sind die Felder im ProductDetail nicht editierbar
-        }
-      });
-
+      // nichts machen
     },
         
 
