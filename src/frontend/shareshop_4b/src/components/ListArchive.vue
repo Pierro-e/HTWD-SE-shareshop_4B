@@ -19,9 +19,9 @@
     <div v-else>
       <ListButton
         v-for="purchase in purchases"
-        :key="purchase.id"
-        :id="purchase.id"
-        :name="`Einkauf am ${new Date(purchase.datum).toLocaleDateString()}`"
+        :key="purchase.einkauf_id"
+        :id="purchase.einkauf_id"
+        :name="`Einkauf am ${formatDate(purchase.eingekauft_am)}`"
       />
     </div>
 
@@ -69,6 +69,11 @@ export default {
         this.$router.push(`/list/${list_id}`);
     },
 
+    formatDate(dateStr) {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("de-DE");
+    },
   },
   mounted() {
     const id = this.list_id || this.$route.params.listenId;
