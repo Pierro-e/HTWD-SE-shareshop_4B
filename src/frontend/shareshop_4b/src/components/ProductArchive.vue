@@ -59,7 +59,23 @@ export default {
 
         this.purchased_products = response.data;
 
-    } catch (error) {
+         for (const product of this.purchased_products) {
+          // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
+          if (
+            product.produkt_menge !== undefined &&
+            product.produkt_menge !== null
+          ) {
+            const menge = Number(product.produkt_menge);
+            // Prüfen ob die Zahl eine ganze Zahl ist
+            if (Number.isInteger(menge)) {
+              product.produkt_menge = menge.toString(); // z.B. 5 statt 5.00
+            } else {
+              // andernfalls auf 2 Nachkommastellen runden (falls notwendig)
+              product.produkt_menge = menge.toFixed(2);
+            }
+          }
+        }
+      } catch (error) {
         this.errorMessage = "Fehler beim Laden der eingekauften Produkte.";
       } finally {
         this.loadingActive = false;
