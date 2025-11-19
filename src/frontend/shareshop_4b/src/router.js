@@ -28,7 +28,15 @@ const routes = [
   },
   { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
   { path: "/list/:list_id/archive", component: ListArchive, props: true },
-  { path: "/product/archive/:purchase_id", component: ProductArchive, props: true, name: "ProductArchive" },
+  { path: "/product/archive/:purchase_id", 
+    component: ProductArchive, 
+    props: route => ({
+      purchase_id: route.params.purchase_id,
+      list_id: route.params.list_id,
+      purchase_name: route.params.purchase_name
+    }), 
+    name: "ProductArchive" 
+  },
 ];
 const router = createRouter({
   history: createWebHistory(),
