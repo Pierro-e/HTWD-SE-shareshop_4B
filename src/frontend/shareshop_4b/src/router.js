@@ -26,7 +26,7 @@ const routes = [
     props: true,
   },
   { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
-  { path: "/list/:listenId/archive", component: ListArchive, props: true },
+  { path: "/list/:list_id/archive", component: ListArchive, props: true },
 ];
 const router = createRouter({
   history: createWebHistory(),
