@@ -6,15 +6,20 @@
   export default {
     props: {
       name: {type: String},
-      list_id: {type: Number, default: null},
-      purchase_id: {type: Number, default: null},
+      item: { type: Object, default: null },
     },
     methods: {
       openItem() {
-        if (this.list_id != null) {
-        this.$router.push(`/List/${this.list_id}`)
-        } else if(this.purchase_id != null){
-          this.$router.push(`/product/archive/${this.purchase_id}`)
+        if (this.item.id) {
+         this.$router.push({
+          name: "List",   
+          params: { id: this.item.id }
+        });
+        } else if(this.item.purchase_id){
+          this.$router.push({ 
+            name: "ProductArchive", 
+            params: { purchase_id: this.item.einkauf_id }, 
+          });
         }
       }
     }

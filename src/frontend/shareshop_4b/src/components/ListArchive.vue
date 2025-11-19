@@ -20,7 +20,7 @@
       <ListButton
         v-for="purchase in purchases"
         :key="purchase.einkauf_id"
-        :purchase_id="purchase.einkauf_id"
+        :item="purchase"
         :name="`Einkauf am ${formatDate(purchase.eingekauft_am)}`"
       />
     </div>

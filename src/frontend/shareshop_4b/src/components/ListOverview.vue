@@ -10,7 +10,7 @@
     <ListButton
       v-for="list in lists"
       :key="list.id"
-      :list_id="list.id"
+      :item="list"
       :name="list.name"
     />
   </main>

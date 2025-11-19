@@ -19,7 +19,7 @@ const routes = [
   { path: "/settings", component: UserSettings },
   { path: "/listen", component: ListOverview },
   { path: "/neueliste/", component: ListCreator },
-  { path: "/list/:id", component: List, props: true },
+  { path: "/list/:id", component: List, props: true, name: "List" },
   { path: "/fav", component: Favorites },
   {
     path: "/listen/:listenId/produkte/:produktId/nutzer/:nutzerId",
@@ -28,7 +28,7 @@ const routes = [
   },
   { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
   { path: "/list/:list_id/archive", component: ListArchive, props: true },
-  { path: "/product/archive/:purchase_id", component: ProductArchive, props: true },
+  { path: "/product/archive/:purchase_id", component: ProductArchive, props: true, name: "ProductArchive" },
 ];
 const router = createRouter({
   history: createWebHistory(),
