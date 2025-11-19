@@ -174,6 +174,7 @@ export default {
               produkt_menge: produkt.produkt_menge,
               einheit_id: produkt.einheit_id,
               hinzugefuegt_von: produkt.hinzugefügt_von,
+              beschreibung: produkt.beschreibung,
             }
           )
         ));
