@@ -104,6 +104,7 @@ class EingekaufteProdukte(Base):
     einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
     produkt_preis = Column(Numeric(10, 2), nullable=True)
     hinzugefuegt_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
+    beschreibung = Column(String, nullable=True)
 
 
 
@@ -296,6 +297,7 @@ class eingekaufteProdukteRead(BaseModel):
     produkt_preis: Optional[Decimal] = None
     hinzugefuegt_von: Optional[int] = None
     hinzufueger_name: Optional[str] = None
+    beschreibung: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -306,6 +308,7 @@ class eingekaufteProdukteCreate(BaseModel):
     einheit_id: Optional[int] = None
     produkt_preis: Optional[Decimal] = None
     hinzugefuegt_von: Optional[int] = None
+    beschreibung: Optional[str] = None
 
 
 
@@ -1135,7 +1138,8 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
             Einheit.abkürzung.label("einheit_abk"),
             EingekaufteProdukte.produkt_preis,
             EingekaufteProdukte.hinzugefuegt_von,
-            Nutzer.name.label("hinzufueger_name")
+            Nutzer.name.label("hinzufueger_name"),
+            EingekaufteProdukte.beschreibung
         )
         .join(Produkt, Produkt.id == EingekaufteProdukte.produkt_id)
         .outerjoin(Einheit, Einheit.id == EingekaufteProdukte.einheit_id)
@@ -1160,7 +1164,8 @@ def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_
         produkt_menge = eingekauftes_produkt.produkt_menge,
         einheit_id = eingekauftes_produkt.einheit_id,
         produkt_preis = eingekauftes_produkt.produkt_preis,
-        hinzugefuegt_von = eingekauftes_produkt.hinzugefuegt_von
+        hinzugefuegt_von = eingekauftes_produkt.hinzugefuegt_von,
+        beschreibung = eingekauftes_produkt.beschreibung
     )
 
     db.add(neues_eingekauftes_produkt)
