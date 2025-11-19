@@ -93,16 +93,6 @@
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
-        <!--
-        <input
-          class="input"
-          v-model="new_product"
-          type="text"
-          placeholder="Produktname"
-          maxlength="30"
-        />
-        <br><br></br>
-        -->
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <v-select
           v-model="dropdownSelected"
@@ -334,6 +324,7 @@ export default {
     },
 
     async loadDropdownList(type, searchText){
+      this.dropdownOptions = [];
       if (type == 0) { // Bedarfsvorhersage/Favoriten
         try {
           var response = await axios.get(`http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
@@ -360,7 +351,6 @@ export default {
           this.dropdownOptions = tempOptions;
           this.errorMessage = "";
         } catch (error) {
-          this.dropdownOptions = [];
           if (
             error.response &&
             error.response.data &&
@@ -389,7 +379,6 @@ export default {
           this.dropdownOptions = tempOptions;
           this.errorMessage = ""
         } catch (error) {
-          this.dropdownOptions = [];
           if (
             error.response &&
             error.response.data &&
