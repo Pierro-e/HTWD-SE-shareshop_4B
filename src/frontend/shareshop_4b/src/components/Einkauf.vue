@@ -20,9 +20,9 @@
     
     <div class="produkte-grid">
       <ProductCard
-        v-for="(produkt, index) in listenprodukte"
+        v-for="(product, index) in listenprodukte"
         :key="index"
-        :produkt="produkt"
+        :product="product"
         :onSettings="product_settings"
       >
         <template #left>

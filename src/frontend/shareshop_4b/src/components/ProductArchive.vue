@@ -19,7 +19,7 @@
     <div v-else>
       <ProductCard
         v-for="product in purchased_products"
-        :key="product.id"
+        :key="product.produkt_id"
         :product="product"
       />
     </div>
