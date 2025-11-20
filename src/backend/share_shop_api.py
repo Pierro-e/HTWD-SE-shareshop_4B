@@ -163,6 +163,7 @@ class ListeRead(BaseModel):
     id: int
     name: str
     ersteller: Optional[int] = None
+    ersteller_name: Optional[str] = None
     datum: Optional[date] = None
 
     class Config:
@@ -480,8 +481,15 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
 @app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
 def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     listen = (
-        db.query(Liste)
-        .join(ListeMitglieder)
+        db.query(
+            Liste.id,
+            Liste.name,
+            Liste.ersteller,
+            Nutzer.name.label("ersteller_name"),
+            Liste.datum
+        )
+        .join(ListeMitglieder, Liste.id == ListeMitglieder.listen_id)
+        .outerjoin(Nutzer, Liste.ersteller == Nutzer.id)
         .filter(ListeMitglieder.nutzer_id == nutzer_id)
         .all()
     )
@@ -813,7 +821,19 @@ def get_listen_all(db: Session = Depends(get_db)):
 
 @app.get("/listen/by-id/{list_id}", response_model=ListeRead)
 def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    liste = db.query(Liste).filter(Liste.id == list_id).first()
+    liste = (
+        db.query(
+            Liste.id,
+            Liste.name,
+            Liste.ersteller,
+            Nutzer.name.label("ersteller_name"),
+            Liste.datum
+        )
+        .join(Nutzer, Liste.ersteller == Nutzer.id)
+        .filter(Liste.id == list_id)
+        .first()
+    )
+
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
     return liste
