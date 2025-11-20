@@ -1,7 +1,7 @@
 <template>
   <div class="list-archive">
 
-    <AppHeader :title="`Einkaufsarchiv für\n${purchase_name}`" class="multiline-title">
+    <AppHeader :title="`Produkte von dem\n${purchase_name}`" class="multiline-title">
       <template #left>
         <button @click="back_to_listArchive" class="button button-cancel back-button">
           Zurück
