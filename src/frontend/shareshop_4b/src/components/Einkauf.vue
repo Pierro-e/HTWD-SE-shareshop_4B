@@ -20,7 +20,7 @@
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     
     <div :style="{ paddingTop: errorMessage ? '0' : '80px' }"></div>
-    <div class="produkte-grid">
+    <div class="card-grid">
       <ProductCard
         v-for="(produkt, index) in listenprodukte"
         :key="index"
