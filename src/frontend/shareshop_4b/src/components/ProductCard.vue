@@ -25,7 +25,7 @@
     </div>
 
     <div class="produkt-beschreibung" v-if="product.beschreibung">
-      <p>{{ product.beschreibung }}</p>
+      <p class="beschreibung">{{ product.beschreibung }}</p>
     </div>
     <div class="produkt-beschreibung" v-else>
       <p style="visibility: hidden">Platzhalter</p>
@@ -42,3 +42,12 @@ export default {
   }
 };
 </script>
+
+<style>
+.beschreibung {
+  white-space: nowrap;       
+  overflow: hidden;           
+  text-overflow: ellipsis;    
+}
+
+</style>
