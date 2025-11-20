@@ -21,7 +21,7 @@
         v-for="purchase in purchases"
         :key="purchase.einkauf_id"
         :item="purchase"
-        :name="`Einkauf am ${formatDate(purchase.eingekauft_am)}`"
+        :name="`Einkauf vom ${formatDate(purchase.eingekauft_am)}`"
       />
     </div>
 
