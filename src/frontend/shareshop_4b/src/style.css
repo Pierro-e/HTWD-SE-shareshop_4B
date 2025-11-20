@@ -393,34 +393,14 @@ form select {
   box-sizing: border-box;
 }
 
-/* Produktgrid und Produktkarten */
-.produkte-grid {
-  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-@media (min-width: 768px) {
-  .produkte-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .produkte-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.produkt-header {
+/* Karten */
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center; /* Button und Name auf gleicher Höhe */
 }
 
-.produkt-card {
+.card {
   min-width: 275px;
   background-color: var(--box-bg-color);
   border: 1px solid var(--accent-button-color);
@@ -428,16 +408,17 @@ form select {
   padding: 0.75rem;
   box-shadow: 0 1px 2px var(--box-shadow-color);
   transition: box-shadow 0.3s ease;
+  gap: 1em;
 }
 
-.produkt-card:hover {
+.card:hover {
   background-image: linear-gradient(to top, var(--box-bg-color2), var(--box-bg-color));
   outline: 2px solid var(--accent-button-color);
   outline-offset: -1px;
   box-shadow: 0 4px 6px var(--box-shadow-color);
 }
 
-.produkt-name {
+.card-name {
   margin: 0;
   color: var(--text-color);
   font-size: 1.2em;
@@ -445,7 +426,7 @@ form select {
   word-break: break-word;
 }
 
-.produkt-info {
+.card-info {
   font-size: 1rem; /* 14px */
   color: var(--text-color);
   font-weight: 450;
@@ -454,13 +435,13 @@ form select {
   align-items: center; /* Vertikal zentrieren */
 }
 
-.produkt-info strong {
+.card-info strong {
   font-weight: 600;
   color: var(--text-color);
   text-align: left;
 }
 
-.produkt-beschreibung {
+.card-beschreibung {
   font-size: 1rem;
   color: var(--text-color);
   font-weight: 450;
@@ -476,7 +457,7 @@ form select {
   text-align: left; /* Linksbündig explizit gesetzt */
 }
 
-.produkt-card:hover .produkt-beschreibung {
+.-card:hover .card-beschreibung {
   display: flex;
   word-break: break-word;
 }
@@ -489,6 +470,36 @@ form select {
   cursor: pointer;
   padding: 0;
   line-height: 1; /* optional, für vertikale Ausrichtung */
+}
+
+.card-grid {
+  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+} 
+
+.card-list {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
 }
 
 /* Erfolg- und Fehlerboxen */
@@ -521,8 +532,4 @@ form select {
 .loading {
   font-weight: bold;
   font-size: larger;
-}
-
-.card {
-  padding: 2em;
 }

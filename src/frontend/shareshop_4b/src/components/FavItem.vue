@@ -1,7 +1,7 @@
 <template>
-  <div class="produkt-card">
-    <div class="produkt-header">
-      <h3 class="produkt-name">{{ name }}</h3>
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-name">{{ name }}</h3>
       <button class="button-product-settings" @click="edit_fav = true">✏️</button>
     </div>
   </div>

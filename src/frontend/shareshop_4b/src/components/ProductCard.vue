@@ -1,11 +1,11 @@
 <template>
-  <div class="produkt-card" :class="{ erledigt: produkt.erledigt }" @click="$emit('toggle', produkt)">
-    <div class="produkt-header">
+  <div class="card" :class="{ erledigt: produkt.erledigt }" @click="$emit('toggle', produkt)">
+    <div class="card-header">
       <!-- Identische Struktur bei Einkauf und Liste, nur Unterschiede bei z.B Checkbox-Slot für Einkauf.
        dieser wird von List.vue nicht genutzt -->
       <slot name="left"></slot>
 
-      <h3 class="produkt-name" :class="{ erledigt: produkt.erledigt }">
+      <h3 class="card-name" :class="{ erledigt: produkt.erledigt }">
         {{ produkt.name || "Unbekanntes Produkt" }}
       </h3>
 
@@ -14,19 +14,19 @@
       </button>
     </div>
 
-    <div class="produkt-info" v-if="produkt.produkt_menge || produkt.einheit_abk">
+    <div class="card-info" v-if="produkt.produkt_menge || produkt.einheit_abk">
       <span>
         <strong>Menge:</strong> {{ produkt.produkt_menge }} {{ produkt.einheit_abk }}
       </span>
     </div>
-    <div class="produkt-info" v-else>
+    <div class="card-info" v-else>
       <span style="visibility: hidden">Platzhalter</span>
     </div>
 
-    <div class="produkt-beschreibung" v-if="produkt.beschreibung">
+    <div class="card-beschreibung" v-if="produkt.beschreibung">
       <div>{{ produkt.beschreibung }}</div>
     </div>
-    <div class="produkt-beschreibung" v-else>
+    <div class="card-beschreibung" v-else>
       <div style="visibility: hidden">Platzhalter</div>
     </div>
   </div>

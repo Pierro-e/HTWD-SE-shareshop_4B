@@ -140,7 +140,7 @@
       </div>
     </div>
 
-    <div class="produkte-grid">
+    <div class="card-grid">
       <ProductCard
         v-for="(produkt, index) in listenprodukte"
         :key="index"
@@ -751,7 +751,7 @@ export default {
   }
 }
 
-.produkte-grid {
+.card-grid {
   padding-top: 140px;
 }
 
