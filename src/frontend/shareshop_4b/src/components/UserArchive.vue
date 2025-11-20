@@ -49,8 +49,7 @@ export default {
         const response = await axios.get(`http://141.56.137.83:8000/einkaufsarchiv/nutzer_alle/${this.user.id}`);
         
         this.purchases = response.data;
-
-        console.log(this.purchases);
+        
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Laden der Daten";
       } finally {
