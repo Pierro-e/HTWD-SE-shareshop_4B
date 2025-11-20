@@ -25,14 +25,14 @@
         v-for="(produkt, index) in listenprodukte"
         :key="index"
         :produkt="produkt"
-        :onSettings="product_settings"
+        @toggle="produkt.erledigt = !produkt.erledigt"
       >
         <template #left>
           <input
             type="checkbox"
-            :id="`check-${index}`"
             class="produkt-checkbox"
-            @change="toggle_Erledigt(produkt, $event)"
+            :checked="produkt.erledigt"
+            @change="produkt.erledigt = $event.target.checked"
           />
         </template>
       </ProductCard>
@@ -123,7 +123,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Produkte";
         }
       }
-      loadingActive = false;
+      this.loadingActive = false;
     },
 
     einkauf_abbrechen() {
@@ -134,11 +134,6 @@ export default {
     product_details(produkt) {
       // anzeigen der Produktdetails: von wem hinzugefügt,
     },
-
-    toggle_Erledigt(produkt, event) {
-      produkt.erledigt = event.target.checked;
-    },
-
 
     async einkauf_abschließen() {
       this.errorMessage = "";

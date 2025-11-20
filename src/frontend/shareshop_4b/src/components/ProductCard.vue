@@ -1,7 +1,6 @@
 <template>
-  <div class="produkt-card" :class="{ erledigt: produkt.erledigt }">
+  <div class="produkt-card" :class="{ erledigt: produkt.erledigt }" @click="$emit('toggle', produkt)">
     <div class="produkt-header">
-
       <!-- Identische Struktur bei Einkauf und Liste, nur Unterschiede bei z.B Checkbox-Slot für Einkauf.
        dieser wird von List.vue nicht genutzt -->
       <slot name="left"></slot>
@@ -38,7 +37,7 @@ export default {
   name: "ProductCard",
   props: {
     produkt: { type: Object, required: true },
-    onSettings: { type: Function, required: true }
+    onSettings: { type: Function, required: false }
   }
 };
 </script>
