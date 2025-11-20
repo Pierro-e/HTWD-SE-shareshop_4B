@@ -35,7 +35,8 @@ const routes = [
     props: route => ({
       purchase_id: route.params.purchase_id,
       list_id: route.params.list_id,
-      purchase_name: route.params.purchase_name
+      purchase_name: route.params.purchase_name,
+      price: route.params.price
     }), 
     name: "ProductArchive" 
   },

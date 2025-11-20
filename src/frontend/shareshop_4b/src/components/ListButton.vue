@@ -21,7 +21,8 @@
             params: { purchase_id: this.item.einkauf_id },
             query: {
               list_id: this.item.listen_id,
-              purchase_name: this.name
+              purchase_name: this.name,
+              price: this.item.gesamtpreis
             }
           });
         }

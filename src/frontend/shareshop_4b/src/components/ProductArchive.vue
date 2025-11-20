@@ -9,6 +9,10 @@
       </template>
     </AppHeader>
 
+    <div>
+      <strong>Gesamtpreis:</strong> {{ this.price || "Nicht angegeben" }} €
+    </div>
+
     <div v-if="loadingActive" class="loading">Laden...</div>
     <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
 
@@ -49,6 +53,7 @@ export default {
       return{
           list_id: null,
           purchase_name: "",
+          price: null,
           purchased_products: [],
           loadingActive: true,
           errorMessage: "",
@@ -104,6 +109,7 @@ export default {
   mounted() {
     this.purchase_name = this.$route.query.purchase_name;
     this.list_id = this.$route.query.list_id;
+    this.price = this.$route.query.price;
     this.getData(this.purchase_id);
   }
 

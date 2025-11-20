@@ -149,11 +149,22 @@ export default {
           return;
         }
 
+        let preisEingabe = prompt(      // das dann nur noch in ein Popup-Fenster
+          `Gesamtpreis:`,
+        );
+
+        if (preisEingabe === null) {
+          // Abbrechen gedrückt
+          return;
+        }
+
+        const gesamtpreis = parseFloat(preisEingabe.replace(",", "."));
+
         const response = await axios.post(
           `http://141.56.137.83:8000/create/einkaufsarchiv/list/${list_id}`,
           {
             eingekauft_von: this.userData.id,
-            gesamtpreis: 0,
+            gesamtpreis: gesamtpreis,
           }
         );
 
