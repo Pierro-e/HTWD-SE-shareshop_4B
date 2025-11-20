@@ -389,6 +389,7 @@ export default {
           } else {
             this.errorMessage = "Fehler beim Laden der Vorschläge";
           } 
+          return;
         }
       }
     },
@@ -450,9 +451,9 @@ export default {
             ) {
               this.errorMessage = error.response.data.detail;
             } else {
-              this.errorMessage = "Fehler beim Anlegen des Produkts";
-              return;
+              this.errorMessage = "Fehler beim Anlegen des Produkts"; 
             }
+            return;
           }
         }
       }
@@ -461,8 +462,7 @@ export default {
         console.log("Fehlende Liste-, Produkt- oder Nutzer-ID");
         return;
       }
-
-      this.loadingActive = true;
+      
       try {
         await axios.post(
           `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`,
@@ -475,7 +475,9 @@ export default {
             error.response.data.detail ||
             "Unbekannter Fehler beim Hinzufügen des Produkts zur Liste";
         }
+       return;
       }
+      
       // ist neues Produkt ein Favorit?
       const response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${user_id}`);
       var favoriteProducts = response.data;
@@ -506,9 +508,11 @@ export default {
           );
         } catch (error) {
           this.errorMessage = error.response?.data?.detail || "Fehler beim Speichern";
+          return;
         }
       }
 
+      this.loadingActive = true;
       this.new_product = "";
       this.get_products(list_id);
       this.loadingActive = false;
