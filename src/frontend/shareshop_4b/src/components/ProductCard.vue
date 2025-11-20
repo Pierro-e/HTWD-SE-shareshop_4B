@@ -30,6 +30,11 @@
     <div class="produkt-beschreibung" v-else>
       <p style="visibility: hidden">Platzhalter</p>
     </div>
+
+    <!-- Slot für extra Infos -->
+    <slot name="extra"></slot>
+
+
   </div>
 </template>
 

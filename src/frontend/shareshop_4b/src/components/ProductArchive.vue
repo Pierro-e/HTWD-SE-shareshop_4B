@@ -22,7 +22,13 @@
         :key="product.produkt_id"
         :product="product"
         :onSettings="product_settings"
-      />
+      >
+        <template #extra>
+          <div class="produkt-beschreibung" v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
+            <p>{{ product.hinzufueger_name }}</p>
+          </div>
+        </template>
+      </ProductCard>
     </div>
 
   </div>
@@ -58,6 +64,8 @@ export default {
         );
 
         this.purchased_products = response.data;
+
+        console.log(this.purchased_products);
 
          for (const product of this.purchased_products) {
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
