@@ -30,7 +30,7 @@
             type="checkbox"
             :id="`check-${index}`"
             class="produkt-checkbox"
-            @change="toggle_Erledigt(produkt, $event)"
+            @change="toggle_Erledigt(product, $event)"
           />
         </template>
       </ProductCard>
@@ -89,13 +89,6 @@ export default {
         //console.log(JSON.stringify(response.data, null, 2));
 
         for (const produkt of this.listenprodukte) {
-          // Produktname holen
-          //console.log(produkt.produkt_name);
-          produkt.name = produkt.produkt_name;
-
-          // Einheit holen
-          produkt.einheit_abk = produkt.einheit_abk;
-
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
             produkt.produkt_menge !== undefined &&
@@ -122,7 +115,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Produkte";
         }
       }
-      loadingActive = false;
+      this.loadingActive = false;
     },
 
     einkauf_abbrechen() {
@@ -203,6 +196,9 @@ export default {
           this.errorMessage = "Fehler beim Abschließen des Einkaufs.";
         }
       }
+    },
+    product_settings(produkt) {
+      // nichts machen
     },
   },
 
