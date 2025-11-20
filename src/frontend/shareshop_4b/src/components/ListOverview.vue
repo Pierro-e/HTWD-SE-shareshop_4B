@@ -3,6 +3,7 @@
     <h1>{{ user.name }}'s Einkaufslisten</h1>
     <button @click="newList" id="newlist" class="button-add">+</button>
     <button @click="$router.push('/fav')">Favorit</button>
+    <button @click="$router.push('/userArchive')">Archiv</button>
   </header>
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>

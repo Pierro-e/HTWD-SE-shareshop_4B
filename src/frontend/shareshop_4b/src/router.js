@@ -11,6 +11,7 @@ import Einkauf from "./components/Einkauf.vue";
 import Favorites from "./components/Favorites.vue"
 import ListArchive from "./components/ListArchive.vue";
 import ProductArchive from "./components/ProductArchive.vue";
+import UserArchive from "./components/UserArchive.vue";
 
 
 const routes = [
@@ -40,6 +41,7 @@ const routes = [
     }), 
     name: "ProductArchive" 
   },
+  { path: "/userArchive", component: UserArchive }
 ];
 const router = createRouter({
   history: createWebHistory(),
