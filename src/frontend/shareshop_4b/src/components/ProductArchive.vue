@@ -70,8 +70,6 @@ export default {
 
         this.purchased_products = response.data;
 
-        console.log(this.purchased_products);
-
          for (const product of this.purchased_products) {
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
