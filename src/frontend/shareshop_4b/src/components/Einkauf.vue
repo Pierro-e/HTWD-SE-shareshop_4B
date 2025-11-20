@@ -25,7 +25,7 @@
         v-for="(produkt, index) in listenprodukte"
         :key="index"
         :produkt="produkt"
-        @toggle="produkt.erledigt = !produkt.erledigt"
+        @click="produkt.erledigt = !produkt.erledigt"
       >
         <template #left>
           <input
@@ -188,7 +188,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .erledigt {
   opacity: 0.5;
   filter: grayscale(100%);
@@ -197,7 +197,8 @@ export default {
     filter 0.3s ease;
 }
 
-.produkt-name.erledigt {
+/* wenn erledigt Linie durch den Produktnamen */
+.card-name.erledigt {
   text-decoration: line-through;
   color: #777;
 }
@@ -208,15 +209,8 @@ export default {
   cursor: pointer;
 }
 
-/* Optional: wenn erledigt, z.B. durch Linie durch den Text */
-.produkt-name.erledigt {
-  text-decoration: line-through;
-  color: #777;
-}
-
 .error {
   margin-top: 4em;
-  z-index: 1100;
-  /* höher als der Header */
+  z-index: 1100;   /* höher als der Header */
 }
 </style>

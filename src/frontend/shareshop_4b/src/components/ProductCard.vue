@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :class="{ erledigt: produkt.erledigt }" @click="$emit('toggle', produkt)">
+  <div class="card" :class="{ erledigt: produkt.erledigt }">
     <div class="card-header">
       <!-- Identische Struktur bei Einkauf und Liste, nur Unterschiede bei z.B Checkbox-Slot für Einkauf.
        dieser wird von List.vue nicht genutzt -->
