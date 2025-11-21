@@ -148,7 +148,7 @@ export default {
         const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
 
         if (erledigteProdukte.length === 0) {
-          this.errorMessage = "Es sind keine Produkte abgehakt!";
+          alert("Es sind keine Produkte abgehakt!");
           return;
         }
 
@@ -188,7 +188,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .erledigt {
   opacity: 0.5;
   filter: grayscale(100%);
