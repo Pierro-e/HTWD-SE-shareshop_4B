@@ -48,7 +48,7 @@
   --accent-color: #b25050;
   --accent-button-color: #9e2f2f;
   --accent-button-cancel-color: #b48686;
-  
+
   --accent-product-card-color: #e4cccc;
 
   --accent-header-bg-color: #300f0f;
@@ -60,9 +60,9 @@
   --accent-button-cancel-color: #d89d6c;
 
   --accent-product-card-color: #d8c7b9;
-  
+
   --accent-header-bg-color: #3d1b00;
-  
+
 }
 
 [css-theme="Hell"] {
@@ -212,20 +212,20 @@ button {
 
 /*wirkt nur bei <button>-Elementen mit class="button-add"*/
 .button-add {
-  background-color: #259740; 
+  background-color: #259740;
 }
 
 .button-cancel {
-  background-color: var(--accent-button-cancel-color); 
+  background-color: var(--accent-button-cancel-color);
   color: white;
 }
 
 .button-delete {
-  background-color: #dc3545; 
+  background-color: #dc3545;
 }
 
 .button-edit {
-  background-color: #0069da; 
+  background-color: #0069da;
 }
 
 .button-submit {
@@ -236,7 +236,7 @@ button:hover {
   /* Vergrößert das Element um 3% */
   transform: scale(1.03);
   /* Fügt einen Schatten hinzu */
-  box-shadow: 0 0.3em 0.6em var(--box-shadow-color); 
+  box-shadow: 0 0.3em 0.6em var(--box-shadow-color);
   /*ändert Randfarbe*/
   border-color: var(--accent-color);
 }
@@ -295,7 +295,7 @@ select:focus {
   --vs-search-input-bg: rgb(255, 255, 255);
   --vs-line-height: 1.7;
 
-  --vs-state-disabled-bg: var(--box-shadow-color); 
+  --vs-state-disabled-bg: var(--box-shadow-color);
   --vs-state-disabled-color: rgb(240, 240, 240);
 
   --vs-search-input-color: var(--text-color);
@@ -307,7 +307,7 @@ select:focus {
 }
 
 .v-select .vs__search::placeholder { /* Placeholderfarbe des Browsers */
-  color: revert; 
+  color: revert;
 }
 
 .vs__selected-options { /* https://github.com/sagalbot/vue-select/issues/754#issuecomment-654065539 */
@@ -324,7 +324,7 @@ select:focus {
 }
 
  .vs__dropdown-toggle { /* Eingabefeld */
-  border: 1px solid gray; 
+  border: 1px solid gray;
 
   padding-left: 0.2em;
   background-color: var(--inputbox-bg-color);
@@ -362,11 +362,11 @@ select:focus {
 }
 
 /* Hack: Input immer zwei Pixel größer (bei Platzhalter oder keinem), damit es nicht verrutscht */
-.v-select input:placeholder-shown { 
+.v-select input:placeholder-shown {
   margin-bottom: 2px;
 }
 
-.v-select input:not(:placeholder-shown) { 
+.v-select input:not(:placeholder-shown) {
   margin-bottom: 2px;
 }
 
@@ -382,11 +382,11 @@ form div {
   display: flex;
   align-items: center;
   gap: 1em;
-  width: 100%; 
+  width: 100%;
 }
 
 form label {
-  text-align: right; 
+  text-align: right;
 }
 
 form input {
@@ -545,3 +545,11 @@ form select {
 .card {
   padding: 2em;
 }
+
+/* Formulare */
+.form-element {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+

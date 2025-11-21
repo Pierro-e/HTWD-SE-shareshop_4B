@@ -1,17 +1,21 @@
 <template>
-  <input
-    type="text"
-    :value="text"
-    :placeholder="placeholder"
-    maxlength="30"
-    @input="$emit('update:text', $event.target.value)"
-  />
+  <label>
+    {{ label }}
+    <input
+      type="text"
+      :value="text"
+      :placeholder="placeholder"
+      maxlength="30"
+      @input="$emit('update:text', $event.target.value)"
+    />
+  </label>
 </template>
 <script>
 export default {
   props: {
     text: { type: String },
-    placeholder: {type: String},
+    placeholder: { type: String },
+    label: {type: String},
   },
 };
 </script>

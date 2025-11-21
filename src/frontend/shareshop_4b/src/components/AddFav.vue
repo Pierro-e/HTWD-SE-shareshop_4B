@@ -1,15 +1,36 @@
 <template>
-  <!-- Eingaben -->
-  <TextInput v-model:text="fav_name" placeholder="Banane" />
-  <TextInput v-model:text="fav_desc" placeholder="leicht unreif" />
-  <NumInput v-model:num.number="fav_amount" />
-  <SelectArray v-model:choice="fav_unit" :opts="units" display="name" />
+  <form @submit.prevent="add_fav">
+    <!-- Eingaben -->
+    <TextInput
+      class="form-element"
+      v-model:text="fav_name"
+      placeholder="Banane"
+      label="Name"
+    />
+    <TextInput
+      class="form-element"
+      v-model:text="fav_desc"
+      placeholder="leicht unreif"
+      label="Beschreibung"
+    />
+    <NumInput
+      class="form-element"
+      v-model:num.number="fav_amount"
+      label="Menge"
+    />
+    <SelectArray
+      class="form-element"
+      v-model:choice="fav_unit"
+      :opts="units"
+      display="name"
+      label="Einheit"
+    />
+    <!-- "Submit" Button -->
+    <button type="submit" class="form-element button-submit">Hinzufügen</button>
+  </form>
 
   <!-- Fehler Meldungen -->
   <div v-if="errMsg" class="error">{{ errMsg }}</div>
-
-  <!-- "Submit" Button -->
-  <button @click="add_fav" class="button-submit">Hinzufügen</button>
 </template>
 
 <script>
@@ -81,7 +102,9 @@ export default {
         beschreibung: desc,
       };
       try {
-        url = "http://141.56.137.83:8000/fav_produkte_create/nutzer/" + this.user.id;
+        url =
+          "http://141.56.137.83:8000/fav_produkte_create/nutzer/" +
+          this.user.id;
         await axios.post(url, fav);
       } catch {
         this.errMsg = "Fehler beim erstellen des Favoriten.";
