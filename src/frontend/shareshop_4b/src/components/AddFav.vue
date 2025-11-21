@@ -116,4 +116,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+button {
+  width: 100%;
+}
+</style>

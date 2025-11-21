@@ -1,14 +1,23 @@
 <template>
   <div class="popup-overlay">
     <div class="popup-content">
+      <header>
+        <h3>{{ name }}</h3>
+        <button @click="$emit('close')" class="button button-delete">
+          Abbrechen
+        </button>
+      </header>
       <slot></slot>
-      <button @click="$emit('close')" class="button button-cancel">X</button>
     </div>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    name: { type: String, default: "PopUp" },
+  },
+};
 </script>
 
 <style scoped>
@@ -38,5 +47,21 @@ export default {};
   .popup-content {
     max-width: 260px;
   }
+}
+
+header {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+h3 {
+  width: 50%;
+}
+
+.button {
+  width: 50%;
+  height: 50%;
 }
 </style>

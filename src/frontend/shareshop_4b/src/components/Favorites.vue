@@ -22,7 +22,7 @@
     <FavGrid :favs="favorites"/>
 
     <!-- PopUp's -->
-    <PopUp v-if="add_fav" @close="add_fav = false">
+    <PopUp v-if="add_fav" @close="add_fav = false" name="Favoriten hinzufügen">
       <AddFav @load_fav="get_favs" />
     </PopUp>
   </div>
