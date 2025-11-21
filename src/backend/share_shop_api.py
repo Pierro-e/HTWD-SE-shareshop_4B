@@ -92,7 +92,7 @@ class Einkaufsarchiv(Base):
     einkauf_id = Column(Integer, primary_key=True, nullable=False)
     listen_id = Column(Integer, ForeignKey("Listen.id", ondelete="CASCADE"), nullable=False)
     eingekauft_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
-    eingekauft_am = Column(DateTime, server_default=func.now(), nullable=False)  
+    eingekauft_am = Column(DateTime, server_default=func.now(), nullable=False)
     gesamtpreis = Column(Numeric(10, 2), nullable=True)
 
 class EingekaufteProdukte(Base):
@@ -111,19 +111,19 @@ class EingekaufteProdukte(Base):
 # --- Pydantic-Modelle ---
 class NameBasis(BaseModel):
     """Kapselt die Validierung und Bereinigung für den Namen (z.B. Nutzer, Produkte)."""
-    
+
     # Der Feldname muss 'name' sein, damit der @field_validator in dieser Klasse funktioniert.
     name: str = Field(min_length=1)
 
     # Der Validator, der in der Basisklasse bleiben muss:
-    @field_validator('name', mode='after') 
+    @field_validator('name', mode='after')
     @classmethod
     def validate_name_content(cls, value):
         # Ruft die externe Hilfsfunktion auf
         if not contains_at_least_one_letter(value):
             raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
         return value.strip()
-    
+
 class NutzerRead(BaseModel):
     id: int
     email: str
@@ -244,7 +244,7 @@ class FavProdukteCreate(BaseModel):
 class FavProdukteUpdate(BaseModel):
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
-    beschreibung: Optional[str] = None  
+    beschreibung: Optional[str] = None
 
 class BedarfsvorhersageRead(BaseModel):
     nutzer_id: int
@@ -278,7 +278,7 @@ class EinkaufsarchivRead(BaseModel):
     listen_name: Optional[str] = None
     eingekauft_von: Optional[int] = None
     einkaeufer_name: Optional[str] = None
-    eingekauft_am: Optional[date] = None  
+    eingekauft_am: Optional[date] = None
     gesamtpreis: Optional[Decimal] = None
 
     class Config:
@@ -319,8 +319,8 @@ def contains_at_least_one_letter(s: str) -> bool:
     """
     Prüft, ob der übergebene String mindestens einen Buchstaben enthält (A-Z, äöü).
 
-    Anwendung: Wird im @field_validator des Pydantic-Modells 'NutzerCreate' 
-                für das Feld 'name' verwendet, um reine Zahlen oder Symbole 
+    Anwendung: Wird im @field_validator des Pydantic-Modells 'NutzerCreate'
+                für das Feld 'name' verwendet, um reine Zahlen oder Symbole
                 (z.B. '123' oder '!!!') abzufangen.
 
     Rückgabe: True, wenn ein Buchstabe gefunden wird, sonst False.
@@ -331,6 +331,8 @@ def contains_at_least_one_letter(s: str) -> bool:
 app = FastAPI()
 
 # CORS Middleware hinzufügen
+# WARN:  allow_credentials=True -> explizites definieren von allow_origins, ...
+# -> https://fastapi.tiangolo.com/tutorial/cors/#use-corsmiddleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -475,7 +477,7 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
     db.commit()
     db.refresh(nutzer)
 
-    return nutzer   
+    return nutzer
 
 
 @app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
@@ -613,14 +615,14 @@ def search_products(
 
 @app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
 def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    
+
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
      # JOIN zwischen FavProdukte und Produkt, um die Produktnamen direkt zu holen
-    
+
     fav_produkte = (
         db.query(
             FavProdukte.nutzer_id,
@@ -642,8 +644,8 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
 
     anzahl_favoriten = db.query(FavProdukte).filter(
-        FavProdukte.nutzer_id == nutzer_id).count() 
-    
+        FavProdukte.nutzer_id == nutzer_id).count()
+
     if anzahl_favoriten >= 10:
         raise HTTPException(
             status_code=400, detail="Maximale Anzahl von 10 Favoriten erreicht")
@@ -764,7 +766,7 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 
     if not eintrag:
         raise HTTPException(status_code=404, detail="Eintrag nicht gefunden")
-    
+
     db.delete(eintrag)
     db.commit()
 
@@ -1053,8 +1055,8 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
         db.commit()
         db.refresh(vorhandenes_produkt)
         return vorhandenes_produkt
-    
-    
+
+
 @app.delete("/listen/{listen_id}/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), deleteRequest: ProduktDeleteRequest = Body(...), db: Session = Depends(get_db)):
     eintrag = db.query(ListeProdukte).filter(
@@ -1080,7 +1082,7 @@ def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(g
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
-    
+
     einkaeufe = (
         db.query(
             Einkaufsarchiv.einkauf_id,
@@ -1123,7 +1125,7 @@ def get_einkaufsarchiv_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session =
 
 # gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat
 @app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
-def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
+def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     einkaeufe = (
         db.query(
@@ -1147,7 +1149,7 @@ def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Se
 
 # verwendet die beiden obigen Funktionen, um alle Einkäufe zurückzugeben, in denen der Nutzer beteiligt ist
 @app.get("/einkaufsarchiv/nutzer_alle/{nutzer_id}", response_model=List[EinkaufsarchivRead])
-def get_einkaufsarchiv_by_nutzer_alle(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):  
+def get_einkaufsarchiv_by_nutzer_alle(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -1162,7 +1164,7 @@ def get_einkaufsarchiv_by_nutzer_alle(nutzer_id: int = Path(..., gt=0), db: Sess
     for einkauf in einkaeufe_hinzugefuegt:
         einkaeufe_combined[einkauf.einkauf_id] = einkauf
 
-    return list(einkaeufe_combined.values()) 
+    return list(einkaeufe_combined.values())
 
 @app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
 def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
@@ -1170,12 +1172,12 @@ def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: Einkaufsarc
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
-    
+
     if einkauf.eingekauft_von is not None:
         nutzer = db.query(Nutzer).filter(Nutzer.id == einkauf.eingekauft_von).first()
         if not nutzer:
             raise HTTPException(status_code=400, detail="Eingekäufer nicht gefunden")
-    
+
     neuer_einkauf = Einkaufsarchiv(
         listen_id = listen_id,
         eingekauft_von = einkauf.eingekauft_von,
@@ -1195,7 +1197,7 @@ def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depend
     ).all()
     if not einkaeufe:
         raise HTTPException(status_code=404, detail="Keine Einkäufe für diese Liste gefunden")
-    
+
     for einkauf in einkaeufe:
         db.delete(einkauf)   # die eingekauften Produkte werden in der DB gelöscht da ein ON DELETE CASCADE auf den Fremdschlüssel einkauf_id gesetzt ist
 
@@ -1250,12 +1252,12 @@ def get_eingekauftes_produkt(einkauf_id: int = Path(..., gt=0), produkt_id: int 
 
 @app.post("/create/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=eingekaufteProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_produkt: eingekaufteProdukteCreate = Body(...), db: Session = Depends(get_db)):
-    
+
     einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
 
     if not einkauf:
         raise HTTPException(status_code=404, detail="Einkauf nicht gefunden")
-    
+
     neues_eingekauftes_produkt = EingekaufteProdukte(
         einkauf_id = einkauf_id,
         produkt_id = eingekauftes_produkt.produkt_id,
@@ -1267,7 +1269,7 @@ def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_
     )
 
     db.add(neues_eingekauftes_produkt)
-    db.commit() 
+    db.commit()
 
     return neues_eingekauftes_produkt
 
