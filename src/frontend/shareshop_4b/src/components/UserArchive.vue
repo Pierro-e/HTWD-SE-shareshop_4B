@@ -21,6 +21,7 @@
         :key="purchase.einkauf_id"
         :item="purchase"
         :name="`Einkauf vom ${formatDate(purchase.eingekauft_am)}`"
+        :isUserArchive="true"
       />
     </div>
   </div>
@@ -48,6 +49,11 @@ export default {
       try {   
         const response = await axios.get(`http://141.56.137.83:8000/einkaufsarchiv/nutzer_alle/${this.user.id}`);
         
+        if (response.data.length === 0) {
+          this.purchases = [];
+          this.list_name = " ";
+          return;
+        }
         this.purchases = response.data;
         
       } catch (error) {

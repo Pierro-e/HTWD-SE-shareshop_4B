@@ -10,7 +10,7 @@
         {{ product.produkt_name || "Unbekanntes Produkt" }}
       </h3>
 
-      <button @click="onSettings(product)" class="button button-product-settings">
+      <button v-if="!hideSettings" @click="onSettings(product)" class="button button-product-settings">
         ✏️
       </button>
     </div>
@@ -43,7 +43,8 @@ export default {
   name: "ProductCard",
   props: {
     product: { type: Object, required: true },
-    onSettings: { type: Function, required: true }
+    onSettings: { type: Function, required: true },
+    hideSettings: { type: Boolean, default: false } //true, wenn es ein Archivprodukt ist
   }
 };
 </script>
