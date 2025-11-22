@@ -32,3 +32,18 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.card {
+  cursor: pointer;
+  transition: transform .15s;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.card:active {
+  transform: scale(0.98);
+}
+</style>
