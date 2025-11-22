@@ -1095,7 +1095,7 @@ def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(g
         .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
         .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
         .filter(Einkaufsarchiv.listen_id == listen_id)
-        .order_by(Einkaufsarchiv.eingekauft_am.asc())
+        .order_by(Einkaufsarchiv.eingekauft_am.desc())
         .all()
     )
 
@@ -1165,8 +1165,9 @@ def get_einkaufsarchiv_by_nutzer_alle(nutzer_id: int = Path(..., gt=0), db: Sess
         einkaeufe_combined[einkauf.einkauf_id] = einkauf
 
     einkaeufe_sorted = sorted(
-    einkaeufe_combined.values(),       # aufsteigende Sortierung nach eingekauft_am
-    key=attrgetter("eingekauft_am") 
+    einkaeufe_combined.values(),      
+    key=attrgetter("eingekauft_am"),
+    reverse=True                      
 )
 
     return list(einkaeufe_sorted) 
