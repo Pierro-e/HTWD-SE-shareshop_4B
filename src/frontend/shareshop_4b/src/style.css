@@ -395,7 +395,7 @@ form select {
 }
 
 .card:hover {
-  background-image: linear-gradient(to top, var(--box-bg-color2), var(--box-bg-color));
+  background-image: linear-gradient(to bottom, var(--box-bg-color), var(--box-bg-color2));
   outline: 2px solid var(--accent-button-color);
   outline-offset: -1px;
   box-shadow: 0 4px 6px var(--box-shadow-color);
