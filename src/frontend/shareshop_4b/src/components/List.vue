@@ -32,9 +32,8 @@
           @click="openListPopup()"
           class="button button-settings"
         >
-          Listeninformationen
+          <font-awesome-icon icon='circle-info'/> Info
         </button>
-
         <button
           :disabled="
             showpopup_product || showpopup_list || showpopup_add_member
@@ -42,9 +41,25 @@
           @click="einkauf_abschließen"
           class="button button-submit button-einkauf-tätigen"
         >
-          Einkauf
+          <font-awesome-icon icon='cart-shopping'/> Einkauf
+        </button>
+        <button>
+          <font-awesome-icon icon='box-archive'/> Archiv
         </button>
       </div>
+      <!--
+      <div class="buy-container" >
+        <button
+          :disabled="
+            showpopup_product || showpopup_list || showpopup_add_member
+          "
+          @click="einkauf_abschließen"
+          class="button button-submit button-einkauf-tätigen"
+        >
+          <font-awesome-icon icon='cart-shopping'/> Einkauf
+        </button>
+      </div>
+      -->
     </div>
 
     <div v-if="loadingActive" class="loading">Laden...</div>
@@ -699,18 +714,38 @@ export default {
 
 /* Settings-Container fixiert unter der Überschrift mittig */
 .settings-container {
+  background-color: var(--accent-header-bg-color);
+  box-shadow: 0 2px 5px var(--box-shadow-color);
   position: fixed;
-  top: 75px; /* vorher 60px */
+  top: 70px; /* vorher 60px */
   left: 0;
   width: 100%;
   z-index: 1000;
   padding: 5px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* Abstand zwischen Buttons */
+  gap: 5px; /* Abstand zwischen Buttons */
   justify-content: center;
   align-items: center;
 }
+
+.settings-container button {
+  padding: 0.5em 1.0em;
+}
+
+/*
+.buy-container {
+  background-color: var(--accent-header-bg-color);
+  box-shadow: 0 0 5px 2px var(--box-shadow-color);
+  width: 100%;
+  z-index: 1000;
+  position: fixed;
+  bottom: 0px;
+  left: 0;
+  padding-top: 10px; 
+  padding-bottom: 5px;
+  justify-content: center;
+  align-items: center;
+}
+*/
 
 .input {
   width: 100%;
@@ -753,7 +788,7 @@ export default {
 }
 
 .card-grid {
-  padding-top: 140px;
+  padding-top: 100px;
 }
 
 .mitglieder-anzeige {
