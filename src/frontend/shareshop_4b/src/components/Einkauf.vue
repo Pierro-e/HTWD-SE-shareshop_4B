@@ -163,6 +163,8 @@ export default {
         return;
       }
 
+      this.totalPrice = 0;
+
       this.errorMessage = "";
       this.commit_purchase = true;
     },
