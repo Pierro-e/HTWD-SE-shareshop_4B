@@ -174,65 +174,47 @@ h1 {
 
 /*wirkt bei allen <button>-Elementen*/
 button {
-   /*Legt einen Rahmen mit 1 Pixel Breite, durchgehend (solid), aber unsichtbar an */
   border: 1px solid transparent;
   background-color: var(--accent-button-color);
-  /*Textfarbe*/
   color: white;
-  /*Wieviel Padding rund um Schrift -> beeinflusst Groesse des Buttons*/
   padding: 0.6em 1.2em;
-  /*Runde Ecken*/
   border-radius: 0.5em;
-  /*zenriert Text horizontal*/
   text-align: center;
-  /*Sorg dafür, dass margin und padding korrekt greifen*/
-  display: inline-block;
-  /*Schriftgröße relativ zur aktuellen Schriftgröße bzw der des Elternelements. 1em = aktuelle Schriftgröße*/
   font-size: 1em;
-  /*Steuert Dicke der Schrift 700=Fett*/
   font-weight: 500;
-  /*Erbt Schriftart von Elternelement*/
   font-family: inherit;
-  /*Wieviel Abstand der Button nach oben und zur Seite hält*/
   margin: 0.3em;
-  /*veraendert aussehen des Mauszeigers beim hovern*/
   cursor: pointer;
-  /*Animation des Rahmens über 0.25 sek*/
   transition: border-color 0.25s;
-
   transform: translateZ(0) scale(1);
   transition: transform .15s;
 }
 
+button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0.3em 0.6em var(--box-shadow-color); 
+  border-color: var(--accent-color);
+}
+
 /*wirkt nur bei <button>-Elementen mit class="button-add"*/
 .button-add {
-  background-color: #259740; 
+  background-color: #067720; 
 }
 
 .button-cancel {
-  background-color: var(--accent-button-cancel-color); 
-  color: white;
+  background-color: var(--accent-button-cancel-color);
 }
 
 .button-delete {
-  background-color: #dc3545; 
+  background-color: #a50c1b; 
 }
 
 .button-edit {
-  background-color: #0069da; 
+  background-color: #0052aa; 
 }
 
 .button-submit {
   background-color: var(--accent-color);
-}
-
-button:hover {
-  /* Vergrößert das Element um 3% */
-  transform: scale(1.03);
-  /* Fügt einen Schatten hinzu */
-  box-shadow: 0 0.3em 0.6em var(--box-shadow-color); 
-  /*ändert Randfarbe*/
-  border-color: var(--accent-color);
 }
 
 button:focus,
@@ -501,6 +483,7 @@ form select {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
+  max-width: 500px;
 }
 
 /* Erfolg- und Fehlerboxen */

@@ -225,7 +225,6 @@ export default {
           this.errorMessage = "Fehler beim Laden der Liste";
         }
       }
-      this.loadingActive = false;
     },
 
     async get_list_members(id) {
@@ -280,11 +279,11 @@ export default {
           `http://141.56.137.83:8000/listen/${id}/produkte`,
         );
         this.listenprodukte = response.data;
-        //console.log(JSON.stringify(response.data, null, 2));
 
+        let productNum = 0;
         for (const produkt of this.listenprodukte) {
+          productNum++;
           // Produktname holen
-          //console.log(produkt.produkt_name);
           produkt.name = produkt.produkt_name;
 
           // Einheit holen
@@ -305,6 +304,9 @@ export default {
             }
           }
         }
+        if (productNum == 0){
+          this.errorMessage = "Liste leer";
+        }
       } catch (error) {
         if (
           error.response &&
@@ -316,6 +318,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Produkte";
         }
       }
+      this.loadingActive = false;
     },
 
     openListPopup() {
@@ -527,10 +530,8 @@ export default {
         }
       }
 
-      this.loadingActive = true;
       this.new_product = "";
       this.get_products(list_id);
-      this.loadingActive = false;
     },
 
     cancel_product_popup() {
@@ -655,40 +656,40 @@ export default {
 
       this.$router.push(`/list/${list_id}/einkauf`);
     },
-        async delete_list() {
-        
-        if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
-            return;
-        }
-        this.errorMessage = "";
-        this.infoMessage = ""; // Nachricht vor dem Versuch löschen
-        
-        try {
-            // Sicherstellen, dass die ID korrekt verwendet wird
-            const list_id = this.list_id || this.$route.params.id;
-            await axios.delete(`http://141.56.137.83:8000/listen/${list_id}`);
 
-            // Erfolgsfall (Rückgabe 204 No Content führt hier zur erfolgreichen Ausführung)
-            this.infoMessage = "Liste wurde erfolgreich gelöscht!";
-            setTimeout(() => {
-                this.$router.push("/listen");
-            }, 2000);
+    async delete_list() {
+      if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
+        return;
+      }
+      this.errorMessage = "";
+      this.infoMessage = ""; // Nachricht vor dem Versuch löschen
+      
+      try {
+        // Sicherstellen, dass die ID korrekt verwendet wird
+        const list_id = this.list_id || this.$route.params.id;
+        await axios.delete(`http://141.56.137.83:8000/listen/${list_id}`);
 
-        } catch (error) {
-            console.error("Fehler beim Löschvorgang:", error);
-            // zentralistiertte Fehlerbehandlung basierend auf der Backend-Antwort
-            if (
-                error.response &&
-                error.response.status === 404
-            ) {
-                // Fehlermeldung vom Backend: "Liste nicht gefunden"
-                this.errorMessage = error.response.data.detail || "Liste nicht gefunden.";
-            } else {
-                // Generischer Fehler
-                this.errorMessage = "Serverfehler oder unerwarteter Fehler beim Löschen der Liste.";
-            }
+        // Erfolgsfall (Rückgabe 204 No Content führt hier zur erfolgreichen Ausführung)
+        this.infoMessage = "Liste wurde erfolgreich gelöscht!";
+        setTimeout(() => {
+          this.$router.push("/listen");
+        }, 2000);
+
+      } catch (error) {
+        console.error("Fehler beim Löschvorgang:", error);
+        // zentralistiertte Fehlerbehandlung basierend auf der Backend-Antwort
+        if (
+          error.response &&
+          error.response.status === 404
+        ) {
+          // Fehlermeldung vom Backend: "Liste nicht gefunden"
+          this.errorMessage = error.response.data.detail || "Liste nicht gefunden.";
+        } else {
+          // Generischer Fehler
+          this.errorMessage = "Serverfehler oder unerwarteter Fehler beim Löschen der Liste.";
         }
-  },
+      }
+    },
   },
   mounted() {
     this.errorMessage = "";
