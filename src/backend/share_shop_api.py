@@ -10,6 +10,7 @@ from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+from operator import attrgetter
 import re
 
 
@@ -1094,6 +1095,7 @@ def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(g
         .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
         .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
         .filter(Einkaufsarchiv.listen_id == listen_id)
+        .order_by(Einkaufsarchiv.eingekauft_am.asc())
         .all()
     )
 
@@ -1162,7 +1164,12 @@ def get_einkaufsarchiv_by_nutzer_alle(nutzer_id: int = Path(..., gt=0), db: Sess
     for einkauf in einkaeufe_hinzugefuegt:
         einkaeufe_combined[einkauf.einkauf_id] = einkauf
 
-    return list(einkaeufe_combined.values()) 
+    einkaeufe_sorted = sorted(
+    einkaeufe_combined.values(),       # aufsteigende Sortierung nach eingekauft_am
+    key=attrgetter("eingekauft_am") 
+)
+
+    return list(einkaeufe_sorted) 
 
 @app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
 def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
