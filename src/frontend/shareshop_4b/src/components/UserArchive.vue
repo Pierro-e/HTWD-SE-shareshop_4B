@@ -20,7 +20,7 @@
         v-for="purchase in purchases"
         :key="purchase.einkauf_id"
         :item="purchase"
-        :name="`Einkauf vom ${formatDate(purchase.eingekauft_am)}`"
+        :name="`${purchase.listen_name} - ${formatDate(purchase.eingekauft_am)}`"
         :isUserArchive="true"
       />
     </div>
@@ -38,7 +38,6 @@ export default {
 
   data(){
       return{
-          list_name: "",
           purchases: [],
           loadingActive: true,
           errorMessage: "",
@@ -51,10 +50,11 @@ export default {
         
         if (response.data.length === 0) {
           this.purchases = [];
-          this.list_name = " ";
           return;
         }
         this.purchases = response.data;
+
+        console.log ("Einkaufsarchiv Daten:", this.purchases);
         
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Laden der Daten";
