@@ -740,6 +740,7 @@ export default {
   min-width: 250px;
   max-width: 300px;
   text-align: center;
+  word-wrap: break-word;
   /* Klicks nur auf das Popup zulassen */
   pointer-events: auto;
   box-shadow: 0 4px 12px var(--box-shadow-color);

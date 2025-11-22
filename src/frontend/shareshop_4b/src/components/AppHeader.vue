@@ -43,14 +43,18 @@ export default {
 
 /* h2 mittig im Header */
 .header h2 {
-  vertical-align:bottom;
+  width: 50%;
   margin: 0;
-  top: 20px;
   font-weight: 600;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: white;
   text-align: center;
-  /* Kein position fixed mehr! */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Anzahl sichtbarer Zeilen */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-wrap: break-word;
 }
 
 /* Button links */

@@ -197,12 +197,6 @@ export default {
     filter 0.3s ease;
 }
 
-/* wenn erledigt Linie durch den Produktnamen */
-.card-name.erledigt {
-  text-decoration: line-through;
-  color: #777;
-}
-
 .produkt-checkbox {
   width: 1.2rem;
   height: 1.2rem;
