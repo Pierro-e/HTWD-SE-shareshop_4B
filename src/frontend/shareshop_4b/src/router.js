@@ -30,7 +30,15 @@ const routes = [
     name: "ProductDetail"
   },
   { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
-  { path: "/list/:list_id/archive", component: ListArchive, props: true },
+  { 
+    path: "/list/:list_id/archive", 
+    component: ListArchive, 
+    name: "ListArchive", 
+    props: route => ({
+      list_id: route.params.list_id,
+      list_name: route.query.list_name
+    })
+  },
   { path: "/product/archive/:purchase_id", 
     component: ProductArchive, 
     props: route => ({

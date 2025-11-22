@@ -657,7 +657,12 @@ export default {
 
     list_archive() {
       const list_id = this.list_id || this.$route.params.id;
-      this.$router.push(`/list/${list_id}/archive`);
+      const list_name = this.list_name;
+      this.$router.push({ 
+        name: "ListArchive", 
+        params: { list_id},
+        query: { list_name } 
+      });
     },
         async delete_list() {
         

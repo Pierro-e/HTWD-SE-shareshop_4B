@@ -1,7 +1,7 @@
 <template>
   <div class="list-archive">
 
-    <AppHeader :title="`Listenarchiv für\n${list_name}`" class="multiline-title">
+    <AppHeader :title="`Einkaufsarchiv für\n${list_name}`" class="multiline-title">
       <template #left>
         <button @click="back_to_list" class="button button-cancel back-button">
           Zurück
@@ -34,12 +34,11 @@ import AppHeader from "./AppHeader.vue";
 import ListButton from "./ListButton.vue";
 export default {
   name: "ListArchive",
-  props: ["list_id"],
+  props: ["list_id", "list_name"],
   components: {AppHeader, ListButton},
 
   data(){
       return{
-          list_name: "",
           purchases: [],
           loadingActive: true,
           errorMessage: "",
@@ -53,11 +52,9 @@ export default {
 
         if (response.data.length === 0) {
           this.purchases = [];
-          this.list_name = " ";
           return;
         }
         this.purchases = response.data;
-        this.list_name = response.data[0].listen_name;  //alle Einkäufe sind Teil der selben Liste, deshalb nur den Namen des ersten Elements nehmen
 
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Laden der Daten";
