@@ -51,6 +51,11 @@ export default {
       try {   
         const response = await axios.get(`http://141.56.137.83:8000/einkaufsarchiv/list/${id}`);
 
+        if (response.data.length === 0) {
+          this.purchases = [];
+          this.list_name = " ";
+          return;
+        }
         this.purchases = response.data;
         this.list_name = response.data[0].listen_name;  //alle Einkäufe sind Teil der selben Liste, deshalb nur den Namen des ersten Elements nehmen
 
