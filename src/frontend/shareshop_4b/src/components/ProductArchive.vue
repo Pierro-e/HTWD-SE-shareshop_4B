@@ -3,7 +3,7 @@
 
     <AppHeader :title="`${purchase_name}`">
       <template #left>
-        <button @click="back_to_listArchive" class="button button-cancel back-button">
+        <button @click="back_to_Archive" class="button button-cancel back-button">
           Zurück
         </button>
       </template>
@@ -26,6 +26,7 @@
         :key="product.produkt_id"
         :product="product"
         :onSettings="product_settings"
+        :hideSettings="true"
       >
         <template #extra>
           <div class="produkt-beschreibung" v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
@@ -54,6 +55,7 @@ export default {
           list_id: null,
           purchase_name: "",
           price: null,
+          isUserArchive: false,
           purchased_products: [],
           loadingActive: true,
           errorMessage: "",
@@ -93,7 +95,10 @@ export default {
       }
     },
 
-    back_to_listArchive() {
+    back_to_Archive() {
+      if (this.isUserArchive == 'true')
+        this.$router.push(`/userArchive`);
+      else
       this.$router.push(`/list/${this.list_id}/archive`);
     },
 
@@ -108,6 +113,7 @@ export default {
     this.purchase_name = this.$route.query.purchase_name;
     this.list_id = this.$route.query.list_id;
     this.price = this.$route.query.price;
+    this.isUserArchive = this.$route.query.isUserArchive;
     this.getData(this.purchase_id);
   }
 
