@@ -1,7 +1,7 @@
 <template>
   <div class="list-archive">
 
-    <AppHeader :title="`Einkaufsarchiv für\n${list_name}`" class="multiline-title">
+    <AppHeader :title="`Einkaufsarchiv für\n${this.listName}`" class="multiline-title">
       <template #left>
         <button @click="back_to_list" class="button button-cancel back-button">
           Zurück
@@ -39,6 +39,7 @@ export default {
 
   data(){
       return{
+          listName: "",
           purchases: [],
           loadingActive: true,
           errorMessage: "",
@@ -55,6 +56,10 @@ export default {
           return;
         }
         this.purchases = response.data;
+
+        if (this.listName === undefined && this.purchases.length > 0 || this.listName === "") {
+          this.listName = this.purchases[0].listen_name;
+        }
 
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Laden der Daten";
@@ -75,6 +80,7 @@ export default {
     },
   },
   mounted() {
+    this.listName = this.list_name || this.$route.params.list_name;
     const id = this.list_id || this.$route.params.listenId;
     this.getData(id);
   },
