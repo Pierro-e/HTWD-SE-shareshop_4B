@@ -396,8 +396,10 @@ def get_nutzer_all(db: Session = Depends(get_db)):
     """
     Beschreibung: 
         ruft alle Nutzer aus der Datenbank ab.
+
     Parameter: 
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen: Keine.
 
     Relevante zusätzliche Hinweise: Keine.
@@ -411,12 +413,16 @@ def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     """
     Beschreibung: 
         Ruft einen Nutzer anhand seiner ID ab.
+
     Parameter:
         id (int): Die ID des Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
-    Relevante zusätzliche Hinweise: Keine.
+
+    Relevante zusätzliche Hinweise: 
+        Keine.
     """
     nutzer = db.query(Nutzer).filter(Nutzer.id == id).first()
     if not nutzer:
@@ -429,11 +435,14 @@ def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
     """
     Beschreibung: 
         Ruft einen Nutzer anhand seiner E-Mail-Adresse ab.
+
     Parameter:
         email (str): Die E-Mail-Adresse des Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen E-Mail-Adresse gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     nutzer = db.query(Nutzer).filter(Nutzer.email == email).first()
@@ -447,11 +456,14 @@ def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
     """
     Beschreibung:
         Erstellt einen neuen Nutzer in der Datenbank.
+
     Parameter:
         nutzer (NutzerCreate): Pydantic-Modell mit den Nutzerdaten.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 400 BAD REQUEST: Wenn die E-Mail-Adresse bereits existiert.
+
     Relevante zusätzliche Hinweise:
         - Der Name wird bereits im Pydantic-Modell `NutzerCreate` validiert.
     """
@@ -477,11 +489,14 @@ def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db
     """
     Beschreibung:
         Löscht einen Nutzer anhand seiner ID.
+
     Parameter:
         nutzer_id (int): Die ID des zu löschenden Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -498,12 +513,15 @@ def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Dep
     """
     Beschreibung:
         Ändert das Passwort eines Nutzers anhand seiner ID.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         passwort (PasswortÄndern): Pydantic-Modell mit dem neuen Passwort.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -523,12 +541,15 @@ def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(ge
     """
     Beschreibung:
         Ändert den Namen eines Nutzers anhand seiner ID.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         name_data (NameAendern): Pydantic-Modell mit dem neuen Namen.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise:
         - Der Name wird bereits im Pydantic-Modell `NameAendern`, welches
           die Validierungslogik von 'NameBasis' erbt, validiert.
@@ -549,13 +570,16 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
     """
     Beschreibung:
         Ändert die E-Mail-Adresse eines Nutzers anhand seiner ID.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         email (EmailAendern): Pydantic-Modell mit der neuen E-Mail-Adresse.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
         - HTTP 400 BAD REQUEST: Wenn die neue E-Mail-Adresse bereits vergeben ist.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -579,11 +603,14 @@ def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends
     """
     Beschreibung:
         Ruft alle Listen ab, bei denen der Nutzer Mitglied ist.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn keine Listen für den Nutzer gefunden werden.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     listen = (
@@ -611,13 +638,16 @@ def change_theme_color(
     """
     Beschreibung:
         Ändert die Ansichtseinstellungen (Theme und Color) eines Nutzers anhand seiner ID.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         theme (int): Das neue Theme (0-2).
         color (int): Die neue Color (0-4).
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     # Prüfen, ob der Nutzer existiert
@@ -641,9 +671,12 @@ def get_einheiten_all(db: Session = Depends(get_db)):
     """
     Beschreibung:
         Ruft alle Einheiten aus der Datenbank ab.
+
     Parameter:
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen: Keine.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     einheiten = db.query(Einheit).all()
@@ -655,11 +688,14 @@ def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(g
     """
     Beschreibung:
         Ruft eine Einheit anhand ihrer ID ab.
+
     Parameter:
         einheit_id (int): Die ID der Einheit.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn keine Einheit mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     einheit = db.query(Einheit).filter(Einheit.id == einheit_id).first()
@@ -674,9 +710,12 @@ def get_produkte_all(db: Session = Depends(get_db)):
     """ 
     Beschreibung:
         Ruft alle Produkte aus der Datenbank ab.
+
     Parameter:
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen: Keine. 
+
     Relevante zusätzliche Hinweise: Keine.
     """ 
     produkte = db.query(Produkt).all()
@@ -689,11 +728,14 @@ def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(g
     """
     Beschreibung:
         Ruft ein Produkt anhand seiner ID ab.
+
     Parameter:
         produkt_id (int): Die ID des Produkts.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.  
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Produkt mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     produkt = db.query(Produkt).filter(Produkt.id == produkt_id).first()
@@ -707,11 +749,14 @@ def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get
     """
     Beschreibung:
         Ruft ein Produkt anhand seines Namens ab.
+
     Parameter:
         produkt_name (str): Der Name des Produkts.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Produkt mit dem angegebenen Namen gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Case-insensitive Suche nach dem Produktnamen
@@ -727,11 +772,14 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
     """
     Beschreibung:
         Erstellt ein neues Produkt in der Datenbank.
+
     Parameter:
         produkt (ProduktCreate): Pydantic-Modell mit den Produktdaten.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 400 BAD REQUEST: Wenn ein Produkt mit dem gleichen Namen bereits existiert.
+
     Relevante zusätzliche Hinweise:
         - Der Name wird bereits im Pydantic-Modell `ProduktCreate` validiert.
     """
@@ -761,12 +809,15 @@ def search_products(
     """
     Beschreibung:
         Sucht Produkte anhand eines Suchstrings im Namen (LIKE-Suche, nur Anfangsstring).
+
     Parameter:
         query (str): Der Suchstring für den Produktnamen und muss mindestens 1 Zeichen sien.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 400 BAD REQUEST: Wenn der Suchstring leer ist.
         - HTTP 404 NOT FOUND: Wenn keine Produkte gefunden werden.
+
     Relevante zusätzliche Hinweise:
         - Die Suche ist case-insensitiv und sucht nur nach Produkten, deren Namen mit dem Suchstring beginnen.
         - Es werden maximal 10 Treffer zurückgegeben.
@@ -795,11 +846,14 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
     """
     Beschreibung:
         Ruft alle favorisierten Produkte eines Nutzers ab.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Prüfen, ob der Nutzer existiert
@@ -832,13 +886,16 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
     """
     Beschreibung:
         Erstellt ein neues favorisiertes Produkt für einen Nutzer.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         fav_produkt (FavProdukteCreate): Pydantic-Modell mit den favorisierten Produktdaten.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 400 BAD REQUEST: Wenn die maximale Anzahl von 10 Favoriten erreicht ist oder das Produkt bereits favorisiert wurde.
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     anzahl_favoriten = db.query(FavProdukte).filter(
@@ -876,12 +933,15 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     """
     Beschreibung:
         Löscht ein favorisiertes Produkt eines Nutzers.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         produkt_id (int): Die ID des Produkts.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn das favorisierte Produkt nicht gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Favorisiertes Produkt suchen
@@ -901,13 +961,16 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     """
     Beschreibung:
         Aktualisiert ein favorisiertes Produkt eines Nutzers.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         produkt_id (int): Die ID des Produkts.
         fav_produkt_update (FavProdukteUpdate): Pydantic-Modell mit den aktualisierten Daten.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+        
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn das favorisierte Produkt nicht gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Favorisiertes Produkt suchen
@@ -932,10 +995,13 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
     """
     Beschreibung:
         Aktualisiert die Bedarfsvorhersage-Einträge für einen Nutzer basierend auf einer Zerfallsrate.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen: Keine.
+
     Relevante zusätzliche Hinweise:
         - Die Zerfallsrate beträgt 5% pro Tag.
         - Der Counter wird auf zwei Dezimalstellen gerundet.
@@ -981,11 +1047,14 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Sessio
     """
     Beschreibung:
         Ruft die Bedarfsvorhersage-Einträge für einen Nutzer ab und aktualisiert sie.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Prüfen, ob der Nutzer existiert
@@ -1006,12 +1075,15 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
     """
     Beschreibung:
         Löscht einen Bedarfsvorhersage-Eintrag für einen Nutzer und ein Produkt.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         produkt_id (int): Die ID des Produkts.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn der Eintrag nicht gefunden wird.
+        
     Relevante zusätzliche Hinweise: Keine.
     """
      # Bedarfsvorhersage-Eintrag suchen
@@ -1036,12 +1108,15 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
     """
     Beschreibung:
         Erstellt oder aktualisiert einen Bedarfsvorhersage-Eintrag für einen Nutzer.
+
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         eintrag_data (BedarfvorhersageCreate): Pydantic-Modell mit den Eintragsdaten.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.  
     """
      # Prüfen, ob Eintrag existiert
@@ -1086,9 +1161,12 @@ def get_listen_all(db: Session = Depends(get_db)):
     """
     Beschreibung:
         Ruft alle Listen aus der Datenbank ab.
+
     Parameter:
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen: Keine.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     listen = db.query(Liste).all()
@@ -1100,11 +1178,14 @@ def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db
     """
     Beschreibung:
         Ruft eine Liste anhand ihrer ID ab.
+
     Parameter:
         list_id (int): Die ID der Liste.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn keine Liste mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Liste suchen
@@ -1119,11 +1200,14 @@ def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
     """
     Beschreibung:
         Erstellt eine neue Liste in der Datenbank.
+
     Parameter:
         liste (ListeCreate): Pydantic-Modell mit den Listendaten.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 400 BAD REQUEST: Wenn die Listendaten fehlen oder der Ersteller nicht gefunden wird.
+
     Relevante zusätzliche Hinweise:
         - Der Name wird bereits im Pydantic-Modell `ListeCreate` validiert.
     """
@@ -1164,12 +1248,15 @@ def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...
     """
     Beschreibung:
         Aktualisiert das Datum einer Liste.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         datum_update (ListeDatumUpdate): Pydantic-Modell mit dem neuen Datum.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn keine Liste mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Liste suchen
@@ -1190,11 +1277,14 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
     """
     Beschreibung:
         Löscht eine Liste anhand ihrer ID.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn keine Liste mit der angegebenen ID gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Liste suchen
@@ -1212,11 +1302,14 @@ def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depe
     """
     Beschreibung:
         Ruft alle Mitglieder einer Liste anhand der Listen-ID ab.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn keine Mitglieder für die Liste gefunden werden.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Mitglieder der Liste suchen
@@ -1233,13 +1326,16 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
     """
     Beschreibung:
         Fügt ein Mitglied zu einer Liste hinzu.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         nutzer_id (int): Die ID des Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn die Liste oder der Nutzer nicht gefunden wird.
         - HTTP 400 BAD REQUEST: Wenn der Nutzer bereits Mitglied der Liste ist.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Prüfen, ob die Liste existiert
@@ -1264,12 +1360,15 @@ def delete_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(...,
     """ 
     Beschreibung:
         Entfernt ein Mitglied aus einer Liste.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         nutzer_id (int): Die ID des Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn das Mitglied nicht gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Mitglied suchen
@@ -1290,11 +1389,14 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
     """
     Beschreibung:
         Ruft alle Produkte in einer Liste anhand der Listen-ID ab.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     # Prüfen, ob die Liste existiert
@@ -1326,14 +1428,17 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Pat
     """
     Beschreibung:
         Fügt ein Produkt zu einer Liste hinzu.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         produkt_id (int): Die ID des Produkts.
         nutzer_id (int): Die ID des Nutzers, der das Produkt hinzufügt.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
         - HTTP 400 BAD REQUEST: Wenn das Produkt nicht in der Produkt-Tabelle existiert oder der Nutzer nicht gefunden wird oder das Produkt bereits in der Liste vorhanden ist.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Prüfen, ob die Liste existiert
@@ -1386,15 +1491,18 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
     """
     Beschreibung:
         Aktualisiert ein Produkt in einer Liste.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         produkt_id (int): Die ID des Produkts.
         nutzer_id (int): Die ID des Nutzers, der das Produkt aktualisiert.
         produkt (ProduktInListeUpdate): Pydantic-Modell mit den aktualisierten Produktdaten.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn die Liste oder das Produkt in der Liste nicht gefunden wird.
         - HTTP 400 BAD REQUEST: Wenn das Produkt nicht in der Produkt-Tabelle existiert oder der Nutzer nicht gefunden wird.
+    
     Relevante zusätzliche Hinweise: Keine.
     """
      # Prüfen, ob die Liste existiert
@@ -1441,13 +1549,16 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
     """
     Beschreibung:
         Löscht ein Produkt aus einer Liste.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         produkt_id (int): Die ID des Produkts.
         deleteRequest (ProduktDeleteRequest): Pydantic-Modell mit dem Nutzer, der das Produkt hinzugefügt hat.
-        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.  
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung. 
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn das Produkt in der Liste nicht gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Produkt in der Liste suchen
@@ -1471,11 +1582,14 @@ def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(g
     """
     Beschreibung:
         Ruft alle Einkäufe aus dem Einkaufsarchiv für eine bestimmte Liste ab.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     # Prüfen, ob die Liste existiert
@@ -1507,13 +1621,16 @@ def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: Einkaufsarc
     """
     Beschreibung:
         Erstellt einen neuen Eintrag im Einkaufsarchiv für eine bestimmte Liste.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         einkauf (EinkaufsarchivCreate): Pydantic-Modell mit den Einkaufsdaten.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
         - HTTP 400 BAD REQUEST: Wenn der Einkäufer nicht gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
@@ -1542,11 +1659,14 @@ def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depend
     """
     Beschreibung:
         Löscht alle Einkäufe aus dem Einkaufsarchiv für eine bestimmte Liste.
+
     Parameter:
         listen_id (int): Die ID der Liste.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn keine Einkäufe für die Liste gefunden werden.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Einkäufe für die Liste suchen
@@ -1570,11 +1690,14 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
     """
     Beschreibung:
         Ruft alle eingekauften Produkte für einen bestimmten Einkauf ab.
+
     Parameter:
         einkauf_id (int): Die ID des Einkaufs.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.  
+
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn der Einkauf nicht gefunden wird.
+
     Relevante zusätzliche Hinweise: Keine.
     """
      # Prüfen, ob der Einkauf existiert
@@ -1609,12 +1732,15 @@ def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_
     """
     Beschreibung:
         Erstellt einen neuen Eintrag für ein eingekauftes Produkt in einem bestimmten Einkauf.
+
     Parameter:
         einkauf_id (int): Die ID des Einkaufs.
         eingekauftes_produkt (eingekaufteProdukteCreate): Pydantic-Modell mit den Daten des eingekauften Produkts.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+    
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn der Einkauf nicht gefunden wird.
+    
     Relevante zusätzliche Hinweise: Keine.
     """
      # Prüfen, ob der Einkauf existiert  
