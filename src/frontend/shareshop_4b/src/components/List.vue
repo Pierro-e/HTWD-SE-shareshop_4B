@@ -2,26 +2,26 @@
   <div class="liste">
    
     <AppHeader :title="list_name">
-    <template #left>
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="$router.push('/listen')"
-        class="button button-cancel back-button"
-      >
-        Zurück
-      </button>
-    </template>
+      <template #left>
+        <button
+          :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+          @click="$router.push('/listen')"
+          class="button button-cancel back-button"
+        >
+          Zurück
+        </button>
+      </template>
 
-    <template #right>
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="openProductPopup()"
-        class="button button-add button-add-header"
-      >
-        Produkt hinzufügen
-      </button>
-    </template>
-  </AppHeader>
+      <template #right>
+        <button
+          :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+          @click="openProductPopup()"
+          class="button button-add button-add-header"
+        >
+          Produkt hinzufügen
+        </button>
+      </template>
+    </AppHeader>
 
     <div class="settings-section">
       <div class="settings-container">
@@ -159,6 +159,33 @@
       />
     </div>
   </div>
+  <BottomBar>
+    <template #left>
+      <button class="bottom-btn" @click="$router.push('/listen')">
+        <span class="icon">📋</span>
+        Listen
+      </button>
+    </template>
+
+    <template #middle>
+      <button class="bottom-btn" @click="$router.push('/archiv')">
+        <span class="icon">📁</span>
+        Archiv
+      </button>
+
+      <button class="bottom-btn" @click="$router.push('/favoriten')">
+        <span class="icon">⭐</span>
+        Favoriten
+      </button>
+    </template>
+
+    <template #right>
+      <button class="bottom-btn" @click="$router.push('/settings')">
+        <span class="icon">⚙️</span>
+        Einstellungen
+      </button>
+    </template>
+  </BottomBar>
 </template>
 
 <script>
@@ -166,11 +193,12 @@ import axios from "axios";
 import { inject } from "vue";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
+import BottomBar from "./BottomBar.vue";
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
   props: ["list_id"],
-  components: {AppHeader, ProductCard},
+  components: {AppHeader, ProductCard, BottomBar },
   data() {
     return {
       list_name: "",
