@@ -14,17 +14,45 @@
       :name="list.name"
     />
   </main>
-  <footer>
+  <!--<footer>
     <button class=button-submit @click="$router.push('/settings')">
       Zu den Profileinstellungen
     </button>
-  </footer>
+  </footer>-->
+  <BottomBar>
+    <template #left>
+      <button class="bottom-btn" @click="$router.push('/listen')">
+        <span class="icon">📋</span>
+        Listen
+      </button>
+    </template>
+
+    <template #middle>
+      <button class="bottom-btn" @click="$router.push('/archiv')">
+        <span class="icon">📁</span>
+        Archiv
+      </button>
+
+      <button class="bottom-btn" @click="$router.push('/favoriten')">
+        <span class="icon">⭐</span>
+        Favoriten
+      </button>
+    </template>
+
+    <template #right>
+      <button class="bottom-btn" @click="$router.push('/settings')">
+        <span class="icon">⚙️</span>
+        Einstellungen
+      </button>
+    </template>
+  </BottomBar>
 </template>
 
 <script>
 import ListButton from "./ListButton.vue";
 import { inject, ref } from "vue";
 import axios from "axios";
+import BottomBar from "./BottomBar.vue";
 
 export default {
   data() {
@@ -41,6 +69,7 @@ export default {
   },
   components: {
     ListButton,
+    BottomBar,
   },
   async mounted() {
     // Listen des momentanen Nutzers holen
