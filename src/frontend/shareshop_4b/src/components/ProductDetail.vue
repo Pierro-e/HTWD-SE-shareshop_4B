@@ -10,10 +10,7 @@
         <textarea id="beschreibung" v-model="beschreibung"></textarea>
       </div>
 
-      <div class="form-group">
-        <label for="menge">Menge:</label>
-        <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
-      </div>
+
 
       <div class="form-group">
         <label for="einheit">Einheit:</label>
@@ -21,6 +18,11 @@
           <option disabled value="">Bitte wählen</option>
           <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
         </select>
+      </div>
+
+      <div class="form-group">
+        <label for="menge">Menge:</label>
+        <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
       </div>
 
       <div class="button-row">
@@ -110,6 +112,23 @@ export default {
         return; // abbrechen
       }
 
+      // Validierung: Menge = 0 aber Einheit ausgewählt
+      if (this.einheit && (!this.menge || this.menge === 0)) {
+        this.errorMessage = "Bitte geben Sie eine Menge an, wenn eine Einheit ausgewählt ist.";
+        return; 
+      } 
+
+     // Validierung: Einheit stück, Menge= Dezimalzahl
+      if (this.einheit) {
+        const selectedEinheit = this.einheiten.find(e => e.id === this.einheit);
+        if (selectedEinheit && selectedEinheit.name.toLowerCase() === "stück") {
+          if (this.menge && !Number.isInteger(this.menge)) {
+            this.errorMessage = "Für die Einheit 'Stück' muss die Menge eine ganze Zahl sein.";
+            return; 
+          }
+        }
+      }
+
       let menge = this.menge == null || this.menge == 0 ? 0 : this.menge;
       let einheit_id = menge === 0 ? 0 : this.einheit;
 
@@ -153,47 +172,31 @@ export default {
 
 <style scoped>
 .product-detail {
+  min-width: 250px;
   max-width: 720px;
-  margin: 2rem auto;
-  padding: 2rem 2.5rem;
-  background-color: #2a2a2a;
+  padding: 1rem 1.3rem;
+  background-color: var(--box-bg-color);
   border-radius: 8px;
-  color: #eee;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.button-cancel {
-  align-self: center;
-  background-color: #6c757d;
-  color: #f0f0f0;
-  border: none;
-  padding: 0.5rem 1.5rem;
-  font-weight: 600;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  min-width: 120px;
-}
-
-.button-cancel:hover,
-.button-cancel:focus {
-  background-color: #565e64;
+  box-shadow: 0 4px 12px var(--box-shadow-color);
 }
 
 .product-name {
   font-weight: 700;
   font-size: 2rem;
-  margin-bottom: 2rem;
   text-align: center;
   width: 100%;
 }
 
-form {
-  width: 100%;
+form div {
+  align-items: left;
+  gap: 0;
+}
+
+form label {
+  text-align: center;
 }
 
 .form-group {
@@ -205,29 +208,6 @@ form {
 label {
   font-weight: 600;
   margin-bottom: 0.35rem;
-  color: #ccc;
-}
-
-input[type="number"],
-textarea,
-select {
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  border: 1.5px solid #444;
-  border-radius: 5px;
-  background-color: #222;
-  color: #eee;
-  font-family: inherit;
-  resize: vertical;
-  transition: border-color 0.3s ease;
-}
-
-input[type="number"]:focus,
-textarea:focus,
-select:focus {
-  border-color: #3399ff;
-  outline: none;
-  box-shadow: 0 0 8px #3399ff88;
 }
 
 textarea {
@@ -242,65 +222,19 @@ textarea {
   width: 100%;
 }
 
-button.button-delete,
-button.button-submit {
-  flex: 1;
-  font-size: 1.1rem;
-  padding: 0.6rem 0;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: 600;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-  color: #eee;
-  user-select: none;
-  min-width: 140px;
-  transition: background-color 0.3s ease;
-}
-
-button.button-submit {
-  background-color: #3399ff;
-}
-
-button.button-submit:hover,
-button.button-submit:focus {
-  background-color: #1a73e8;
-}
-
-button.button-delete {
-  background-color: #e55353;
-}
-
-button.button-delete:hover,
-button.button-delete:focus {
-  background-color: #b02a2a;
-}
-
-.success,
-.error {
-  margin-top: 1.5rem;
-  padding: 0.8rem 1rem;
-  border-radius: 5px;
-  font-weight: 600;
-  text-align: center;
+input,
+textarea,
+select {
   width: 100%;
 }
 
-.success {
-  background-color: #264d26;
-  border: 1.5px solid #4caf50;
-  color: #c8facc;
-}
-
-.error {
-  background-color: #4d2626;
-  border: 1.5px solid #e55353;
-  color: #f9c8c8;
+.success, .error {
+  max-width: 210px;
 }
 
 @media (max-width: 480px) {
   .product-detail {
-    padding: 1rem 1.2rem;
+    padding: 1rem 1rem;
   }
 
   .button-row {

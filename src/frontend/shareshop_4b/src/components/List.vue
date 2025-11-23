@@ -1,6 +1,8 @@
 <template>
   <div class="liste">
-    <div class="header">
+   
+    <AppHeader :title="list_name">
+    <template #left>
       <button
         :disabled="showpopup_product || showpopup_list || showpopup_add_member"
         @click="$router.push('/listen')"
@@ -8,9 +10,9 @@
       >
         Zurück
       </button>
+    </template>
 
-      <h2 class="list-title">{{ list_name }}</h2>
-
+    <template #right>
       <button
         :disabled="showpopup_product || showpopup_list || showpopup_add_member"
         @click="openProductPopup()"
@@ -18,7 +20,8 @@
       >
         Produkt hinzufügen
       </button>
-    </div>
+    </template>
+  </AppHeader>
 
     <div class="settings-section">
       <div class="settings-container">
@@ -29,7 +32,7 @@
           @click="openListPopup()"
           class="button button-settings"
         >
-          Listeneininformationen
+          Listeninformationen
         </button>
 
         <button
@@ -44,30 +47,45 @@
       </div>
     </div>
 
+    <div v-if="loadingActive" class="loading">Laden...</div>
+    <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
+
     <div v-if="showpopup_list" class="popup-overlay">
       <div class="popup-content">
         <h3>Listeninformationen</h3>
         <p>Name der Liste: {{ list_name }}</p>
         <p>Ersteller: {{ list_creator_name }}</p>
-        <p><u>Mitglieder</u></p>
+
+        <div v-if="infoMessage" class="success">{{ infoMessage }}</div>
+        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+
+
+        <br></br>
+        <h4>Mitglieder</h4>
+        
         <div
           v-for="mitglied in mitglieder"
           :key="mitglied.id"
           class="mitglieder-anzeige"
         >
-          <p>{{ mitglied.name }}</p>
+          <div>{{ mitglied.name }}</div>
           <button
             @click="mitglied_entfernen(mitglied.id)"
             class="button button-delete-member"
           >
             Entfernen
           </button>
+          
         </div>
+        
         <button @click="showpopup_list = false" class="button button-cancel">
           Schließen
         </button>
         <button @click="mitglied_hinzufügen_popup()" class="button button-add">
           Mitglied hinzufügen
+        </button>
+        <button v-if="user.name == list_creator_name" @click="delete_list()" class="button-delete">
+          Liste löschen 
         </button>
       </div>
     </div>
@@ -75,18 +93,35 @@
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
+        <!--
         <input
-          class="input-product"
+          class="input"
           v-model="new_product"
           type="text"
           placeholder="Produktname"
           maxlength="30"
         />
+        <br><br></br>
+        -->
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+        <v-select
+          v-model="dropdownSelected"
+          :options="dropdownOptions"
+          taggable
+          :clearable="false"
+          placeholder="Produkt eingeben..."
+          :selectable="option => option.header != true"
+          @search="onSearch"
+        >
+          <template #no-options>
+            Keine Favoriten/Vorschläge
+          </template>
+        </v-select>
+
         <button @click="cancel_product_popup" class="button button-cancel">
           Abbrechen
         </button>
-        <button @click="add_product" class="button button-add">
+        <button @click="add_product" class="button button-submit">
           Hinzufügen
         </button>
       </div>
@@ -96,7 +131,7 @@
       <div class="popup-content">
         <h3>Mitglied hinzufügen</h3>
         <input
-          class="input-product"
+          class="input"
           v-model="new_member_email"
           type="text"
           placeholder="E-Mail"
@@ -109,51 +144,19 @@
         >
           Abbrechen
         </button>
-        <button @click="mitglied_hinzufügen" class="button button-add">
+        <button @click="mitglied_hinzufügen" class="button button-submit">
           Hinzufügen
         </button>
       </div>
     </div>
 
     <div class="produkte-grid">
-      <div
+      <ProductCard
         v-for="(produkt, index) in listenprodukte"
         :key="index"
-        class="produkt-card"
-      >
-        <div class="produkt-header">
-          <h3 class="produkt-name">
-            {{ produkt.name || "Unbekanntes Produkt" }}
-          </h3>
-          <button
-            @click="product_settings(produkt)"
-            class="button button-product-settings"
-          >
-            |||
-          </button>
-        </div>
-
-        <div class="produkt-info" v-if="produkt.produkt_menge">
-          <span v-if="produkt.produkt_menge">
-            <strong>Menge:</strong> {{ produkt.produkt_menge }}
-          </span>
-          <span v-if="produkt.einheit_abk">
-            {{ produkt.einheit_abk }}
-          </span>
-        </div>
-        <div class="produkt-info" v-else>
-          <span style="visibility: hidden">Platzhalter</span>
-        </div>
-
-        <div class="produkt-beschreibung" v-if="produkt.beschreibung">
-          <p v-if="produkt.beschreibung">
-            {{ produkt.beschreibung }}
-          </p>
-        </div>
-        <div class="produkt-beschreibung" v-else>
-          <p style="visibility: hidden">Platzhalter</p>
-        </div>
-      </div>
+        :produkt="produkt"
+        :onSettings="product_settings"
+      />
     </div>
   </div>
 </template>
@@ -161,17 +164,21 @@
 <script>
 import axios from "axios";
 import { inject } from "vue";
-
+import AppHeader from "./AppHeader.vue";
+import ProductCard from "./ProductCard.vue";
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
   props: ["list_id"],
+  components: {AppHeader, ProductCard},
   data() {
     return {
       list_name: "",
       list_creator_id: null,
       list_creator_name: "",
       errorMessage: "",
+      infoMessage: "",
+      loadingActive: true,
       showpopup_product: false,
       showpopup_list: false,
       showpopup_delete_member: false,
@@ -184,9 +191,12 @@ export default {
       mitglieder_ids: [],
       mitglieder: [],
       userData: null, // hier speichern wir den injecteten user
+      dropdownSelected: "",
+      dropdownOptions: [],
+      searchTimeout: 0,
+      prevSearchText: ""
     };
   },
-
   methods: {
     async get_list(id) {
       this.errorMessage = "";
@@ -210,6 +220,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Liste";
         }
       }
+      this.loadingActive = false;
     },
 
     async get_list_members(id) {
@@ -264,27 +275,15 @@ export default {
           `http://141.56.137.83:8000/listen/${id}/produkte`,
         );
         this.listenprodukte = response.data;
+        //console.log(JSON.stringify(response.data, null, 2));
 
         for (const produkt of this.listenprodukte) {
           // Produktname holen
-          try {
-            const res1 = await axios.get(
-              `http://141.56.137.83:8000/produkte/by-id/${produkt.produkt_id}`,
-            );
-            produkt.name = res1.data.name;
-          } catch (innerError) {
-            produkt.name = "[Fehler beim Laden]";
-          }
+          //console.log(produkt.produkt_name);
+          produkt.name = produkt.produkt_name;
 
           // Einheit holen
-          try {
-            const res2 = await axios.get(
-              `http://141.56.137.83:8000/einheiten/${produkt.einheit_id}`,
-            );
-            produkt.einheit_abk = res2.data.abkürzung;
-          } catch (innerError) {
-            produkt.einheit_abk = "";
-          }
+          produkt.einheit_abk = produkt.einheit_abk;
 
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
@@ -318,13 +317,109 @@ export default {
       this.errorMessage = "";
       this.showpopup_list = true;
       this.showpopup_product = false;
-      this.get_list_members(this.list_id);
     },
 
-    openProductPopup() {
+    async openProductPopup() {
       this.errorMessage = "";
       this.showpopup_product = true;
       this.showpopup_list = false;
+      this.dropdownSelected = "";
+
+      this.$nextTick(() => { // warten bis das Popup da ist
+        const input = document.getElementsByClassName("vs__search")[0];
+        if (input) input.setAttribute("maxlength", 30); // Länge begrenzen von Suchfeld
+      });
+
+      this.loadDropdownList(0, "");
+    },
+
+    async loadDropdownList(type, searchText){
+      if (type == 0) { // Bedarfsvorhersage/Favoriten
+        try {
+          var response = await axios.get(`http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
+          var recommendedProducts = response.data;
+
+          response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${this.user.id}`);
+          var favoriteProducts = response.data;
+
+          var tempOptions = [];
+          if (favoriteProducts.length != 0){
+            tempOptions.push({label: "Favoriten", header: true})
+            for (const product of favoriteProducts){
+              tempOptions.push({label: `${product.produkt_name}`})
+            }
+          }
+
+          if (recommendedProducts.length != 0){
+            tempOptions.push({label: "Vorschläge", header: true})
+            for (const product of recommendedProducts){
+              tempOptions.push({label: `${product.produkt_name}`})
+            }
+          }
+          
+          this.dropdownOptions = tempOptions;
+          this.errorMessage = "";
+        } catch (error) {
+          this.dropdownOptions = [];
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.detail
+          ) {
+            this.errorMessage = error.response.data.detail;
+            
+          } else {
+            this.errorMessage = "Fehler beim Laden von Favoriten/Bedarfsvorhersage";
+          } 
+        }
+      } 
+      else if (type == 1) { // Suchvorschläge > mind. 1 Zeichen eingegeben
+        try {
+          const response = await axios.get(
+            `http://141.56.137.83:8000/produkte/suche/`,
+            { params: { query: searchText } }
+          );
+          var suggestions = response.data;
+          var tempOptions = [];
+          
+          for (const product of suggestions){
+            tempOptions.push({label: `${product.name}`})
+          }
+
+          this.dropdownOptions = tempOptions;
+          this.errorMessage = ""
+        } catch (error) {
+          this.dropdownOptions = [];
+          if (
+            error.response &&
+            error.response.data &&
+            error.response.data.detail
+          ) {
+            this.errorMessage = error.response.data.detail;
+            
+          } else {
+            this.errorMessage = "Fehler beim Laden der Vorschläge";
+          } 
+        }
+      }
+    },
+
+    async onSearch(searchText){ // aufgerufen, wenn was ins Dropdown eingegeben wird
+      clearTimeout(this.searchTimeout);
+
+      if (searchText.length == 0){ // Bedarfsvorhersage/Favoriten
+        this.loadDropdownList(0, "");
+      }
+      else { // Suchvorschläge > mind. 1 Zeichen eingegeben
+        if (searchText.length == 1 && this.prevSearchText.length != 2){ // sofort bei erster Eingabe suchen, nicht beim zurücklöschen
+          this.loadDropdownList(1, searchText);
+        }
+        
+        this.searchTimeout = setTimeout(() => { // sonst max. jede Sekunde, um Spammen zu verhindern
+          this.loadDropdownList(1, searchText);
+        }, 1000)
+        this.prevSearchText = searchText
+      }
     },
 
     async add_product() {
@@ -332,14 +427,15 @@ export default {
       const user_id = this.user.id;
 
       this.errorMessage = "";
+      this.new_product = this.dropdownSelected.label;
 
-      if (this.new_product.trim() === "") {
+      if (this.new_product == null) {
         this.errorMessage = "Produktname darf nicht leer sein";
         return;
       }
 
       let produkt_Id;
-
+      
       try {
         // Produkt existiert schon?
         const responseCheck = await axios.get(
@@ -377,13 +473,13 @@ export default {
         return;
       }
 
+      this.loadingActive = true;
       try {
         await axios.post(
           `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`,
         );
         this.showpopup_product = false;
         this.errorMessage = "";
-        this.new_product = "";
       } catch (error) {
         if (error.response) {
           this.errorMessage =
@@ -391,7 +487,42 @@ export default {
             "Unbekannter Fehler beim Hinzufügen des Produkts zur Liste";
         }
       }
+      // ist neues Produkt ein Favorit?
+      const response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${user_id}`);
+      var favoriteProducts = response.data;
+
+      var favFound = false
+      var favData = null
+      var favID = 0
+
+      for (const product of favoriteProducts){
+        if (product.produkt_name === this.new_product.trim()){
+          favID = product.produkt_id;
+          favData = {
+            produkt_menge: product.menge,
+            einheit_id: product.einheit_id,
+            beschreibung: product.beschreibung,
+          }
+          favFound = true
+          break
+        }
+      }
+
+      // bei Favorit: Produkt mit Beschreibung, Menge+Einheit updaten!
+      if (favFound){
+        try {
+          await axios.put(
+            `http://141.56.137.83:8000/listen/${list_id}/produkte/${favID}/nutzer/${user_id}`,
+            favData
+          );
+        } catch (error) {
+          this.errorMessage = error.response?.data?.detail || "Fehler beim Speichern";
+        }
+      }
+
+      this.new_product = "";
       this.get_products(list_id);
+      this.loadingActive = false;
     },
 
     cancel_product_popup() {
@@ -441,6 +572,14 @@ export default {
         return;
       }
       console.log(`Suche nach E-Mail: ${user_email}`);
+
+      // email prüfen
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!emailRegex.test(user_email)) {
+        this.errorMessage = "Bitte eine gültige E-Mail-Adresse eingeben!";
+        return;
+      }
 
       try {
         const userResponse = await axios.get(
@@ -508,6 +647,40 @@ export default {
 
       this.$router.push(`/list/${list_id}/einkauf`);
     },
+        async delete_list() {
+        
+        if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
+            return;
+        }
+        this.errorMessage = "";
+        this.infoMessage = ""; // Nachricht vor dem Versuch löschen
+        
+        try {
+            // Sicherstellen, dass die ID korrekt verwendet wird
+            const list_id = this.list_id || this.$route.params.id;
+            await axios.delete(`http://141.56.137.83:8000/listen/${list_id}`);
+
+            // Erfolgsfall (Rückgabe 204 No Content führt hier zur erfolgreichen Ausführung)
+            this.infoMessage = "Liste wurde erfolgreich gelöscht!";
+            setTimeout(() => {
+                this.$router.push("/listen");
+            }, 2000);
+
+        } catch (error) {
+            console.error("Fehler beim Löschvorgang:", error);
+            // zentralistiertte Fehlerbehandlung basierend auf der Backend-Antwort
+            if (
+                error.response &&
+                error.response.status === 404
+            ) {
+                // Fehlermeldung vom Backend: "Liste nicht gefunden"
+                this.errorMessage = error.response.data.detail || "Liste nicht gefunden.";
+            } else {
+                // Generischer Fehler
+                this.errorMessage = "Serverfehler oder unerwarteter Fehler beim Löschen der Liste.";
+            }
+        }
+  },
   },
   mounted() {
     this.errorMessage = "";
@@ -526,20 +699,6 @@ export default {
   padding-top: 50px;
 }
 
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100px; /* vorher 60px */
-  background-color: rgb(6, 32, 12);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
 /* Zurück-Button links */
 .back-button {
   position: absolute;
@@ -554,21 +713,9 @@ export default {
   top: 25px;
 }
 
-/* h2 mittig im Header */
-.header h2 {
-  margin: 0;
-  top: 20px;
-  font-weight: 400;
-  font-size: 2rem;
-  color: white;
-  text-align: center;
-  /* Kein position fixed mehr! */
-}
-
-.list-title {
-  color: white;
-  font-size: 1.8rem;
-  margin: 0;
+.button-einkauf-tätigen {
+  position: relative;
+  margin-top: 0px;
 }
 
 /* Settings-Container fixiert unter der Überschrift mittig */
@@ -577,32 +724,17 @@ export default {
   top: 100px; /* vorher 60px */
   left: 0;
   width: 100%;
-  z-index: 1100;
+  z-index: 1000;
   padding: 5px 0;
   display: flex;
+  flex-direction: column;
+  gap: 10px; /* Abstand zwischen Buttons */
   justify-content: center;
   align-items: center;
 }
 
-.settings-container {
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* Abstand zwischen Buttons */
-}
-
-.button-einkauf-tätigen {
-  position: relative;
-  margin-top: 0px;
-}
-
-.input-product {
+.input {
   width: 100%;
-  padding: 0.5em;
-  border-radius: 0.25em;
-  border: none;
-  background-color: #3a3a3a;
-  color: white;
-  font-size: 1em;
   box-sizing: border-box;
 }
 
@@ -622,108 +754,34 @@ export default {
 }
 
 .popup-content {
-  background: black;
-  color: white;
+  background: var(--box-bg-color);
   padding: 1em 2em;
   border-radius: 0.5em;
-  min-width: 300px;
+  width: 100%;
+  min-width: 250px;
+  max-width: 300px;
   text-align: center;
   /* Klicks nur auf das Popup zulassen */
   pointer-events: auto;
+  box-shadow: 0 4px 12px var(--box-shadow-color);
 }
 
-.produkte-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  padding-top: 140px;
-}
-
-@media (min-width: 768px) {
-  .produkte-grid {
-    grid-template-columns: repeat(2, 1fr);
+@media (max-width: 480px) {
+  .popup-content {
+    max-width: 260px;
   }
-}
-
-@media (min-width: 1024px) {
-  .produkte-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.produkt-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* Button und Name auf gleicher Höhe */
-}
-
-.produkt-card {
-  background-color: #c8e2c8;
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s ease;
-}
-
-.produkt-card:hover {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.produkt-name {
-  margin: 0;
-  color: #000000;
-  font-size: 1.2em;
-  font-weight: bold;
-  word-break: break-word;
-}
-
-.produkt-info {
-  font-size: 1rem; /* 14px */
-  color: #000000;
-  font-weight: 450;
-  display: flex;
-  gap: 0.5rem;
-  align-items: center; /* Vertikal zentrieren */
-}
-
-.produkt-info strong {
-  font-weight: 600;
-  color: #000000;
-  text-align: left;
-}
-
-.produkt-beschreibung {
-  font-size: 1rem;
-  color: #000000;
-  font-weight: 450;
-  margin-top: 0.5rem;
-  white-space: pre-wrap;
-  text-align: left; /* Linksbündig explizit gesetzt */
-}
-
-.button-product-settings {
-  background: none;
-  color: rgb(61, 57, 53);
-  border: none;
-  font-size: 1.2em;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 10px;
-  line-height: 1; /* optional, für vertikale Ausrichtung */
 }
 
 .mitglieder-anzeige {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 0.2em 0;
+  margin-block: 15px;
 }
 
 .button-delete-member {
   background-color: transparent;
   border: none;
-  color: red;
+  color: #dc3545;
   font-weight: bold;
   cursor: pointer;
   padding: 0 0.5em;

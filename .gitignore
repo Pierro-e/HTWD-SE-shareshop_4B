@@ -2,7 +2,22 @@
 
 node_modules
 
+# Python virtual environment
+venv/
+.env/
+env/
+.env
+src/backend/.env
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # General
 .DS_Store
 *~
 .vscode
+.config

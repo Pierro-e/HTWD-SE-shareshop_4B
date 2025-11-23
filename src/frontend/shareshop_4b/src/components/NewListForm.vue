@@ -1,14 +1,19 @@
 <template>
   <form @submit.prevent="onSubmit">
-    <label for="list_name">Name</label>
-    <input
-      v-model="name"
-      type="text"
-      id="list_name"
-      placeholder="WG Alberplatz"
-      required
-    />
-    <button class="button-submit" type="submit">Einkaufsliste erstellen</button>
+    <div class="form-content">
+      <div>
+        <label for="list_name">Name: </label>
+        <input
+          v-model="name"
+          type="text"
+          id="list_name"
+          placeholder="WG Albertplatz"
+        />
+      </div>
+    </div>
+    
+    <button class="button-cancel" @click="$router.push(`/listen`)">Abbrechen</button>
+    <button class="button-submit" type="submit">Erstellen</button>
   </form>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 </template>
@@ -28,6 +33,12 @@ export default {
   methods: {
     async onSubmit() {
       this.errorMessage = "";
+      
+      if (this.name === ""){
+        this.errorMessage = "Listenname darf nicht leer sein";
+        return;
+      }
+
       try {
         // eine freie ID für die neue Liste bestimmen
         let new_id = 1;
@@ -54,7 +65,7 @@ export default {
         ) {
           this.errorMessage = error.response.data.detail;
         } else {
-          this.errorMessage = "List konnte nicht erstellt werden";
+          this.errorMessage = "Liste konnte nicht erstellt werden";
         }
       }
     },
@@ -62,4 +73,13 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .error {
+    width: 80%;
+  }
+
+  form label {
+    width: 40px;
+  }
+
+</style>

@@ -3,25 +3,30 @@
     <h2>Login</h2>
     <form @submit.prevent="onSubmit">
       <div class="login_email">
-        <label for="email" class="login_block">Email</label>
+        <label for="email" class="login_block">E-Mail: </label>
         <input
           v-model="email"
           type="email"
           id="email"
-          placeholder="Email"
+          placeholder="E-Mail"
           required
         />
       </div>
       <div class="login_pw">
-        <label for="password" class="login_block">Passwort</label>
+        <label for="password" class="login_block">Passwort: </label>
+        <div class="password-input-container">
         <input
           v-model="password"
-          type="password"
+          :type="passwordFieldType" 
           id="password"
           maxlength="30"
           placeholder="Passwort"
           required
         />
+        <span class="password-toggle-icon" @click="togglePasswordVisibility">
+          <font-awesome-icon :icon="passwordFieldType === 'password' ? 'eye' : 'eye-slash'" />
+        </span>
+      </div>  
       </div>
       <button class="button-submit" type="submit">Einloggen</button>
     </form>
@@ -40,24 +45,30 @@ import axios from "axios";
 
 export default {
   name: "Login",
+  inject: ["setUser", 'getThemeText', 'getAccentText', 'deleteUser'], // theme, accent, setUser aus app.vue injizieren
   data() {
     return {
       email: "",
       password: "",
       errorMessage: "",
+      passwordFieldType: "password",
+      theme: '',
+      accent: ''
     };
   },
-  inject: ["setUser"], // setUser aus app.vue injizieren
   methods: {
+    togglePasswordVisibility() {
+      this.passwordFieldType =
+        this.passwordFieldType === "password" ? "text" : "password";
+    },
     async onSubmit() {
       this.errorMessage = "";
+      let response;
       try {
-        const response = await axios.post("http://141.56.137.83:8000/login", {
+        response = await axios.post("http://141.56.137.83:8000/login", {
           email: this.email,
           passwort: this.password,
         });
-        this.setUser(response.data); // Benutzerdaten setzen
-        this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
       } catch (error) {
         if (
           error.response &&
@@ -68,20 +79,36 @@ export default {
         } else {
           this.errorMessage = "Falsche Zugangsdaten";
         }
+        return
       }
+      this.setUser(response.data); // Benutzerdaten setzen
+
+      // Theme setzen
+      const json = response.data
+      this.theme = this.getThemeText(json.theme)
+      this.accent = this.getAccentText(json.color)
+
+      document.documentElement.setAttribute("css-theme", this.theme) // Thema setzen
+      document.documentElement.setAttribute('css-accent', this.accent) // Farbe setzen
+
+      this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
     },
+  },
+  mounted() {
+    this.deleteUser() // Vor dem Login sicherstellen, dass kein User eingeloggt ist
   },
 };
 </script>
 
 <style scoped>
 .login_container {
+  min-width: 200px;
   max-width: 400px;
   margin: 3em auto;
   padding: 2em;
-  background-color: #2a2a2a;
+  background-color: var(--box-bg-color);
   border-radius: 0.75em;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px var(--box-shadow-color);
   color: inherit;
   font-size: 1.1rem;
   text-align: left;
@@ -91,6 +118,7 @@ h2 {
   margin-top: 0;
   margin-bottom: 1.2em;
   font-weight: 600;
+  font-size: 26.4px;
 }
 
 form {
@@ -99,10 +127,40 @@ form {
   gap: 1.2em;
 }
 
+form div {
+  gap: 0;
+}
+
+form label {
+  width: auto;
+}
+
+input {
+  width: 100%;
+}
+
 .login_email,
 .login_pw {
   display: flex;
   flex-direction: column;
+}
+
+.password-input-container {
+  position: relative;
+  display: flex;
+
+}
+.password-toggle-icon {
+  color: gray;
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 1.2em;
+}
+/* falls passwörter lange sind */
+.password-input-container input {
+    padding-right: 2.5em;
 }
 
 .login_block {
@@ -110,30 +168,9 @@ form {
   font-weight: 500;
 }
 
-input[type="email"],
-input[type="password"] {
-  padding: 0.6em 0.8em;
-  border-radius: 0.4em;
-  border: none;
-  font-size: 1em;
-  box-sizing: border-box;
-  background-color: #3a3a3a;
-  color: white;
-  transition:
-    background-color 0.25s,
-    border-color 0.25s;
-}
-
-input[type="email"]:focus,
-input[type="password"]:focus {
-  outline: none;
-  background-color: #505050;
-  border: 1px solid #646cff;
-}
-
-.error {
-  margin-top: 1em;
-  font-weight: 600;
+.success, .error {
+  width: calc(100% - 2rem);
+  margin-bottom: 0;
 }
 
 .create_account {

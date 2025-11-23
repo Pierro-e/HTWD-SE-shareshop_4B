@@ -1,0 +1,4 @@
+= Code Conventions
+
+* Bezeichner auf Englisch
+* Iterale & Kommentare auf Deutsch
