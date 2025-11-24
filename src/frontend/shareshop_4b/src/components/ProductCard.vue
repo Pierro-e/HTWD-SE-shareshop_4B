@@ -49,7 +49,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .beschreibung {
   white-space: nowrap;       
   overflow: hidden;           

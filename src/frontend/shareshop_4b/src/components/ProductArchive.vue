@@ -3,7 +3,7 @@
 
     <AppHeader :title="`${purchase_name}`">
       <template #left>
-        <button @click="back_to_Archive" class="button button-cancel back-button">
+        <button @click="back_to_Archive" class="button-cancel back-button">
           Zurück
         </button>
       </template>

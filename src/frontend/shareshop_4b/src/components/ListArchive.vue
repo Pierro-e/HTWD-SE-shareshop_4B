@@ -3,7 +3,7 @@
 
     <AppHeader :title="`Einkaufsarchiv für\n${this.listName}`" class="multiline-title">
       <template #left>
-        <button @click="back_to_list" class="button button-cancel back-button">
+        <button @click="back_to_list" class="button-cancel back-button">
           Zurück
         </button>
       </template>

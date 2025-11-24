@@ -3,13 +3,13 @@
     
     <AppHeader :title="list_name">
       <template #left>
-        <button @click="einkauf_abbrechen" class="button button-cancel back-button">
+        <button @click="einkauf_abbrechen" class="button-cancel back-button">
           Einkauf abbrechen
         </button>
       </template>
 
       <template #right>
-        <button @click="prepare_purchase" class="button button-submit button-submit-header">
+        <button @click="prepare_purchase" class="button-submit button-submit-header">
           Einkauf abschließen
         </button>
       </template>
