@@ -105,7 +105,10 @@ export default {
     async saveProduct() {
       this.message = "";
       this.errorMessage = "";
-
+      // 1. zuerst die menge als zahl behandeln
+      // '0' setzen, wenn null, leer oder nicht nummerisch
+      const mengeAlsZahl = Number(this.menge);
+      this.menge = mengeAlsZahl; // konvertiere zu Zahl
       // Validierung: Menge > 0 aber keine Einheit ausgewählt
       // prüft, ob this.einheit null, 0 oder undefined ist
       if (this.menge > 0 && (!this.einheit || this.einheit === 0)) {
@@ -118,9 +121,9 @@ export default {
         this.errorMessage = "Bitte geben Sie eine Menge an, wenn eine Einheit ausgewählt ist.";
         return; 
       } 
-
+      
      // Validierung: Einheit stück, Menge= Dezimalzahl
-      if (this.einheit) {
+      if (this.einheit && this.einheit !== 0) {
         const selectedEinheit = this.einheiten.find(e => e.id === this.einheit);
         if (selectedEinheit && selectedEinheit.name.toLowerCase() === "stück") {
           if (this.menge && !Number.isInteger(this.menge)) {
