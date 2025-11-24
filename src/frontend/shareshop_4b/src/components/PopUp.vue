@@ -3,6 +3,10 @@
     <div class="popup-content">
       <slot></slot>
       <button @click="$emit('close')" class="button button-cancel">X</button>
+      <button 
+        @click="$emit('confirm')" 
+        class="button button-submit"
+      >Bestätigen</button>
     </div>
   </div>
 </template>

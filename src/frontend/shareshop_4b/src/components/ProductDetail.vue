@@ -58,7 +58,6 @@ export default {
     this.hinzugefügt_von = this.nutzerId;
     await this.fetchEinheiten();
     await this.fetchProduct();
-    await this.fetchProduktName();
   },
   methods: {
     async fetchProduct() {
@@ -76,7 +75,9 @@ export default {
           this.errorMessage = "Produkt in dieser Liste nicht gefunden.";
           return;
         }
+
         this.produkt_id = produkt.produkt_id;
+        this.name = produkt.produkt_name || "";
         this.menge = produkt.produkt_menge || "";
         this.einheit = produkt.einheit_id || "";
         this.beschreibung = produkt.beschreibung || "";
@@ -90,16 +91,6 @@ export default {
         this.einheiten = response.data;
       } catch {
         this.errorMessage = "Einheiten konnten nicht geladen werden.";
-      }
-    },
-    async fetchProduktName() {
-      try {
-        const response = await axios.get(
-          `http://141.56.137.83:8000/produkte/by-id/${this.produkt_id}`
-        );
-        this.name = response.data.name;
-      } catch {
-        console.warn("Name konnte nicht geladen werden.");
       }
     },
     async saveProduct() {

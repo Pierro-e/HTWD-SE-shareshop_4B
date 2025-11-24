@@ -44,6 +44,12 @@
         >
           Einkauf
         </button>
+        <button
+          @click="list_archive"
+          class="button"
+        >
+          Listenarchiv
+        </button>
       </div>
     </div>
 
@@ -152,9 +158,9 @@
 
     <div class="produkte-grid">
       <ProductCard
-        v-for="(produkt, index) in listenprodukte"
+        v-for="(product, index) in listenprodukte"
         :key="index"
-        :produkt="produkt"
+        :product="product"
         :onSettings="product_settings"
       />
     </div>
@@ -278,13 +284,6 @@ export default {
         //console.log(JSON.stringify(response.data, null, 2));
 
         for (const produkt of this.listenprodukte) {
-          // Produktname holen
-          //console.log(produkt.produkt_name);
-          produkt.name = produkt.produkt_name;
-
-          // Einheit holen
-          produkt.einheit_abk = produkt.einheit_abk;
-
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
             produkt.produkt_menge !== undefined &&
@@ -631,21 +630,39 @@ export default {
       this.new_member_email = "";
     },
 
-    product_settings(produkt) {
-      this.errorMessage = "";
-      const list_id = this.list_id || this.$route.params.id;
-      const product_id = produkt.produkt_id;
-      const nutzer_id = produkt.hinzugefügt_von;
+    product_settings(product) {
+      const listenId = this.list_id || this.$route.params.id;
+      const produktId = product.produkt_id;
+      const nutzerId = product.hinzugefügt_von;
 
-      this.$router.push(
-        `/listen/${list_id}/produkte/${product_id}/nutzer/${nutzer_id}`,
-      );
+      this.$router.push({
+        name: "ProductDetail",
+        params: {
+          listenId,
+          produktId,
+          nutzerId
+        },
+        query: {
+          readonly: false
+        }
+      });
     },
+
 
     einkauf_abschließen() {
       const list_id = this.list_id || this.$route.params.id;
 
       this.$router.push(`/list/${list_id}/einkauf`);
+    },
+
+    list_archive() {
+      const list_id = this.list_id || this.$route.params.id;
+      const list_name = this.list_name;
+      this.$router.push({ 
+        name: "ListArchive", 
+        params: { list_id},
+        query: { list_name } 
+      });
     },
         async delete_list() {
         
