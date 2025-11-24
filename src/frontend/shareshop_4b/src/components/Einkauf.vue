@@ -2,15 +2,16 @@
   <div class="einkauf">
     
     <AppHeader :title="list_name">
+      
       <template #left>
-        <button @click="einkauf_abbrechen" class="button-cancel back-button">
-          Einkauf abbrechen
+        <button @click="einkauf_abbrechen" class="button-cancel">
+          <font-awesome-icon icon='xmark'/>
         </button>
       </template>
 
       <template #right>
-        <button @click="prepare_purchase" class="button-submit button-submit-header">
-          Einkauf abschließen
+        <button @click="prepare_purchase" class="button button-submit">
+          <font-awesome-icon icon='check'/>
         </button>
       </template>
     </AppHeader>
@@ -18,19 +19,21 @@
     <div v-if="loadingActive" class="loading">Laden...</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     
-    <div class="produkte-grid">
+    <div :style="{ paddingTop: errorMessage ? '0' : '80px' }"></div>
+    <div class="card-grid">
       <ProductCard
         v-for="(product, index) in listenprodukte"
         :key="index"
         :product="product"
         :onSettings="product_settings"
+        @click="produkt.erledigt = !produkt.erledigt"
       >
         <template #left>
           <input
             type="checkbox"
-            :id="`check-${index}`"
             class="produkt-checkbox"
-            @change="toggle_Erledigt(product, $event)"
+            :checked="produkt.erledigt"
+            @change="produkt.erledigt = $event.target.checked"
           />
         </template>
       </ProductCard>
@@ -58,7 +61,6 @@
 
 <script>
 import axios from "axios";
-import { inject } from "vue";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
 import PopUp from "./PopUp.vue";
@@ -143,14 +145,6 @@ export default {
       this.$router.push(`/list/${list_id}`);
     },
 
-    product_details(produkt) {
-      // anzeigen der Produktdetails: von wem hinzugefügt,
-    },
-
-    toggle_Erledigt(produkt, event) {
-      produkt.erledigt = event.target.checked;
-    },
-
     prepare_purchase() {
       if (!this.listenprodukte || this.listenprodukte.length === 0) {
         this.errorMessage = "Keine Produkte vorhanden!";
@@ -159,8 +153,8 @@ export default {
       const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
 
       if (erledigteProdukte.length === 0) {
-        this.errorMessage = "Es sind keine Produkte abgehakt!";
-        return;
+          alert("Es sind keine Produkte abgehakt!");
+          return;
       }
 
       this.totalPrice = 0;
@@ -249,22 +243,6 @@ export default {
 </script>
 
 <style scoped>
-.einkauf {
-  padding-top: 50px;
-}
-
-.back-button {
-  position: absolute;
-  left: 20px;
-  top: 25px;
-}
-
-.button-submit-header {
-  position: absolute;
-  right: 20px;
-  top: 25px;
-}
-
 .erledigt {
   opacity: 0.5;
   filter: grayscale(100%);
@@ -273,26 +251,14 @@ export default {
     filter 0.3s ease;
 }
 
-.produkt-name.erledigt {
-  text-decoration: line-through;
-  color: #777;
-}
-
 .produkt-checkbox {
   width: 1.2rem;
   height: 1.2rem;
   cursor: pointer;
 }
 
-/* Optional: wenn erledigt, z.B. durch Linie durch den Text */
-.produkt-name.erledigt {
-  text-decoration: line-through;
-  color: #777;
-}
-
 .error {
-  margin-top: 2em;
-  z-index: 1100;
-  /* höher als der Header */
+  margin-top: 4em;
+  z-index: 1100;   /* höher als der Header */
 }
 </style>

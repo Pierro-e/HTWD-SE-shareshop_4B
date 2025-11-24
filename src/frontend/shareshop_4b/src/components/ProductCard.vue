@@ -1,12 +1,11 @@
 <template>
-  <div class="produkt-card" :class="{ erledigt: product.erledigt }">
-    <div class="produkt-header">
-
+  <div class="card" :class="{ erledigt: product.erledigt }">
+    <div class="card-header">
       <!-- Identische Struktur bei Einkauf und Liste, nur Unterschiede bei z.B Checkbox-Slot für Einkauf.
        dieser wird von List.vue nicht genutzt -->
       <slot name="left"></slot>
 
-      <h3 class="produkt-name" :class="{ erledigt: product.erledigt }">
+      <h3 class="card-name" :class="{ erledigt: product.erledigt }">
         {{ product.produkt_name || "Unbekanntes Produkt" }}
       </h3>
 
@@ -15,26 +14,24 @@
       </button>
     </div>
 
-    <div class="produkt-info" v-if="product.produkt_menge || product.einheit_abk">
+    <div class="card-info" v-if="product.produkt_menge || product.einheit_abk">
       <span>
         <strong>Menge:</strong> {{ product.produkt_menge }} {{ product.einheit_abk }}
       </span>
     </div>
-    <div class="produkt-info" v-else>
+    <div class="card-info" v-else>
       <span style="visibility: hidden">Platzhalter</span>
     </div>
 
-    <div class="produkt-beschreibung" v-if="product.beschreibung">
+    <div class="card-beschreibung" v-if="product.beschreibung">
       <p class="beschreibung">{{ product.beschreibung }}</p>
     </div>
-    <div class="produkt-beschreibung" v-else>
-      <p style="visibility: hidden">Platzhalter</p>
+    <div class="card-beschreibung" v-else>
+      <div style="visibility: hidden">Platzhalter</div>
     </div>
 
     <!-- Slot für extra Infos -->
     <slot name="extra"></slot>
-
-
   </div>
 </template>
 
@@ -43,7 +40,7 @@ export default {
   name: "ProductCard",
   props: {
     product: { type: Object, required: true },
-    onSettings: { type: Function, required: true },
+    onSettings: { type: Function, required: false },
     hideSettings: { type: Boolean, default: false } //true, wenn es ein Archivprodukt ist
   }
 };

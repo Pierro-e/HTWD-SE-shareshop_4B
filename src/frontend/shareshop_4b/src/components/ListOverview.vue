@@ -1,29 +1,44 @@
 <template>
-  <header>
-    <h1>{{ user.name }}'s Einkaufslisten</h1>
-    <button @click="newList" id="newlist" class="button-add">+</button>
+  <div class="listOverview">
+
+    <AppHeader :title="user.name + '\'s Einkaufslisten'">
+      <template #left>
+  
+      </template>
+
+      <template #right>
+        <button @click="newList" id="newlist" class="button-add">
+          <font-awesome-icon icon='plus'/>
+        </button>
+      </template>
+    </AppHeader>
+      
     <button @click="$router.push('/fav')">Favorit</button>
     <button @click="$router.push('/userArchive')">Archiv</button>
-  </header>
-  <div v-if="loadingActive" class="loading">Laden...</div>
-  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-  <main>
-    <ListButton
-      v-for="list in lists"
-      :key="list.id"
-      :item="list"
-      :name="list.name"
-    />
-  </main>
-  <footer>
-    <button class=button-submit @click="$router.push('/settings')">
-      Zu den Profileinstellungen
-    </button>
-  </footer>
+
+    <div v-if="loadingActive" class="loading">Laden...</div>
+    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <main>
+      <div class=card-list>
+        <ListButton
+          v-for="list in lists"
+          :key="list.id"
+          :name="list.name"
+          :item="list"
+        />
+      </div>
+    </main>
+    <footer>
+      <button class=button-submit @click="$router.push('/settings')">
+        Zu den Profileinstellungen
+      </button>
+    </footer>
+  </div>
 </template>
 
 <script>
 import ListButton from "./ListButton.vue";
+import AppHeader from "./AppHeader.vue";
 import { inject, ref } from "vue";
 import axios from "axios";
 
@@ -42,6 +57,7 @@ export default {
   },
   components: {
     ListButton,
+    AppHeader
   },
   async mounted() {
     // Listen des momentanen Nutzers holen
@@ -70,8 +86,11 @@ export default {
 </script>
 
 <style scoped>
+.listOverview {
+  padding-top: 50px;
+}
 
-.error{
+.error {
   width: 300px;
 }
 </style>
