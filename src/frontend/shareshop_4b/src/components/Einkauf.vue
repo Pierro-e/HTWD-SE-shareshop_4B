@@ -26,6 +26,7 @@
         :key="index"
         :product="product"
         :onSettings="product_settings"
+        :hideSettings=true
         @click="product.erledigt = !product.erledigt"
       >
         <template #left>
