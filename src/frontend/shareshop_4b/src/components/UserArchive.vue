@@ -16,13 +16,15 @@
     </div>
 
     <div v-else>
-      <ListButton
-        v-for="purchase in purchases"
-        :key="purchase.einkauf_id"
-        :item="purchase"
-        :name="`${purchase.listen_name} - ${formatDate(purchase.eingekauft_am)}`"
-        :isUserArchive="true"
-      />
+      <div class="card-list">
+        <ListButton
+          v-for="purchase in purchases"
+          :key="purchase.einkauf_id"
+          :item="purchase"
+          :name="`${purchase.listen_name} - ${formatDate(purchase.eingekauft_am)}`"
+          :isUserArchive="true"
+        />
+      </div>
     </div>
   </div>
 </template>
