@@ -15,7 +15,7 @@
       <div class="form-group">
         <label for="einheit">Einheit:</label>
         <select id="einheit" v-model="einheit">
-          <option :value="0">Keine Angabe</option>
+          <option value="">Keine Angabe</option>
           <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
         </select>
       </div>
@@ -47,7 +47,7 @@ export default {
       name: "",
       beschreibung: "",
       menge: "",
-      einheit: "0",
+      einheit: 0,
       hinzugefügt_von: null,
       einheiten: [],
       errorMessage: "",
