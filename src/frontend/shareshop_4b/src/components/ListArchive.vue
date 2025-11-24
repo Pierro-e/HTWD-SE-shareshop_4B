@@ -1,7 +1,7 @@
 <template>
   <div class="list-archive">
 
-    <AppHeader :title="`Einkaufsarchiv für\n${this.listName}`" class="multiline-title">
+    <AppHeader :title="`Einkaufsarchiv für\n${this.listName}`">
       <template #left>
         <button @click="back_to_list" class="button-cancel back-button">
           Zurück
@@ -92,8 +92,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.multiline-title h2 {       /* versucht den Listennamen in der Header-Komponente mehrzeilig darzustellen */
-    white-space: pre-line;
-}
-</style>
