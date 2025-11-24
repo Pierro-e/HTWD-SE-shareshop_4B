@@ -11,6 +11,7 @@ from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
 from operator import attrgetter
+import numpy as np
 import re
 
 
@@ -715,13 +716,20 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
 
     for eintrag in eintraege:
         # Tage seit last_update
-        delta_days = (now - eintrag.last_update).days if eintrag.last_update else 0
+        delta_days = 30  # wie alt ist der Eintrag
+        # = (now - eintrag.last_update).days if eintrag.last_update else 0
         # if delta_days <= 0: --------------------------------------------------------------------------muss dann wieder hinzugeügt werden-------------------------------------------------
         #   continue
-
-        new_counter = float(eintrag.counter) * max(0, (1 - decay_rate * delta_days)) # neuen Counter berechnen
+        decayDays = 30      # wann auf null setzen
+        new_counter = float(eintrag.counter) * np.exp(-delta_days / decayDays)
+        #new_counter = float(eintrag.counter) * max(0, (1 - decay_rate * delta_days)) # neuen Counter berechnen
         eintrag.counter = Decimal(round(new_counter, 2))
         eintrag.last_update = now
+
+        # counter nicht in DB aktualisieren
+        # nur berechnen 
+        # wenn counter 0 rausschmeißen oder mehr als 10 produkte 
+        # --> anhand des aktualisisteren Counters und dem PK (aus neu erstellter Liste) die Produkte rausschmeißen aus der DB --> db.commit()
 
     db.commit()
     aktualisierte_einträge = []
@@ -774,6 +782,8 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 
 # erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
 # der Counter wird erstmal im Body mit übergeben
+
+# counter hier fest setzen --> 1
 @app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
 
