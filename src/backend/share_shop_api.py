@@ -10,6 +10,7 @@ from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+from operator import attrgetter
 import re
 
 
@@ -104,6 +105,7 @@ class EingekaufteProdukte(Base):
     einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
     produkt_preis = Column(Numeric(10, 2), nullable=True)
     hinzugefuegt_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
+    beschreibung = Column(String, nullable=True)
 
 
 
@@ -162,6 +164,7 @@ class ListeRead(BaseModel):
     id: int
     name: str
     ersteller: Optional[int] = None
+    ersteller_name: Optional[str] = None
     datum: Optional[date] = None
 
     class Config:
@@ -296,6 +299,7 @@ class eingekaufteProdukteRead(BaseModel):
     produkt_preis: Optional[Decimal] = None
     hinzugefuegt_von: Optional[int] = None
     hinzufueger_name: Optional[str] = None
+    beschreibung: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -306,6 +310,7 @@ class eingekaufteProdukteCreate(BaseModel):
     einheit_id: Optional[int] = None
     produkt_preis: Optional[Decimal] = None
     hinzugefuegt_von: Optional[int] = None
+    beschreibung: Optional[str] = None
 
 
 
@@ -477,8 +482,15 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
 @app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
 def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     listen = (
-        db.query(Liste)
-        .join(ListeMitglieder)
+        db.query(
+            Liste.id,
+            Liste.name,
+            Liste.ersteller,
+            Nutzer.name.label("ersteller_name"),
+            Liste.datum
+        )
+        .join(ListeMitglieder, Liste.id == ListeMitglieder.listen_id)
+        .outerjoin(Nutzer, Liste.ersteller == Nutzer.id)
         .filter(ListeMitglieder.nutzer_id == nutzer_id)
         .all()
     )
@@ -810,7 +822,19 @@ def get_listen_all(db: Session = Depends(get_db)):
 
 @app.get("/listen/by-id/{list_id}", response_model=ListeRead)
 def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    liste = db.query(Liste).filter(Liste.id == list_id).first()
+    liste = (
+        db.query(
+            Liste.id,
+            Liste.name,
+            Liste.ersteller,
+            Nutzer.name.label("ersteller_name"),
+            Liste.datum
+        )
+        .join(Nutzer, Liste.ersteller == Nutzer.id)
+        .filter(Liste.id == list_id)
+        .first()
+    )
+
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
     return liste
@@ -1049,6 +1073,7 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
 
 # Einkaufsarchiv ------------------------------------
 
+# gibt die Einkäufe für eine Liste zurück
 @app.get("/einkaufsarchiv/list/{listen_id}", response_model=List[EinkaufsarchivRead])
 def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
@@ -1070,11 +1095,82 @@ def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(g
         .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
         .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
         .filter(Einkaufsarchiv.listen_id == listen_id)
+        .order_by(Einkaufsarchiv.eingekauft_am.desc())
         .all()
     )
 
+    return einkaeufe
+
+# gibt die Einkäufe zurück, die von dem Nutzer eingekauft wurden
+@app.get("/einkaufsarchiv/nutzer_eingekauft/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+def get_einkaufsarchiv_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+    einkaeufe = (
+        db.query(
+            Einkaufsarchiv.einkauf_id,
+            Einkaufsarchiv.listen_id,
+            Liste.name.label("listen_name"),
+            Einkaufsarchiv.eingekauft_von,
+            Nutzer.name.label("einkaeufer_name"),
+            func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
+            Einkaufsarchiv.gesamtpreis
+        )
+        .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
+        .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
+        .filter(Einkaufsarchiv.eingekauft_von == nutzer_id)
+        .all()
+    )
 
     return einkaeufe
+
+# gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat
+@app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
+
+    einkaeufe = (
+        db.query(
+            Einkaufsarchiv.einkauf_id,
+            Einkaufsarchiv.listen_id,
+            Liste.name.label("listen_name"),
+            Einkaufsarchiv.eingekauft_von,
+            Nutzer.name.label("einkaeufer_name"),
+            func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
+            Einkaufsarchiv.gesamtpreis
+        )
+        .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
+        .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
+        .join(EingekaufteProdukte, EingekaufteProdukte.hinzugefuegt_von == nutzer_id)
+        .filter(Einkaufsarchiv.einkauf_id == EingekaufteProdukte.einkauf_id)
+        .distinct(Einkaufsarchiv.einkauf_id)
+        .all()
+    )
+
+    return einkaeufe
+
+# verwendet die beiden obigen Funktionen, um alle Einkäufe zurückzugeben, in denen der Nutzer beteiligt ist
+@app.get("/einkaufsarchiv/nutzer_alle/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+def get_einkaufsarchiv_by_nutzer_alle(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):  
+
+    nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
+
+    if not nutzer:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+    einkaeufe_eingekauft = get_einkaufsarchiv_by_nutzer(nutzer_id, db)
+    einkaeufe_hinzugefuegt = get_einkaufsarchiv_by_nutzer_listen(nutzer_id, db)
+
+    # Einkäufe zusammenführen und Duplikate entfernen
+    einkaeufe_combined = {einkauf.einkauf_id: einkauf for einkauf in einkaeufe_eingekauft}
+    for einkauf in einkaeufe_hinzugefuegt:
+        einkaeufe_combined[einkauf.einkauf_id] = einkauf
+
+    einkaeufe_sorted = sorted(
+    einkaeufe_combined.values(),      
+    key=attrgetter("eingekauft_am"),
+    reverse=True                      
+)
+
+    return list(einkaeufe_sorted) 
 
 @app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
 def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
@@ -1135,7 +1231,8 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
             Einheit.abkürzung.label("einheit_abk"),
             EingekaufteProdukte.produkt_preis,
             EingekaufteProdukte.hinzugefuegt_von,
-            Nutzer.name.label("hinzufueger_name")
+            Nutzer.name.label("hinzufueger_name"),
+            EingekaufteProdukte.beschreibung
         )
         .join(Produkt, Produkt.id == EingekaufteProdukte.produkt_id)
         .outerjoin(Einheit, Einheit.id == EingekaufteProdukte.einheit_id)
@@ -1145,6 +1242,19 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
     )
 
     return eingekaufte_produkte
+
+@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}/produkt/{produkt_id}/hinzugefuegt_von/{hinzugefuegt_von}", response_model=eingekaufteProdukteRead)
+def get_eingekauftes_produkt(einkauf_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), hinzugefuegt_von: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    eingekauftes_produkt = db.query(EingekaufteProdukte).filter(
+        EingekaufteProdukte.einkauf_id == einkauf_id,
+        EingekaufteProdukte.produkt_id == produkt_id,
+        EingekaufteProdukte.hinzugefuegt_von == hinzugefuegt_von
+    ).first()
+
+    if not eingekauftes_produkt:
+        raise HTTPException(status_code=404, detail="Eingekauftes Produkt nicht gefunden")
+
+    return eingekauftes_produkt
 
 @app.post("/create/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=eingekaufteProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_produkt: eingekaufteProdukteCreate = Body(...), db: Session = Depends(get_db)):
@@ -1160,7 +1270,8 @@ def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_
         produkt_menge = eingekauftes_produkt.produkt_menge,
         einheit_id = eingekauftes_produkt.einheit_id,
         produkt_preis = eingekauftes_produkt.produkt_preis,
-        hinzugefuegt_von = eingekauftes_produkt.hinzugefuegt_von
+        hinzugefuegt_von = eingekauftes_produkt.hinzugefuegt_von,
+        beschreibung = eingekauftes_produkt.beschreibung
     )
 
     db.add(neues_eingekauftes_produkt)

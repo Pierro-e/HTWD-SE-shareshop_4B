@@ -1,20 +1,21 @@
 <template>
   <div class="listOverview">
-    <header>
-      <AppHeader :title="user.name + '\'s Einkaufslisten'">
+
+    <AppHeader :title="user.name + '\'s Einkaufslisten'">
       <template #left>
   
       </template>
 
       <template #right>
         <button @click="newList" id="newlist" class="button-add">
-        <font-awesome-icon icon='plus'/>
-      </button>
+          <font-awesome-icon icon='plus'/>
+        </button>
       </template>
     </AppHeader>
       
-      <button @click="$router.push('/fav')">Favorit</button>
-    </header>
+    <button @click="$router.push('/fav')">Favorit</button>
+    <button @click="$router.push('/userArchive')">Archiv</button>
+
     <div v-if="loadingActive" class="loading">Laden...</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     <main>
@@ -23,8 +24,7 @@
           v-for="list in lists"
           :key="list.id"
           :name="list.name"
-          :id="list.id"
-          :ersteller_name="list.ersteller_name"
+          :item="list"
         />
       </div>
     </main>

@@ -15,9 +15,9 @@
 <script>
 import { inject } from "vue";
 import axios from "axios";
-import TextInput from "./TextInput.vue";
-import NumInput from "./NumInput.vue";
-import SelectArray from "./SelectArray.vue";
+import TextInput from "./input/TextInput.vue";
+import NumInput from "./input/NumInput.vue";
+import SelectArray from "./input/SelectArray.vue";
 
 export default {
   emits: ["load_fav"],
