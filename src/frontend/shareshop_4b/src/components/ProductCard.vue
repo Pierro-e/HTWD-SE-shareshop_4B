@@ -24,7 +24,7 @@
     </div>
 
     <div class="card-beschreibung" v-if="product.beschreibung">
-      <p class="beschreibung">{{ product.beschreibung }}</p>
+      <div class="beschreibung">{{ product.beschreibung }}</div>
     </div>
     <div class="card-beschreibung" v-else>
       <div style="visibility: hidden">Platzhalter</div>

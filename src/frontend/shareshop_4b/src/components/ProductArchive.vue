@@ -21,19 +21,21 @@
     </div> 
 
     <div v-else>
-      <ProductCard
-        v-for="product in purchased_products"
-        :key="product.produkt_id"
-        :product="product"
-        :onSettings="product_settings"
-        :hideSettings="true"
-      >
-        <template #extra>
-          <div class="produkt-beschreibung" v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
-            <p>{{ product.hinzufueger_name }}</p>
-          </div>
-        </template>
-      </ProductCard>
+      <div class=card-grid>
+        <ProductCard
+          v-for="product in purchased_products"
+          :key="product.produkt_id"
+          :product="product"
+          :onSettings="product_settings"
+          :hideSettings="true"
+        >
+          <template #extra>
+            <div class="produkt-beschreibung" v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
+              <p>{{ product.hinzufueger_name }}</p>
+            </div>
+          </template>
+        </ProductCard>
+      </div>
     </div>
 
   </div>
