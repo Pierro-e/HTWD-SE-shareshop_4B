@@ -14,10 +14,6 @@
       </button>
     </div>
 
-    <!-- Other -->
-    <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-
     <!-- Favorites -->
     <FavGrid :favs="favorites"/>
 
