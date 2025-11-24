@@ -49,11 +49,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.beschreibung {
-  white-space: nowrap;       
-  overflow: hidden;           
-  text-overflow: ellipsis;    
-}
-
-</style>
