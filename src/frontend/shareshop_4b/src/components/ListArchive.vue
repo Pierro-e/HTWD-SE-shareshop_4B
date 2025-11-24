@@ -92,7 +92,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .multiline-title h2 {       /* versucht den Listennamen in der Header-Komponente mehrzeilig darzustellen */
     white-space: pre-line;
 }
