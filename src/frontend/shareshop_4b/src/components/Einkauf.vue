@@ -26,14 +26,14 @@
         :key="index"
         :product="product"
         :onSettings="product_settings"
-        @click="produkt.erledigt = !produkt.erledigt"
+        @click="product.erledigt = !product.erledigt"
       >
         <template #left>
           <input
             type="checkbox"
             class="produkt-checkbox"
-            :checked="produkt.erledigt"
-            @change="produkt.erledigt = $event.target.checked"
+            :checked="product.erledigt"
+            @change="product.erledigt = $event.target.checked"
           />
         </template>
       </ProductCard>

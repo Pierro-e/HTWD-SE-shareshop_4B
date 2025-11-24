@@ -43,14 +43,8 @@
         >
           <font-awesome-icon icon='cart-shopping'/> Einkauf
         </button>
-        <button>
+        <button @click="list_archive">
           <font-awesome-icon icon='box-archive'/> Archiv
-        </button>
-        <button
-          @click="list_archive"
-          class="button"
-        >
-          Listenarchiv
         </button>
       </div>
       <!--
