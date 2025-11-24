@@ -15,7 +15,7 @@
       <div class="form-group">
         <label for="einheit">Einheit:</label>
         <select id="einheit" v-model="einheit">
-          <option :value="0">Bitte wählen</option>
+          <option :value="0">Keine Angabe</option>
           <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
         </select>
       </div>
