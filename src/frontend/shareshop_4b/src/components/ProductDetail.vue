@@ -15,7 +15,7 @@
       <div class="form-group">
         <label for="einheit">Einheit:</label>
         <select id="einheit" v-model="einheit">
-          <option disabled value="">Bitte wählen</option>
+          <option :value="0">Bitte wählen</option>
           <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
         </select>
       </div>
@@ -47,7 +47,7 @@ export default {
       name: "",
       beschreibung: "",
       menge: "",
-      einheit: "",
+      einheit: "0",
       hinzugefügt_von: null,
       einheiten: [],
       errorMessage: "",
@@ -107,7 +107,8 @@ export default {
       this.errorMessage = "";
 
       // Validierung: Menge > 0 aber keine Einheit ausgewählt
-      if (this.menge > 0 && (!this.einheit || this.einheit === "" || this.einheit === 0)) {
+      // prüft, ob this.einheit null, 0 oder undefined ist
+      if (this.menge > 0 && (!this.einheit || this.einheit === 0)) {
         this.errorMessage = "Bitte wählen Sie eine Einheit aus, wenn eine Menge angegeben ist.";
         return; // abbrechen
       }
