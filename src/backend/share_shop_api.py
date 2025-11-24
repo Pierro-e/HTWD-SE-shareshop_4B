@@ -718,17 +718,16 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
         # Tage seit last_update
         delta_days = 30  # wie alt ist der Eintrag
         # = (now - eintrag.last_update).days if eintrag.last_update else 0
-        # if delta_days <= 0: --------------------------------------------------------------------------muss dann wieder hinzugeügt werden-------------------------------------------------
-        #   continue
-        decayDays = 30      # wann auf null setzen
-        new_counter = float(eintrag.counter) * np.exp(-delta_days / decayDays)
+
+        decayDays = 30      # wann auf null setzen --> aus frontend als Parameter übergeben!
+        new_counter = float(eintrag.counter) * np.exp(-delta_days / (0.12 * decayDays))
         #new_counter = float(eintrag.counter) * max(0, (1 - decay_rate * delta_days)) # neuen Counter berechnen
         eintrag.counter = Decimal(round(new_counter, 2))
         eintrag.last_update = now
 
         # counter nicht in DB aktualisieren
         # nur berechnen 
-        # wenn counter 0 rausschmeißen oder mehr als 10 produkte 
+        # wenn counter < 0.00024036947641951407 rausschmeißen oder mehr als 10 produkte 
         # --> anhand des aktualisisteren Counters und dem PK (aus neu erstellter Liste) die Produkte rausschmeißen aus der DB --> db.commit()
 
     db.commit()
