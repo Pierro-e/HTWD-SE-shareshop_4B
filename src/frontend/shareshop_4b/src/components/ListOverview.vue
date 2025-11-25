@@ -14,11 +14,7 @@
       :name="list.name"
     />
   </main>
-  <!--<footer>
-    <button class=button-submit @click="$router.push('/settings')">
-      Zu den Profileinstellungen
-    </button>
-  </footer>-->
+  
   <BottomBar />
 </template>
 

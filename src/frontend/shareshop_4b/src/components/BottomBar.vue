@@ -1,4 +1,5 @@
 <template>
+    <!--BottomBar ist überall gleich, deswegen hart geschrieben ohne slots-->
     <div class="bottom-bar">
     <div class="left">
       <button class="bottom-btn" @click="$router.push('/listen')">
