@@ -1,6 +1,6 @@
 <template>
-  <div class="popup-overlay">
-    <div class="popup-content">
+  <div class="overlay">
+    <div class="popup">
       <header>
         <h3>{{ name }}</h3>
         <button @click="$emit('close')" class="button-delete">Abbrechen</button>
@@ -22,7 +22,7 @@ export default {
 </script>
 
 <style scoped>
-.popup-overlay {
+.overlay {
   position: fixed;
   z-index: 1000;
   top: 0;
@@ -33,10 +33,10 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
 }
 
-.popup-content {
-  position: relative;
+.popup {
   background: var(--box-bg-color);
   padding: 1em 2em;
   border-radius: 0.5em;
