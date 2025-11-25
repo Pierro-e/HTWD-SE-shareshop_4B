@@ -85,14 +85,17 @@
     <div v-if="message" class="success">{{ message }}</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
+  <BottomBar />
 </template>
 
 <script>
 import axios from 'axios'
+import BottomBar from "./BottomBar.vue";
 
 export default {
   name: 'UserSettings',
   inject: ['user', 'deleteUser', 'getThemeText', 'getAccentText'],
+  components: {BottomBar},
   data() {
     return {
       theme: '',

@@ -699,7 +699,7 @@ export default {
 
 <style scoped>
 .liste {
-  padding-top: 50px;
+  padding-top: 20px;
 }
 
 /* Zurück-Button links */

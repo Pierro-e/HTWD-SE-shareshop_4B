@@ -8,8 +8,8 @@ import vSelect from 'vue-select'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-library.add(faEye, faEyeSlash)
+import { faBoxArchive, faEye, faEyeSlash, faGear, faList, faStar } from '@fortawesome/free-solid-svg-icons'
+library.add(faEye, faEyeSlash, faBoxArchive, faStar, faList, faGear)
 
 const app = createApp(App);
 app.component('v-select', vSelect)

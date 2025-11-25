@@ -161,6 +161,7 @@ a:hover {
   margin: 0 auto;
   padding: 1rem;
   text-align: center;
+  min-height: calc(100vh - 55px); /* AppHeader und BottomBar abziehen */
 }
 
 html, body {
@@ -171,6 +172,8 @@ html, body {
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
+  padding-top: 20px; /* für AppHeader */
+  padding-bottom: 25px; /* für BottomBar */
 }
 
 h1 {
@@ -423,41 +426,6 @@ form select {
   color: white;
   text-align: center;
   /* Kein position fixed mehr! */
-}
-
-.bottom-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px 0;
-  background-color: #0f0f0f;
-  border-top: 1px solid #2a2a2a;
-
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-
-  z-index: 1000;
-}
-
-.bottom-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #aaa;
-  font-size: 12px;
-  background: none;
-  border: none;
-}
-
-.bottom-btn .icon {
-  font-size: 20px;
-  margin-bottom: 4px;
-}
-
-.bottom-btn.active {
-  color: white;
 }
 
 /* Produktgrid und Produktkarten */

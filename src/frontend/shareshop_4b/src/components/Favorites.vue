@@ -1,5 +1,4 @@
 <template>
-  <div class="liste">
     <!-- HEADER -->
     <div class="header">
       <button
@@ -25,7 +24,7 @@
     <PopUp v-if="add_fav" @close="add_fav = false">
       <AddFav @load_fav="get_favs" />
     </PopUp>
-  </div>
+    
   <BottomBar />
 
 </template>
@@ -70,10 +69,6 @@ export default {
 </script>
 
 <style scoped>
-.liste {
-  padding-top: 50px;
-}
-
 /* Produkt hinzufügen Button rechts */
 .button-add-header {
   position: absolute;
