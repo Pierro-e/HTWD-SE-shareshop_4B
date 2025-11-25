@@ -758,7 +758,7 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
 
 # Abrufen der Bedarfsvorhersage für einen Nutzer
 @app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
-def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), DecayDays: Decimal = Query(7,gt=0),db: Session = Depends(get_db)):
+def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays: Decimal = Query(7,gt=0),db: Session = Depends(get_db)):
 
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -766,7 +766,7 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), DecayDays:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
      # Bedarfsvorhersage-Einträge aktualisieren
-    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, DecayDays, db)
+    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, decayDays, db)
 
     return aktualisierte_einträge
 
