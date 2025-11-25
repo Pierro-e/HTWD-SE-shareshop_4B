@@ -26,6 +26,8 @@
       <AddFav @load_fav="get_favs" />
     </PopUp>
   </div>
+  <BottomBar />
+
 </template>
 
 <script>
@@ -34,6 +36,7 @@ import FavGrid from "./FavGrid.vue";
 import AddFav from "./AddFav.vue";
 import PopUp from "./PopUp.vue";
 import { inject } from "vue";
+import BottomBar from "./BottomBar.vue";
 
 export default {
   name: "Liste",
@@ -41,6 +44,7 @@ export default {
     PopUp,
     AddFav,
     FavGrid,
+    BottomBar,
   },
   data() {
     const user = inject("user");

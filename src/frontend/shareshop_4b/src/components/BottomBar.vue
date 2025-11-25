@@ -1,13 +1,26 @@
 <template>
-  <div class="bottom-bar">
-    <!-- Left Item -->
-    <slot name="left"></slot>
+    <div class="bottom-bar">
+    <div class="left">
+      <button class="bottom-btn" @click="$router.push('/listen')">
+        📋 <span>Listen</span>
+      </button>
+    </div>
 
-    <!-- Middle Items -->
-    <slot name="middle"></slot>
+    <div class="middle">
+      <button class="bottom-btn" @click="$router.push('/archiv')">
+        📁 <span>Archiv</span>
+      </button>
 
-    <!-- Right Item -->
-    <slot name="right"></slot>
+      <button class="bottom-btn" @click="$router.push('/fav')">
+        ⭐ <span>Favoriten</span>
+      </button>
+    </div>
+
+    <div class="right">
+      <button class="bottom-btn" @click="$router.push('/settings')">
+        ⚙️ <span>Einstellungen</span>
+      </button>
+    </div>
   </div>
 </template>
 

@@ -159,33 +159,8 @@
       />
     </div>
   </div>
-  <BottomBar>
-    <template #left>
-      <button class="bottom-btn" @click="$router.push('/listen')">
-        <span class="icon">📋</span>
-        Listen
-      </button>
-    </template>
-
-    <template #middle>
-      <button class="bottom-btn" @click="$router.push('/archiv')">
-        <span class="icon">📁</span>
-        Archiv
-      </button>
-
-      <button class="bottom-btn" @click="$router.push('/favoriten')">
-        <span class="icon">⭐</span>
-        Favoriten
-      </button>
-    </template>
-
-    <template #right>
-      <button class="bottom-btn" @click="$router.push('/settings')">
-        <span class="icon">⚙️</span>
-        Einstellungen
-      </button>
-    </template>
-  </BottomBar>
+  <BottomBar />
+    
 </template>
 
 <script>
