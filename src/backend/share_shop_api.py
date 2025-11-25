@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numer
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import List, Optional
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
@@ -711,7 +711,7 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
             Bedarfsvorhersage.nutzer_id == nutzer_id
         ).all()
 
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
 
     treshold = 0.00024036947641951407  # bei diesem counter wird der eintrag gelöscht
 
@@ -721,7 +721,7 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
     for eintrag in eintraege:
         # Tage seit last_bought
         deltaDays = max(0,(now.date() - eintrag.last_bought.date()).days)
-
+        
         new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
 
 
