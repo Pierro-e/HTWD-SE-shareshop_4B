@@ -3,7 +3,7 @@
     <h3>{{ fav.produkt_name }}</h3>
   </div>
 
-  <PopUp v-if="edit_fav" @close="edit_fav = false" :name="fav.produkt_name">
+  <PopUp v-if="edit_fav" @close="edit_fav = false" :name="fav.produkt_name" type="no-save">
     <FavEditor :fav="fav" />
   </PopUp>
 </template>
