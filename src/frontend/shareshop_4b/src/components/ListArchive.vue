@@ -1,7 +1,6 @@
 <template>
   <div class="list-archive">
-
-    <AppHeader :title="`Einkaufsarchiv für\n${this.listName}`">
+    <AppHeader title="Einkaufsarchiv">
       <template #left>
         <button @click="back_to_list" class="button-cancel back-button">
           Zurück
@@ -50,7 +49,7 @@ export default {
 
   methods: {
     async getData(id) {
-      try {   
+      try {
         const response = await axios.get(`http://141.56.137.83:8000/einkaufsarchiv/list/${id}`);
 
         if (response.data.length === 0) {
@@ -69,7 +68,7 @@ export default {
         this.loadingActive = false;
       }
     },
-    
+
     back_to_list() {
         const list_id = this.list_id || this.$route.params.listenId;
         this.$router.push(`/list/${list_id}`);

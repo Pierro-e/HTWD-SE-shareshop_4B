@@ -1,6 +1,6 @@
 <template>
   <div class="list-archive">
-    <AppHeader :title="`Einkaufsarchiv für\n${user.name}`">
+    <AppHeader title="Einkaufsarchiv">
       <template #left>
         <button @click="back_to_listOverview()" class="button button-cancel back-button">
           Zurück
@@ -47,9 +47,9 @@ export default {
   },
   methods: {
     async getData(id) {
-      try {   
+      try {
         const response = await axios.get(`http://141.56.137.83:8000/einkaufsarchiv/nutzer_alle/${this.user.id}`);
-        
+
         if (response.data.length === 0) {
           this.purchases = [];
           return;
@@ -57,7 +57,7 @@ export default {
         this.purchases = response.data;
 
         console.log ("Einkaufsarchiv Daten:", this.purchases);
-        
+
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Laden der Daten";
       } finally {
