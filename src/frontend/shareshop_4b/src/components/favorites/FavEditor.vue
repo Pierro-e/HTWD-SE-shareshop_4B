@@ -7,9 +7,9 @@
 </template>
 
 <script>
-import TextInput from "./input/TextInput.vue";
-import NumInput from "./input/NumInput.vue";
-import SelectArray from "./input/SelectArray.vue";
+import TextInput from "../input/TextInput.vue";
+import NumInput from "../input/NumInput.vue";
+import SelectArray from "../input/SelectArray.vue";
 import axios from "axios";
 
 export default {

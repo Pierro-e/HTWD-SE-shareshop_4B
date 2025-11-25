@@ -15,7 +15,7 @@
 <script>
 import axios from "axios";
 import FavEditor from "./FavEditor.vue";
-import PopUp from "./PopUp.vue";
+import PopUp from "../PopUp.vue";
 
 export default {
   components: {

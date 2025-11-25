@@ -21,8 +21,8 @@
 import axios from "axios";
 import FavGrid from "./FavGrid.vue";
 import AddFav from "./AddFav.vue";
-import PopUp from "./PopUp.vue";
-import AppHeader from "./AppHeader.vue";
+import PopUp from "../PopUp.vue";
+import AppHeader from "../AppHeader.vue";
 import { inject } from "vue";
 
 export default {
