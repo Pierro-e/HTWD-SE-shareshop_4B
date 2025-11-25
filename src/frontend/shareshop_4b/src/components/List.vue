@@ -1,168 +1,165 @@
-<template>
-  <div class="liste">
-   
-    <AppHeader :title="list_name">
-    <template #left>
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="$router.push('/listen')"
-        class="button button-cancel back-button"
-      >
-        <font-awesome-icon icon='arrow-left'/>
-      </button>
-    </template>
+<template> 
+  <AppHeader :title="list_name">
+  <template #left>
+    <button
+      :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+      @click="$router.push('/listen')"
+      class="button button-cancel back-button"
+    >
+      <font-awesome-icon icon='arrow-left'/>
+    </button>
+  </template>
 
-    <template #right>
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="openProductPopup()"
-        class="button button-add button-add-header"
-      >
-        <font-awesome-icon icon='plus'/>
-      </button>
-    </template>
+  <template #right>
+    <button
+      :disabled="showpopup_product || showpopup_list || showpopup_add_member"
+      @click="openProductPopup()"
+      class="button button-add button-add-header"
+    >
+      <font-awesome-icon icon='plus'/>
+    </button>
+  </template>
   </AppHeader>
 
-    <div class="settings-section">
-      <div class="settings-container">
-        <button
-          :disabled="
-            showpopup_product || showpopup_list || showpopup_add_member
-          "
-          @click="openListPopup()"
-          class="button button-settings"
-        >
-          <font-awesome-icon icon='circle-info'/> Info
-        </button>
-        <button
-          :disabled="
-            showpopup_product || showpopup_list || showpopup_add_member
-          "
-          @click="einkauf_abschließen"
-          class="button button-submit button-einkauf-tätigen"
-        >
-          <font-awesome-icon icon='cart-shopping'/> Einkauf
-        </button>
-        <button @click="list_archive">
-          <font-awesome-icon icon='box-archive'/> Archiv
-        </button>
-      </div>
-      <!--
-      <div class="buy-container" >
-        <button
-          :disabled="
-            showpopup_product || showpopup_list || showpopup_add_member
-          "
-          @click="einkauf_abschließen"
-          class="button button-submit button-einkauf-tätigen"
-        >
-          <font-awesome-icon icon='cart-shopping'/> Einkauf
-        </button>
-      </div>
-      -->
+  <div class="settings-section">
+    <div class="settings-container">
+      <button
+        :disabled="
+          showpopup_product || showpopup_list || showpopup_add_member
+        "
+        @click="openListPopup()"
+        class="button button-settings"
+      >
+        <font-awesome-icon icon='circle-info'/> Info
+      </button>
+      <button
+        :disabled="
+          showpopup_product || showpopup_list || showpopup_add_member
+        "
+        @click="einkauf_abschließen"
+        class="button button-submit button-einkauf-tätigen"
+      >
+        <font-awesome-icon icon='cart-shopping'/> Einkauf
+      </button>
+      <button @click="list_archive">
+        <font-awesome-icon icon='box-archive'/> Archiv
+      </button>
     </div>
+    <!--
+    <div class="buy-container" >
+      <button
+        :disabled="
+          showpopup_product || showpopup_list || showpopup_add_member
+        "
+        @click="einkauf_abschließen"
+        class="button button-submit button-einkauf-tätigen"
+      >
+        <font-awesome-icon icon='cart-shopping'/> Einkauf
+      </button>
+    </div>
+    -->
+  </div>
 
-    <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
+  <div v-if="loadingActive" class="loading">Laden...</div>
+  <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
 
-    <div v-if="showpopup_list" class="popup-overlay">
-      <div class="popup-content">
-        <h3>Listeninformationen</h3>
-        <p>Name der Liste: {{ list_name }}</p>
-        <p>Ersteller: {{ list_creator_name }}</p>
+  <div v-if="showpopup_list" class="popup-overlay">
+    <div class="popup-content">
+      <h3>Listeninformationen</h3>
+      <p>Name der Liste: {{ list_name }}</p>
+      <p>Ersteller: {{ list_creator_name }}</p>
 
-        <div v-if="infoMessage" class="success">{{ infoMessage }}</div>
-        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+      <div v-if="infoMessage" class="success">{{ infoMessage }}</div>
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 
 
-        <br></br>
-        <h4>Mitglieder</h4>
+      <br></br>
+      <h4>Mitglieder</h4>
+      
+      <div
+        v-for="mitglied in mitglieder"
+        :key="mitglied.id"
+        class="mitglieder-anzeige"
+      >
+        <div>{{ mitglied.name }}</div>
+        <button
+          @click="mitglied_entfernen(mitglied.id)"
+          class="button button-delete-member"
+        >
+          Entfernen
+        </button>
         
-        <div
-          v-for="mitglied in mitglieder"
-          :key="mitglied.id"
-          class="mitglieder-anzeige"
-        >
-          <div>{{ mitglied.name }}</div>
-          <button
-            @click="mitglied_entfernen(mitglied.id)"
-            class="button button-delete-member"
-          >
-            Entfernen
-          </button>
-          
-        </div>
-        
-        <button @click="showpopup_list = false" class="button button-cancel">
-          Schließen
-        </button>
-        <button @click="mitglied_hinzufügen_popup()" class="button button-add">
-          Mitglied hinzufügen
-        </button>
-        <button v-if="user.name == list_creator_name" @click="delete_list()" class="button-delete">
-          Liste löschen 
-        </button>
       </div>
+      
+      <button @click="showpopup_list = false" class="button button-cancel">
+        Schließen
+      </button>
+      <button @click="mitglied_hinzufügen_popup()" class="button button-add">
+        Mitglied hinzufügen
+      </button>
+      <button v-if="user.name == list_creator_name" @click="delete_list()" class="button-delete">
+        Liste löschen 
+      </button>
     </div>
+  </div>
 
-    <div v-if="showpopup_product" class="popup-overlay">
-      <div class="popup-content">
-        <h3>Neues Produkt hinzufügen</h3>
-        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-        <v-select
-          v-model="dropdownSelected"
-          :options="dropdownOptions"
-          taggable
-          :clearable="false"
-          placeholder="Produkt eingeben..."
-          :selectable="option => option.header != true"
-          @search="onSearch"
-        >
-          <template #no-options>
-            Keine Favoriten/Vorschläge
-          </template>
-        </v-select>
+  <div v-if="showpopup_product" class="popup-overlay">
+    <div class="popup-content">
+      <h3>Neues Produkt hinzufügen</h3>
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+      <v-select
+        v-model="dropdownSelected"
+        :options="dropdownOptions"
+        taggable
+        :clearable="false"
+        placeholder="Produkt eingeben..."
+        :selectable="option => option.header != true"
+        @search="onSearch"
+      >
+        <template #no-options>
+          Keine Favoriten/Vorschläge
+        </template>
+      </v-select>
 
-        <button @click="cancel_product_popup" class="button button-cancel">
-          Abbrechen
-        </button>
-        <button @click="add_product" class="button button-submit">
-          Hinzufügen
-        </button>
-      </div>
+      <button @click="cancel_product_popup" class="button button-cancel">
+        Abbrechen
+      </button>
+      <button @click="add_product" class="button button-submit">
+        Hinzufügen
+      </button>
     </div>
+  </div>
 
-    <div v-if="showpopup_add_member" class="popup-overlay">
-      <div class="popup-content">
-        <h3>Mitglied hinzufügen</h3>
-        <input
-          class="input"
-          v-model="new_member_email"
-          type="text"
-          placeholder="E-Mail"
-          maxlength="30"
-        />
-        <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-        <button
-          @click="cancel_mitglied_hinzufügen"
-          class="button button-cancel"
-        >
-          Abbrechen
-        </button>
-        <button @click="mitglied_hinzufügen" class="button button-submit">
-          Hinzufügen
-        </button>
-      </div>
-    </div>
-
-    <div class="card-grid">
-      <ProductCard
-        v-for="(product, index) in listenprodukte"
-        :key="index"
-        :product="product"
-        :onSettings="product_settings"
+  <div v-if="showpopup_add_member" class="popup-overlay">
+    <div class="popup-content">
+      <h3>Mitglied hinzufügen</h3>
+      <input
+        class="input"
+        v-model="new_member_email"
+        type="text"
+        placeholder="E-Mail"
+        maxlength="30"
       />
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+      <button
+        @click="cancel_mitglied_hinzufügen"
+        class="button button-cancel"
+      >
+        Abbrechen
+      </button>
+      <button @click="mitglied_hinzufügen" class="button button-submit">
+        Hinzufügen
+      </button>
     </div>
+  </div>
+
+  <div class="card-grid">
+    <ProductCard
+      v-for="(product, index) in listenprodukte"
+      :key="index"
+      :product="product"
+      :onSettings="product_settings"
+    />
   </div>
   <BottomBar />
     
@@ -728,9 +725,6 @@ export default {
 </script>
 
 <style scoped>
-.liste {
-  padding-top: 40px;
-}
 
 .button-einkauf-tätigen {
   position: relative;
@@ -813,7 +807,7 @@ export default {
 }
 
 .card-grid {
-  padding-top: 100px;
+  padding-top: 130px;
 }
 
 .mitglieder-anzeige {

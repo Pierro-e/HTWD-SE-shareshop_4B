@@ -28,16 +28,23 @@
     </div>
 
   </div>
+  <BottomBar />
 </template>
 
 <script>
 import axios from "axios";
 import AppHeader from "./AppHeader.vue";
 import ListButton from "./ListButton.vue";
+import BottomBar from "./BottomBar.vue";
+
 export default {
   name: "ListArchive",
   props: ["list_id", "list_name"],
-  components: {AppHeader, ListButton},
+  components: {
+    AppHeader,
+    ListButton,
+    BottomBar
+},
 
   data(){
       return{
@@ -86,11 +93,6 @@ export default {
     const id = this.list_id || this.$route.params.listenId;
     this.getData(id);
   },
-
-
-
-
-
 };
 </script>
 

@@ -1,6 +1,5 @@
 <template>
   <div class="list-archive">
-
     <AppHeader :title="`${purchase_name}`">
       <template #left>
         <button @click="back_to_Archive" class="button-cancel back-button">
@@ -39,19 +38,23 @@
     </div>
 
   </div>
+  <BottomBar />
 </template>
 
 <script>
 import axios from 'axios';
 import AppHeader from './AppHeader.vue';
 import ProductCard from './ProductCard.vue';
-
+import BottomBar from './BottomBar.vue';
 
 export default {
   name: "ProductArchive",
   props: ["purchase_id"],
-  components: { AppHeader, ProductCard },
-
+  components: { 
+    AppHeader,
+    ProductCard,
+    BottomBar 
+  },
   data() {
       return{
           list_id: null,

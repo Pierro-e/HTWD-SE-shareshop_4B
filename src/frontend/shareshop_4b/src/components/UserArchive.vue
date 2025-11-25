@@ -27,17 +27,22 @@
       </div>
     </div>
   </div>
+  <BottomBar />
 </template>
 
 <script>
 import axios from "axios";
 import AppHeader from "./AppHeader.vue";
 import ListButton from "./ListButton.vue";
+import BottomBar from "./BottomBar.vue";
 export default {
   name: "userArchive",
   inject: ["user"],
-  components: {AppHeader, ListButton},
-
+  components: {
+    AppHeader, 
+    ListButton, 
+    BottomBar
+  },
   data(){
       return{
           purchases: [],
@@ -80,4 +85,7 @@ export default {
 </script>
 
 <style scoped>
+.card-list {
+  padding-top: 60px;
+}
 </style>

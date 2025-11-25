@@ -1,63 +1,60 @@
 <template>
-  <div class="einkauf">
+  <AppHeader :title="list_name">
     
-    <AppHeader :title="list_name">
-      
-      <template #left>
-        <button @click="einkauf_abbrechen" class="button-cancel">
-          <font-awesome-icon icon='xmark'/>
-        </button>
-      </template>
+    <template #left>
+      <button @click="einkauf_abbrechen" class="button-cancel">
+        <font-awesome-icon icon='xmark'/>
+      </button>
+    </template>
 
-      <template #right>
-        <button @click="prepare_purchase" class="button button-submit">
-          <font-awesome-icon icon='check'/>
-        </button>
-      </template>
-    </AppHeader>
+    <template #right>
+      <button @click="prepare_purchase" class="button button-submit">
+        <font-awesome-icon icon='check'/>
+      </button>
+    </template>
+  </AppHeader>
 
-    <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-    
-    <div :style="{ paddingTop: errorMessage ? '0' : '80px' }"></div>
-    <div class="card-grid">
-      <ProductCard
-        v-for="(product, index) in listenprodukte"
-        :key="index"
-        :product="product"
-        :onSettings="product_settings"
-        :hideSettings=true
-        @click="product.erledigt = !product.erledigt"
-      >
-        <template #left>
-          <input
-            type="checkbox"
-            class="produkt-checkbox"
-            :checked="product.erledigt"
-            @change="product.erledigt = $event.target.checked"
-          />
-        </template>
-      </ProductCard>
-    </div>
-
-    <PopUp
-      v-if="commit_purchase"
-      @confirm="set_price"
-      @close="commit_purchase = false"
+  <div v-if="loadingActive" class="loading">Laden...</div>
+  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+  
+  <div :style="{ paddingTop: errorMessage ? '0' : '80px' }"></div>
+  <div class="card-grid">
+    <ProductCard
+      v-for="(product, index) in listenprodukte"
+      :key="index"
+      :product="product"
+      :onSettings="product_settings"
+      :hideSettings=true
+      @click="product.erledigt = !product.erledigt"
     >
-      <div class="popup-field">
-        <label for="totalPrice">Gesamtpreis (€):</label>
+      <template #left>
         <input
-          type="number"
-          id="totalPrice"
-          v-model.number="totalPrice"
-          min="0"
-          step="1"
+          type="checkbox"
+          class="produkt-checkbox"
+          :checked="product.erledigt"
+          @change="product.erledigt = $event.target.checked"
         />
-      </div>
-    </PopUp>
-
+      </template>
+    </ProductCard>
   </div>
+
+  <PopUp
+    v-if="commit_purchase"
+    @confirm="set_price"
+    @close="commit_purchase = false"
+  >
+    <div class="popup-field">
+      <label for="totalPrice">Gesamtpreis (€):</label>
+      <input
+        type="number"
+        id="totalPrice"
+        v-model.number="totalPrice"
+        min="0"
+        step="1"
+      />
+    </div>
+  </PopUp>
+
   <BottomBar />
 </template>
 
@@ -273,7 +270,6 @@ export default {
 }
 
 .error {
-  margin-top: 4em;
   z-index: 1100;   /* höher als der Header */
 }
 </style>

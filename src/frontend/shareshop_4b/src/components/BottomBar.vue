@@ -55,7 +55,7 @@ export default {
   justify-content: space-around;
   align-items: center;
 
-  z-index: 1000;
+  z-index: 999;
 }
 
 .bottom-btn {

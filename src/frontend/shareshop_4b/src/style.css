@@ -155,7 +155,6 @@ a:hover {
   margin: 0 auto;
   padding: 0.5rem;
   text-align: center;
-  min-height: calc(100vh - 55px); /* AppHeader und BottomBar abziehen */
 }
 
 html, body {
@@ -166,8 +165,8 @@ html, body {
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
-  padding-top: 20px; /* für AppHeader */
-  padding-bottom: 25px; /* für BottomBar */
+  min-height: calc(100vh - 30px);
+  padding-bottom: 30px; /* für BottomBar */
 }
 
 h1 {
@@ -478,6 +477,7 @@ form select {
 } 
 
 .card-list {
+  padding-top: 65px;
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%; /* nimmt die volle Breite der Grid-Zelle */
