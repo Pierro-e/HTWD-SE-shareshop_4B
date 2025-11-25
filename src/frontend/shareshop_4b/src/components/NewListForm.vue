@@ -16,16 +16,14 @@
     <button class="button-submit" type="submit">Erstellen</button>
   </form>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-  <BottomBar />
 </template>
 
 <script>
 import axios from "axios";
-import BottomBar from "./BottomBar.vue";
+import { inject } from "vue";
 
 export default {
   inject: ["user"],
-  components: {BottomBar},
   data() {
     return {
       name: "",

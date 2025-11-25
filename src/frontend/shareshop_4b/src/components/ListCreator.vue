@@ -5,14 +5,17 @@
   <main>
     <NewListForm />
   </main>
+  <BottomBar />
 </template>
 
 <script>
 import NewListForm from "./NewListForm.vue";
+import BottomBar from "./BottomBar.vue";
 
 export default {
   components: {
     NewListForm,
+    BottomBar
   },
 };
 </script>
