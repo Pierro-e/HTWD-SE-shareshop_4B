@@ -260,7 +260,6 @@ class BedarfsvorhersageRead(BaseModel):
 
 class BedarfvorhersageCreate(BaseModel):
     produkt_id: int
-    counter: Decimal
 
 class PasswortÄndern(BaseModel):
     neues_passwort: str
@@ -706,51 +705,61 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 
 # --- Bedarfsvorhersage ---
 # Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
-def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
+def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Session):
     # Alle Bedarfsvorhersage-Objekte des Nutzers holen
     eintraege =db.query(Bedarfsvorhersage).filter(
             Bedarfsvorhersage.nutzer_id == nutzer_id
         ).all()
 
     now = datetime.utcnow()
-    decay_rate = 0.05  # Zerfallsrate pro Tag
+
+    treshold = 0.00024036947641951407  # bei diesem counter wird der eintrag gelöscht
+
+    berechnete_eintraege = []  
+    decayDays_float = float(decayDays) 
 
     for eintrag in eintraege:
         # Tage seit last_update
-        delta_days = 30  # wie alt ist der Eintrag
-        # = (now - eintrag.last_update).days if eintrag.last_update else 0
+        deltaDays = max(0,(now.date() - eintrag.last_update.date()).days)
 
-        decayDays = 30      # wann auf null setzen --> aus frontend als Parameter übergeben!
-        new_counter = float(eintrag.counter) * np.exp(-delta_days / (0.12 * decayDays))
-        #new_counter = float(eintrag.counter) * max(0, (1 - decay_rate * delta_days)) # neuen Counter berechnen
-        eintrag.counter = Decimal(round(new_counter, 2))
-        eintrag.last_update = now
+        new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
 
+        
+        if new_counter <= treshold:
+            db.delete(eintrag)
+        else:
+            berechnete_eintraege.append((eintrag, new_counter))
         # counter nicht in DB aktualisieren
         # nur berechnen 
         # wenn counter < 0.00024036947641951407 rausschmeißen oder mehr als 10 produkte 
         # --> anhand des aktualisisteren Counters und dem PK (aus neu erstellter Liste) die Produkte rausschmeißen aus der DB --> db.commit()
+    
+    if len(berechnete_eintraege) > 10:
+        # nach counter sortieren und nur die Top 10 behalten
+        berechnete_eintraege.sort(key=lambda x: x[1], reverse=True)
+        zu_loeschende_eintraege = berechnete_eintraege[10:]
+        berechnete_eintraege = berechnete_eintraege[:10]
+        for eintrag, _ in zu_loeschende_eintraege:
+            db.delete(eintrag)
 
     db.commit()
-    aktualisierte_einträge = []
-    for eintrag in eintraege:
-        produkt = db.query(Produkt).filter(Produkt.id == eintrag.produkt_id).first()
-        aktualisierte_einträge.append(
-            BedarfsvorhersageRead(
-                nutzer_id=eintrag.nutzer_id,
-                produkt_id=eintrag.produkt_id,
-                produkt_name=produkt.name if produkt else None,
-                counter=eintrag.counter,
-                last_update=eintrag.last_update
-            )
-        )
 
-    return aktualisierte_einträge
+    result = []
+    for eintrag, new_counter in berechnete_eintraege:
+        result.append(BedarfsvorhersageRead(
+            nutzer_id=eintrag.nutzer_id,
+            produkt_id=eintrag.produkt_id,
+            counter=Decimal(f"{new_counter:.6f}"),
+            last_update=eintrag.last_update
+        ))
+
+
+    return result
 
 
 # Abrufen der Bedarfsvorhersage für einen Nutzer
 @app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
-def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), DecayDays: Decimal = Query(7,gt=0),db: Session = Depends(get_db)):
 
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -758,7 +767,7 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Sessio
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
      # Bedarfsvorhersage-Einträge aktualisieren
-    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, db)
+    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, DecayDays, db)
 
     return aktualisierte_einträge
 
@@ -800,7 +809,7 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
         eintrag = Bedarfsvorhersage(
             nutzer_id=nutzer_id,
             produkt_id=eintrag_data.produkt_id,
-            counter=Decimal(eintrag_data.counter),
+            counter=1.00,
             last_update=func.current_timestamp()
         )
         db.add(eintrag)
