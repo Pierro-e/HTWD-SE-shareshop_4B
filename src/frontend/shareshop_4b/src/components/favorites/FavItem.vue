@@ -30,18 +30,18 @@ export default {
 <style scoped>
 div {
   min-width: 14rem;
-  background-color: var(--accent-product-card-color);
-  border: 1px solid #e5e7eb;
+  background-color: var(--box-bg-color);
   border-radius: 1rem;
   padding: 1rem;
   box-shadow: 0 1px 2px var(--box-shadow-color);
   transition: box-shadow 0.3s ease;
+  border: 1px solid var(--accent-button-color);
 }
 
 h3 {
   margin: 0;
-  width:100%;
-  color: #000000;
+  width: 100%;
+  color: var(--text-color);
   font-size: 1.2em;
   font-weight: bold;
   word-break: break-word;

@@ -1,8 +1,8 @@
 <template>
   <div class="einkauf">
-    
+
     <AppHeader :title="list_name">
-      
+
       <template #left>
         <button @click="einkauf_abbrechen" class="button-cancel">
           <font-awesome-icon icon='xmark'/>
@@ -18,7 +18,7 @@
 
     <div v-if="loadingActive" class="loading">Laden...</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-    
+
     <div :style="{ paddingTop: errorMessage ? '0' : '80px' }"></div>
     <div class="card-grid">
       <ProductCard
@@ -72,7 +72,7 @@ export default {
   inject: ["user", "getUser"],
   props: ["list_id"],
   components: { AppHeader , ProductCard, PopUp},
-  
+
   data() {
     return {
       list_name: "",
@@ -204,7 +204,7 @@ export default {
 
         await Promise.all(erledigteProdukte.map(produkt =>
           axios.post(
-            `http://141.56.137.83:8000/bedarfsvorhersage_create/nutzer/${produkt.hinzugefügt_von}`, 
+            `http://141.56.137.83:8000/bedarfsvorhersage_create/nutzer/${produkt.hinzugefügt_von}`,
             {
               produkt_id: produkt.produkt_id,
             }
@@ -215,7 +215,7 @@ export default {
           axios.delete(
             `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt.produkt_id}`,
             {
-              data: { 
+              data: {
                 hinzugefügt_von: produkt.hinzugefügt_von,
               }
             }
