@@ -164,6 +164,8 @@
       />
     </div>
   </div>
+  <BottomBar />
+    
 </template>
 
 <script>
@@ -171,11 +173,16 @@ import axios from "axios";
 import { inject } from "vue";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
+import BottomBar from "./BottomBar.vue";
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
   props: ["list_id"],
-  components: {AppHeader, ProductCard},
+  components: {
+    AppHeader, 
+    ProductCard, 
+    BottomBar
+  },
   data() {
     return {
       list_name: "",

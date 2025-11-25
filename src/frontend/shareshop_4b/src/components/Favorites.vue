@@ -1,5 +1,4 @@
 <template>
-  <div class="liste">
     <!-- HEADER -->
     <div class="header">
       <button
@@ -25,7 +24,9 @@
     <PopUp v-if="add_fav" @close="add_fav = false">
       <AddFav @load_fav="get_favs" />
     </PopUp>
-  </div>
+    
+  <BottomBar />
+
 </template>
 
 <script>
@@ -34,6 +35,7 @@ import FavGrid from "./FavGrid.vue";
 import AddFav from "./AddFav.vue";
 import PopUp from "./PopUp.vue";
 import { inject } from "vue";
+import BottomBar from "./BottomBar.vue";
 
 export default {
   name: "Liste",
@@ -41,6 +43,7 @@ export default {
     PopUp,
     AddFav,
     FavGrid,
+    BottomBar,
   },
   data() {
     const user = inject("user");
@@ -66,10 +69,6 @@ export default {
 </script>
 
 <style scoped>
-.liste {
-  padding-top: 50px;
-}
-
 /* Produkt hinzufügen Button rechts */
 .button-add-header {
   position: absolute;

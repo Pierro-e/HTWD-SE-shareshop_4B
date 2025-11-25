@@ -58,21 +58,26 @@
     </PopUp>
 
   </div>
+  <BottomBar />
 </template>
 
 <script>
 import axios from "axios";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
+import BottomBar from "./BottomBar.vue";
 import PopUp from "./PopUp.vue";
-
 
 export default {
   name: "Einkauf",
   inject: ["user", "getUser"],
   props: ["list_id"],
-  components: { AppHeader , ProductCard, PopUp},
-  
+  components: { 
+    AppHeader,
+    ProductCard,
+    BottomBar,
+    PopUp 
+  },
   data() {
     return {
       list_name: "",

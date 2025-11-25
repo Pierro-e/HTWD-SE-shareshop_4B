@@ -34,6 +34,7 @@
       </button>
     </footer>
   </div>
+  <BottomBar />
 </template>
 
 <script>
@@ -41,6 +42,7 @@ import ListButton from "./ListButton.vue";
 import AppHeader from "./AppHeader.vue";
 import { inject, ref } from "vue";
 import axios from "axios";
+import BottomBar from "./BottomBar.vue";
 
 export default {
   data() {
@@ -57,6 +59,7 @@ export default {
   },
   components: {
     ListButton,
+    BottomBar,
     AppHeader
   },
   async mounted() {
