@@ -203,6 +203,15 @@ export default {
         ));
 
         await Promise.all(erledigteProdukte.map(produkt =>
+          axios.post(
+            `http://141.56.137.83:8000/bedarfsvorhersage_create/nutzer/${produkt.hinzugefügt_von}`, 
+            {
+              produkt_id: produkt.produkt_id,
+            }
+          )
+        ));
+
+        await Promise.all(erledigteProdukte.map(produkt =>
           axios.delete(
             `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt.produkt_id}`,
             {
