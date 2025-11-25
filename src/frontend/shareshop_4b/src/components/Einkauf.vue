@@ -1,11 +1,7 @@
 <template>
   <div class="einkauf">
     <AppHeader :title="list_name">
-      <template #left>
-        <button @click="$router.go(-1)" class="button-cancel">
-          <font-awesome-icon icon="xmark" />
-        </button>
-      </template>
+      <template #left><BackButton /></template>
 
       <template #right>
         <button @click="prepare_purchase" class="button button-submit">
@@ -56,12 +52,13 @@ import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
 import PopUp from "./PopUp.vue";
 import FinishShopping from "./FinishShopping.vue";
+import BackButton from "./navigation/BackButton.vue";
 
 export default {
   name: "Einkauf",
   inject: ["user", "getUser"],
   props: ["list_id"],
-  components: { AppHeader, ProductCard, PopUp, FinishShopping },
+  components: { AppHeader, ProductCard, PopUp, FinishShopping, BackButton },
 
   data() {
     return {
