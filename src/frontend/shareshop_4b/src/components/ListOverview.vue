@@ -1,9 +1,10 @@
 <template>
-  <header>
-    <h1>{{ user.name }}'s Einkaufslisten</h1>
-    <button @click="newList" id="newlist" class="button-add">+</button>
-    <button @click="$router.push('/fav')">Favorit</button>
-  </header>
+  <AppHeader title="Listen">
+    <template v-slot:right>
+      <button @click="newList" id="newlist" class="button-add">+</button>
+    </template>
+  </AppHeader>
+
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   <main>
@@ -15,7 +16,8 @@
     />
   </main>
   <footer>
-    <button class=button-submit @click="$router.push('/settings')">
+    <button @click="$router.push('/fav')">Favorit</button>
+    <button class="button-submit" @click="$router.push('/settings')">
       Zu den Profileinstellungen
     </button>
   </footer>
@@ -23,6 +25,7 @@
 
 <script>
 import ListButton from "./ListButton.vue";
+import AppHeader from "./AppHeader.vue";
 import { inject, ref } from "vue";
 import axios from "axios";
 
@@ -41,27 +44,23 @@ export default {
   },
   components: {
     ListButton,
+    AppHeader,
   },
   async mounted() {
     // Listen des momentanen Nutzers holen
     const user = inject("user");
     const user_id = user.value.id;
     try {
-    const response = await axios.get(
-      `http://141.56.137.83:8000/nutzer/${user_id}/listen`,
-    );
-    this.lists = response.data;
+      const response = await axios.get(
+        `http://141.56.137.83:8000/nutzer/${user_id}/listen`,
+      );
+      this.lists = response.data;
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.detail
-      ) {
+      if (error.response && error.response.data && error.response.data.detail) {
         this.errorMessage = error.response.data.detail;
       } else {
         this.errorMessage = "Fehler beim Laden der Listen";
       }
-
     }
     this.loadingActive = false;
   },
@@ -69,8 +68,7 @@ export default {
 </script>
 
 <style scoped>
-
-.error{
+.error {
   width: 300px;
 }
 </style>

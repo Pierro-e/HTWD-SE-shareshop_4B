@@ -2,11 +2,13 @@
   <div class="produkt-card">
     <div class="produkt-header">
       <h3 class="produkt-name">{{ name }}</h3>
-      <button class="button-product-settings" @click="edit_fav = true">✏️</button>
+      <button class="button-product-settings" @click="edit_fav = true">
+        ✏️
+      </button>
     </div>
   </div>
-  <PopUp v-if="edit_fav" @close="edit_fav = false" name="Faoriten bearbeiten">
-    <FavEditor :fav="fav"/>
+  <PopUp v-if="edit_fav" @close="edit_fav = false" name="Favoriten bearbeiten">
+    <FavEditor :fav="fav" />
   </PopUp>
 </template>
 

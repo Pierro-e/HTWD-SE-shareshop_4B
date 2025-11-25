@@ -1,27 +1,20 @@
-<template>
-  <div class="liste">
-    <!-- HEADER -->
-    <div class="header">
-      <button
-        @click="$router.push('/listen')"
-        class="button-cancel back-button"
-      >
+<template class="liste">
+  <AppHeader title="Favoriten">
+    <template v-slot:left>
+      <button @click="$router.go(-1)" class="button-cancel back-button">
         Zurück
       </button>
-      <h2>Favoriten</h2>
-      <button @click="add_fav = true" class="button-add button-add-header">
-        +
-      </button>
-    </div>
+    </template>
+    <template v-slot:right>
+      <button @click="add_fav = true" class="button-add">+</button>
+    </template>
+  </AppHeader>
 
-    <!-- Favorites -->
-    <FavGrid :favs="favorites"/>
+  <FavGrid :favs="favorites" name="FavGrid" />
 
-    <!-- PopUp's -->
-    <PopUp v-if="add_fav" @close="add_fav = false" name="Favoriten hinzufügen">
-      <AddFav @load_fav="get_favs" />
-    </PopUp>
-  </div>
+  <PopUp v-if="add_fav" @close="add_fav = false" name="Favoriten hinzufügen">
+    <AddFav @load_fav="get_favs" />
+  </PopUp>
 </template>
 
 <script>
@@ -29,6 +22,7 @@ import axios from "axios";
 import FavGrid from "./FavGrid.vue";
 import AddFav from "./AddFav.vue";
 import PopUp from "./PopUp.vue";
+import AppHeader from "./AppHeader.vue";
 import { inject } from "vue";
 
 export default {
@@ -37,6 +31,7 @@ export default {
     PopUp,
     AddFav,
     FavGrid,
+    AppHeader,
   },
   data() {
     const user = inject("user");
@@ -64,12 +59,5 @@ export default {
 <style scoped>
 .liste {
   padding-top: 50px;
-}
-
-/* Produkt hinzufügen Button rechts */
-.button-add-header {
-  position: absolute;
-  right: 20px;
-  top: 25px;
 }
 </style>

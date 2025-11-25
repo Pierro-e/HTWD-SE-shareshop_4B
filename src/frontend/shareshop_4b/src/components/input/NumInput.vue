@@ -16,7 +16,7 @@
 export default {
   props: {
     num: { type: Number },
-    step: { type: String, default: 0.25 },
+    step: { type: Number, default: 0.25 },
     label: { type: String },
   },
 };

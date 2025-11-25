@@ -3,24 +3,24 @@
     <!-- Eingaben -->
     <TextInput
       class="form-element"
-      v-model:text="fav_name"
+      v-model:text="favName"
       placeholder="Banane"
       label="Name"
     />
     <TextInput
       class="form-element"
-      v-model:text="fav_desc"
+      v-model:text="favDesc"
       placeholder="leicht unreif"
       label="Beschreibung"
     />
     <NumInput
       class="form-element"
-      v-model:num.number="fav_amount"
+      v-model:num.number="favAmount"
       label="Menge"
     />
     <SelectArray
       class="form-element"
-      v-model:choice="fav_unit"
+      v-model:choice="favUnit"
       :opts="units"
       display="name"
       label="Einheit"
@@ -52,25 +52,31 @@ export default {
     return {
       units: [],
       errMsg: "",
-      fav_name: "",
-      fav_desc: "",
-      fav_unit: {},
-      fav_amount: null,
+      favName: "",
+      favDesc: "",
+      favUnit: {},
+      favAmount: null,
     };
   },
   async mounted() {
     this.units = await this.fetchUnits();
   },
   methods: {
+    resetInput() {
+      this.favName = "";
+      this.favDesc = "";
+      this.favUnit = "";
+      this.favAmount = 0;
+    },
     async add_fav() {
       let response;
       let url;
 
       let id;
-      const name = this.fav_name.trim();
-      const amount = this.fav_amount;
-      const unit = this.fav_unit.id;
-      const desc = this.fav_desc.trim();
+      const name = this.favName.trim();
+      const amount = this.favAmount;
+      const unit = this.favUnit.id;
+      const desc = this.favDesc.trim();
 
       // Bezugsprodukt finden/erstellen
       try {
@@ -94,13 +100,15 @@ export default {
         }
       }
 
-      // Favoriten erstellen
+      // Favoriten vorbereiten
       const fav = {
         produkt_id: id,
         menge: amount,
         einheit_id: unit,
         beschreibung: desc,
       };
+
+      // Favoriten erstellen
       try {
         url =
           "http://141.56.137.83:8000/fav_produkte_create/nutzer/" +
@@ -110,7 +118,9 @@ export default {
         this.errMsg = "Fehler beim erstellen des Favoriten.";
       }
 
+      // Nachbereiten
       this.$emit("load_fav");
+      this.resetInput();
     },
   },
 };

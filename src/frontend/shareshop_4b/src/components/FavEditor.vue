@@ -1,11 +1,9 @@
 <template>
-  <NumInput v-model:num.number="fav.menge" />
+  <NumInput v-model:num="fav.menge" />
   <TextInput v-model:text="fav.beschreibung" />
   <SelectArray v-model:choice="fav_unit" :opts="units" display="name" />
   <button @click="alter_fav" class="button-submit">speichern</button>
-  <button class="button-delete" @click="delete_fav">
-    löschen
-  </button>
+  <button class="button-delete" @click="delete_fav">löschen</button>
 </template>
 
 <script>
@@ -25,35 +23,51 @@ export default {
     fav: { required: true },
   },
   methods: {
-    alter_fav() {
+    async alter_fav() {
       const url =
         "http://141.56.137.83:8000/fav_produkte_update/nutzer/" +
         this.user.id +
         "/produkt/" +
         this.fav.produkt_id;
-      const response = axios.put(url, this.fav);
-      // TODO: schließe das PopUp
+      const response = await axios.put(url, this.fav);
+      // close PopUP
+      this.$parent.$emit("close");
+      // Favoriten aktuallisiern (improve!!!)
+      this.$parent.$parent.$parent.$parent.get_favs();
     },
-    delete_fav() {
-       const url =
+    async delete_fav() {
+      const url =
         "http://141.56.137.83:8000/fav_produkte_delete/nutzer/" +
         this.user.id +
         "/produkt/" +
         this.fav.produkt_id;
-      const response = axios.delete(url);
-      // TODO: updaten der Favoriten
-      // TODO: schließe das PopUp
+      const response = await axios.delete(url);
+      // close PopUP
+      this.$parent.$emit("close");
+      // Favoriten aktuallisiern (improve!!!)
+      this.$parent.$parent.$parent.$parent.get_favs();
     },
   },
   data() {
     return { units: [], fav_unit: {} };
   },
   async mounted() {
-    this.units = await this.fetchUnits();
-    // TODO: akutell ausgewählte Einheit anzeigen
-    const url = "http://141.56.137.83:8000/einheiten/" + this.fav.einheit_id;
-    const response = await axios.get(url);
-    this.fav_unit = response.data;
+    try {
+      this.units = await this.fetchUnits();
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+    if (this.fav.einheit_id) {
+      const url = "http://141.56.137.83:8000/einheiten/" + this.fav.einheit_id;
+      try {
+        const response = await axios.get(url);
+      } catch (error) {
+        console.log(error);
+        return;
+      }
+      this.fav_unit = response.data;
+    }
   },
 };
 </script>
