@@ -1,6 +1,6 @@
 <template>
   <div class="listOverview">
-    <AppHeader :title="user.name + '\'s Einkaufslisten'">
+    <AppHeader title="Einkaufslisten">
       <template #left> </template>
 
       <template #right>
