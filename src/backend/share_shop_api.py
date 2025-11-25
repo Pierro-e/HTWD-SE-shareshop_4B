@@ -721,7 +721,6 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
     for eintrag in eintraege:
         # Tage seit last_bought
         deltaDays = max(0,(now.date() - eintrag.last_bought.date()).days)
-        
         new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
 
 
@@ -796,6 +795,8 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 @app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
 
+    now = datetime.now(timezone.utc)
+
      # Prüfen, ob Eintrag existiert
     eintrag = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id,
@@ -803,14 +804,14 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
     ).first()
 
     if eintrag:
-        eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(eintrag_data.counter)
-        eintrag.last_bought = func.current_timestamp()
+        eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(1)
+        eintrag.last_bought = now
     else:
         eintrag = Bedarfsvorhersage(
             nutzer_id=nutzer_id,
             produkt_id=eintrag_data.produkt_id,
-            counter=1.00,
-            last_bought=func.current_timestamp()
+            counter=Decimal(1),
+            last_bought=now
         )
         db.add(eintrag)
 
