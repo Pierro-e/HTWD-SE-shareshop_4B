@@ -158,9 +158,13 @@ a:hover {
 
 #app {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 1rem;
+  padding: auto;
   text-align: center;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 html, body {
@@ -171,6 +175,7 @@ html, body {
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
+  width: 100%;
 }
 
 h1 {
@@ -323,7 +328,7 @@ select:focus {
   overflow: hidden;
 }
 
- .vs__dropdown-toggle { /* Eingabefeld */
+.vs__dropdown-toggle { /* Eingabefeld */
   border: 1px solid gray;
 
   padding-left: 0.2em;
@@ -545,11 +550,3 @@ form select {
 .card {
   padding: 2em;
 }
-
-/* Formulare */
-.form-element {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 1.25rem;
-}
-

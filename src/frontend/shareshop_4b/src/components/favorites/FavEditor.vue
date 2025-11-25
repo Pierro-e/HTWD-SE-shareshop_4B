@@ -1,9 +1,16 @@
 <template>
-  <NumInput v-model:num="fav.menge" />
-  <TextInput v-model:text="fav.beschreibung" />
-  <SelectArray v-model:choice="fav_unit" :opts="units" display="name" />
-  <button @click="alter_fav" class="button-submit">speichern</button>
-  <button class="button-delete" @click="delete_fav">löschen</button>
+  <form @submit.prevent="alter_fav">
+    <TextInput v-model:text="fav.beschreibung" label="Beschreibung" />
+    <NumInput v-model:num="fav.menge" label="Menge" />
+    <SelectArray
+      v-model:choice="fav_unit"
+      :opts="units"
+      display="name"
+      label="Einheit"
+    />
+    <button type="submit" class="button-submit">speichern</button>
+    <button class="button-delete" @click="delete_fav">löschen</button>
+  </form>
 </template>
 
 <script>
@@ -11,9 +18,10 @@ import TextInput from "../input/TextInput.vue";
 import NumInput from "../input/NumInput.vue";
 import SelectArray from "../input/SelectArray.vue";
 import axios from "axios";
+import { inject } from "vue";
 
 export default {
-  inject: ["fetchUnits", "user"],
+  inject: ["fetchUnits", "user", "updateFavorites"],
   components: {
     TextInput,
     NumInput,
@@ -32,8 +40,7 @@ export default {
       const response = await axios.put(url, this.fav);
       // close PopUP
       this.$parent.$emit("close");
-      // Favoriten aktuallisiern (improve!!!)
-      this.$parent.$parent.$parent.$parent.get_favs();
+      this.updateFavorites();
     },
     async delete_fav() {
       const url =
@@ -44,8 +51,7 @@ export default {
       const response = await axios.delete(url);
       // close PopUP
       this.$parent.$emit("close");
-      // Favoriten aktuallisiern (improve!!!)
-      this.$parent.$parent.$parent.$parent.get_favs();
+      this.updateFavorites();
     },
   },
   data() {
@@ -71,3 +77,14 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+button {
+  width: 100%;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+</style>

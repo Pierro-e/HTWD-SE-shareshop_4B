@@ -1,31 +1,18 @@
 <template>
-  <form @submit.prevent="add_fav">
-    <!-- Eingaben -->
+  <form @submit.prevent="addFavorite">
+    <TextInput v-model:text="favName" placeholder="Banane" label="Name" />
     <TextInput
-      class="form-element"
-      v-model:text="favName"
-      placeholder="Banane"
-      label="Name"
-    />
-    <TextInput
-      class="form-element"
       v-model:text="favDesc"
       placeholder="leicht unreif"
       label="Beschreibung"
     />
-    <NumInput
-      class="form-element"
-      v-model:num.number="favAmount"
-      label="Menge"
-    />
+    <NumInput v-model:num.number="favAmount" label="Menge" />
     <SelectArray
-      class="form-element"
       v-model:choice="favUnit"
       :opts="units"
       display="name"
       label="Einheit"
     />
-    <!-- "Submit" Button -->
     <button type="submit" class="form-element button-submit">Hinzufügen</button>
   </form>
 
@@ -41,8 +28,7 @@ import NumInput from "../input/NumInput.vue";
 import SelectArray from "../input/SelectArray.vue";
 
 export default {
-  emits: ["load_fav"],
-  inject: ["user", "fetchUnits"],
+  inject: ["user", "fetchUnits", "updateFavorites"],
   components: {
     TextInput,
     NumInput,
@@ -68,7 +54,7 @@ export default {
       this.favUnit = "";
       this.favAmount = 0;
     },
-    async add_fav() {
+    async addFavorite() {
       let response;
       let url;
 
@@ -99,7 +85,6 @@ export default {
           }
         }
       }
-
       // Favoriten vorbereiten
       const fav = {
         produkt_id: id,
@@ -107,7 +92,6 @@ export default {
         einheit_id: unit,
         beschreibung: desc,
       };
-
       // Favoriten erstellen
       try {
         url =
@@ -117,9 +101,8 @@ export default {
       } catch {
         this.errMsg = "Fehler beim erstellen des Favoriten.";
       }
-
-      // Nachbereiten
-      this.$emit("load_fav");
+      // Clean Up
+      this.updateFavorites();
       this.resetInput();
     },
   },
@@ -129,5 +112,11 @@ export default {
 <style scoped>
 button {
   width: 100%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
 }
 </style>

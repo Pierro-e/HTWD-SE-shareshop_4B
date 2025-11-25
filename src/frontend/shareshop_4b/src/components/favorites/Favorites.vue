@@ -1,4 +1,4 @@
-<template class="liste">
+<template>
   <AppHeader title="Favoriten">
     <template v-slot:left>
       <button @click="$router.go(-1)" class="button-cancel back-button">
@@ -10,54 +10,50 @@
     </template>
   </AppHeader>
 
-  <FavGrid :favs="favorites" name="FavGrid" />
+  <Grid>
+    <FavItem v-for="f in favorites" :fav="f"/>
+  </Grid>
 
   <PopUp v-if="add_fav" @close="add_fav = false" name="Favoriten hinzufügen">
-    <AddFav @load_fav="get_favs" />
+    <AddFav/>
   </PopUp>
 </template>
 
 <script>
 import axios from "axios";
-import FavGrid from "./FavGrid.vue";
 import AddFav from "./AddFav.vue";
+import FavItem from "./FavItem.vue";
 import PopUp from "../PopUp.vue";
+import Grid from "../Grid.vue";
 import AppHeader from "../AppHeader.vue";
-import { inject } from "vue";
+import { inject, ref } from "vue";
 
 export default {
-  name: "Liste",
+  inject: ["updateFavorites"],
   components: {
     PopUp,
     AddFav,
-    FavGrid,
+    Grid,
+    FavItem,
     AppHeader,
   },
   data() {
-    const user = inject("user");
     return {
       errMsg: "",
       add_fav: false,
-      favorites: [],
-      user,
+      favorites: inject("favorites"),
+      user: inject("user"),
     };
   },
   methods: {
     async get_favs() {
-      const url =
-        "http://141.56.137.83:8000/fav_produkte/nutzer/" + this.user.id;
-      const response = await axios.get(url);
-      this.favorites = response.data;
+      this.updateFavorites();
     },
   },
   mounted() {
-    this.get_favs();
+    this.updateFavorites();
   },
 };
 </script>
 
-<style scoped>
-.liste {
-  padding-top: 50px;
-}
-</style>
+<style scoped></style>

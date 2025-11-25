@@ -1,13 +1,9 @@
 <template>
-  <div class="produkt-card">
-    <div class="produkt-header">
-      <h3 class="produkt-name">{{ name }}</h3>
-      <button class="button-product-settings" @click="edit_fav = true">
-        ✏️
-      </button>
-    </div>
+  <div @click="edit_fav = true">
+    <h3>{{ fav.produkt_name }}</h3>
   </div>
-  <PopUp v-if="edit_fav" @close="edit_fav = false" name="Favoriten bearbeiten">
+
+  <PopUp v-if="edit_fav" @close="edit_fav = false" :name="fav.produkt_name">
     <FavEditor :fav="fav" />
   </PopUp>
 </template>
@@ -28,18 +24,26 @@ export default {
   data() {
     return { name: "Test", edit_fav: false };
   },
-  methods: {
-    async get_name() {
-      const url =
-        "http://141.56.137.83:8000/produkte/by-id/" + this.fav.produkt_id;
-      const response = await axios.get(url);
-      this.name = response.data.name;
-    },
-  },
-  mounted() {
-    this.get_name();
-  },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+div {
+  min-width: 14rem;
+  background-color: var(--accent-product-card-color);
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  padding: 1rem;
+  box-shadow: 0 1px 2px var(--box-shadow-color);
+  transition: box-shadow 0.3s ease;
+}
+
+h3 {
+  margin: 0;
+  width:100%;
+  color: #000000;
+  font-size: 1.2em;
+  font-weight: bold;
+  word-break: break-word;
+}
+</style>
