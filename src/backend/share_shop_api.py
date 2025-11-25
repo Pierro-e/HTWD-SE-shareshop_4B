@@ -87,7 +87,7 @@ class Bedarfsvorhersage(Base):
     nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True )
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     counter = Column(Numeric(10, 2), default=0.00)
-    last_update = Column(DateTime, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
+    last_bought = Column(DateTime, server_default=func.current_timestamp())
 
 class Einkaufsarchiv(Base):
     __tablename__ = "Einkaufsarchiv"
@@ -254,7 +254,7 @@ class BedarfsvorhersageRead(BaseModel):
     produkt_id: int
     produkt_name: Optional[str] = None
     counter: Decimal
-    last_update: Optional[datetime] = None
+    last_bought: Optional[datetime] = None
     class Config:
         from_attributes = True
 
@@ -719,12 +719,12 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
     decayDays_float = float(decayDays) 
 
     for eintrag in eintraege:
-        # Tage seit last_update
-        deltaDays = max(0,(now.date() - eintrag.last_update.date()).days)
+        # Tage seit last_bought
+        deltaDays = max(0,(now.date() - eintrag.last_bought.date()).days)
 
         new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
 
-        
+
         if new_counter <= treshold:
             db.delete(eintrag)
         else:
@@ -750,7 +750,7 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
             nutzer_id=eintrag.nutzer_id,
             produkt_id=eintrag.produkt_id,
             counter=Decimal(f"{new_counter:.6f}"),
-            last_update=eintrag.last_update
+            last_bought=eintrag.last_bought
         ))
 
 
@@ -804,13 +804,13 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
 
     if eintrag:
         eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(eintrag_data.counter)
-        eintrag.last_update = func.current_timestamp()
+        eintrag.last_bought = func.current_timestamp()
     else:
         eintrag = Bedarfsvorhersage(
             nutzer_id=nutzer_id,
             produkt_id=eintrag_data.produkt_id,
             counter=1.00,
-            last_update=func.current_timestamp()
+            last_bought=func.current_timestamp()
         )
         db.add(eintrag)
 
