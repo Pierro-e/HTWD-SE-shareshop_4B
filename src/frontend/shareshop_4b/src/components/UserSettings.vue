@@ -1,101 +1,113 @@
 <template>
-  <h1>Einstellungen</h1>
+  <div class="settings">
+    <AppHeader :title="String('Einstellungen')">
+      <template #left>
+        <button class="button-cancel" @click="$router.push('/listen')">
+          <font-awesome-icon icon='arrow-left'/>
+        </button>
+      </template>
 
-  <div>
-    <button class="button-cancel" @click="$router.push('/listen')">Zurück zu den Listen</button>
-  </div>
+      <template #right>
+      </template>
 
-  <div class="info-block">
-    <div v-if="loadingActive" class="loading">Laden...</div>
-    <p v-if="!loadingActive">
-      <strong>Hallo </strong>{{name}}<strong>, du kannst hier Einstellungen zur Ansicht und zum Profil ändern.</strong>
-    </p>
-    <p v-if="!loadingActive">
-      <strong>Aktuelle E-Mail:</strong> {{ email }}
-    </p>
-  </div>
+    </AppHeader>
 
-  <div class="appearance-settings">
-    <h2>Ansicht</h2>
-
-  <form @submit.prevent="applyAppearance">
-    <div class="form-content">
-      <div>
-        <label for="theme-select">Thema: </label>
-        <select id="theme-select" v-model="theme">
-          <option>Automatisch</option>
-          <option>Dunkel</option>
-          <option>Hell</option>
-        </select>
-      </div>
-      <div>
-        <label for="accent-select">Akzentfarbe: </label>
-        <select id="accent-select" v-model="accent">
-          <option style="color: #646cff">Blau</option>
-          <option style="color: #9d60ff">Lila</option>
-          <option style="color: #4ca6a6">Grün</option>
-          <option style="color: #b25050">Rot</option>
-          <option style="color: #ca7631">Orange</option>
-        </select>
-      </div>
+    <div class="info-block">
+      <div v-if="loadingActive" class="loading">Laden...</div>
+      <p v-if="!loadingActive">
+        <strong>Hallo </strong>{{name}}<strong>, du kannst hier Einstellungen zur Ansicht und zum Profil ändern.</strong>
+      </p>
+      <p v-if="!loadingActive">
+        <strong>Aktuelle E-Mail:</strong> {{ email }}
+      </p>
     </div>
 
-  <button class="button-submit" type="submit">Änderungen übernehmen</button>
-  </form>
-  </div>
+    <div class="appearance-settings">
+      <h2>Ansicht</h2>
 
-  <div class="user-settings">
-    <h2>Profil</h2>
-
-    <form @submit.prevent="updateUser">
+    <form @submit.prevent="applyAppearance">
       <div class="form-content">
         <div>
-          <label for="name">Neuer Name: </label>
-          <input v-model="name" 
-              type="name" 
-              id="name"            
-          />
+          <label for="theme-select">Thema: </label>
+          <select id="theme-select" v-model="theme">
+            <option>Automatisch</option>
+            <option>Dunkel</option>
+            <option>Hell</option>
+          </select>
         </div>
-        
         <div>
-          <label for="email">Neue E-Mail: </label>
-          <input v-model="email" 
-              type="email" 
-              id="email" 
-              required 
-          />
-        </div>
-
-        <div>
-          <label for="password">Neues Passwort: </label>
-          <input v-model="password" 
-              type="password" 
-              id="password"
-              />
+          <label for="accent-select">Akzentfarbe: </label>
+          <select id="accent-select" v-model="accent">
+            <option style="color: #646cff">Blau</option>
+            <option style="color: #9d60ff">Lila</option>
+            <option style="color: #4ca6a6">Grün</option>
+            <option style="color: #b25050">Rot</option>
+            <option style="color: #ca7631">Orange</option>
+          </select>
         </div>
       </div>
 
-      <button class="button-submit" type="submit">Änderungen speichern</button>
+    <button class="button-submit" type="submit">Änderungen übernehmen</button>
     </form>
-
-    <div>
-      <button @click="logout()">Abmelden</button>
     </div>
 
-    <div v-if="message" class="success">{{ message }}</div>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <div class="user-settings">
+      <h2>Profil</h2>
+
+      <form @submit.prevent="updateUser">
+        <div class="form-content">
+          <div>
+            <label for="name">Neuer Name: </label>
+            <input v-model="name" 
+                type="name" 
+                id="name"            
+            />
+          </div>
+          
+          <div>
+            <label for="email">Neue E-Mail: </label>
+            <input v-model="email" 
+                type="email" 
+                id="email" 
+                required 
+            />
+          </div>
+
+          <div>
+            <label for="password">Neues Passwort: </label>
+            <input v-model="password" 
+                type="password" 
+                id="password"
+                />
+          </div>
+        </div>
+
+        <button class="button-submit" type="submit">Änderungen speichern</button>
+      </form>
+
+      <div>
+        <button @click="logout()">Abmelden</button>
+      </div>
+
+      <div v-if="message" class="success">{{ message }}</div>
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    </div>
   </div>
   <BottomBar />
 </template>
 
 <script>
+import AppHeader from "./AppHeader.vue";
 import axios from 'axios'
 import BottomBar from "./BottomBar.vue";
 
 export default {
   name: 'UserSettings',
   inject: ['user', 'deleteUser', 'getThemeText', 'getAccentText'],
-  components: {BottomBar},
+  components: {
+    AppHeader,
+    BottomBar
+  },
   data() {
     return {
       theme: '',
@@ -262,10 +274,13 @@ export default {
 }
 </script>
 
-
 <style scoped>
+.settings {
+  margin-top: 70px;
+}
+
 form label {
-  width: 101px;
+  width: 100px;
 }
 
 .success {  

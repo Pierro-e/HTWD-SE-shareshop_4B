@@ -1,5 +1,5 @@
 <template>
-  <div class="produkte-grid">
+  <div class="card-grid">
     <FavItem v-for="f in favs" :fav="f"/>
   </div>
 </template>
