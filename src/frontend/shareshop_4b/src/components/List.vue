@@ -429,9 +429,14 @@ export default {
       const user_id = this.user.id;
 
       this.errorMessage = "";
-      this.new_product = this.dropdownSelected.label;
+      if (this.dropdownSelected.label){ // aus Suche/Vorschläge
+        this.new_product = this.dropdownSelected.label;
+      }
+      else { // neu eingegeben
+        this.new_product = this.dropdownSelected;
+      }
 
-      if (this.new_product == null) {
+      if (this.new_product == "") {
         this.errorMessage = "Produktname darf nicht leer sein";
         return;
       }
