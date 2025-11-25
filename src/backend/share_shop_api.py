@@ -745,9 +745,11 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
 
     result = []
     for eintrag, new_counter in berechnete_eintraege:
+        produkt = db.query(Produkt).filter(Produkt.id == eintrag.produkt_id).first()
         result.append(BedarfsvorhersageRead(
             nutzer_id=eintrag.nutzer_id,
             produkt_id=eintrag.produkt_id,
+            produkt_name=produkt.name if produkt else None,
             counter=Decimal(f"{new_counter:.6f}"),
             last_bought=eintrag.last_bought
         ))
@@ -791,7 +793,7 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 # erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
 # der Counter wird erstmal im Body mit übergeben
 
-# counter hier fest setzen --> 1
+# nutzerid ist eigentlich falsch --> es ist die ID von dem, der das Produkt hinzugefügt hat
 @app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
 
