@@ -199,6 +199,7 @@ class ProduktInListeRead(BaseModel):
     einheit_id: Optional[int] = None
     einheit_abk: Optional[str] = None
     hinzugefügt_von: int
+    hinzufueger_name: Optional[str] = None
     beschreibung: Optional[str] = None
 
     class Config:
@@ -967,10 +968,12 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
             ListeProdukte.einheit_id,
             case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),  # gucken ob einheit_id NULL ist
             ListeProdukte.hinzugefügt_von,
+            Nutzer.name.label("hinzufueger_name"),
             ListeProdukte.beschreibung
         )
         .join(Produkt, Produkt.id == ListeProdukte.produkt_id)
         .outerjoin(Einheit, Einheit.id == ListeProdukte.einheit_id)
+        .outerjoin(Nutzer, Nutzer.id == ListeProdukte.hinzugefügt_von)
         .filter(ListeProdukte.listen_id == listen_id)
         .all()
     )
