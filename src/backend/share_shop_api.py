@@ -87,7 +87,7 @@ class Bedarfsvorhersage(Base):
     nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True )
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     counter = Column(Numeric(10, 2), default=0.00)
-    last_bought = Column(DateTime, server_default=func.current_timestamp())
+    last_bought = Column(DateTime(timezone=True), server_default=func.current_timestamp())
 
 class Einkaufsarchiv(Base):
     __tablename__ = "Einkaufsarchiv"
@@ -751,9 +751,8 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
             produkt_id=eintrag.produkt_id,
             produkt_name=produkt.name if produkt else None,
             counter=Decimal(f"{new_counter:.6f}"),
-            last_bought=eintrag.last_bought
+            last_bought=eintrag.last_bought.astimezone()
         ))
-
 
     return result
 
@@ -823,7 +822,9 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
     # Top-10 Einträge nach counter
     alle_eintraege = db.query(Bedarfsvorhersage)\
         .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)\
-        .order_by(Bedarfsvorhersage.counter.desc())\
+        .order_by(
+            Bedarfsvorhersage.counter.desc(),
+            Bedarfsvorhersage.last_bought.asc())\
         .all()
 
     if len(alle_eintraege) > 10:
