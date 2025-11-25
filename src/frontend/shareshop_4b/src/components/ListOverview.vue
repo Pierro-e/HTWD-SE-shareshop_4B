@@ -1,26 +1,36 @@
 <template>
-  <AppHeader title="Listen">
-    <template v-slot:right>
-      <button @click="newList" id="newlist" class="button-add">+</button>
-    </template>
-  </AppHeader>
+  <div class="listOverview">
+    <AppHeader :title="user.name + '\'s Einkaufslisten'">
+      <template #left> </template>
 
-  <div v-if="loadingActive" class="loading">Laden...</div>
-  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-  <main>
-    <ListButton
-      v-for="list in lists"
-      :key="list.id"
-      :id="list.id"
-      :name="list.name"
-    />
-  </main>
-  <footer>
+      <template #right>
+        <button @click="newList" id="newlist" class="button-add">
+          <font-awesome-icon icon="plus" />
+        </button>
+      </template>
+    </AppHeader>
+
     <button @click="$router.push('/fav')">Favorit</button>
-    <button class="button-submit" @click="$router.push('/settings')">
-      Zu den Profileinstellungen
-    </button>
-  </footer>
+    <button @click="$router.push('/userArchive')">Archiv</button>
+
+    <div v-if="loadingActive" class="loading">Laden...</div>
+    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    <main>
+      <div class="card-list">
+        <ListButton
+          v-for="list in lists"
+          :key="list.id"
+          :name="list.name"
+          :item="list"
+        />
+      </div>
+    </main>
+    <footer>
+      <button class="button-submit" @click="$router.push('/settings')">
+        Zu den Profileinstellungen
+      </button>
+    </footer>
+  </div>
 </template>
 
 <script>
@@ -68,6 +78,10 @@ export default {
 </script>
 
 <style scoped>
+.listOverview {
+  padding-top: 50px;
+}
+
 .error {
   width: 300px;
 }

@@ -3,11 +3,12 @@
     <div class="popup-content">
       <header>
         <h3>{{ name }}</h3>
-        <button @click="$emit('close')" class="button-delete">
-          Abbrechen
-        </button>
+        <button @click="$emit('close')" class="button-delete">Abbrechen</button>
       </header>
       <slot></slot>
+      <button @click="$emit('confirm')" class="button button-submit">
+        Speichern
+      </button>
     </div>
   </div>
 </template>

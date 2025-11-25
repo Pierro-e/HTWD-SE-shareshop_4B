@@ -8,7 +8,7 @@
         @click="$router.push('/listen')"
         class="button button-cancel back-button"
       >
-        Zurück
+        <font-awesome-icon icon='arrow-left'/>
       </button>
     </template>
 
@@ -18,7 +18,7 @@
         @click="openProductPopup()"
         class="button button-add button-add-header"
       >
-        Produkt hinzufügen
+        <font-awesome-icon icon='plus'/>
       </button>
     </template>
   </AppHeader>
@@ -32,9 +32,8 @@
           @click="openListPopup()"
           class="button button-settings"
         >
-          Listeninformationen
+          <font-awesome-icon icon='circle-info'/> Info
         </button>
-
         <button
           :disabled="
             showpopup_product || showpopup_list || showpopup_add_member
@@ -42,9 +41,25 @@
           @click="einkauf_abschließen"
           class="button button-submit button-einkauf-tätigen"
         >
-          Einkauf
+          <font-awesome-icon icon='cart-shopping'/> Einkauf
+        </button>
+        <button @click="list_archive">
+          <font-awesome-icon icon='box-archive'/> Archiv
         </button>
       </div>
+      <!--
+      <div class="buy-container" >
+        <button
+          :disabled="
+            showpopup_product || showpopup_list || showpopup_add_member
+          "
+          @click="einkauf_abschließen"
+          class="button button-submit button-einkauf-tätigen"
+        >
+          <font-awesome-icon icon='cart-shopping'/> Einkauf
+        </button>
+      </div>
+      -->
     </div>
 
     <div v-if="loadingActive" class="loading">Laden...</div>
@@ -93,16 +108,6 @@
     <div v-if="showpopup_product" class="popup-overlay">
       <div class="popup-content">
         <h3>Neues Produkt hinzufügen</h3>
-        <!--
-        <input
-          class="input"
-          v-model="new_product"
-          type="text"
-          placeholder="Produktname"
-          maxlength="30"
-        />
-        <br><br></br>
-        -->
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
         <v-select
           v-model="dropdownSelected"
@@ -150,11 +155,11 @@
       </div>
     </div>
 
-    <div class="produkte-grid">
+    <div class="card-grid">
       <ProductCard
-        v-for="(produkt, index) in listenprodukte"
+        v-for="(product, index) in listenprodukte"
         :key="index"
-        :produkt="produkt"
+        :product="product"
         :onSettings="product_settings"
       />
     </div>
@@ -220,7 +225,6 @@ export default {
           this.errorMessage = "Fehler beim Laden der Liste";
         }
       }
-      this.loadingActive = false;
     },
 
     async get_list_members(id) {
@@ -275,16 +279,10 @@ export default {
           `http://141.56.137.83:8000/listen/${id}/produkte`,
         );
         this.listenprodukte = response.data;
-        //console.log(JSON.stringify(response.data, null, 2));
 
+        let productNum = 0;
         for (const produkt of this.listenprodukte) {
-          // Produktname holen
-          //console.log(produkt.produkt_name);
-          produkt.name = produkt.produkt_name;
-
-          // Einheit holen
-          produkt.einheit_abk = produkt.einheit_abk;
-
+          productNum++;
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
             produkt.produkt_menge !== undefined &&
@@ -300,6 +298,9 @@ export default {
             }
           }
         }
+        if (productNum == 0){
+          this.errorMessage = "Liste leer";
+        }
       } catch (error) {
         if (
           error.response &&
@@ -311,6 +312,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Produkte";
         }
       }
+      this.loadingActive = false;
     },
 
     openListPopup() {
@@ -334,6 +336,7 @@ export default {
     },
 
     async loadDropdownList(type, searchText){
+      this.dropdownOptions = [];
       if (type == 0) { // Bedarfsvorhersage/Favoriten
         try {
           var response = await axios.get(`http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
@@ -360,7 +363,6 @@ export default {
           this.dropdownOptions = tempOptions;
           this.errorMessage = "";
         } catch (error) {
-          this.dropdownOptions = [];
           if (
             error.response &&
             error.response.data &&
@@ -389,7 +391,6 @@ export default {
           this.dropdownOptions = tempOptions;
           this.errorMessage = ""
         } catch (error) {
-          this.dropdownOptions = [];
           if (
             error.response &&
             error.response.data &&
@@ -400,6 +401,7 @@ export default {
           } else {
             this.errorMessage = "Fehler beim Laden der Vorschläge";
           } 
+          return;
         }
       }
     },
@@ -427,9 +429,14 @@ export default {
       const user_id = this.user.id;
 
       this.errorMessage = "";
-      this.new_product = this.dropdownSelected.label;
+      if (this.dropdownSelected.label){ // aus Suche/Vorschläge
+        this.new_product = this.dropdownSelected.label;
+      }
+      else { // neu eingegeben
+        this.new_product = this.dropdownSelected;
+      }
 
-      if (this.new_product == null) {
+      if (this.new_product == "") {
         this.errorMessage = "Produktname darf nicht leer sein";
         return;
       }
@@ -461,9 +468,9 @@ export default {
             ) {
               this.errorMessage = error.response.data.detail;
             } else {
-              this.errorMessage = "Fehler beim Anlegen des Produkts";
-              return;
+              this.errorMessage = "Fehler beim Anlegen des Produkts"; 
             }
+            return;
           }
         }
       }
@@ -472,8 +479,7 @@ export default {
         console.log("Fehlende Liste-, Produkt- oder Nutzer-ID");
         return;
       }
-
-      this.loadingActive = true;
+      
       try {
         await axios.post(
           `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`,
@@ -486,7 +492,9 @@ export default {
             error.response.data.detail ||
             "Unbekannter Fehler beim Hinzufügen des Produkts zur Liste";
         }
+       return;
       }
+      
       // ist neues Produkt ein Favorit?
       const response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${user_id}`);
       var favoriteProducts = response.data;
@@ -517,12 +525,12 @@ export default {
           );
         } catch (error) {
           this.errorMessage = error.response?.data?.detail || "Fehler beim Speichern";
+          return;
         }
       }
 
       this.new_product = "";
       this.get_products(list_id);
-      this.loadingActive = false;
     },
 
     cancel_product_popup() {
@@ -631,56 +639,74 @@ export default {
       this.new_member_email = "";
     },
 
-    product_settings(produkt) {
-      this.errorMessage = "";
-      const list_id = this.list_id || this.$route.params.id;
-      const product_id = produkt.produkt_id;
-      const nutzer_id = produkt.hinzugefügt_von;
+    product_settings(product) {
+      const listenId = this.list_id || this.$route.params.id;
+      const produktId = product.produkt_id;
+      const nutzerId = product.hinzugefügt_von;
 
-      this.$router.push(
-        `/listen/${list_id}/produkte/${product_id}/nutzer/${nutzer_id}`,
-      );
+      this.$router.push({
+        name: "ProductDetail",
+        params: {
+          listenId,
+          produktId,
+          nutzerId
+        },
+        query: {
+          readonly: false
+        }
+      });
     },
+
 
     einkauf_abschließen() {
       const list_id = this.list_id || this.$route.params.id;
 
       this.$router.push(`/list/${list_id}/einkauf`);
     },
-        async delete_list() {
-        
-        if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
-            return;
-        }
-        this.errorMessage = "";
-        this.infoMessage = ""; // Nachricht vor dem Versuch löschen
-        
-        try {
-            // Sicherstellen, dass die ID korrekt verwendet wird
-            const list_id = this.list_id || this.$route.params.id;
-            await axios.delete(`http://141.56.137.83:8000/listen/${list_id}`);
 
-            // Erfolgsfall (Rückgabe 204 No Content führt hier zur erfolgreichen Ausführung)
-            this.infoMessage = "Liste wurde erfolgreich gelöscht!";
-            setTimeout(() => {
-                this.$router.push("/listen");
-            }, 2000);
+    list_archive() {
+      const list_id = this.list_id || this.$route.params.id;
+      const list_name = this.list_name;
+      this.$router.push({ 
+        name: "ListArchive", 
+        params: { list_id},
+        query: { list_name } 
+      });
+    },
 
-        } catch (error) {
-            console.error("Fehler beim Löschvorgang:", error);
-            // zentralistiertte Fehlerbehandlung basierend auf der Backend-Antwort
-            if (
-                error.response &&
-                error.response.status === 404
-            ) {
-                // Fehlermeldung vom Backend: "Liste nicht gefunden"
-                this.errorMessage = error.response.data.detail || "Liste nicht gefunden.";
-            } else {
-                // Generischer Fehler
-                this.errorMessage = "Serverfehler oder unerwarteter Fehler beim Löschen der Liste.";
-            }
+    async delete_list() {
+      if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
+        return;
+      }
+      this.errorMessage = "";
+      this.infoMessage = ""; // Nachricht vor dem Versuch löschen
+      
+      try {
+        // Sicherstellen, dass die ID korrekt verwendet wird
+        const list_id = this.list_id || this.$route.params.id;
+        await axios.delete(`http://141.56.137.83:8000/listen/${list_id}`);
+
+        // Erfolgsfall (Rückgabe 204 No Content führt hier zur erfolgreichen Ausführung)
+        this.infoMessage = "Liste wurde erfolgreich gelöscht!";
+        setTimeout(() => {
+          this.$router.push("/listen");
+        }, 2000);
+
+      } catch (error) {
+        console.error("Fehler beim Löschvorgang:", error);
+        // zentralistiertte Fehlerbehandlung basierend auf der Backend-Antwort
+        if (
+          error.response &&
+          error.response.status === 404
+        ) {
+          // Fehlermeldung vom Backend: "Liste nicht gefunden"
+          this.errorMessage = error.response.data.detail || "Liste nicht gefunden.";
+        } else {
+          // Generischer Fehler
+          this.errorMessage = "Serverfehler oder unerwarteter Fehler beim Löschen der Liste.";
         }
-  },
+      }
+    },
   },
   mounted() {
     this.errorMessage = "";
@@ -696,21 +722,7 @@ export default {
 
 <style scoped>
 .liste {
-  padding-top: 50px;
-}
-
-/* Zurück-Button links */
-.back-button {
-  position: absolute;
-  left: 20px;
-  top: 25px;
-}
-
-/* Produkt hinzufügen Button rechts */
-.button-add-header {
-  position: absolute;
-  right: 20px;
-  top: 25px;
+  padding-top: 40px;
 }
 
 .button-einkauf-tätigen {
@@ -720,18 +732,38 @@ export default {
 
 /* Settings-Container fixiert unter der Überschrift mittig */
 .settings-container {
+  background-color: var(--accent-header-bg-color);
+  box-shadow: 0 2px 5px var(--box-shadow-color);
   position: fixed;
-  top: 100px; /* vorher 60px */
+  top: 70px; /* vorher 60px */
   left: 0;
   width: 100%;
   z-index: 1000;
   padding: 5px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px; /* Abstand zwischen Buttons */
+  gap: 5px; /* Abstand zwischen Buttons */
   justify-content: center;
   align-items: center;
 }
+
+.settings-container button {
+  padding: 0.5em 1.0em;
+}
+
+/*
+.buy-container {
+  background-color: var(--accent-header-bg-color);
+  box-shadow: 0 0 5px 2px var(--box-shadow-color);
+  width: 100%;
+  z-index: 1000;
+  position: fixed;
+  bottom: 0px;
+  left: 0;
+  padding-top: 10px; 
+  padding-bottom: 5px;
+  justify-content: center;
+  align-items: center;
+}
+*/
 
 .input {
   width: 100%;
@@ -761,6 +793,7 @@ export default {
   min-width: 250px;
   max-width: 300px;
   text-align: center;
+  word-wrap: break-word;
   /* Klicks nur auf das Popup zulassen */
   pointer-events: auto;
   box-shadow: 0 4px 12px var(--box-shadow-color);
@@ -770,6 +803,10 @@ export default {
   .popup-content {
     max-width: 260px;
   }
+}
+
+.card-grid {
+  padding-top: 100px;
 }
 
 .mitglieder-anzeige {

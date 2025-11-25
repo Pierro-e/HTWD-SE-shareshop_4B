@@ -5,11 +5,13 @@ from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numer
 from sqlalchemy.orm import sessionmaker, declarative_base, Session
 from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import List, Optional
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+from operator import attrgetter
+import numpy as np
 import re
 
 
@@ -85,7 +87,7 @@ class Bedarfsvorhersage(Base):
     nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True )
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     counter = Column(Numeric(10, 2), default=0.00)
-    last_update = Column(DateTime, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
+    last_bought = Column(DateTime(timezone=True), server_default=func.current_timestamp())
 
 class Einkaufsarchiv(Base):
     __tablename__ = "Einkaufsarchiv"
@@ -197,6 +199,7 @@ class ProduktInListeRead(BaseModel):
     einheit_id: Optional[int] = None
     einheit_abk: Optional[str] = None
     hinzugefügt_von: int
+    hinzufueger_name: Optional[str] = None
     beschreibung: Optional[str] = None
 
     class Config:
@@ -251,13 +254,12 @@ class BedarfsvorhersageRead(BaseModel):
     produkt_id: int
     produkt_name: Optional[str] = None
     counter: Decimal
-    last_update: Optional[datetime] = None
+    last_bought: Optional[datetime] = None
     class Config:
         from_attributes = True
 
 class BedarfvorhersageCreate(BaseModel):
     produkt_id: int
-    counter: Decimal
 
 class PasswortÄndern(BaseModel):
     neues_passwort: str
@@ -705,45 +707,61 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 
 # --- Bedarfsvorhersage ---
 # Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
-def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
+def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Session):
     # Alle Bedarfsvorhersage-Objekte des Nutzers holen
     eintraege =db.query(Bedarfsvorhersage).filter(
             Bedarfsvorhersage.nutzer_id == nutzer_id
         ).all()
 
-    now = datetime.utcnow()
-    decay_rate = 0.05  # Zerfallsrate pro Tag
+    now = datetime.now(timezone.utc)
+
+    treshold = 0.00024036947641951407  # bei diesem counter wird der eintrag gelöscht
+
+    berechnete_eintraege = []
+    decayDays_float = float(decayDays)
 
     for eintrag in eintraege:
-        # Tage seit last_update
-        delta_days = (now - eintrag.last_update).days if eintrag.last_update else 0
-        # if delta_days <= 0: --------------------------------------------------------------------------muss dann wieder hinzugeügt werden-------------------------------------------------
-        #   continue
+        # Tage seit last_bought
+        deltaDays = max(0,(now.date() - eintrag.last_bought.date()).days)
+        new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
 
-        new_counter = float(eintrag.counter) * max(0, (1 - decay_rate * delta_days)) # neuen Counter berechnen
-        eintrag.counter = Decimal(round(new_counter, 2))
-        eintrag.last_update = now
+
+        if new_counter <= treshold:
+            db.delete(eintrag)
+        else:
+            berechnete_eintraege.append((eintrag, new_counter))
+        # counter nicht in DB aktualisieren
+        # nur berechnen
+        # wenn counter < 0.00024036947641951407 rausschmeißen oder mehr als 10 produkte
+        # --> anhand des aktualisisteren Counters und dem PK (aus neu erstellter Liste) die Produkte rausschmeißen aus der DB --> db.commit()
+
+    if len(berechnete_eintraege) > 10:
+        # nach counter sortieren und nur die Top 10 behalten
+        berechnete_eintraege.sort(key=lambda x: x[1], reverse=True)
+        zu_loeschende_eintraege = berechnete_eintraege[10:]
+        berechnete_eintraege = berechnete_eintraege[:10]
+        for eintrag, _ in zu_loeschende_eintraege:
+            db.delete(eintrag)
 
     db.commit()
-    aktualisierte_einträge = []
-    for eintrag in eintraege:
-        produkt = db.query(Produkt).filter(Produkt.id == eintrag.produkt_id).first()
-        aktualisierte_einträge.append(
-            BedarfsvorhersageRead(
-                nutzer_id=eintrag.nutzer_id,
-                produkt_id=eintrag.produkt_id,
-                produkt_name=produkt.name if produkt else None,
-                counter=eintrag.counter,
-                last_update=eintrag.last_update
-            )
-        )
 
-    return aktualisierte_einträge
+    result = []
+    for eintrag, new_counter in berechnete_eintraege:
+        produkt = db.query(Produkt).filter(Produkt.id == eintrag.produkt_id).first()
+        result.append(BedarfsvorhersageRead(
+            nutzer_id=eintrag.nutzer_id,
+            produkt_id=eintrag.produkt_id,
+            produkt_name=produkt.name if produkt else None,
+            counter=Decimal(f"{new_counter:.6f}"),
+            last_bought=eintrag.last_bought.astimezone()
+        ))
+
+    return result
 
 
 # Abrufen der Bedarfsvorhersage für einen Nutzer
 @app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
-def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays: Decimal = Query(7,gt=0),db: Session = Depends(get_db)):
 
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -751,7 +769,7 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Sessio
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
      # Bedarfsvorhersage-Einträge aktualisieren
-    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, db)
+    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, decayDays, db)
 
     return aktualisierte_einträge
 
@@ -775,8 +793,12 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 
 # erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
 # der Counter wird erstmal im Body mit übergeben
+
+# nutzerid ist eigentlich falsch --> es ist die ID von dem, der das Produkt hinzugefügt hat
 @app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
+
+    now = datetime.now(timezone.utc)
 
      # Prüfen, ob Eintrag existiert
     eintrag = db.query(Bedarfsvorhersage).filter(
@@ -785,14 +807,14 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
     ).first()
 
     if eintrag:
-        eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(eintrag_data.counter)
-        eintrag.last_update = func.current_timestamp()
+        eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(1)
+        eintrag.last_bought = now
     else:
         eintrag = Bedarfsvorhersage(
             nutzer_id=nutzer_id,
             produkt_id=eintrag_data.produkt_id,
-            counter=Decimal(eintrag_data.counter),
-            last_update=func.current_timestamp()
+            counter=Decimal(1),
+            last_bought=now
         )
         db.add(eintrag)
 
@@ -802,7 +824,9 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
     # Top-10 Einträge nach counter
     alle_eintraege = db.query(Bedarfsvorhersage)\
         .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)\
-        .order_by(Bedarfsvorhersage.counter.desc())\
+        .order_by(
+            Bedarfsvorhersage.counter.desc(),
+            Bedarfsvorhersage.last_bought.asc())\
         .all()
 
     if len(alle_eintraege) > 10:
@@ -959,10 +983,12 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
             ListeProdukte.einheit_id,
             case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),  # gucken ob einheit_id NULL ist
             ListeProdukte.hinzugefügt_von,
+            Nutzer.name.label("hinzufueger_name"),
             ListeProdukte.beschreibung
         )
         .join(Produkt, Produkt.id == ListeProdukte.produkt_id)
         .outerjoin(Einheit, Einheit.id == ListeProdukte.einheit_id)
+        .outerjoin(Nutzer, Nutzer.id == ListeProdukte.hinzugefügt_von)
         .filter(ListeProdukte.listen_id == listen_id)
         .all()
     )
@@ -1096,6 +1122,7 @@ def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(g
         .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
         .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
         .filter(Einkaufsarchiv.listen_id == listen_id)
+        .order_by(Einkaufsarchiv.eingekauft_am.desc())
         .all()
     )
 
@@ -1164,7 +1191,13 @@ def get_einkaufsarchiv_by_nutzer_alle(nutzer_id: int = Path(..., gt=0), db: Sess
     for einkauf in einkaeufe_hinzugefuegt:
         einkaeufe_combined[einkauf.einkauf_id] = einkauf
 
-    return list(einkaeufe_combined.values())
+    einkaeufe_sorted = sorted(
+    einkaeufe_combined.values(),
+    key=attrgetter("eingekauft_am"),
+    reverse=True
+)
+
+    return list(einkaeufe_sorted)
 
 @app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
 def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
