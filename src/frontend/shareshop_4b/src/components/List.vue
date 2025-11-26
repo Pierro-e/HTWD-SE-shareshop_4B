@@ -343,7 +343,9 @@ export default {
       this.dropdownOptions = [];
       if (type == 0) { // Bedarfsvorhersage/Favoriten
         try {
-          var response = await axios.get(`http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
+          var response = await axios.get(`http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`,{
+            params: {decayDays: this.userData.decaydays}
+          })
           var recommendedProducts = response.data;
 
           response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${this.user.id}`);
@@ -480,7 +482,6 @@ export default {
       }
 
       if (!list_id || !produkt_Id || !user_id) {
-        console.log("Fehlende Liste-, Produkt- oder Nutzer-ID");
         return;
       }
       
@@ -552,7 +553,6 @@ export default {
     async mitglied_entfernen(nutzer_id) {
       this.errorMessage = "";
       const listen_id = this.list_id || this.$route.params.id;
-      console.log(`Entferne Mitglied ${nutzer_id} aus Liste ${listen_id}`);
 
       try {
         await axios.delete(
@@ -583,7 +583,6 @@ export default {
         this.errorMessage = "E-Mail darf nicht leer sein";
         return;
       }
-      console.log(`Suche nach E-Mail: ${user_email}`);
 
       // email prüfen
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

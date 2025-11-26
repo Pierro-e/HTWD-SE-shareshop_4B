@@ -25,31 +25,51 @@
     <div class="appearance-settings">
       <h2>Ansicht</h2>
 
-    <form @submit.prevent="applyAppearance">
-      <div class="form-content">
-        <div>
-          <label for="theme-select">Thema: </label>
-          <select id="theme-select" v-model="theme">
-            <option>Automatisch</option>
-            <option>Dunkel</option>
-            <option>Hell</option>
-          </select>
+      <form @submit.prevent="applyAppearance">
+        <div class="form-content">
+          <div>
+            <label for="theme-select">Thema: </label>
+            <select id="theme-select" v-model="theme">
+              <option>Automatisch</option>
+              <option>Dunkel</option>
+              <option>Hell</option>
+            </select>
+          </div>
+          <div>
+            <label for="accent-select">Akzentfarbe: </label>
+            <select id="accent-select" v-model="accent">
+              <option style="color: #646cff">Blau</option>
+              <option style="color: #9d60ff">Lila</option>
+              <option style="color: #4ca6a6">Grün</option>
+              <option style="color: #b25050">Rot</option>
+              <option style="color: #ca7631">Orange</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <label for="accent-select">Akzentfarbe: </label>
-          <select id="accent-select" v-model="accent">
-            <option style="color: #646cff">Blau</option>
-            <option style="color: #9d60ff">Lila</option>
-            <option style="color: #4ca6a6">Grün</option>
-            <option style="color: #b25050">Rot</option>
-            <option style="color: #ca7631">Orange</option>
-          </select>
-        </div>
-      </div>
 
-    <button class="button-submit" type="submit">Änderungen übernehmen</button>
-    </form>
+        <button class="button-submit" type="submit">Änderungen speichern</button>
+      </form>
     </div>
+
+    <div class="profile-settings">
+      <h2>Produktvorschläge</h2>
+      <form @submit.prevent="applyDecayDays">  
+        <div class="form-content">
+          <div>
+            <label for="decay-days">Verfallszeitraum (Tage): </label>
+            <input v-model.number="decaydays" 
+                  type="number" 
+                  id="decay-days" 
+                  min="0" 
+                  step="1"
+                  required
+            />
+          </div>
+        </div>
+        <button class="button-submit" type="submit">Änderungen speichern</button>
+      </form>
+    </div> 
+
 
     <div class="user-settings">
       <h2>Profil</h2>
@@ -118,6 +138,7 @@ export default {
       currentEmail: '',
       email: '',
       password: '',
+      decaydays: 0.00,
       message: '',
 
       errorMessage: '',
@@ -152,6 +173,7 @@ export default {
         this.name = response.data.name
         this.currentName = response.data.name
         this.email = response.data.email
+        this.decaydays = response.data.decaydays
       }  catch (error) {
         if (
           error.response &&
@@ -211,6 +233,24 @@ export default {
         case "Dunkel": return 1;
         case "Hell": return 2;
         default: return 0 // Default setzen
+      }
+    },
+
+    async applyDecayDays(){
+       try {
+          await axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/decaydays`, {
+            neue_decaydays: this.decaydays
+          })
+      } catch(error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
+          this.errorMessage = error.response.data.detail;
+        } else {
+          this.errorMessage = "Konnte Verfallszeitraum nicht hochladen!";
+        }
       }
     },
 
