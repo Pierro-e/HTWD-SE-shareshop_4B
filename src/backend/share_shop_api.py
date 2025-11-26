@@ -33,6 +33,7 @@ class Nutzer(Base):
     passwort_hash = Column(String, nullable=False)
     theme = Column(Integer, default=0)
     color = Column(Integer, default=0)
+    decaydays = Column(Numeric(10,2), nullable=False, default=7.00)
 
 
 class Einheit(Base):
@@ -133,6 +134,7 @@ class NutzerRead(BaseModel):
     passwort_hash: str
     theme: int
     color: int
+    decaydays: Decimal
 
     class Config:
         from_attributes = True
@@ -273,6 +275,9 @@ class NameAendern(NameBasis):
 
 class EmailAendern(BaseModel):
     neue_email: str
+
+class DecayDaysAendern(BaseModel):
+    neue_decaydays: Decimal
 
 class EinkaufsarchivRead(BaseModel):
     einkauf_id: int
@@ -478,6 +483,19 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
     db.refresh(nutzer)
 
     return nutzer   
+
+@app.put("/nutzer_change/{nutzer_id}/decaydays", status_code=status.HTTP_200_OK)    
+def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = Depends(get_db)):
+    nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
+
+    if not nutzer:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+    nutzer.decaydays = decaydays.neue_decaydays
+    db.commit()
+    db.refresh(nutzer)
+
+    return nutzer
 
 
 @app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
