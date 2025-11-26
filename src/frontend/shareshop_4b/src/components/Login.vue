@@ -53,7 +53,8 @@ export default {
       errorMessage: "",
       passwordFieldType: "password",
       theme: '',
-      accent: ''
+      accent: '',
+      decay_days: 0.00
     };
   },
   methods: {
