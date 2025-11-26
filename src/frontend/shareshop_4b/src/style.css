@@ -168,9 +168,10 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: calc(100vh - 30px);
   overflow-x: hidden;
   width: 100%;
+  padding-bottom: 30px; /* für BottomBar */
 }
 
 h1 {
@@ -491,6 +492,7 @@ form select {
 }
 
 .card-list {
+  padding-top: 65px;
   margin-top: 10px;
   margin-bottom: 10px;
   width: 100%; /* nimmt die volle Breite der Grid-Zelle */

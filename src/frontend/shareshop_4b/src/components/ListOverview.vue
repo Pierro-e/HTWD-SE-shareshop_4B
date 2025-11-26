@@ -1,36 +1,29 @@
 <template>
-  <div class="listOverview">
-    <AppHeader title="Einkaufslisten">
-      <template #left> </template>
+  <AppHeader title="Einkaufslisten">
+    <template #left>
 
-      <template #right>
-        <button @click="newList" id="newlist" class="button-add">
-          <font-awesome-icon icon="plus" />
-        </button>
-      </template>
-    </AppHeader>
+    </template>
 
-    <button @click="$router.push('/fav')">Favorit</button>
-    <button @click="$router.push('/userArchive')">Archiv</button>
-
-    <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-    <main>
-      <div class="card-list">
-        <ListButton
-          v-for="list in lists"
-          :key="list.id"
-          :name="list.name"
-          :item="list"
-        />
-      </div>
-    </main>
-    <footer>
-      <button class="button-submit" @click="$router.push('/settings')">
-        Zu den Profileinstellungen
+    <template #right>
+      <button @click="newList" id="newlist" class="button-add">
+        <font-awesome-icon icon='plus'/>
       </button>
-    </footer>
-  </div>
+    </template>
+  </AppHeader>
+
+  <div v-if="loadingActive" class="loading">Laden...</div>
+  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+  <main>
+    <div class=card-list>
+      <ListButton
+        v-for="list in lists"
+        :key="list.id"
+        :name="list.name"
+        :item="list"
+      />
+    </div>
+  </main>
+  <BottomBar />
 </template>
 
 <script>
@@ -38,6 +31,7 @@ import ListButton from "./ListButton.vue";
 import AppHeader from "./AppHeader.vue";
 import { inject, ref } from "vue";
 import axios from "axios";
+import BottomBar from "./BottomBar.vue";
 
 export default {
   data() {
@@ -54,7 +48,8 @@ export default {
   },
   components: {
     ListButton,
-    AppHeader,
+    BottomBar,
+    AppHeader
   },
   async mounted() {
     // Listen des momentanen Nutzers holen
@@ -78,10 +73,6 @@ export default {
 </script>
 
 <style scoped>
-.listOverview {
-  padding-top: 50px;
-}
-
 .error {
   width: 300px;
 }

@@ -34,12 +34,16 @@
     <div v-if="message" class="success">{{ message }}</div>
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
+
+  <BottomBar />
 </template>
 
 <script>
 import axios from "axios";
+import BottomBar from "./BottomBar.vue";
 
 export default {
+  components: { BottomBar },
   props: ["produktId", "listenId", "nutzerId"],
   data() {
     return {

@@ -43,6 +43,25 @@
       <FinishShopping />
     </PopUp>
   </div>
+
+  <PopUp
+    v-if="commit_purchase"
+    @confirm="set_price"
+    @close="commit_purchase = false"
+  >
+    <div class="popup-field">
+      <label for="totalPrice">Gesamtpreis (€):</label>
+      <input
+        type="number"
+        id="totalPrice"
+        v-model.number="totalPrice"
+        min="0"
+        step="1"
+      />
+    </div>
+  </PopUp>
+
+  <BottomBar />
 </template>
 
 <script>
@@ -50,6 +69,7 @@ import axios from "axios";
 import { ref, provide } from "vue";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
+import BottomBar from "./BottomBar.vue";
 import PopUp from "./PopUp.vue";
 import FinishShopping from "./FinishShopping.vue";
 import BackButton from "./navigation/BackButton.vue";
@@ -58,7 +78,13 @@ export default {
   name: "Einkauf",
   inject: ["user", "getUser", "products", "updateProducts"],
   props: ["list_id"],
-  components: { AppHeader, ProductCard, PopUp, FinishShopping, BackButton },
+  components: {
+    AppHeader,
+    ProductCard,
+    BottomBar,
+    PopUp,
+    BackButton,
+  },
   data() {
     return {
       list_name: "",
@@ -114,7 +140,6 @@ export default {
 }
 
 .error {
-  margin-top: 4em;
   z-index: 1100; /* höher als der Header */
 }
 </style>

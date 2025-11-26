@@ -1,57 +1,63 @@
 <template>
-  <div class="list-archive">
+  <div class="wrapper">
+    <div class="list-archive">
+      <AppHeader :title="`${purchase_name}`">
+        <template #left>
+          <button @click="back_to_Archive" class="button-cancel back-button">
+            Zurück
+          </button>
+        </template>
+      </AppHeader>
 
-    <AppHeader :title="`${purchase_name}`">
-      <template #left>
-        <button @click="back_to_Archive" class="button-cancel back-button">
-          Zurück
-        </button>
-      </template>
-    </AppHeader>
-
-    <div>
-      <strong>Gesamtpreis:</strong> {{ this.price || "Nicht angegeben" }} €
-    </div>
-
-    <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
-
-    <div v-else-if="purchased_products.length === 0" class="info">
-      Es wurden noch keine Produkte eingekauft.    <!-- eigentlich unnötig, da ein Einkauf nur existiert, wenn Produkte gekauft wurden -->
-    </div> 
-
-    <div v-else>
-      <div class=card-grid>
-        <ProductCard
-          v-for="product in purchased_products"
-          :key="product.produkt_id"
-          :product="product"
-          :onSettings="product_settings"
-          :hideSettings="true"
-        >
-          <template #extra>
-            <div class="produkt-beschreibung" v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
-              <p>{{ product.hinzufueger_name }}</p>
-            </div>
-          </template>
-        </ProductCard>
+      <div>
+        <strong>Gesamtpreis:</strong> {{ this.price || "Nicht angegeben" }} €
       </div>
-    </div>
 
+      <div v-if="loadingActive" class="loading">Laden...</div>
+      <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
+
+      <div v-else-if="purchased_products.length === 0" class="info">
+        Es wurden noch keine Produkte eingekauft.    <!-- eigentlich unnötig, da ein Einkauf nur existiert, wenn Produkte gekauft wurden -->
+      </div> 
+
+      <div v-else>
+        <div class=card-grid>
+          <ProductCard
+            v-for="product in purchased_products"
+            :key="product.produkt_id"
+            :product="product"
+            :onSettings="product_settings"
+            :hideSettings="true"
+          >
+            <template #extra>
+              <div class="produkt-beschreibung" v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
+                <p>{{ product.hinzufueger_name }}</p>
+              </div>
+            </template>
+          </ProductCard>
+        </div>
+      </div>
+
+    </div>
   </div>
+  
+  <BottomBar />
 </template>
 
 <script>
 import axios from 'axios';
 import AppHeader from './AppHeader.vue';
 import ProductCard from './ProductCard.vue';
-
+import BottomBar from './BottomBar.vue';
 
 export default {
   name: "ProductArchive",
   props: ["purchase_id"],
-  components: { AppHeader, ProductCard },
-
+  components: { 
+    AppHeader,
+    ProductCard,
+    BottomBar 
+  },
   data() {
       return{
           list_id: null,
@@ -63,9 +69,7 @@ export default {
           errorMessage: "",
       }
   },
-
   methods: {
-
     async getData(id) {
       try {
         const response = await axios.get(
@@ -107,10 +111,7 @@ export default {
     product_settings(product) {
       // nichts machen
     },
-        
-
   },
-
   mounted() {
     this.purchase_name = this.$route.query.purchase_name;
     this.list_id = this.$route.query.list_id;
@@ -118,7 +119,10 @@ export default {
     this.isUserArchive = this.$route.query.isUserArchive;
     this.getData(this.purchase_id);
   }
-
-
 }
 </script>
+<style scoped>
+.wrapper {
+  padding-top: 70px;
+}
+</style>
