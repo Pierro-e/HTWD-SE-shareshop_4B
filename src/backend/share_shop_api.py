@@ -383,7 +383,8 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
         "email": nutzer.email,
         "name": nutzer.name,
         "theme": nutzer.theme,
-        "color": nutzer.color
+        "color": nutzer.color,
+        "decaydays": nutzer.decaydays
     }
 
 
