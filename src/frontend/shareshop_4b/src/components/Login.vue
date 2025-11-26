@@ -54,7 +54,7 @@ export default {
       passwordFieldType: "password",
       theme: '',
       accent: '',
-      decay_days: 0.00
+      decaydays: 0.00
     };
   },
   methods: {

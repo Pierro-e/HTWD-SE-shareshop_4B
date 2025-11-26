@@ -47,23 +47,27 @@
           </div>
         </div>
 
-      <button class="button-submit" type="submit">Änderungen übernehmen</button>
+      <button class="button-submit" type="submit">Änderungen speichern</button>
       </form>
     </div>
 
     <div class="profile-settings">
-      <h2>Einstellungen für Produktvorschläge</h2>
-      <div class="form-content">
-        <div>
-          <label for="decay-days">Verfallszeitraum (Tage): </label>
-          <input v-model.number="decay_days" 
-                type="number" 
-                id="decay-days" 
-                min="0" 
-                step="1"
-          />
+      <h2>Produktvorschläge</h2>
+      <form @submit.prevent="applyDecayDays">  
+        <div class="form-content">
+          <div>
+            <label for="decay-days">Verfallszeitraum (Tage): </label>
+            <input v-model.number="decaydays" 
+                  type="number" 
+                  id="decay-days" 
+                  min="0" 
+                  step="1"
+                  required
+            />
+          </div>
         </div>
-      </div>
+        <button class="button-submit" type="submit">Änderungen speichern</button>
+      </form>
     </div> 
 
 
@@ -134,7 +138,7 @@ export default {
       currentEmail: '',
       email: '',
       password: '',
-      decay_days: 0.00,
+      decaydays: 0.00,
       message: '',
 
       errorMessage: '',
@@ -169,6 +173,7 @@ export default {
         this.name = response.data.name
         this.currentName = response.data.name
         this.email = response.data.email
+        this.decaydays = response.data.decaydays
       }  catch (error) {
         if (
           error.response &&
@@ -228,6 +233,24 @@ export default {
         case "Dunkel": return 1;
         case "Hell": return 2;
         default: return 0 // Default setzen
+      }
+    },
+
+    async applyDecayDays(){
+       try {
+          await axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/decaydays`, {
+            neue_decaydays: this.decaydays
+          })
+      } catch(error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
+          this.errorMessage = error.response.data.detail;
+        } else {
+          this.errorMessage = "Konnte Verfallszeitraum nicht hochladen!";
+        }
       }
     },
 

@@ -18,7 +18,7 @@ export default {
       name: '',
       theme: 0,
       accent: 0,
-      decay_days: 0.00
+      decaydays: 0.00
     })
 
     var theme = ref(null)
@@ -31,12 +31,12 @@ export default {
         try {
           user.value = JSON.parse(storedUser)
         } catch {
-          user.value = { id: null, email: '', name: '', theme: null, accent: null, decay_days: 0.00 }
+          user.value = { id: null, email: '', name: '', theme: null, accent: null, decaydays: 0.00 }
           localStorage.setItem('user', JSON.stringify(user.value))
         }
       }
       else { // Leerwerte setzen
-        user.value = { id: null, email: '', name: '', theme: null, accent: null, decay_days: 0.00 }
+        user.value = { id: null, email: '', name: '', theme: null, accent: null, decaydays: 0.00 }
         localStorage.setItem('user', JSON.stringify(user.value))
 
         storedUser = localStorage.getItem('user') // user erneut laden
@@ -83,7 +83,7 @@ export default {
     }
 
     function deleteUser(){
-      user.value = { id: null, email: '', name: '', theme: null, accent: null, decay_days: 0.00 }
+      user.value = { id: null, email: '', name: '', theme: null, accent: null, decaydays: 0.00 }
       localStorage.setItem('user', JSON.stringify(user.value))
 
       // Theme zurücksetzen
