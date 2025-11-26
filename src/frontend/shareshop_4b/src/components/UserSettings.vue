@@ -25,31 +25,47 @@
     <div class="appearance-settings">
       <h2>Ansicht</h2>
 
-    <form @submit.prevent="applyAppearance">
+      <form @submit.prevent="applyAppearance">
+        <div class="form-content">
+          <div>
+            <label for="theme-select">Thema: </label>
+            <select id="theme-select" v-model="theme">
+              <option>Automatisch</option>
+              <option>Dunkel</option>
+              <option>Hell</option>
+            </select>
+          </div>
+          <div>
+            <label for="accent-select">Akzentfarbe: </label>
+            <select id="accent-select" v-model="accent">
+              <option style="color: #646cff">Blau</option>
+              <option style="color: #9d60ff">Lila</option>
+              <option style="color: #4ca6a6">Grün</option>
+              <option style="color: #b25050">Rot</option>
+              <option style="color: #ca7631">Orange</option>
+            </select>
+          </div>
+        </div>
+
+      <button class="button-submit" type="submit">Änderungen übernehmen</button>
+      </form>
+    </div>
+
+    <div class="profile-settings">
+      <h2>Einstellungen für Produktvorschläge</h2>
       <div class="form-content">
         <div>
-          <label for="theme-select">Thema: </label>
-          <select id="theme-select" v-model="theme">
-            <option>Automatisch</option>
-            <option>Dunkel</option>
-            <option>Hell</option>
-          </select>
-        </div>
-        <div>
-          <label for="accent-select">Akzentfarbe: </label>
-          <select id="accent-select" v-model="accent">
-            <option style="color: #646cff">Blau</option>
-            <option style="color: #9d60ff">Lila</option>
-            <option style="color: #4ca6a6">Grün</option>
-            <option style="color: #b25050">Rot</option>
-            <option style="color: #ca7631">Orange</option>
-          </select>
+          <label for="decay-days">Verfallszeitraum (Tage): </label>
+          <input v-model.number="decay_days" 
+                type="number" 
+                id="decay-days" 
+                min="0" 
+                step="1"
+          />
         </div>
       </div>
+    </div> 
 
-    <button class="button-submit" type="submit">Änderungen übernehmen</button>
-    </form>
-    </div>
 
     <div class="user-settings">
       <h2>Profil</h2>
@@ -118,6 +134,7 @@ export default {
       currentEmail: '',
       email: '',
       password: '',
+      decay_days: 0.00,
       message: '',
 
       errorMessage: '',
