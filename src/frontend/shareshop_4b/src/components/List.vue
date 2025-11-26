@@ -1,27 +1,30 @@
 <template>
   <div class="liste">
-   
     <AppHeader :title="list_name">
-    <template #left>
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="$router.push('/listen')"
-        class="button button-cancel back-button"
-      >
-        <font-awesome-icon icon='arrow-left'/>
-      </button>
-    </template>
+      <template #left>
+        <button
+          :disabled="
+            showpopup_product || showpopup_list || showpopup_add_member
+          "
+          @click="$router.push('/listen')"
+          class="button button-cancel back-button"
+        >
+          <font-awesome-icon icon="arrow-left" />
+        </button>
+      </template>
 
-    <template #right>
-      <button
-        :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-        @click="openProductPopup()"
-        class="button button-add button-add-header"
-      >
-        <font-awesome-icon icon='plus'/>
-      </button>
-    </template>
-  </AppHeader>
+      <template #right>
+        <button
+          :disabled="
+            showpopup_product || showpopup_list || showpopup_add_member
+          "
+          @click="openProductPopup()"
+          class="button button-add button-add-header"
+        >
+          <font-awesome-icon icon="plus" />
+        </button>
+      </template>
+    </AppHeader>
 
     <div class="settings-section">
       <div class="settings-container">
@@ -32,7 +35,7 @@
           @click="openListPopup()"
           class="button button-settings"
         >
-          <font-awesome-icon icon='circle-info'/> Info
+          <font-awesome-icon icon="circle-info" /> Info
         </button>
         <button
           :disabled="
@@ -41,10 +44,10 @@
           @click="einkauf_abschließen"
           class="button button-submit button-einkauf-tätigen"
         >
-          <font-awesome-icon icon='cart-shopping'/> Einkauf
+          <font-awesome-icon icon="cart-shopping" /> Einkauf
         </button>
         <button @click="list_archive">
-          <font-awesome-icon icon='box-archive'/> Archiv
+          <font-awesome-icon icon="box-archive" /> Archiv
         </button>
       </div>
       <!--
@@ -63,7 +66,17 @@
     </div>
 
     <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
+    <div
+      v-if="
+        errorMessage &&
+        !showpopup_product &&
+        !showpopup_list &&
+        !showpopup_add_member
+      "
+      class="error"
+    >
+      {{ errorMessage }}
+    </div>
 
     <div v-if="showpopup_list" class="popup-overlay">
       <div class="popup-content">
@@ -74,10 +87,9 @@
         <div v-if="infoMessage" class="success">{{ infoMessage }}</div>
         <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
 
-
-        <br></br>
+        <br />
         <h4>Mitglieder</h4>
-        
+
         <div
           v-for="mitglied in mitglieder"
           :key="mitglied.id"
@@ -90,17 +102,20 @@
           >
             Entfernen
           </button>
-          
         </div>
-        
+
         <button @click="showpopup_list = false" class="button button-cancel">
           Schließen
         </button>
         <button @click="mitglied_hinzufügen_popup()" class="button button-add">
           Mitglied hinzufügen
         </button>
-        <button v-if="user.name == list_creator_name" @click="delete_list()" class="button-delete">
-          Liste löschen 
+        <button
+          v-if="user.name == list_creator_name"
+          @click="delete_list()"
+          class="button-delete"
+        >
+          Liste löschen
         </button>
       </div>
     </div>
@@ -115,12 +130,10 @@
           taggable
           :clearable="false"
           placeholder="Produkt eingeben..."
-          :selectable="option => option.header != true"
+          :selectable="(option) => option.header != true"
           @search="onSearch"
         >
-          <template #no-options>
-            Keine Favoriten/Vorschläge
-          </template>
+          <template #no-options> Keine Favoriten/Vorschläge </template>
         </v-select>
 
         <button @click="cancel_product_popup" class="button button-cancel">
@@ -175,7 +188,7 @@ export default {
   name: "Liste",
   inject: ["user", "getUser"],
   props: ["list_id"],
-  components: {AppHeader, ProductCard},
+  components: { AppHeader, ProductCard },
   data() {
     return {
       list_name: "",
@@ -199,7 +212,7 @@ export default {
       dropdownSelected: "",
       dropdownOptions: [],
       searchTimeout: 0,
-      prevSearchText: ""
+      prevSearchText: "",
     };
   },
   methods: {
@@ -298,7 +311,7 @@ export default {
             }
           }
         }
-        if (productNum == 0){
+        if (productNum == 0) {
           this.errorMessage = "Liste leer";
         }
       } catch (error) {
@@ -327,7 +340,8 @@ export default {
       this.showpopup_list = false;
       this.dropdownSelected = "";
 
-      this.$nextTick(() => { // warten bis das Popup da ist
+      this.$nextTick(() => {
+        // warten bis das Popup da ist
         const input = document.getElementsByClassName("vs__search")[0];
         if (input) input.setAttribute("maxlength", 30); // Länge begrenzen von Suchfeld
       });
@@ -335,31 +349,36 @@ export default {
       this.loadDropdownList(0, "");
     },
 
-    async loadDropdownList(type, searchText){
+    async loadDropdownList(type, searchText) {
       this.dropdownOptions = [];
-      if (type == 0) { // Bedarfsvorhersage/Favoriten
+      if (type == 0) {
+        // Bedarfsvorhersage/Favoriten
         try {
-          var response = await axios.get(`http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`)
+          var response = await axios.get(
+            `http://141.56.137.83:8000/bedarfsvorhersage/${this.user.id}`,
+          );
           var recommendedProducts = response.data;
 
-          response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${this.user.id}`);
+          response = await axios.get(
+            `http://141.56.137.83:8000/fav_produkte/nutzer/${this.user.id}`,
+          );
           var favoriteProducts = response.data;
 
           var tempOptions = [];
-          if (favoriteProducts.length != 0){
-            tempOptions.push({label: "Favoriten", header: true})
-            for (const product of favoriteProducts){
-              tempOptions.push({label: `${product.produkt_name}`})
+          if (favoriteProducts.length != 0) {
+            tempOptions.push({ label: "Favoriten", header: true });
+            for (const product of favoriteProducts) {
+              tempOptions.push({ label: `${product.produkt_name}` });
             }
           }
 
-          if (recommendedProducts.length != 0){
-            tempOptions.push({label: "Vorschläge", header: true})
-            for (const product of recommendedProducts){
-              tempOptions.push({label: `${product.produkt_name}`})
+          if (recommendedProducts.length != 0) {
+            tempOptions.push({ label: "Vorschläge", header: true });
+            for (const product of recommendedProducts) {
+              tempOptions.push({ label: `${product.produkt_name}` });
             }
           }
-          
+
           this.dropdownOptions = tempOptions;
           this.errorMessage = "";
         } catch (error) {
@@ -369,27 +388,27 @@ export default {
             error.response.data.detail
           ) {
             this.errorMessage = error.response.data.detail;
-            
           } else {
-            this.errorMessage = "Fehler beim Laden von Favoriten/Bedarfsvorhersage";
-          } 
+            this.errorMessage =
+              "Fehler beim Laden von Favoriten/Bedarfsvorhersage";
+          }
         }
-      } 
-      else if (type == 1) { // Suchvorschläge > mind. 1 Zeichen eingegeben
+      } else if (type == 1) {
+        // Suchvorschläge > mind. 1 Zeichen eingegeben
         try {
           const response = await axios.get(
             `http://141.56.137.83:8000/produkte/suche/`,
-            { params: { query: searchText } }
+            { params: { query: searchText } },
           );
           var suggestions = response.data;
           var tempOptions = [];
-          
-          for (const product of suggestions){
-            tempOptions.push({label: `${product.name}`})
+
+          for (const product of suggestions) {
+            tempOptions.push({ label: `${product.name}` });
           }
 
           this.dropdownOptions = tempOptions;
-          this.errorMessage = ""
+          this.errorMessage = "";
         } catch (error) {
           if (
             error.response &&
@@ -397,30 +416,33 @@ export default {
             error.response.data.detail
           ) {
             this.errorMessage = error.response.data.detail;
-            
           } else {
             this.errorMessage = "Fehler beim Laden der Vorschläge";
-          } 
+          }
           return;
         }
       }
     },
 
-    async onSearch(searchText){ // aufgerufen, wenn was ins Dropdown eingegeben wird
+    async onSearch(searchText) {
+      // aufgerufen, wenn was ins Dropdown eingegeben wird
       clearTimeout(this.searchTimeout);
 
-      if (searchText.length == 0){ // Bedarfsvorhersage/Favoriten
+      if (searchText.length == 0) {
+        // Bedarfsvorhersage/Favoriten
         this.loadDropdownList(0, "");
-      }
-      else { // Suchvorschläge > mind. 1 Zeichen eingegeben
-        if (searchText.length == 1 && this.prevSearchText.length != 2){ // sofort bei erster Eingabe suchen, nicht beim zurücklöschen
+      } else {
+        // Suchvorschläge > mind. 1 Zeichen eingegeben
+        if (searchText.length == 1 && this.prevSearchText.length != 2) {
+          // sofort bei erster Eingabe suchen, nicht beim zurücklöschen
           this.loadDropdownList(1, searchText);
         }
-        
-        this.searchTimeout = setTimeout(() => { // sonst max. jede Sekunde, um Spammen zu verhindern
+
+        this.searchTimeout = setTimeout(() => {
+          // sonst max. jede Sekunde, um Spammen zu verhindern
           this.loadDropdownList(1, searchText);
-        }, 1000)
-        this.prevSearchText = searchText
+        }, 1000);
+        this.prevSearchText = searchText;
       }
     },
 
@@ -429,10 +451,11 @@ export default {
       const user_id = this.user.id;
 
       this.errorMessage = "";
-      if (this.dropdownSelected.label){ // aus Suche/Vorschläge
+      if (this.dropdownSelected.label) {
+        // aus Suche/Vorschläge
         this.new_product = this.dropdownSelected.label;
-      }
-      else { // neu eingegeben
+      } else {
+        // neu eingegeben
         this.new_product = this.dropdownSelected;
       }
 
@@ -442,7 +465,7 @@ export default {
       }
 
       let produkt_Id;
-      
+
       try {
         // Produkt existiert schon?
         const responseCheck = await axios.get(
@@ -468,7 +491,7 @@ export default {
             ) {
               this.errorMessage = error.response.data.detail;
             } else {
-              this.errorMessage = "Fehler beim Anlegen des Produkts"; 
+              this.errorMessage = "Fehler beim Anlegen des Produkts";
             }
             return;
           }
@@ -479,7 +502,7 @@ export default {
         console.log("Fehlende Liste-, Produkt- oder Nutzer-ID");
         return;
       }
-      
+
       try {
         await axios.post(
           `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`,
@@ -492,39 +515,42 @@ export default {
             error.response.data.detail ||
             "Unbekannter Fehler beim Hinzufügen des Produkts zur Liste";
         }
-       return;
+        return;
       }
-      
+
       // ist neues Produkt ein Favorit?
-      const response = await axios.get(`http://141.56.137.83:8000/fav_produkte/nutzer/${user_id}`);
+      const response = await axios.get(
+        `http://141.56.137.83:8000/fav_produkte/nutzer/${user_id}`,
+      );
       var favoriteProducts = response.data;
 
-      var favFound = false
-      var favData = null
-      var favID = 0
+      var favFound = false;
+      var favData = null;
+      var favID = 0;
 
-      for (const product of favoriteProducts){
-        if (product.produkt_name === this.new_product.trim()){
+      for (const product of favoriteProducts) {
+        if (product.produkt_name === this.new_product.trim()) {
           favID = product.produkt_id;
           favData = {
             produkt_menge: product.menge,
             einheit_id: product.einheit_id,
             beschreibung: product.beschreibung,
-          }
-          favFound = true
-          break
+          };
+          favFound = true;
+          break;
         }
       }
 
       // bei Favorit: Produkt mit Beschreibung, Menge+Einheit updaten!
-      if (favFound){
+      if (favFound) {
         try {
           await axios.put(
             `http://141.56.137.83:8000/listen/${list_id}/produkte/${favID}/nutzer/${user_id}`,
-            favData
+            favData,
           );
         } catch (error) {
-          this.errorMessage = error.response?.data?.detail || "Fehler beim Speichern";
+          this.errorMessage =
+            error.response?.data?.detail || "Fehler beim Speichern";
           return;
         }
       }
@@ -649,16 +675,20 @@ export default {
         params: {
           listenId,
           produktId,
-          nutzerId
+          nutzerId,
         },
         query: {
-          readonly: false
-        }
+          readonly: false,
+        },
       });
     },
 
-
     einkauf_abschließen() {
+      if (this.listenprodukte.length === 0) {
+        this.errorMessage = "Was willst du einkaufen?!";
+        return;
+      };
+
       const list_id = this.list_id || this.$route.params.id;
 
       this.$router.push(`/list/${list_id}/einkauf`);
@@ -667,20 +697,24 @@ export default {
     list_archive() {
       const list_id = this.list_id || this.$route.params.id;
       const list_name = this.list_name;
-      this.$router.push({ 
-        name: "ListArchive", 
-        params: { list_id},
-        query: { list_name } 
+      this.$router.push({
+        name: "ListArchive",
+        params: { list_id },
+        query: { list_name },
       });
     },
 
     async delete_list() {
-      if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
+      if (
+        !confirm(
+          "Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!",
+        )
+      ) {
         return;
       }
       this.errorMessage = "";
       this.infoMessage = ""; // Nachricht vor dem Versuch löschen
-      
+
       try {
         // Sicherstellen, dass die ID korrekt verwendet wird
         const list_id = this.list_id || this.$route.params.id;
@@ -691,19 +725,17 @@ export default {
         setTimeout(() => {
           this.$router.push("/listen");
         }, 2000);
-
       } catch (error) {
         console.error("Fehler beim Löschvorgang:", error);
         // zentralistiertte Fehlerbehandlung basierend auf der Backend-Antwort
-        if (
-          error.response &&
-          error.response.status === 404
-        ) {
+        if (error.response && error.response.status === 404) {
           // Fehlermeldung vom Backend: "Liste nicht gefunden"
-          this.errorMessage = error.response.data.detail || "Liste nicht gefunden.";
+          this.errorMessage =
+            error.response.data.detail || "Liste nicht gefunden.";
         } else {
           // Generischer Fehler
-          this.errorMessage = "Serverfehler oder unerwarteter Fehler beim Löschen der Liste.";
+          this.errorMessage =
+            "Serverfehler oder unerwarteter Fehler beim Löschen der Liste.";
         }
       }
     },
@@ -746,7 +778,7 @@ export default {
 }
 
 .settings-container button {
-  padding: 0.5em 1.0em;
+  padding: 0.5em 1em;
 }
 
 /*
@@ -758,7 +790,7 @@ export default {
   position: fixed;
   bottom: 0px;
   left: 0;
-  padding-top: 10px; 
+  padding-top: 10px;
   padding-bottom: 5px;
   justify-content: center;
   align-items: center;

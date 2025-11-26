@@ -29,7 +29,7 @@ import AppHeader from "../AppHeader.vue";
 import { inject, ref } from "vue";
 
 export default {
-  inject: ["updateFavorites"],
+  inject: ["updateFavorites", "favorites"],
   components: {
     PopUp,
     AddFav,
@@ -39,16 +39,8 @@ export default {
   },
   data() {
     return {
-      errMsg: "",
       add_fav: false,
-      favorites: inject("favorites"),
-      user: inject("user"),
     };
-  },
-  methods: {
-    async get_favs() {
-      this.updateFavorites();
-    },
   },
   mounted() {
     this.updateFavorites();

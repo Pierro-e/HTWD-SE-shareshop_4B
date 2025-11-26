@@ -21,6 +21,7 @@ export default {
     });
 
     const favorites = ref([]);
+    const products = ref([]);
 
     var theme = ref(null);
     var accent = ref(null);
@@ -157,6 +158,37 @@ export default {
       }
     }
 
+    // Produkte aktualisieren
+    async function updateProducts() {
+      try {
+        const id = this.$route.params.listenId;
+        const response = await axios.get(
+          `http://141.56.137.83:8000/listen/${id}/produkte`,
+        );
+        products.value = response.data;
+        //console.log(JSON.stringify(response.data, null, 2));
+
+        for (const produkt of products.value) {
+          // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
+          if (
+            produkt.produkt_menge !== undefined &&
+            produkt.produkt_menge !== null
+          ) {
+            const menge = Number(produkt.produkt_menge);
+            // Prüfen ob die Zahl eine ganze Zahl ist
+            if (Number.isInteger(menge)) {
+              produkt.produkt_menge = menge.toString(); // z.B. 5 statt 5.00
+            } else {
+              // andernfalls auf 2 Nachkommastellen runden (falls notwendig)
+              produkt.produkt_menge = menge.toFixed(2);
+            }
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
     provide("user", user);
     provide("setUser", setUser);
     provide("getUser", getUser);
@@ -166,6 +198,8 @@ export default {
     provide("fetchUnits", fetchUnits);
     provide("favorites", favorites);
     provide("updateFavorites", updateFavorites);
+    provide("products", products);
+    provide("updateProducts", updateProducts);
 
     return {};
   },

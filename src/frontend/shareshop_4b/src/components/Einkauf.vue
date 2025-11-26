@@ -1,10 +1,11 @@
 <template>
   <div class="einkauf">
-    <AppHeader :title="list_name">
-      <template #left><BackButton /></template>
-
+    <AppHeader title="list_name">
+      <template #left>
+        <BackButton />
+      </template>
       <template #right>
-        <button @click="prepare_purchase" class="button button-submit">
+        <button @click="commit_purchase = true" class="button button-submit">
           <font-awesome-icon icon="check" />
         </button>
       </template>
@@ -16,7 +17,7 @@
     <div :style="{ paddingTop: errorMessage ? '0' : '80px' }"></div>
     <div class="card-grid">
       <ProductCard
-        v-for="(product, index) in listenprodukte"
+        v-for="(product, index) in products"
         :key="index"
         :product="product"
         :onSettings="product_settings"
@@ -36,18 +37,17 @@
 
     <PopUp
       v-if="commit_purchase"
-      @confirm="set_price"
       @close="commit_purchase = false"
+      name="Einkauf abschließen"
     >
-      <div>
-        <FinishShopping> </FinishShopping>
-      </div>
+      <FinishShopping />
     </PopUp>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import { ref, provide } from "vue";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
 import PopUp from "./PopUp.vue";
@@ -56,23 +56,21 @@ import BackButton from "./navigation/BackButton.vue";
 
 export default {
   name: "Einkauf",
-  inject: ["user", "getUser"],
+  inject: ["user", "getUser", "products", "updateProducts"],
   props: ["list_id"],
   components: { AppHeader, ProductCard, PopUp, FinishShopping, BackButton },
-
   data() {
     return {
       list_name: "",
       errorMessage: "",
       loadingActive: true,
       listenprodukte: [],
-      userData: null,
       commit_purchase: false,
       totalPrice: 0,
     };
   },
   methods: {
-    async get_list(id) {
+    async setListName(id) {
       this.errorMessage = "";
       try {
         const response = await axios.get(
@@ -89,143 +87,13 @@ export default {
       this.loadingActive = false;
     },
 
-    async get_products(id) {
-      this.errorMessage = "";
-      try {
-        const response = await axios.get(
-          `http://141.56.137.83:8000/listen/${id}/produkte`,
-        );
-        this.listenprodukte = response.data;
-        //console.log(JSON.stringify(response.data, null, 2));
-
-        for (const produkt of this.listenprodukte) {
-          // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
-          if (
-            produkt.produkt_menge !== undefined &&
-            produkt.produkt_menge !== null
-          ) {
-            const menge = Number(produkt.produkt_menge);
-            // Prüfen ob die Zahl eine ganze Zahl ist
-            if (Number.isInteger(menge)) {
-              produkt.produkt_menge = menge.toString(); // z.B. 5 statt 5.00
-            } else {
-              // andernfalls auf 2 Nachkommastellen runden (falls notwendig)
-              produkt.produkt_menge = menge.toFixed(2);
-            }
-          }
-        }
-      } catch (error) {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.detail
-        ) {
-          this.errorMessage = error.response.data.detail;
-        } else {
-          this.errorMessage = "Fehler beim Laden der Produkte";
-        }
-      }
-      this.loadingActive = false;
-    },
-
-    prepare_purchase() {
-      if (!this.listenprodukte || this.listenprodukte.length === 0) {
-        this.errorMessage = "Keine Produkte vorhanden!";
-        return;
-      }
-      const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
-
-      if (erledigteProdukte.length === 0) {
-        alert("Es sind keine Produkte abgehakt!");
-        return;
-      }
-
-      this.totalPrice = 0;
-
-      this.errorMessage = "";
-      this.commit_purchase = true;
-    },
-
-    async einkauf_abschließen() {
-      this.errorMessage = "";
-      const list_id = this.list_id || this.$route.params.listenId;
-      const price = this.totalPrice;
-      const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
-      try {
-        const response = await axios.post(
-          `http://141.56.137.83:8000/create/einkaufsarchiv/list/${list_id}`,
-          {
-            eingekauft_von: this.userData.id,
-            gesamtpreis: price,
-          },
-        );
-
-        const purchase_id = response.data.einkauf_id;
-
-        await Promise.all(
-          erledigteProdukte.map((produkt) =>
-            axios.post(
-              `http://141.56.137.83:8000/create/eingekaufte_produkte/einkauf/${purchase_id}`,
-              {
-                produkt_id: produkt.produkt_id,
-                produkt_menge: produkt.produkt_menge,
-                einheit_id: produkt.einheit_id,
-                hinzugefuegt_von: produkt.hinzugefügt_von,
-                beschreibung: produkt.beschreibung,
-              },
-            ),
-          ),
-        );
-
-        await Promise.all(
-          erledigteProdukte.map((produkt) =>
-            axios.post(
-              `http://141.56.137.83:8000/bedarfsvorhersage_create/nutzer/${produkt.hinzugefügt_von}`,
-              {
-                produkt_id: produkt.produkt_id,
-              },
-            ),
-          ),
-        );
-
-        await Promise.all(
-          erledigteProdukte.map((produkt) =>
-            axios.delete(
-              `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt.produkt_id}`,
-              {
-                data: {
-                  hinzugefügt_von: produkt.hinzugefügt_von,
-                },
-              },
-            ),
-          ),
-        );
-
-        this.$router.push(`/list/${list_id}`);
-      } catch (error) {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.detail
-        ) {
-          this.errorMessage = error.response.data.detail;
-        } else {
-          this.errorMessage = "Fehler beim Abschließen des Einkaufs.";
-        }
-      }
-      this.totalPrice = 0;
-    },
     product_settings(produkt) {
       // nichts machen
     },
   },
-
   mounted() {
-    this.errorMessage = "";
-    const id = this.list_id || this.$route.params.listenId;
-    this.userData = this.user;
-    this.get_list(id);
-    this.get_products(id);
+    this.updateProducts();
+    this.setListName(this.$route.params.listenId);
   },
 };
 </script>
