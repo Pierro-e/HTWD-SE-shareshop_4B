@@ -203,6 +203,8 @@ export default {
   text-align: center;
   justify-content: center;
   margin-bottom: 0.5em;
+  word-break: break-word;
+  word-wrap: break-word;  
   width: 100%;
 }
 
@@ -248,14 +250,8 @@ select {
   max-width: 210px;
 }
 
-@media (max-width: 480px) {
-  .product-detail {
-    padding: 1rem 1rem;
-  }
-
-  button.button-delete,
-  button.button-submit {
-    width: 100%;
-  }
+button.button-delete,
+button.button-submit {
+  width: 100%;
 }
 </style>

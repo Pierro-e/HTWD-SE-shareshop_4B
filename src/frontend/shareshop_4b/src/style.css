@@ -460,6 +460,7 @@ form select {
 }
 
 .button-product-settings {
+  color: var(--text-color);
   background: none;
   border: none;
   font-size: 1.2em;
