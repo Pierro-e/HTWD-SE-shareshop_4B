@@ -10,7 +10,7 @@
       </h3>
 
       <button v-if="!hideSettings" @click="onSettings(product)" class="button button-product-settings">
-        ✏️
+        <font-awesome-icon icon='pen'/>
       </button>
     </div>
 
