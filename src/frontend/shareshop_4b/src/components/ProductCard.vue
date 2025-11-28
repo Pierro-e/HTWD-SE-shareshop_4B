@@ -1,6 +1,6 @@
 <template>
   <div class="card" :class="{ erledigt: product.erledigt }">
-    <div class="card-header">
+    <div class="card-header" :class="{ 'card-header-buy': hideSettings }">
       <!-- Identische Struktur bei Einkauf und Liste, nur Unterschiede bei z.B Checkbox-Slot für Einkauf.
        dieser wird von List.vue nicht genutzt -->
       <slot name="left"></slot>
@@ -45,4 +45,3 @@ export default {
   }
 };
 </script>
-

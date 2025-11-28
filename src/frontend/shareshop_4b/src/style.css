@@ -389,6 +389,12 @@ form select {
   align-items: center; /* Button und Name auf gleicher Höhe */
 }
 
+.card-header-buy { /* bei Einkauf */
+  gap: 0.5em;
+  justify-content: left;
+  align-items: center;
+}
+
 .card {
   max-width: 400px;
   min-width: 275px;
