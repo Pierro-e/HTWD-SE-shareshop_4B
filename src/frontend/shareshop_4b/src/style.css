@@ -154,13 +154,6 @@ a:hover {
   color: #535bf2;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0.5rem;
-  text-align: center;
-}
-
 html, body {
   margin: 0;
   padding: 0;
@@ -169,8 +162,16 @@ html, body {
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
-  min-height: calc(100vh - 30px);
-  padding-bottom: 30px; /* für BottomBar */
+}
+
+#app {
+  width: 97%;
+  max-width: 1280px;
+  padding-top: 0.5em;
+  padding-bottom: 35px; /* für BottomBar */
+  padding-left: 0.5em;
+  padding-right: 1em;
+  text-align: center;
 }
 
 h1 {
@@ -389,7 +390,7 @@ form select {
 }
 
 .card {
-  max-width: 350px;
+  max-width: 400px;
   min-width: 275px;
   background-color: var(--box-bg-color);
   border: 1px solid var(--accent-button-color);
@@ -399,6 +400,12 @@ form select {
   box-shadow: 0 1px 2px var(--box-shadow-color);
   transition: box-shadow 0.3s ease;
   gap: 1em;
+}
+
+@media (max-width: 400px) {
+  .card {
+    min-width: 80vw;
+  }
 }
 
 .card:hover {
