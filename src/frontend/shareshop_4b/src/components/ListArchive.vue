@@ -85,9 +85,9 @@ export default {
     },
 
     formatDate(dateStr) {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("de-DE");  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
+      if (!dateStr) return "";
+      const date = new Date(dateStr);
+      return date.toLocaleDateString("de-DE");  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
     },
   },
   mounted() {

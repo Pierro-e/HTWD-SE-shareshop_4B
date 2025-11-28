@@ -37,9 +37,6 @@ export default {
   name: "BottomBar",
   props: {
     highlightBtn: { type: Number }
-  },
-  mounted() {
-    console.log(this.highlightBtn);
   }
 };
 </script>

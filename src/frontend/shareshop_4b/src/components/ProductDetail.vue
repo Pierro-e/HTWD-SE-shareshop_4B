@@ -1,40 +1,45 @@
 <template>
-  <div class="product-detail">
-    <AppHeader :title="name + String(' bearbeiten')">
-      <template #left>
-        <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">
-          <font-awesome-icon icon='xmark'/>
-        </button>
-      </template>
+  <div class="wrapper">
+    <div class="product-detail">
+      <AppHeader :title="name + String(' bearbeiten')">
+        <template #left>
+          <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">
+            <font-awesome-icon icon='xmark'/>
+          </button>
+        </template>
 
-    </AppHeader>
-    <form @submit.prevent="saveProduct">
-      <div class="form-group">
-        <label for="beschreibung">Beschreibung:</label>
-        <textarea id="beschreibung" v-model="beschreibung"></textarea>
-      </div>
+      </AppHeader>
+      <form @submit.prevent="saveProduct">
+        <label for="einheit">Hinzugefügt von: </label>
+        <div class="form-group">{{ hinzufueger_name }}</div>
 
-      <div class="form-group">
-        <label for="einheit">Einheit:</label>
-        <select id="einheit" v-model="einheit">
-          <option disabled value="">Bitte wählen</option>
-          <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
-        </select>
-      </div>
+        <div class="form-group">
+          <label for="beschreibung">Beschreibung:</label>
+          <textarea id="beschreibung" v-model="beschreibung"></textarea>
+        </div>
 
-      <div class="form-group">
-        <label for="menge">Menge:</label>
-        <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
-      </div>
+        <div class="form-group">
+          <label for="einheit">Einheit:</label>
+          <select id="einheit" v-model="einheit">
+            <option disabled value="">Bitte wählen</option>
+            <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
+          </select>
+        </div>
 
-      <div class="button-row">
-        <button type="button" class="button-delete" @click="deleteProduct">Löschen</button>
-        <button type="submit" class="button-submit">Speichern</button>
-      </div>
-    </form>
+        <div class="form-group">
+          <label for="menge">Menge:</label>
+          <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
+        </div>
 
-    <div v-if="message" class="success">{{ message }}</div>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+        <div class="button-row">
+          <button type="button" class="button-delete" @click="deleteProduct">Löschen</button>
+          <button type="submit" class="button-submit">Speichern</button>
+        </div>
+      </form>
+
+      <div v-if="message" class="success">{{ message }}</div>
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    </div>
   </div>
 
   <BottomBar 
@@ -61,6 +66,7 @@ export default {
       menge: "",
       einheit: "",
       hinzugefügt_von: null,
+      hinzufueger_name: "",
       einheiten: [],
       errorMessage: "",
       message: "",
@@ -93,6 +99,7 @@ export default {
         this.menge = produkt.produkt_menge || "";
         this.einheit = produkt.einheit_id || "";
         this.beschreibung = produkt.beschreibung || "";
+        this.hinzufueger_name = produkt.hinzufueger_name || "";
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Laden des Produkts.";
       }
@@ -174,14 +181,16 @@ export default {
 </script>
 
 <style scoped>
+.wrapper {
+  padding-top: 4em;
+}
+
 .product-detail {
   min-width: 250px;
   max-width: 720px;
   padding: 1rem 1.3rem;
   background-color: var(--box-bg-color);
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   box-shadow: 0 4px 12px var(--box-shadow-color);
 }
@@ -240,14 +249,8 @@ select {
     padding: 1rem 1rem;
   }
 
-  .button-row {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
   button.button-delete,
   button.button-submit {
-    min-width: auto;
     width: 100%;
   }
 }
