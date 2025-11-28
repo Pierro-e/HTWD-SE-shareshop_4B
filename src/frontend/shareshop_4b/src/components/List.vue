@@ -161,7 +161,9 @@
       :onSettings="product_settings"
     />
   </div>
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="1"
+  />
     
 </template>
 
@@ -174,7 +176,6 @@ import BottomBar from "./BottomBar.vue";
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
-  props: ["list_id"],
   components: {
     AppHeader, 
     ProductCard, 

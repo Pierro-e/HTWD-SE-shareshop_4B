@@ -113,7 +113,9 @@
       <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </div>
   </div>
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="4"
+  />
 </template>
 
 <script>

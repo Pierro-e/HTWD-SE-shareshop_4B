@@ -37,7 +37,9 @@
     <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   </div>
 
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="1"
+  />
 </template>
 
 <script>

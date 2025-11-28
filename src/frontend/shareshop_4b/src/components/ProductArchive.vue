@@ -41,7 +41,9 @@
     </div>
   </div>
   
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="2"
+  />
 </template>
 
 <script>

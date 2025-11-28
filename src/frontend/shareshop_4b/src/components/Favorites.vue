@@ -25,8 +25,9 @@
       <AddFav @load_fav="get_favs" />
     </PopUp>
     
-  <BottomBar />
-
+  <BottomBar 
+    :highlight-btn="3"
+  />
 </template>
 
 <script>

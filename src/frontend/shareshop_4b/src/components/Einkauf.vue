@@ -55,7 +55,9 @@
     </div>
   </PopUp>
 
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="1"
+  />
 </template>
 
 <script>
