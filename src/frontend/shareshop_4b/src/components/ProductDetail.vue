@@ -1,16 +1,18 @@
 <template>
   <div class="product-detail">
-    <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">abbrechen</button>
+    <AppHeader :title="name + String(' bearbeiten')">
+      <template #left>
+        <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">
+          <font-awesome-icon icon='xmark'/>
+        </button>
+      </template>
 
-    <h2 class="product-name">{{ name }}</h2>
-
+    </AppHeader>
     <form @submit.prevent="saveProduct">
       <div class="form-group">
         <label for="beschreibung">Beschreibung:</label>
         <textarea id="beschreibung" v-model="beschreibung"></textarea>
       </div>
-
-
 
       <div class="form-group">
         <label for="einheit">Einheit:</label>
@@ -41,9 +43,13 @@
 <script>
 import axios from "axios";
 import BottomBar from "./BottomBar.vue";
+import AppHeader from "./AppHeader.vue";
 
 export default {
-  components: { BottomBar },
+  components: { 
+    AppHeader,
+    BottomBar
+  },
   props: ["produktId", "listenId", "nutzerId"],
   data() {
     return {
