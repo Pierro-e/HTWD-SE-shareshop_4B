@@ -179,6 +179,7 @@ import BottomBar from "./BottomBar.vue";
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
+  props: ["list_id"],
   components: {
     AppHeader, 
     ProductCard, 
