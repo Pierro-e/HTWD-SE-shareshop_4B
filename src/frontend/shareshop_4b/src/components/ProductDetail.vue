@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <div class="product-detail">
-      <AppHeader :title="name + String(' bearbeiten')">
+      <AppHeader :title="this.$route.query.list_name">
         <template #left>
           <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">
             <font-awesome-icon icon='xmark'/>
@@ -10,6 +10,8 @@
 
       </AppHeader>
       <form @submit.prevent="saveProduct">
+        <div class="product-name">{{ name }}</div>
+
         <label for="einheit">Hinzugefügt von: </label>
         <div class="form-group">{{ hinzufueger_name }}</div>
 
@@ -197,8 +199,10 @@ export default {
 
 .product-name {
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 2em;
   text-align: center;
+  justify-content: center;
+  margin-bottom: 0.5em;
   width: 100%;
 }
 

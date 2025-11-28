@@ -646,6 +646,7 @@ export default {
 
     product_settings(product) {
       const listenId = this.list_id || this.$route.params.id;
+      const listenName = this.list_name;
       const produktId = product.produkt_id;
       const nutzerId = product.hinzugefügt_von;
 
@@ -657,7 +658,7 @@ export default {
           nutzerId
         },
         query: {
-          readonly: false
+          list_name: listenName
         }
       });
     },

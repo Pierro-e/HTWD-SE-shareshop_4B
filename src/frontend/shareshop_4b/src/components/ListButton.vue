@@ -8,7 +8,7 @@
 
     <div class="card-info" v-if="item.ersteller_name">
       <span>
-        <strong>Ersteller:</strong> {{ item.ersteller_name  }}
+        <strong>Ersteller:</strong> {{ item.ersteller_name }}
       </span>
     </div>
     <div class="card-info" v-else-if="item.gesamtpreis">

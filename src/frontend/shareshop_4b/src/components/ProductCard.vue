@@ -41,7 +41,7 @@ export default {
   props: {
     product: { type: Object, required: true },
     onSettings: { type: Function, required: false },
-    hideSettings: { type: Boolean, default: false } //true, wenn es ein Archivprodukt ist
+    hideSettings: { type: Boolean, default: false } // true, wenn es ein Archivprodukt ist
   }
 };
 </script>
