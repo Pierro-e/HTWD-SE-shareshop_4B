@@ -66,12 +66,13 @@ export default {
   width: 100%;
   flex-direction: column;
   align-items: center;
-  color: var(--text-color);
+  color: var(--text-color2);
   background: none;
   border: none;
 }
 
 .highlight {
+  color: var(--text-color);
   background-color: var(--box-shadow-color);
   font-weight: 800;
 }

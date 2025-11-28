@@ -58,6 +58,7 @@
 [css-theme="Hell"] {
   --bg-color: #ececec;
   --text-color: #000000;
+  --text-color2: #363636;
 
   --inputbox-color: #000000;
   --inputbox-bg-color: #e6e6e6;
@@ -78,6 +79,7 @@
 [css-theme="Dunkel"] {
   --bg-color: #111111;
   --text-color: #ffffff;
+  --text-color2: #cfcfcf;
 
   --inputbox-color: #ffffff;
   --inputbox-bg-color: #3a3a3a;
@@ -100,6 +102,7 @@
   [css-theme="Automatisch"] {
     --bg-color: #ececec;
     --text-color: #000000;
+    --text-color2: #363636;
 
     --inputbox-color: #000000;
     --inputbox-bg-color: #e6e6e6;
@@ -122,6 +125,7 @@
   [css-theme="Automatisch"] {
     --bg-color: #111111;
     --text-color: #ffffff;
+    --text-color2: #cfcfcf;
 
     --inputbox-color: #ffffff;
     --inputbox-bg-color: #3a3a3a;
@@ -398,6 +402,7 @@ form select {
 }
 
 .card:hover {
+  color: var(--text-color);
   background-image: linear-gradient(to bottom, var(--box-bg-color), var(--box-bg-color2));
   outline: 2px solid var(--accent-button-color);
   outline-offset: -1px;
@@ -414,7 +419,7 @@ form select {
 
 .card-info {
   font-size: 1rem; /* 14px */
-  color: var(--text-color);
+  color: var(--text-color2);
   font-weight: 450;
   display: flex;
   gap: 0.5rem;
@@ -423,13 +428,13 @@ form select {
 
 .card-info strong {
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--text-color2);
   text-align: left;
 }
 
 .card-beschreibung {
   font-size: 1rem;
-  color: var(--text-color);
+  color: var(--text-color2);
   font-weight: 450;
   margin-top: 0.5rem;
   word-break: break-word;
