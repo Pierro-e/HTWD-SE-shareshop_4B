@@ -62,6 +62,9 @@
 
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
+  <div v-if="productNum === 0" class="info">
+      Liste leer
+    </div>
 
   <div v-if="showpopup_list" class="popup-overlay">
     <div class="popup-content">
@@ -188,6 +191,7 @@ export default {
       list_creator_name: "",
       errorMessage: "",
       infoMessage: "",
+      productNum: -1,
       loadingActive: true,
       showpopup_product: false,
       showpopup_list: false,
@@ -285,9 +289,9 @@ export default {
         );
         this.listenprodukte = response.data;
 
-        let productNum = 0;
+        this.productNum = 0;
         for (const produkt of this.listenprodukte) {
-          productNum++;
+          this.productNum++;
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
             produkt.produkt_menge !== undefined &&
@@ -302,9 +306,6 @@ export default {
               produkt.produkt_menge = menge.toFixed(2);
             }
           }
-        }
-        if (productNum == 0){
-          this.errorMessage = "Liste leer";
         }
       } catch (error) {
         if (
@@ -663,6 +664,10 @@ export default {
 
 
     einkauf_abschließen() {
+      if (this.productNum == 0){
+        alert("Liste ist leer! Füge Produkte hinzu, um einzukaufen!");
+        return;
+      }
       const list_id = this.list_id || this.$route.params.id;
 
       this.$router.push(`/list/${list_id}/einkauf`);
