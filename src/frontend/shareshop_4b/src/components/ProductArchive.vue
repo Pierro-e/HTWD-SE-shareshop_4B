@@ -12,6 +12,7 @@
       <div>
         <strong>Gesamtpreis:</strong> {{ this.price || "Nicht angegeben" }} €
       </div>
+      <br>
 
       <div v-if="loadingActive" class="loading">Laden...</div>
       <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -30,8 +31,8 @@
             :hideSettings="true"
           >
             <template #extra>
-              <div class="produkt-beschreibung" v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
-                <p>{{ product.hinzufueger_name }}</p>
+              <div v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
+                {{ product.hinzufueger_name }}
               </div>
             </template>
           </ProductCard>
