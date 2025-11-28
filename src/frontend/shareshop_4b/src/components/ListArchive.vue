@@ -4,7 +4,7 @@
     <AppHeader :title="`Einkaufsarchiv für\n${this.listName}`">
       <template #left>
         <button @click="back_to_list" class="button-cancel back-button">
-          Zurück
+          <font-awesome-icon icon='arrow-left'/>
         </button>
       </template>
     </AppHeader>
