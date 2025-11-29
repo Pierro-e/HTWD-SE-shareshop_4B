@@ -1,0 +1,21 @@
+= Test Konzept
+
+== statisch
+
+* link:statische_tests/python[Python]
+* link:statische_tests/vue[Vue]
+* link:statische_tests/asciidoc[AsciiDoc]
+
+== dynamisch
+
+=== Verifikation
+
+==== Modultest
+
+==== Integrationstest
+
+==== Systemtest
+
+=== Validierung
+
+==== Abnahmetest
