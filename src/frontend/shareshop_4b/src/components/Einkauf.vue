@@ -40,6 +40,7 @@
 
   <PopUp
     v-if="commit_purchase"
+    name="Einkauf abschließen"
     @close="commit_purchase = false"
   >
     <div class="popup-field">
