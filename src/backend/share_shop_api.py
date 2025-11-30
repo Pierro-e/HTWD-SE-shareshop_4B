@@ -752,9 +752,10 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
         # wenn counter < 0.00024036947641951407 rausschmeißen oder mehr als 10 produkte 
         # --> anhand des aktualisisteren Counters und dem PK (aus neu erstellter Liste) die Produkte rausschmeißen aus der DB --> db.commit()
     
+    berechnete_eintraege.sort(key=lambda x: x[1], reverse=True)
+ 
     if len(berechnete_eintraege) > 10:
         # nach counter sortieren und nur die Top 10 behalten
-        berechnete_eintraege.sort(key=lambda x: x[1], reverse=True)
         zu_loeschende_eintraege = berechnete_eintraege[10:]
         berechnete_eintraege = berechnete_eintraege[:10]
         for eintrag, _ in zu_loeschende_eintraege:
