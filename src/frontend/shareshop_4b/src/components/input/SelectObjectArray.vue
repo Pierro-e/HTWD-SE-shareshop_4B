@@ -2,7 +2,7 @@
   <label>
     {{ label }}
     <select :value="choice" @change="onChange">
-      <option value="">Keine Angabe</option>
+      <option disabled value="">Keine Angabe</option>
       <option
         v-for="(option, index) in options"
         :key="index"
