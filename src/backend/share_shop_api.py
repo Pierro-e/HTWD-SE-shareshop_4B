@@ -732,7 +732,8 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
 
     now = datetime.now(timezone.utc)
 
-    treshold = 0.00024036947641951407  # bei diesem counter wird der eintrag gelöscht
+    treshold = 0 
+    # alt:0.00024036947641951407  # bei diesem counter wird der eintrag gelöscht
 
     berechnete_eintraege = []  
     decayDays_float = float(decayDays) 
@@ -740,7 +741,9 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
     for eintrag in eintraege:
         # Tage seit last_bought
         deltaDays = max(0,(now.date() - eintrag.last_bought.date()).days)
-        new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
+        new_counter = float(eintrag.counter) * np.maximum( 0, 1 - deltaDays / decayDays_float )
+        
+        # alt (exponentiell): new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
 
 
         if new_counter <= treshold:
