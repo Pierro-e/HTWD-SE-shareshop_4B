@@ -51,7 +51,7 @@
         min="0"
         step="1"
       />
-      <button @click="set_price" class="button button-submit"> </button>
+      <button @click="set_price" class="button button-submit">Speichern</button>
     </div>
   </PopUp>
 
