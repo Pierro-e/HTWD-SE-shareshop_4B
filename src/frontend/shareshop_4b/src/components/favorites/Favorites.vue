@@ -24,7 +24,6 @@ import axios from "axios";
 import AddFav from "./AddFav.vue";
 import FavItem from "./FavItem.vue";
 import PopUp from "../PopUp.vue";
-import Grid from "../Grid.vue";
 import AppHeader from "../AppHeader.vue";
 import { inject, ref } from "vue";
 
@@ -33,7 +32,6 @@ export default {
   components: {
     PopUp,
     AddFav,
-    Grid,
     FavItem,
     AppHeader,
   },
