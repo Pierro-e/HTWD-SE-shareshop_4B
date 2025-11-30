@@ -10,9 +10,9 @@
     </template>
   </AppHeader>
 
-  <Grid>
+  <div class="card-grid">
     <FavItem v-for="f in favorites" :fav="f"/>
-  </Grid>
+  </div>
 
   <PopUp v-if="add_fav" @close="add_fav = false" name="Favoriten hinzufügen">
     <AddFav/>
