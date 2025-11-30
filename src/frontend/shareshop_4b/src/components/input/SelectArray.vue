@@ -1,9 +1,9 @@
 <template>
   <label>
-    {{ label }}
-    <select v-model="local_choice">
-      <option v-for="i in opts" :key="i" :value="i">
-        {{ i[display] }}
+    {{ label }} - {{ choice }}
+    <select>
+      <option v-for="(i, index) in opts" :key="i.id" :value="i">
+        {{ i.name }}
       </option>
     </select>
   </label>

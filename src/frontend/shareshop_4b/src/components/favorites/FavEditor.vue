@@ -3,7 +3,7 @@
     <TextInput v-model:text="fav.beschreibung" label="Beschreibung" />
     <NumInput v-model:num="fav.menge" label="Menge" />
     <SelectArray
-      v-model:choice="fav_unit"
+      v-model:choice="fav.einheit_id"
       :opts="units"
       display="name"
       label="Einheit"
@@ -60,19 +60,13 @@ export default {
   async mounted() {
     try {
       this.units = await this.fetchUnits();
+
+      const url = "http://141.56.137.83:8000/einheiten/" + this.fav.einheit_id;
+      const response = await axios.get(url);
+      this.fav_unit = response.data.id;
     } catch (error) {
       console.log(error);
       return;
-    }
-    if (this.fav.einheit_id) {
-      const url = "http://141.56.137.83:8000/einheiten/" + this.fav.einheit_id;
-      try {
-        const response = await axios.get(url);
-      } catch (error) {
-        console.log(error);
-        return;
-      }
-      this.fav_unit = response.data;
     }
   },
 };
