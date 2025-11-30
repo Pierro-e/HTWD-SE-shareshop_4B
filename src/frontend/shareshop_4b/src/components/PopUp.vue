@@ -31,7 +31,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 0;
-  border-radius: 0;
+  border: none;
 }
 
 .popup {
