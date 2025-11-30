@@ -1,27 +1,34 @@
 <template>
-  <!-- Eingaben -->
-  <TextInput v-model:text="fav_name" placeholder="Banane" />
-  <TextInput v-model:text="fav_desc" placeholder="leicht unreif" />
-  <NumInput v-model:num.number="fav_amount" />
-  <SelectArray v-model:choice="fav_unit" :opts="units" display="name" />
+  <form @submit.prevent="addFavorite">
+    <TextInput v-model:text="favName" placeholder="Banane" label="Name" />
+    <TextInput
+      v-model:text="favDesc"
+      placeholder="leicht unreif"
+      label="Beschreibung"
+    />
+    <NumInput v-model:num.number="favAmount" label="Menge" />
+    <SelectArray
+      v-model:choice="favUnit"
+      :opts="units"
+      display="name"
+      label="Einheit"
+    />
+    <button type="submit" class="form-element button-submit">Hinzufügen</button>
+  </form>
 
   <!-- Fehler Meldungen -->
   <div v-if="errMsg" class="error">{{ errMsg }}</div>
-
-  <!-- "Submit" Button -->
-  <button @click="add_fav" class="button-submit">Hinzufügen</button>
 </template>
 
 <script>
 import { inject } from "vue";
 import axios from "axios";
-import TextInput from "./input/TextInput.vue";
-import NumInput from "./input/NumInput.vue";
-import SelectArray from "./input/SelectArray.vue";
+import TextInput from "../input/TextInput.vue";
+import NumInput from "../input/NumInput.vue";
+import SelectArray from "../input/SelectArray.vue";
 
 export default {
-  emits: ["load_fav"],
-  inject: ["user", "fetchUnits"],
+  inject: ["user", "fetchUnits", "updateFavorites"],
   components: {
     TextInput,
     NumInput,
@@ -31,25 +38,31 @@ export default {
     return {
       units: [],
       errMsg: "",
-      fav_name: "",
-      fav_desc: "",
-      fav_unit: {},
-      fav_amount: null,
+      favName: "",
+      favDesc: "",
+      favUnit: {},
+      favAmount: null,
     };
   },
   async mounted() {
     this.units = await this.fetchUnits();
   },
   methods: {
-    async add_fav() {
+    resetInput() {
+      this.favName = "";
+      this.favDesc = "";
+      this.favUnit = "";
+      this.favAmount = 0;
+    },
+    async addFavorite() {
       let response;
       let url;
 
       let id;
-      const name = this.fav_name.trim();
-      const amount = this.fav_amount;
-      const unit = this.fav_unit.id;
-      const desc = this.fav_desc.trim();
+      const name = this.favName.trim();
+      const amount = this.favAmount;
+      const unit = this.favUnit.id;
+      const desc = this.favDesc.trim();
 
       // Bezugsprodukt finden/erstellen
       try {
@@ -72,25 +85,38 @@ export default {
           }
         }
       }
-
-      // Favoriten erstellen
+      // Favoriten vorbereiten
       const fav = {
         produkt_id: id,
         menge: amount,
         einheit_id: unit,
         beschreibung: desc,
       };
+      // Favoriten erstellen
       try {
-        url = "http://141.56.137.83:8000/fav_produkte_create/nutzer/" + this.user.id;
+        url =
+          "http://141.56.137.83:8000/fav_produkte_create/nutzer/" +
+          this.user.id;
         await axios.post(url, fav);
       } catch {
         this.errMsg = "Fehler beim erstellen des Favoriten.";
       }
-
-      this.$emit("load_fav");
+      // Clean Up
+      this.updateFavorites();
+      this.resetInput();
     },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+button {
+  width: 100%;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+</style>
