@@ -7,10 +7,11 @@
       label="Beschreibung"
     />
     <NumInput v-model:num.number="favAmount" label="Menge" />
-    <SelectArray
+    <SelectObjectArray
       v-model:choice="favUnit"
-      :opts="units"
-      display="name"
+      :options="units"
+      displayKey="name"
+      valueKey="id"
       label="Einheit"
     />
     <button type="submit" class="form-element button-submit">Hinzufügen</button>
@@ -25,14 +26,14 @@ import { inject } from "vue";
 import axios from "axios";
 import TextInput from "../input/TextInput.vue";
 import NumInput from "../input/NumInput.vue";
-import SelectArray from "../input/SelectArray.vue";
+import SelectObjectArray from "../input/SelectObjectArray.vue";
 
 export default {
   inject: ["user", "fetchUnits", "updateFavorites"],
   components: {
     TextInput,
     NumInput,
-    SelectArray,
+    SelectObjectArray,
   },
   data() {
     return {
@@ -40,7 +41,7 @@ export default {
       errMsg: "",
       favName: "",
       favDesc: "",
-      favUnit: {},
+      favUnit: null,
       favAmount: null,
     };
   },
@@ -51,7 +52,7 @@ export default {
     resetInput() {
       this.favName = "";
       this.favDesc = "";
-      this.favUnit = "";
+      this.favUnit = null;
       this.favAmount = 0;
     },
     async addFavorite() {
@@ -61,7 +62,7 @@ export default {
       let id;
       const name = this.favName.trim();
       const amount = this.favAmount;
-      const unit = this.favUnit.id;
+      const unit = this.favUnit;
       const desc = this.favDesc.trim();
 
       // Bezugsprodukt finden/erstellen

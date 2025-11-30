@@ -2,10 +2,11 @@
   <form @submit.prevent="alter_fav">
     <TextInput v-model:text="fav.beschreibung" label="Beschreibung" />
     <NumInput v-model:num="fav.menge" label="Menge" />
-    <SelectArray
+    <SelectObjectArray
       v-model:choice="fav.einheit_id"
-      :opts="units"
-      display="name"
+      :options="units"
+      displayKey="name"
+      valueKey="id"
       label="Einheit"
     />
     <button type="submit" class="button-submit">speichern</button>
@@ -16,7 +17,7 @@
 <script>
 import TextInput from "../input/TextInput.vue";
 import NumInput from "../input/NumInput.vue";
-import SelectArray from "../input/SelectArray.vue";
+import SelectObjectArray from "../input/SelectObjectArray.vue";
 import axios from "axios";
 import { inject } from "vue";
 
@@ -25,7 +26,7 @@ export default {
   components: {
     TextInput,
     NumInput,
-    SelectArray,
+    SelectObjectArray,
   },
   props: {
     fav: { required: true },
