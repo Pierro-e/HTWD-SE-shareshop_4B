@@ -1,5 +1,5 @@
 <template>
-  <div @click="edit_fav = true">
+  <div @click="edit_fav = true" class="card">
     <h3>{{ fav.produkt_name }}</h3>
   </div>
 
