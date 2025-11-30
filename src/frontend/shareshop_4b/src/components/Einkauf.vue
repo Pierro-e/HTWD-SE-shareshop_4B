@@ -1,6 +1,6 @@
 <template>
   <AppHeader :title="list_name">
-    
+
     <template #left>
       <button @click="einkauf_abbrechen" class="button-cancel">
         <font-awesome-icon icon='xmark'/>
@@ -16,7 +16,7 @@
 
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-  
+
   <div :style="{ paddingTop: errorMessage ? '0' : '80px' }"></div>
   <div class="card-grid">
     <ProductCard
@@ -40,7 +40,6 @@
 
   <PopUp
     v-if="commit_purchase"
-    @confirm="set_price"
     @close="commit_purchase = false"
   >
     <div class="popup-field">
@@ -52,6 +51,7 @@
         min="0"
         step="1"
       />
+      <button @click="set_price" class="button button-submit"> </button>
     </div>
   </PopUp>
 
@@ -69,11 +69,11 @@ export default {
   name: "Einkauf",
   inject: ["user", "getUser"],
   props: ["list_id"],
-  components: { 
+  components: {
     AppHeader,
     ProductCard,
     BottomBar,
-    PopUp 
+    PopUp
   },
   data() {
     return {
@@ -206,7 +206,7 @@ export default {
 
         await Promise.all(erledigteProdukte.map(produkt =>
           axios.post(
-            `http://141.56.137.83:8000/bedarfsvorhersage_create/nutzer/${produkt.hinzugefügt_von}`, 
+            `http://141.56.137.83:8000/bedarfsvorhersage_create/nutzer/${produkt.hinzugefügt_von}`,
             {
               produkt_id: produkt.produkt_id,
             }
@@ -217,7 +217,7 @@ export default {
           axios.delete(
             `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt.produkt_id}`,
             {
-              data: { 
+              data: {
                 hinzugefügt_von: produkt.hinzugefügt_von,
               }
             }
