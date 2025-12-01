@@ -2,11 +2,13 @@
   <AppHeader title="Favoriten">
     <template v-slot:left>
       <button @click="$router.go(-1)" class="button-cancel back-button">
-        Zurück
+        <font-awesome-icon icon='arrow-left'/>
       </button>
     </template>
     <template v-slot:right>
-      <button @click="add_fav = true" class="button-add">+</button>
+      <button @click="add_fav = true" class="button-add">
+        <font-awesome-icon icon='plus'/>
+      </button>
     </template>
   </AppHeader>
 
