@@ -14,7 +14,6 @@
   <div v-if="ret == 0" class="info">
       Keine Favoriten
   </div>
-
   <div class="card-grid">
      <ProductCard
       v-for="(f,index) in favorites"
@@ -31,6 +30,10 @@
   <PopUp v-if="edit_fav" @close="edit_fav = false" @update="this.fetchFavorites()" :name="fav_name" type="no-save">
     <FavEditor :fav="fav" />
   </PopUp>
+
+  <BottomBar 
+    :highlight-btn="3"
+  />
 </template>
 
 <script>
@@ -39,6 +42,7 @@ import FavEditor from "./FavEditor.vue";
 import PopUp from "../PopUp.vue";
 import AppHeader from "../AppHeader.vue";
 import ProductCard from "../ProductCard.vue";
+import BottomBar from "../BottomBar.vue"
 
 export default {
   inject: ["updateFavorites", "favorites"],
@@ -47,7 +51,8 @@ export default {
     AddFav,
     AppHeader,
     ProductCard,
-    FavEditor
+    FavEditor,
+    BottomBar
   },
   data() {
     return {
@@ -78,4 +83,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.card-grid {
+  padding-top: 70px;
+}
+</style>

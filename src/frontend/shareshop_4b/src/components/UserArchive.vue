@@ -12,7 +12,7 @@
     <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
 
     <div v-else-if="purchases.length === 0" class="info">
-      Es sind noch keine Einkäufe vorhanden.
+      Keine Einkäufe
     </div>
 
     <div v-else>
