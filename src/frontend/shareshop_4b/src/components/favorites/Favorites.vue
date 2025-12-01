@@ -10,39 +10,71 @@
     </template>
   </AppHeader>
 
-  <div class="card-grid">
-    <FavItem v-for="f in favorites" :fav="f"/>
+  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+  <div v-if="ret == 0" class="info">
+      Keine Favoriten
   </div>
 
-  <PopUp v-if="add_fav" @close="add_fav = false" name="Favoriten hinzufügen">
+  <div class="card-grid">
+     <ProductCard
+      v-for="(f,index) in favorites"
+      :key="index"
+      :product="f"
+      :onSettings="() => onFavClick(f)"
+    />
+  </div>
+
+  <PopUp v-if="add_fav" @close="add_fav = false" @update="this.fetchFavorites()" name="Favoriten hinzufügen">
     <AddFav/>
+  </PopUp>
+
+  <PopUp v-if="edit_fav" @close="edit_fav = false" @update="this.fetchFavorites()" :name="fav_name" type="no-save">
+    <FavEditor :fav="fav" />
   </PopUp>
 </template>
 
 <script>
-import axios from "axios";
 import AddFav from "./AddFav.vue";
-import FavItem from "./FavItem.vue";
+import FavEditor from "./FavEditor.vue";
 import PopUp from "../PopUp.vue";
 import AppHeader from "../AppHeader.vue";
-import { inject, ref } from "vue";
+import ProductCard from "../ProductCard.vue";
 
 export default {
   inject: ["updateFavorites", "favorites"],
   components: {
     PopUp,
     AddFav,
-    FavItem,
     AppHeader,
+    ProductCard,
+    FavEditor
   },
   data() {
     return {
       add_fav: false,
+      edit_fav: false,
+      fav: null,
+      fav_name: "",
+      errorMessage: "",
+      ret: 1
     };
   },
-  mounted() {
-    this.updateFavorites();
+  async mounted() {
+    this.fetchFavorites();
   },
+  methods: {
+    onFavClick(f){
+      this.edit_fav = true;
+      this.fav = f;
+      this.fav_name = f.produkt_name;
+    },
+    async fetchFavorites(){
+      this.ret = await this.updateFavorites();
+      if (this.ret == -1){
+        this.errorMessage = "Favoriten konnten nicht geladen werden."
+      }
+    }
+  }
 };
 </script>
 

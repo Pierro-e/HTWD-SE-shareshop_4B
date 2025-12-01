@@ -16,7 +16,7 @@
 
     <div class="card-info" v-if="product.produkt_menge || product.einheit_abk">
       <span>
-        <strong>Menge:</strong> {{ product.produkt_menge }} {{ product.einheit_abk }}
+        <strong>Menge:</strong> {{ product.produkt_menge || product.menge}} {{ product.einheit_abk }}
       </span>
     </div>
     <div class="card-info" v-else>

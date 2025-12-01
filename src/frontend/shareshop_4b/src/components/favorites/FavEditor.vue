@@ -1,16 +1,16 @@
 <template>
   <form @submit.prevent="alter_fav">
-    <TextInput v-model:text="fav.beschreibung" label="Beschreibung" />
-    <NumInput v-model:num="fav.menge" label="Menge" />
+    <TextInput v-model:text="fav_copy.beschreibung" label="Beschreibung" />
+    <NumInput v-model:num="fav_copy.menge" label="Menge" />
     <SelectObjectArray
-      v-model:choice="fav.einheit_id"
+      v-model:choice="fav_copy.einheit_id"
       :options="units"
       displayKey="name"
       valueKey="id"
       label="Einheit"
     />
     <button type="submit" class="button-submit">speichern</button>
-    <button class="button-delete" @click="delete_fav">löschen</button>
+    <button type="button" class="button-delete" @click="delete_fav">löschen</button>
   </form>
 </template>
 
@@ -19,7 +19,6 @@ import TextInput from "../input/TextInput.vue";
 import NumInput from "../input/NumInput.vue";
 import SelectObjectArray from "../input/SelectObjectArray.vue";
 import axios from "axios";
-import { inject } from "vue";
 
 export default {
   inject: ["fetchUnits", "user", "updateFavorites"],
@@ -38,12 +37,14 @@ export default {
         this.user.id +
         "/produkt/" +
         this.fav.produkt_id;
-      const response = await axios.put(url, this.fav);
+
+      const response = await axios.put(url, this.fav_copy);
       // close PopUP
       this.$parent.$emit("close");
-      this.updateFavorites();
+      this.$parent.$emit("update"); // Fav updaten
     },
     async delete_fav() {
+      console.log("DeleteFav")
       const url =
         "http://141.56.137.83:8000/fav_produkte_delete/nutzer/" +
         this.user.id +
@@ -52,19 +53,23 @@ export default {
       const response = await axios.delete(url);
       // close PopUP
       this.$parent.$emit("close");
-      this.updateFavorites();
+      this.$parent.$emit("update"); // Fav updaten
     },
   },
   data() {
-    return { units: [], fav_unit: {} };
+    return { units: [], fav_unit: {}, fav_copy: {} };
   },
   async mounted() {
+    this.fav_copy = { ...this.fav }; // Arbeitskopie
     try {
       this.units = await this.fetchUnits();
 
+      /*
       const url = "http://141.56.137.83:8000/einheiten/" + this.fav.einheit_id;
       const response = await axios.get(url);
       this.fav_unit = response.data.id;
+      */
+
     } catch (error) {
       console.log(error);
       return;
