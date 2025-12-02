@@ -109,7 +109,11 @@ class EingekaufteProdukte(Base):
     hinzugefuegt_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
     beschreibung = Column(String, nullable=True)
 
-
+class Kostenaufteilung(Base):
+    __tablename__ = "Kostenaufteilung"
+    empfaenger_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True)
+    schuldner_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True)
+    betrag = Column(Numeric(10, 2), nullable=True)
 
 # --- Pydantic-Modelle ---
 class NameBasis(BaseModel):
@@ -317,6 +321,21 @@ class eingekaufteProdukteCreate(BaseModel):
     produkt_preis: Optional[Decimal] = None
     hinzugefuegt_von: Optional[int] = None
     beschreibung: Optional[str] = None
+
+class KostenaufteilungRead(BaseModel):
+    empfaenger_id: int
+    empfanger_name: Optional[str] = None
+    schuldner_id: int
+    schuldner_name: Optional[str] = None
+    betrag: Optional[Decimal] = None
+
+    class Config:
+        from_attributes = True
+
+class KostenaufteilungCreate(BaseModel):
+    empfaenger_id: int
+    schuldner_id: int
+    betrag: Decimal
 
 
 
