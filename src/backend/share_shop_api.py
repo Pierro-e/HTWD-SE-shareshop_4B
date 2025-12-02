@@ -1410,6 +1410,9 @@ def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Sess
 @app.post("/kostenaufteilung", response_model=KostenaufteilungRead, status_code=status.HTTP_201_CREATED)
 def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Session = Depends(get_db)):
 
+    if eintrag.empfaenger_id == eintrag.schuldner_id:
+        raise HTTPException(status_code=400, detail="Empfänger und Schuldner dürfen nicht identisch sein")
+
     empfaenger = db.query(Nutzer).filter(Nutzer.id == eintrag.empfaenger_id).first()
     if not empfaenger:
         raise HTTPException(status_code=400, detail="Empfänger nicht gefunden")
@@ -1442,6 +1445,10 @@ def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Ses
 
 @app.delete("/kostenaufteilung/empfaenger/{empfaenger_id}/schuldner/{schuldner_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_kostenaufteilung(empfaenger_id: int = Path(..., gt=0), schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    
+    if empfaenger_id == schuldner_id:
+        raise HTTPException(status_code=400, detail="Empfänger und Schuldner dürfen nicht identisch sein")
+
     eintrag = db.query(Kostenaufteilung).filter(
         Kostenaufteilung.empfaenger_id == empfaenger_id,
         Kostenaufteilung.schuldner_id == schuldner_id
