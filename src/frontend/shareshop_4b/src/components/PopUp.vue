@@ -37,6 +37,7 @@ export default {
   background: var(--box-bg-color);
   padding: 1em 2em;
   border-radius: 0.5em;
+  width: 100%;
   min-width: 250px;
   max-width: 300px;
   text-align: center;

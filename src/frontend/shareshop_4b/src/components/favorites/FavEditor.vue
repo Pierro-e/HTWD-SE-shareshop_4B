@@ -39,36 +39,32 @@ export default {
         this.fav.produkt_id;
 
       const response = await axios.put(url, this.fav_copy);
-      // close PopUP
-      this.$parent.$emit("close");
+      
+      this.$parent.$emit("close"); // Popup schließen
       this.$parent.$emit("update"); // Fav updaten
     },
     async delete_fav() {
-      console.log("DeleteFav")
       const url =
         "http://141.56.137.83:8000/fav_produkte_delete/nutzer/" +
         this.user.id +
         "/produkt/" +
         this.fav.produkt_id;
       const response = await axios.delete(url);
-      // close PopUP
-      this.$parent.$emit("close");
+
+      this.$parent.$emit("close"); // Popup schließen
       this.$parent.$emit("update"); // Fav updaten
     },
   },
   data() {
-    return { units: [], fav_unit: {}, fav_copy: {} };
+    return { 
+      units: [],
+      fav_copy: {} 
+    };
   },
   async mounted() {
     this.fav_copy = { ...this.fav }; // Arbeitskopie
     try {
       this.units = await this.fetchUnits();
-
-      /*
-      const url = "http://141.56.137.83:8000/einheiten/" + this.fav.einheit_id;
-      const response = await axios.get(url);
-      this.fav_unit = response.data.id;
-      */
 
     } catch (error) {
       console.log(error);
@@ -82,6 +78,7 @@ export default {
 button {
   width: 100%;
 }
+
 form {
   display: flex;
   flex-direction: column;
