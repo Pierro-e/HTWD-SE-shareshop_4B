@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response, Body, Query
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from sqlalchemy.orm import sessionmaker, declarative_base, Session, aliased
 from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import List, Optional
 from datetime import date, datetime, timezone
@@ -324,7 +324,7 @@ class eingekaufteProdukteCreate(BaseModel):
 
 class KostenaufteilungRead(BaseModel):
     empfaenger_id: int
-    empfanger_name: Optional[str] = None
+    empfaenger_name: Optional[str] = None
     schuldner_id: int
     schuldner_name: Optional[str] = None
     betrag: Optional[Decimal] = None
@@ -1348,4 +1348,108 @@ def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_
 
 # delete EingekaufteProdukte fällt weg, da es in der Datenbank durch die Fremdschlüsselbeziehung mit ON DELETE CASCADE automatisch gelöscht wird, wenn der zugehörige Einkauf gelöscht wird
 
+# Kostenaufteilung
 
+# empfaenger_id = nutzer_id 
+# diese Funktion gibt zurück "wer mir Geld schuldet"
+@app.get("/kostenaufteilung/empfaenger/{empfaenger_id}", response_model=List[KostenaufteilungRead])
+def get_kostenaufteilung_empfaenger(empfaenger_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+    user = db.query(Nutzer).filter(Nutzer.id == empfaenger_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+    Empfaenger = aliased(Nutzer)    # um Konflikte bei Joins zu vermeiden
+    Schuldner = aliased(Nutzer)
+
+    kostenaufteilung = (
+        db.query(
+            Kostenaufteilung.empfaenger_id,
+            Empfaenger.name.label("empfaenger_name"),
+            Kostenaufteilung.schuldner_id,
+            Schuldner.name.label("schuldner_name"),
+            Kostenaufteilung.betrag
+        )
+        .join(Empfaenger, Empfaenger.id == Kostenaufteilung.empfaenger_id)
+        .join(Schuldner, Schuldner.id == Kostenaufteilung.schuldner_id)
+        .filter(Kostenaufteilung.empfaenger_id == empfaenger_id)
+        .all()
+    )
+    return kostenaufteilung
+
+# schuldner_id = nutzer_id
+# diese Funktion gibt zurück "wem ich Geld schulde"
+@app.get("/kostenaufteilung/schuldner/{schuldner_id}", response_model=List[KostenaufteilungRead])
+def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+    user = db.query(Nutzer).filter(Nutzer.id == schuldner_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+    
+    Empfaenger = aliased(Nutzer)    # um Konflikte bei Joins zu vermeiden
+    Schuldner = aliased(Nutzer)
+
+    kostenaufteilung = (
+        db.query(
+            Kostenaufteilung.empfaenger_id,
+            Empfaenger.name.label("empfaenger_name"),
+            Kostenaufteilung.schuldner_id,
+            Schuldner.name.label("schuldner_name"),
+            Kostenaufteilung.betrag
+        )
+        .join(Empfaenger, Empfaenger.id == Kostenaufteilung.empfaenger_id)
+        .join(Schuldner, Schuldner.id == Kostenaufteilung.schuldner_id)
+        .filter(Kostenaufteilung.schuldner_id == schuldner_id)
+        .all()
+    )
+    return kostenaufteilung
+
+# Schulden in DB speichern
+@app.post("/kostenaufteilung", response_model=KostenaufteilungRead, status_code=status.HTTP_201_CREATED)
+def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Session = Depends(get_db)):
+
+    empfaenger = db.query(Nutzer).filter(Nutzer.id == eintrag.empfaenger_id).first()
+    if not empfaenger:
+        raise HTTPException(status_code=400, detail="Empfänger nicht gefunden")
+
+    schuldner = db.query(Nutzer).filter(Nutzer.id == eintrag.schuldner_id).first()
+    if not schuldner:
+        raise HTTPException(status_code=400, detail="Schuldner nicht gefunden")
+
+    vorhandener_eintrag = db.query(Kostenaufteilung).filter(
+        Kostenaufteilung.empfaenger_id == eintrag.empfaenger_id,
+        Kostenaufteilung.schuldner_id == eintrag.schuldner_id
+    ).first()
+
+    if vorhandener_eintrag:
+        vorhandener_eintrag.betrag += eintrag.betrag
+        db.commit()
+        db.refresh(vorhandener_eintrag)
+        return vorhandener_eintrag
+
+    neuer_eintrag = Kostenaufteilung(
+        empfaenger_id=eintrag.empfaenger_id,
+        schuldner_id=eintrag.schuldner_id,
+        betrag=eintrag.betrag
+    )
+
+    db.add(neuer_eintrag)
+    db.commit()
+    db.refresh(neuer_eintrag)
+    return neuer_eintrag
+
+@app.delete("/kostenaufteilung/empfaenger/{empfaenger_id}/schuldner/{schuldner_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_kostenaufteilung(empfaenger_id: int = Path(..., gt=0), schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    eintrag = db.query(Kostenaufteilung).filter(
+        Kostenaufteilung.empfaenger_id == empfaenger_id,
+        Kostenaufteilung.schuldner_id == schuldner_id
+    ).first()
+
+    if not eintrag:
+        raise HTTPException(status_code=404, detail="Eintrag nicht gefunden")
+    
+    db.delete(eintrag)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
