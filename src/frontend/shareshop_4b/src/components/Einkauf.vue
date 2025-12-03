@@ -44,7 +44,7 @@
     @close="commit_purchase = false"
   >
     <div class="popup-field">
-      <label for="totalPrice">Gesamtpreis (€):</label>
+      <label for="totalPrice">Gesamtpreis (€): </label>
       <input
         type="number"
         id="totalPrice"

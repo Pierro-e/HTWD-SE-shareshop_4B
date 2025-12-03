@@ -514,6 +514,13 @@ export default {
       for (const product of favoriteProducts){
         if (product.produkt_name === this.new_product.trim()){
           favID = product.produkt_id;
+          if (product.menge == null){
+            product.menge = 0;
+          }
+          if (product.einheit_id == null){
+            product.einheit_id = 0;
+          }
+
           favData = {
             produkt_menge: product.menge,
             einheit_id: product.einheit_id,
