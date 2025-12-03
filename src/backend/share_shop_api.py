@@ -696,6 +696,10 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
     if vorhandenes_fav_produkt:
         raise HTTPException(
             status_code=400, detail="Das Produkt ist bereits in den Favoriten vorhanden")
+    
+    if fav_produkt.einheit_id == 0 or fav_produkt.menge == 0:
+        fav_produkt.einheit_id = None
+        fav_produkt.menge = None
 
     neues_fav_produkt = FavProdukte(
         nutzer_id=nutzer_id,
