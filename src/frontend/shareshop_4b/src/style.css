@@ -544,3 +544,11 @@ form select {
   font-weight: bold;
   font-size: larger;
 }
+
+.info-block {
+  background-color: var(--box-bg-color);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+}

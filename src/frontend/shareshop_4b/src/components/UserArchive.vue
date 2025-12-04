@@ -74,7 +74,11 @@ export default {
     formatDate(dateStr) {
       if (!dateStr) return "";
       const date = new Date(dateStr);
-      return date.toLocaleDateString("de-DE");  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
+      return new Intl.DateTimeFormat("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      }).format(date);  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
     },
     back_to_listOverview() {
       this.$router.push(`/listen`);

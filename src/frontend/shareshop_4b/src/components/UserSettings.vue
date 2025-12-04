@@ -382,14 +382,6 @@ form label {
   max-width: 75%;
 }
 
-.info-block {
-  background-color: var(--box-bg-color);
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 0.5rem;
-  font-size: 0.95rem;
-}
-
 @media (max-width: 480px) {
   form label {
     width: 60px;

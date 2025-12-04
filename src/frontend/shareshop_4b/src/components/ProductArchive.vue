@@ -9,7 +9,7 @@
         </template>
       </AppHeader>
 
-      <div>
+      <div class="info-block">
         <strong>Gesamtpreis:</strong> {{ this.price || "Nicht angegeben" }} €
       </div>
       <br>
