@@ -234,6 +234,7 @@ button:active {
 
 /* Eingabefelder */
 input, textarea, select {
+  width: 100%;
   padding: 0.6em 0.8em;
   border-radius: 0.4em;
   border: 1px solid gray;

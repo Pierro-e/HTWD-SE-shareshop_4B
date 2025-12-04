@@ -15,95 +15,103 @@
     <div class="info-block">
       <div v-if="loadingActive" class="loading">Laden...</div>
       <p v-if="!loadingActive">
-        <strong>Hallo </strong>{{name}}<strong>, du kannst hier Einstellungen zur Ansicht und zum Profil ändern.</strong>
+        <strong>Hallo </strong>{{name}}<strong>, du kannst hier Einstellungen zur Ansicht, Produktvorschlägen und zum Profil ändern.</strong>
       </p>
       <p v-if="!loadingActive">
         <strong>Aktuelle E-Mail:</strong> {{ email }}
       </p>
     </div>
 
-    <div class="appearance-settings">
-      <h2>Ansicht</h2>
-
-      <form @submit.prevent="applyAppearance">
-        <div class="form-content">
-          <div>
-            <label for="theme-select">Thema: </label>
-            <select id="theme-select" v-model="theme">
-              <option>Automatisch</option>
-              <option>Dunkel</option>
-              <option>Hell</option>
-            </select>
-          </div>
-          <div>
-            <label for="accent-select">Akzentfarbe: </label>
-            <select id="accent-select" v-model="accent">
-              <option style="color: #646cff">Blau</option>
-              <option style="color: #9d60ff">Lila</option>
-              <option style="color: #4ca6a6">Grün</option>
-              <option style="color: #b25050">Rot</option>
-              <option style="color: #ca7631">Orange</option>
-            </select>
-          </div>
-        </div>
-
-        <button class="button-submit" type="submit">Änderungen speichern</button>
-      </form>
-    </div>
-
-    <div class="profile-settings">
-      <h2>Produktvorschläge</h2>
-      <form @submit.prevent="applyDecayDays">  
-        <div class="form-content">
-          <div>
-            <label for="decay-days">Verfallszeitraum (Tage): </label>
-            <input v-model.number="decaydays" 
-                  type="number" 
-                  id="decay-days" 
-                  min="0" 
-                  step="1"
-                  required
-            />
-          </div>
-        </div>
-        <button class="button-submit" type="submit">Änderungen speichern</button>
-      </form>
-    </div> 
-
-
-    <div class="user-settings">
-      <h2>Profil</h2>
-
-      <form @submit.prevent="updateUser">
-        <div class="form-content">
-          <div>
-            <label for="name">Neuer Name: </label>
-            <input v-model="name" 
-                type="name" 
-                id="name"            
-            />
-          </div>
-          
-          <div>
-            <label for="email">Neue E-Mail: </label>
-            <input v-model="email" 
-                type="email" 
-                id="email" 
-                required 
-            />
+    <details>
+      <summary>
+        <div class="summary-title">Ansicht</div>
+      </summary>
+      <div class="appearance-settings">
+        <form @submit.prevent="applyAppearance">
+          <div class="form-content">
+            <div>
+              <label for="theme-select">Thema: </label>
+              <select id="theme-select" v-model="theme">
+                <option>Automatisch</option>
+                <option>Dunkel</option>
+                <option>Hell</option>
+              </select>
+            </div>
+            <div>
+              <label for="accent-select">Akzent&shy;farbe: </label>
+              <select id="accent-select" v-model="accent">
+                <option style="color: #646cff">Blau</option>
+                <option style="color: #9d60ff">Lila</option>
+                <option style="color: #4ca6a6">Grün</option>
+                <option style="color: #b25050">Rot</option>
+                <option style="color: #ca7631">Orange</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label for="password">Neues Passwort: </label>
-            <input v-model="password" 
-                type="password" 
-                id="password"
-                />
+          <button class="button-submit" type="submit">Änderungen speichern</button>
+        </form>
+      </div>
+    </details>
+   
+    <details>
+      <summary>
+        <div class="summary-title">Produktvorschläge</div>
+      </summary>
+      <div class="profile-settings">
+        <form @submit.prevent="applyDecayDays">  
+          <div class="form-content">
+            <div>
+              <label for="decay-days">Verfalls&shy;zeitraum (Tage): </label>
+              <input v-model.number="decaydays" 
+                    type="number"
+                    id="decay-days" 
+                    min="0" 
+                    step="1"
+                    required
+              />
+            </div>
           </div>
-        </div>
+          <button class="button-submit" type="submit">Änderungen speichern</button>
+        </form>
+      </div> 
+    </details>
 
-        <button class="button-submit" type="submit">Änderungen speichern</button>
-      </form>
+    <details>
+      <summary>
+        <div class="summary-title">Profil</div>
+      </summary>
+      <div class="user-settings">
+        <form @submit.prevent="updateUser">
+          <div class="form-content">
+            <div>
+              <label for="name">Name: </label>
+              <input v-model="name" 
+                  type="name" 
+                  id="name"            
+              />
+            </div>
+            
+            <div>
+              <label for="email">E-Mail: </label>
+              <input v-model="email" 
+                  type="email" 
+                  id="email" 
+                  required 
+              />
+            </div>
+            <div>
+              <label for="password">Passwort: </label>
+              <input v-model="password" 
+                  type="password" 
+                  id="password"
+                  />
+            </div>
+          </div>
+          <button class="button-submit" type="submit">Änderungen speichern</button>
+        </form>
+      </div>
+    </details>
 
       <div>
         <button @click="logout()">Abmelden</button>
@@ -111,7 +119,6 @@
 
       <div v-if="message" class="success">{{ message }}</div>
       <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-    </div>
   </div>
   <BottomBar 
     :highlight-btn="4"
@@ -140,7 +147,7 @@ export default {
       currentEmail: '',
       email: '',
       password: '',
-      decaydays: 0.00,
+      decaydays: 0,
       message: '',
 
       errorMessage: '',
@@ -175,7 +182,7 @@ export default {
         this.name = response.data.name
         this.currentName = response.data.name
         this.email = response.data.email
-        this.decaydays = response.data.decaydays
+        this.decaydays = Math.trunc(response.data.decaydays);
       }  catch (error) {
         if (
           error.response &&
@@ -317,6 +324,52 @@ export default {
 </script>
 
 <style scoped>
+details {
+  padding: 1em;
+  background-color: var(--box-bg-color);
+  border-radius: 0.5em;
+  margin-bottom: 1em;
+  transition: all 0.3s ease-in-out;
+  max-height: 50px;
+  overflow: hidden;
+}
+
+details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+details[open] summary {
+  padding-bottom: 1em;
+}
+
+details[open] {
+  margin-top: 1em;
+  max-height: 500px;
+}
+
+.summary-title {
+  font-size: larger;
+  font-weight: bold;
+}
+
+summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: larger;
+}
+
+/* kein nativer Marker */
+summary::-webkit-details-marker {
+  display: none;
+}
+
+summary::before {
+  content: "▶";
+  transition: transform .2s ease;
+}
+
 .settings {
   margin-top: 70px;
 }
@@ -338,8 +391,8 @@ form label {
 }
 
 @media (max-width: 480px) {
-  input {
-    max-width: 200px;
+  form label {
+    width: 60px;
   }
 }
 </style>
