@@ -83,10 +83,11 @@
       >
         <div>{{ mitglied.name }}</div>
         <button
+          v-if="mitglied.id === user.id || user.id === list_creator_id"
           @click="mitglied_entfernen(mitglied.id)"
           class="button button-delete-member"
         >
-          Entfernen
+          {{ mitglied.id === user.id ? 'Verlassen' : 'Entfernen' }}
         </button>
         
       </div>
@@ -550,28 +551,73 @@ export default {
       this.showpopup_add_member = true;
     },
 
-    async mitglied_entfernen(nutzer_id) {
-      this.errorMessage = "";
-      const listen_id = this.list_id || this.$route.params.id;
+    // async mitglied_entfernen(nutzer_id) {
+    //   this.errorMessage = "";
+    //   const listen_id = this.list_id || this.$route.params.id;
+    //   const requester_id = this.user.id;
+    //   try {
+    //     await axios.delete(
+    //       `http://141.56.137.83:8000/listen/${listen_id}/mitglieder/${nutzer_id}`,
+    //       {
+    //         params: { requesterId: requester_id },
+    //       },
+    //     );
+    //     this.infoMessage = "Mitglied erfolgreich entfernt.";
+    //     this.get_list_members(list_id); // Aktualisiere die Mitgliederliste
+    //     this.errorMessage = "";
+    //     // Nach erfolgreichem Entfernen Mitgliederliste neu laden
+    //     await this.get_list_members(listen_id);
+    //   } catch (error) {
+    //     if (
+    //       error.response &&
+    //       error.response.data &&
+    //       error.response.data.detail
+    //     ) {
+    //       this.errorMessage = error.response.data.detail;
+    //     } else {
+    //       this.errorMessage = "Fehler beim Entfernen des Mitglieds";
+    //     }
+    //   }
+    // },
+    // List.vue (Auszug, in methods: {})
 
-      try {
-        await axios.delete(
-          `http://141.56.137.83:8000/listen/${listen_id}/mitglieder/${nutzer_id}`,
-        );
-        // Nach erfolgreichem Entfernen Mitgliederliste neu laden
-        await this.get_list_members(listen_id);
-      } catch (error) {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.detail
-        ) {
-          this.errorMessage = error.response.data.detail;
-        } else {
-          this.errorMessage = "Fehler beim Entfernen des Mitglieds";
-        }
+async mitglied_entfernen(mitglied_id) {
+  const list_id = this.list_id || this.$route.params.id;
+  
+  // Fügen Sie die ID des aktuellen Nutzers (Requester) hinzu
+  const requester_id = this.user.id; 
+
+  try {
+    // ÄNDERUNG: 'requesterId' als Query-Parameter im DELETE-Request übergeben
+    await axios.delete(
+      `http://141.56.137.83:8000/listen/${list_id}/mitglieder/${mitglied_id}`,
+      {
+        params: {
+          requesterId: requester_id,
+        },
       }
-    },
+    );
+    this.infoMessage = "Mitglied erfolgreich entfernt.";
+    this.get_list_members(list_id); // Aktualisiere die Mitgliederliste
+    this.errorMessage = "";
+  } catch (error) {
+    if (
+      error.response &&
+      error.response.data &&
+      error.response.data.detail
+    ) {
+      this.errorMessage = error.response.data.detail;
+      // Wenn es ein Fehler ist, der nicht 403 (Forbidden) ist und die eigene ID betrifft, 
+      // laden Sie die Mitgliederliste neu (z.B. nach erfolgreicher Selbstentfernung, 
+      // falls das Popup noch offen ist)
+      if (mitglied_id == requester_id && error.response.status != 403) {
+        this.get_list_members(list_id); 
+      }
+    } else {
+      this.errorMessage = "Fehler beim Entfernen des Mitglieds";
+    }
+  }
+},
 
     async mitglied_hinzufügen() {
       this.errorMessage = "";
