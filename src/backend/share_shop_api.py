@@ -799,8 +799,6 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
     db.refresh(db_produkt)
     return db_produkt
 
-
-# -- Funktion, um Produkte zu suchen anahnd des Namen aber mit 'LIKE' (fur die Suchvorschläge) ---
 @app.get("/produkte/suche", response_model=List[ProduktRead])
 def search_products(
     query: str = Query(..., min_length=1, description="Suchstring für Produktnamen"),
@@ -990,7 +988,6 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     return fav_produkt
 
 # --- Bedarfsvorhersage ---
-# Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
 def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
     """
     Beschreibung:
@@ -1041,7 +1038,6 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
     return aktualisierte_einträge
 
 
-# Abrufen der Bedarfsvorhersage für einen Nutzer
 @app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
 def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     """
@@ -1068,8 +1064,6 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Sessio
 
     return aktualisierte_einträge
 
-
-# zum Löschen eines Bedarfvorhersage-Produkt
 @app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
 def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     """
@@ -1100,9 +1094,6 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-
-# erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
-# der Counter wird erstmal im Body mit übergeben
 @app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
     """
