@@ -1035,17 +1035,6 @@ def delete_mitglied(
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-    # eintrag = db.query(ListeMitglieder).filter(
-    #     ListeMitglieder.listen_id == listen_id,
-    #     ListeMitglieder.nutzer_id == nutzer_id
-    # ).first()
-    # if not eintrag:
-    #     raise HTTPException(status_code=404, detail="Mitglied nicht gefunden")
-    # db.delete(eintrag)
-    # db.commit()
-    # return Response(status_code=status.HTTP_204_NO_CONTENT)
-
 # --- Produkte in Listen ---
 @app.get("/listen/{listen_id}/produkte", response_model=List[ProduktInListeRead])
 def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
