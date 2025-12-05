@@ -10,11 +10,11 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Begriff | Definition und Erläuterung | Synonyme
 
-| *Task*
+| Task
 | Tätigkeit, welche ein PBI (bzw. dessen Akzeptankriterium) teilweise realisiert
 |
 
-| *Artikel*
+| Artikel
 | Gegenstand, welcher eingekauft werden soll
 | Item
 
