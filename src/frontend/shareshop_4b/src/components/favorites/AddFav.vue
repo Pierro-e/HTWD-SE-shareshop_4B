@@ -103,8 +103,9 @@ export default {
         this.errMsg = "Fehler beim erstellen des Favoriten.";
       }
       // Clean Up
+      this.$parent.$emit("close");
       this.$parent.$emit("update");
-      this.resetInput();
+      //this.resetInput();
     },
   },
 };
