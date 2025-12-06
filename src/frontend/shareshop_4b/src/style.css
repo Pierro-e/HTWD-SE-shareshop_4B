@@ -58,6 +58,7 @@
 [css-theme="Hell"] {
   --bg-color: #ececec;
   --text-color: #000000;
+  --text-color2: #363636;
 
   --inputbox-color: #000000;
   --inputbox-bg-color: #e6e6e6;
@@ -78,6 +79,7 @@
 [css-theme="Dunkel"] {
   --bg-color: #111111;
   --text-color: #ffffff;
+  --text-color2: #cfcfcf;
 
   --inputbox-color: #ffffff;
   --inputbox-bg-color: #3a3a3a;
@@ -100,6 +102,7 @@
   [css-theme="Automatisch"] {
     --bg-color: #ececec;
     --text-color: #000000;
+    --text-color2: #363636;
 
     --inputbox-color: #000000;
     --inputbox-bg-color: #e6e6e6;
@@ -122,6 +125,7 @@
   [css-theme="Automatisch"] {
     --bg-color: #111111;
     --text-color: #ffffff;
+    --text-color2: #cfcfcf;
 
     --inputbox-color: #ffffff;
     --inputbox-bg-color: #3a3a3a;
@@ -150,13 +154,6 @@ a:hover {
   color: #535bf2;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0.5rem;
-  text-align: center;
-}
-
 html, body {
   margin: 0;
   padding: 0;
@@ -165,8 +162,16 @@ html, body {
   align-items: center;
   min-height: 100vh;
   overflow-x: hidden;
-  min-height: calc(100vh - 30px);
-  padding-bottom: 30px; /* für BottomBar */
+}
+
+#app {
+  width: 97%;
+  max-width: 1280px;
+  padding-top: 0.5em;
+  padding-bottom: 35px; /* für BottomBar */
+  padding-left: 0.5em;
+  padding-right: 1em;
+  text-align: center;
 }
 
 h1 {
@@ -229,6 +234,7 @@ button:active {
 
 /* Eingabefelder */
 input, textarea, select {
+  width: 100%;
   padding: 0.6em 0.8em;
   border-radius: 0.4em;
   border: 1px solid gray;
@@ -384,7 +390,14 @@ form select {
   align-items: center; /* Button und Name auf gleicher Höhe */
 }
 
+.card-header-buy { /* bei Einkauf */
+  gap: 0.5em;
+  justify-content: left;
+  align-items: center;
+}
+
 .card {
+  max-width: 400px;
   min-width: 275px;
   background-color: var(--box-bg-color);
   border: 1px solid var(--accent-button-color);
@@ -396,7 +409,14 @@ form select {
   gap: 1em;
 }
 
+@media (max-width: 400px) {
+  .card {
+    min-width: 80vw;
+  }
+}
+
 .card:hover {
+  color: var(--text-color);
   background-image: linear-gradient(to bottom, var(--box-bg-color), var(--box-bg-color2));
   outline: 2px solid var(--accent-button-color);
   outline-offset: -1px;
@@ -413,7 +433,7 @@ form select {
 
 .card-info {
   font-size: 1rem; /* 14px */
-  color: var(--text-color);
+  color: var(--text-color2);
   font-weight: 450;
   display: flex;
   gap: 0.5rem;
@@ -422,13 +442,13 @@ form select {
 
 .card-info strong {
   font-weight: 600;
-  color: var(--text-color);
+  color: var(--text-color2);
   text-align: left;
 }
 
 .card-beschreibung {
   font-size: 1rem;
-  color: var(--text-color);
+  color: var(--text-color2);
   font-weight: 450;
   margin-top: 0.5rem;
   word-break: break-word;
@@ -447,8 +467,8 @@ form select {
 }
 
 .button-product-settings {
+  color: var(--text-color);
   background: none;
-  color: rgb(61, 57, 53);
   border: none;
   font-size: 1.2em;
   cursor: pointer;
@@ -518,4 +538,17 @@ form select {
 .loading {
   font-weight: bold;
   font-size: larger;
+}
+
+.info {
+  font-weight: bold;
+  font-size: larger;
+}
+
+.info-block {
+  background-color: var(--box-bg-color);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
 }

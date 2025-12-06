@@ -23,7 +23,9 @@
       />
     </div>
   </main>
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="1"
+  />
 </template>
 
 <script>

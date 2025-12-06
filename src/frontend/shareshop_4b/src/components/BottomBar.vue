@@ -1,28 +1,28 @@
 <template>
     <!--BottomBar ist überall gleich, deswegen hart geschrieben ohne slots-->
     <div class="bottom-bar">
-      <button class="bottom-btn" @click="$router.push('/listen')">
+      <button class="bottom-btn" :class="{ highlight: highlightBtn === 1 }" @click="$router.push('/listen')">
         <div class=icon>
           <font-awesome-icon icon='list'/>
         </div>
         <span>Listen</span>
       </button>
     
-      <button class="bottom-btn" @click="$router.push('/userArchive')">
+      <button class="bottom-btn" :class="{ highlight: highlightBtn === 2 }" @click="$router.push('/userArchive')">
         <div class=icon>
           <font-awesome-icon icon='box-archive'/>
         </div> 
         <span>Archiv</span>
       </button>
 
-      <button class="bottom-btn" @click="$router.push('/fav')">
+      <button class="bottom-btn" :class="{ highlight: highlightBtn === 3 }" @click="$router.push('/fav')">
         <div class=icon>
           <font-awesome-icon icon='star'/>
         </div> 
         <span>Favoriten</span>
       </button>
    
-      <button class="bottom-btn" @click="$router.push('/settings')">
+      <button class="bottom-btn" :class="{ highlight: highlightBtn === 4 }" @click="$router.push('/settings')">
         <div class=icon>
           <font-awesome-icon icon='gear'/> 
         </div>
@@ -34,7 +34,10 @@
 
 <script>
 export default {
-  name: "BottomBar"
+  name: "BottomBar",
+  props: {
+    highlightBtn: { type: Number }
+  }
 };
 </script>
 
@@ -63,9 +66,15 @@ export default {
   width: 100%;
   flex-direction: column;
   align-items: center;
-  color: var(--text-color);
+  color: var(--text-color2);
   background: none;
   border: none;
+}
+
+.highlight {
+  color: var(--text-color);
+  background-color: var(--box-shadow-color);
+  font-weight: 800;
 }
 
 .bottom-btn .icon {

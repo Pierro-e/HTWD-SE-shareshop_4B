@@ -1,10 +1,9 @@
 <template>
   <div class="overlay">
     <div class="popup">
-      <header>
-        <h3>{{ name }}</h3>
-        <button @click="$emit('close')" class="button-delete">Abbrechen</button>
-      </header>
+      <button @click="$emit('close')" class="button-cancel">Abbrechen</button>
+        
+      <h2>{{ name }}</h2>
       <slot></slot>
     </div>
   </div>
@@ -46,24 +45,13 @@ export default {
 }
 
 @media (max-width: 480px) {
+  .popup {
+    width: 70%;
+  }
+
   .popup-content {
-    max-width: 260px;
+    max-width: 200px;
   }
 }
 
-h3 {
-  width: 50%;
-}
-
-button {
-  width: 50%;
-  height: 50%;
-}
-
-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: var(--box-bg-color);
-}
 </style>

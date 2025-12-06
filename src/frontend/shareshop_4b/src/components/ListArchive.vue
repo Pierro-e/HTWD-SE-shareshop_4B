@@ -4,7 +4,7 @@
     <AppHeader :title="`Einkaufsarchiv für\n${this.listName}`">
       <template #left>
         <button @click="back_to_list" class="button-cancel back-button">
-          Zurück
+          <font-awesome-icon icon='arrow-left'/>
         </button>
       </template>
     </AppHeader>
@@ -13,7 +13,7 @@
     <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
 
     <div v-else-if="purchases.length === 0" class="info">
-      Es sind noch keine Einkäufe vorhanden.
+      Keine Einkäufe
     </div>
 
     <div v-else>
@@ -28,7 +28,9 @@
     </div>
 
   </div>
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="2"
+  />
 </template>
 
 <script>
@@ -83,9 +85,13 @@ export default {
     },
 
     formatDate(dateStr) {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("de-DE");  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
+      if (!dateStr) return "";
+      const date = new Date(dateStr);
+      return new Intl.DateTimeFormat("de-DE", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+      }).format(date);  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
     },
   },
   mounted() {

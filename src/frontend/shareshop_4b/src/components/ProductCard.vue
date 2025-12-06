@@ -1,6 +1,6 @@
 <template>
   <div class="card" :class="{ erledigt: product.erledigt }">
-    <div class="card-header">
+    <div class="card-header" :class="{ 'card-header-buy': hideSettings }">
       <!-- Identische Struktur bei Einkauf und Liste, nur Unterschiede bei z.B Checkbox-Slot für Einkauf.
        dieser wird von List.vue nicht genutzt -->
       <slot name="left"></slot>
@@ -10,13 +10,13 @@
       </h3>
 
       <button v-if="!hideSettings" @click="onSettings(product)" class="button button-product-settings">
-        ✏️
+        <font-awesome-icon icon='pen'/>
       </button>
     </div>
 
     <div class="card-info" v-if="product.produkt_menge || product.einheit_abk">
       <span>
-        <strong>Menge:</strong> {{ product.produkt_menge }} {{ product.einheit_abk }}
+        <strong>Menge:</strong> {{ product.produkt_menge || product.menge}} {{ product.einheit_abk }}
       </span>
     </div>
     <div class="card-info" v-else>
@@ -41,8 +41,7 @@ export default {
   props: {
     product: { type: Object, required: true },
     onSettings: { type: Function, required: false },
-    hideSettings: { type: Boolean, default: false } //true, wenn es ein Archivprodukt ist
+    hideSettings: { type: Boolean, default: false } // true, wenn es ein Archivprodukt ist
   }
 };
 </script>
-

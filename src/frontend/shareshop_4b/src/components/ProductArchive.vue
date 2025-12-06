@@ -4,14 +4,15 @@
       <AppHeader :title="`${purchase_name}`">
         <template #left>
           <button @click="back_to_Archive" class="button-cancel back-button">
-            Zurück
+            <font-awesome-icon icon='arrow-left'/>
           </button>
         </template>
       </AppHeader>
 
-      <div>
+      <div class="info-block">
         <strong>Gesamtpreis:</strong> {{ this.price || "Nicht angegeben" }} €
       </div>
+      <br>
 
       <div v-if="loadingActive" class="loading">Laden...</div>
       <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -30,8 +31,8 @@
             :hideSettings="true"
           >
             <template #extra>
-              <div class="produkt-beschreibung" v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
-                <p>{{ product.hinzufueger_name }}</p>
+              <div v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
+                {{ product.hinzufueger_name }}
               </div>
             </template>
           </ProductCard>
@@ -41,7 +42,9 @@
     </div>
   </div>
   
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="2"
+  />
 </template>
 
 <script>

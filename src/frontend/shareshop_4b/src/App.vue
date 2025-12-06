@@ -153,9 +153,14 @@ export default {
         const url = `http://141.56.137.83:8000/fav_produkte/nutzer/${user.value.id}`;
         const response = await axios.get(url);
         favorites.value = response.data;
+        if (favorites.value.length == 0){ // keine Favs
+          return 0;
+        }
       } catch (error) {
         console.log(error);
+        return -1;
       }
+      return 1;
     }
 
     // Produkte aktualisieren

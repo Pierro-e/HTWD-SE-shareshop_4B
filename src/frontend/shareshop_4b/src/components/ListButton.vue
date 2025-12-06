@@ -11,6 +11,11 @@
         <strong>Ersteller:</strong> {{ item.ersteller_name }}
       </span>
     </div>
+    <div class="card-info" v-else-if="item.gesamtpreis">
+      <span>
+        <strong>Gesamtpreis:</strong> {{ item.gesamtpreis }} €
+      </span>
+    </div>
     <div class="card-info" v-else>
       <span style="visibility: hidden">Platzhalter</span>
     </div>

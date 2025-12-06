@@ -41,8 +41,8 @@ export default {
       errMsg: "",
       favName: "",
       favDesc: "",
-      favUnit: null,
-      favAmount: null,
+      favUnit: 0,
+      favAmount: 0,
     };
   },
   async mounted() {
@@ -52,7 +52,7 @@ export default {
     resetInput() {
       this.favName = "";
       this.favDesc = "";
-      this.favUnit = null;
+      this.favUnit = 0;
       this.favAmount = 0;
     },
     async addFavorite() {
@@ -103,8 +103,9 @@ export default {
         this.errMsg = "Fehler beim erstellen des Favoriten.";
       }
       // Clean Up
-      this.updateFavorites();
-      this.resetInput();
+      this.$parent.$emit("close");
+      this.$parent.$emit("update");
+      //this.resetInput();
     },
   },
 };

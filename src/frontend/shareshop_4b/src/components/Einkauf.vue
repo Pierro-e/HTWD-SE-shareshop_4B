@@ -44,7 +44,7 @@
     @close="commit_purchase = false"
   >
     <div class="popup-field">
-      <label for="totalPrice">Gesamtpreis (€):</label>
+      <label for="totalPrice">Gesamtpreis (€): </label>
       <input
         type="number"
         id="totalPrice"
@@ -56,7 +56,9 @@
     </div>
   </PopUp>
 
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="1"
+  />
 </template>
 
 <script>

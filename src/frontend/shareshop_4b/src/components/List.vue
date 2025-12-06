@@ -62,6 +62,9 @@
 
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
+  <div v-if="productNum === 0" class="info">
+      Liste leer
+    </div>
 
   <div v-if="showpopup_list" class="popup-overlay">
     <div class="popup-content">
@@ -161,7 +164,9 @@
       :onSettings="product_settings"
     />
   </div>
-  <BottomBar />
+  <BottomBar 
+    :highlight-btn="1"
+  />
     
 </template>
 
@@ -187,6 +192,7 @@ export default {
       list_creator_name: "",
       errorMessage: "",
       infoMessage: "",
+      productNum: -1,
       loadingActive: true,
       showpopup_product: false,
       showpopup_list: false,
@@ -284,9 +290,9 @@ export default {
         );
         this.listenprodukte = response.data;
 
-        let productNum = 0;
+        this.productNum = 0;
         for (const produkt of this.listenprodukte) {
-          productNum++;
+          this.productNum++;
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
             produkt.produkt_menge !== undefined &&
@@ -301,9 +307,6 @@ export default {
               produkt.produkt_menge = menge.toFixed(2);
             }
           }
-        }
-        if (productNum == 0){
-          this.errorMessage = "Liste leer";
         }
       } catch (error) {
         if (
@@ -511,6 +514,13 @@ export default {
       for (const product of favoriteProducts){
         if (product.produkt_name === this.new_product.trim()){
           favID = product.produkt_id;
+          if (product.menge == null){
+            product.menge = 0;
+          }
+          if (product.einheit_id == null){
+            product.einheit_id = 0;
+          }
+
           favData = {
             produkt_menge: product.menge,
             einheit_id: product.einheit_id,
@@ -644,6 +654,7 @@ export default {
 
     product_settings(product) {
       const listenId = this.list_id || this.$route.params.id;
+      const listenName = this.list_name;
       const produktId = product.produkt_id;
       const nutzerId = product.hinzugefügt_von;
 
@@ -655,13 +666,17 @@ export default {
           nutzerId
         },
         query: {
-          readonly: false
+          list_name: listenName
         }
       });
     },
 
 
     einkauf_abschließen() {
+      if (this.productNum == 0){
+        alert("Liste ist leer! Füge Produkte hinzu, um einzukaufen!");
+        return;
+      }
       const list_id = this.list_id || this.$route.params.id;
 
       this.$router.push(`/list/${list_id}/einkauf`);
