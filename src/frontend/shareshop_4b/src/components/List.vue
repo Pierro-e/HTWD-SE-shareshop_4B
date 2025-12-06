@@ -551,43 +551,43 @@ export default {
       this.showpopup_add_member = true;
     },
 
-async mitglied_entfernen(mitglied_id) {
-  const list_id = this.list_id || this.$route.params.id;
-  
-  // Füge die ID des aktuellen Nutzers (Requester) hinzu
-  const requester_id = this.user.id; 
+    async mitglied_entfernen(mitglied_id) {
+      const list_id = this.list_id || this.$route.params.id;
+      
+      // Füge die ID des aktuellen Nutzers (Requester) hinzu
+      const requester_id = this.user.id; 
 
-  try {
-    // ÄNDERUNG: 'requesterId' als Query-Parameter im DELETE-Request übergeben
-    await axios.delete(
-      `http://141.56.137.83:8000/listen/${list_id}/mitglieder/${mitglied_id}`,
-      {
-        params: {
-          requesterId: requester_id,
-        },
+      try {
+        // ÄNDERUNG: 'requesterId' als Query-Parameter im DELETE-Request übergeben
+        await axios.delete(
+          `http://141.56.137.83:8000/listen/${list_id}/mitglieder/${mitglied_id}`,
+          {
+            params: {
+              requesterId: requester_id,
+            },
+          }
+        );
+        this.infoMessage = "Mitglied erfolgreich entfernt.";
+        this.get_list_members(list_id); // Aktualisiere die Mitgliederliste
+        this.errorMessage = "";
+      } catch (error) {
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
+          this.errorMessage = error.response.data.detail;
+          // Wenn es ein Fehler ist, der nicht 403 (Forbidden) ist und die eigene ID betrifft, 
+          // lade die Mitgliederliste neu (z.B. nach erfolgreicher Selbstentfernung, 
+          // falls das Popup noch offen ist)
+          if (mitglied_id == requester_id && error.response.status != 403) {
+            this.get_list_members(list_id); 
+          }
+        } else {
+          this.errorMessage = "Fehler beim Entfernen des Mitglieds";
+        }
       }
-    );
-    this.infoMessage = "Mitglied erfolgreich entfernt.";
-    this.get_list_members(list_id); // Aktualisiere die Mitgliederliste
-    this.errorMessage = "";
-  } catch (error) {
-    if (
-      error.response &&
-      error.response.data &&
-      error.response.data.detail
-    ) {
-      this.errorMessage = error.response.data.detail;
-      // Wenn es ein Fehler ist, der nicht 403 (Forbidden) ist und die eigene ID betrifft, 
-      // lade die Mitgliederliste neu (z.B. nach erfolgreicher Selbstentfernung, 
-      // falls das Popup noch offen ist)
-      if (mitglied_id == requester_id && error.response.status != 403) {
-        this.get_list_members(list_id); 
-      }
-    } else {
-      this.errorMessage = "Fehler beim Entfernen des Mitglieds";
-    }
-  }
-},
+    },
 
     async mitglied_hinzufügen() {
       this.errorMessage = "";
