@@ -1,0 +1,8 @@
+= Statische Tests für AsciiDoc
+
+Es wird bevorzugt viele kleine Tools in Combination zu nutzen,
+anstatt sich auf einen großen Wrapper zu verlassen.
+
+== Linter
+
+* https://github.com/docToolchain/asciidoc-linter/[asciidoc-linter]
