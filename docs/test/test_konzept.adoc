@@ -16,6 +16,8 @@ Dennoch wird empfohlen parallel zur Entwikcklung iterativ mit Lintern zu arbeite
 
 ==== Modultest / Unittest
 
+- Vitest -> Testing Framework
+
 ==== Integrationstest
 
 ==== Systemtest
