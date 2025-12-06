@@ -2,18 +2,17 @@ import PopUp from "./PopUp.vue";
 import { render } from "@testing-library/vue";
 import { describe, it, expect, test } from "vitest";
 
-describe("PopUp", () => {
-  it("der Default-Name ist PopUp", () => {
-    const { getByRole } = render(PopUp, {});
-    const button = getByRole("button");
-  });
+it("der Default-Name ist PopUp", () => {
+  const { getByRole } = render(PopUp);
+  const header = getByRole("heading");
+  console.log(header.attributes);
+});
 
-  test("should work", ({ task }) => {
-    console.log(task.name);
-  });
+test("should work", ({ task }) => {
+  console.log(task.name);
+});
 
-  test("math is easy", ({ task }) => {
-    console.log(task.name);
-    expect(2 + 7).toBe(9);
-  });
+test("math is easy", ({ task }) => {
+  console.log(task.name);
+  expect(2 + 7).toBe(9);
 });
