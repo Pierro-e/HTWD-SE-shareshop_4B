@@ -1,0 +1,8 @@
+= Statische Tests für Vue.js
+
+Es wird bevorzugt viele kleine Tools in Combination zu nutzen,
+anstatt sich auf einen großen Wrapper zu verlassen.
+
+== Linter
+
+* https://eslint.vuejs.org/[eslint]
