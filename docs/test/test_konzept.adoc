@@ -16,7 +16,7 @@ Dennoch wird empfohlen parallel zur Entwikcklung iterativ mit Lintern zu arbeite
 
 ==== Modultest / Unittest
 
-- Vitest -> Testing Framework
+* link:dynamische_tests/frontend.adoc[UI/Frontend]
 
 ==== Integrationstest
 
