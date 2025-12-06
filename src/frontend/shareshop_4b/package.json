@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "test:browser": "vitest --config=vitest.browser.config.ts"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
@@ -21,7 +22,9 @@
   "devDependencies": {
     "@testing-library/vue": "^8.1.0",
     "@vitejs/plugin-vue": "^5.2.3",
+    "@vitest/browser-playwright": "^4.0.15",
     "vite": "^6.3.5",
-    "vitest": "^4.0.15"
+    "vitest": "^4.0.15",
+    "vitest-browser-vue": "^2.0.1"
   }
 }
