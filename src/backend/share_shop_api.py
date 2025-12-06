@@ -998,18 +998,43 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
 
 
 @app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    eintrag = db.query(ListeMitglieder).filter(
+def delete_mitglied(
+    listen_id: int = Path(..., gt=0), 
+    nutzer_id: int = Path(..., gt=0), # ID des Nutzers, der entfernt werden soll
+    requester_id: int = Query(..., alias="requesterId", description="ID des Nutzers, der die Entfernung durchführt"), # Aktueller Nutzer (Requester)
+    db: Session = Depends(get_db)
+    ):
+    """Entfernt ein Mitglied aus einer Liste mit Autorisierungsprüfung."""
+    # 1. Liste finden und Ersteller-ID abrufen
+    liste = db.query(Liste).filter(Liste.id == listen_id).first()
+    if not liste:
+        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
+
+    ersteller_id = liste.ersteller
+
+    # 2. Autorisierungsprüfung: Nur Ersteller darf andere entfernen ODER man darf sich selbst entfernen.
+    is_ersteller = (requester_id == ersteller_id)
+    is_self_removal = (requester_id == nutzer_id)
+
+    if not is_ersteller and not is_self_removal:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Nur der Ersteller darf andere Mitglieder entfernen, oder man kann sich selbst verlassen."
+        )
+    # 3. Mitglieds-Eintrag in ListeMitglieder finden
+    mitglied = db.query(ListeMitglieder).filter(
         ListeMitglieder.listen_id == listen_id,
         ListeMitglieder.nutzer_id == nutzer_id
     ).first()
-    if not eintrag:
-        raise HTTPException(status_code=404, detail="Mitglied nicht gefunden")
-    db.delete(eintrag)
+
+    if not mitglied:
+        raise HTTPException(status_code=404, detail="Mitglied nicht in dieser Liste gefunden")
+
+    # 4. Mitglied löschen
+    db.delete(mitglied)
     db.commit()
+
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-
 # --- Produkte in Listen ---
 @app.get("/listen/{listen_id}/produkte", response_model=List[ProduktInListeRead])
 def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
