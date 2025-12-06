@@ -2,9 +2,13 @@
 
 == statisch
 
-* link:statische_tests/python[Python]
-* link:statische_tests/vue[Vue]
-* link:statische_tests/asciidoc[AsciiDoc]
+Das Durchführen von statischen Tests ist nicht verpflichten,
+da das definieren on Einheitlichen Regeln noch aussteht.
+Dennoch wird empfohlen parallel zur Entwikcklung iterativ mit Lintern zu arbeiten.
+
+* link:statische_tests/python.adoc[Python]
+* link:statische_tests/vue.adoc[Vue]
+* link:statische_tests/asciidoc.adoc[AsciiDoc]
 
 == dynamisch
 

@@ -1,0 +1,11 @@
+= Statische Tests für Python
+
+Es wird bevorzugt viele kleine Tools in Combination zu nutzen,
+anstatt ein großes.
+
+== Linter
+
+- ruff -> general (also a formatter)
+- bandit -> security
+- ty -> type checker
+- refurb -> modernizing your python code
