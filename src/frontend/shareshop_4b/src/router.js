@@ -43,7 +43,7 @@ const routes = [
   { path: "/userArchive", component: UserArchive,
     name: "UserArchive",
     props: route => ({
-      listFilter: route.query.listFilter 
+      listFilter: route.query.listFilter
     })
   },
 ];

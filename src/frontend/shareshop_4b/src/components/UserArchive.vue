@@ -2,7 +2,7 @@
   <div class="list-archive">
     <AppHeader :title="`Einkaufsarchiv für\n${user.name}`">
       <template #left>
-        <button @click="this.$router.push(`/listen`)" class="button button-cancel back-button">
+        <button @click="goBack()" class="button button-cancel back-button">
           <font-awesome-icon icon='arrow-left'/>
         </button>
       </template>
@@ -121,6 +121,18 @@ export default {
         year: "numeric"
       }).format(date);  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
     },
+    goBack() {
+      if (this.listFilter !== null) {
+        this.$router.push({ 
+          name: "List", 
+          params: { id: this.listFilter } 
+        });
+        return;
+      } else 
+      {
+        this.$router.push(`/listen`);
+      }
+    }
   },
   computed: {
     filteredPurchases() {
