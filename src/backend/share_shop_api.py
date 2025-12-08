@@ -1169,56 +1169,6 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
 
 # Einkaufsarchiv ------------------------------------
 
-# gibt die Einkäufe für eine Liste zurück
-@app.get("/einkaufsarchiv/list/{listen_id}", response_model=List[EinkaufsarchivRead])
-def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-
-    # Prüfen, ob die Liste existiert
-    liste = db.query(Liste).filter(Liste.id == listen_id).first()
-    if not liste:
-        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
-    
-    einkaeufe = (
-        db.query(
-            Einkaufsarchiv.einkauf_id,
-            Einkaufsarchiv.listen_id,
-            Liste.name.label("listen_name"),
-            Einkaufsarchiv.eingekauft_von,
-            Nutzer.name.label("einkaeufer_name"),
-            func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
-            Einkaufsarchiv.gesamtpreis
-        )
-        .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
-        .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
-        .filter(Einkaufsarchiv.listen_id == listen_id)
-        .order_by(Einkaufsarchiv.eingekauft_am.desc())
-        .all()
-    )
-
-    return einkaeufe
-
-# gibt die Einkäufe zurück, die von dem Nutzer eingekauft wurden
-@app.get("/einkaufsarchiv/nutzer_eingekauft/{nutzer_id}", response_model=List[EinkaufsarchivRead])
-def get_einkaufsarchiv_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-
-    einkaeufe = (
-        db.query(
-            Einkaufsarchiv.einkauf_id,
-            Einkaufsarchiv.listen_id,
-            Liste.name.label("listen_name"),
-            Einkaufsarchiv.eingekauft_von,
-            Nutzer.name.label("einkaeufer_name"),
-            func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
-            Einkaufsarchiv.gesamtpreis
-        )
-        .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
-        .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
-        .filter(Einkaufsarchiv.eingekauft_von == nutzer_id)
-        .all()
-    )
-
-    return einkaeufe
-
 # gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat
 @app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
 def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
@@ -1243,30 +1193,36 @@ def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Se
 
     return einkaeufe
 
-# verwendet die beiden obigen Funktionen, um alle Einkäufe zurückzugeben, in denen der Nutzer beteiligt ist
-@app.get("/einkaufsarchiv/nutzer_alle/{nutzer_id}", response_model=List[EinkaufsarchivRead])
-def get_einkaufsarchiv_by_nutzer_alle(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):  
+# gibt alle Einkäufe zurück, für die Listen, in denen der Nutzer drin ist
+@app.get("/einkaufsarchiv/nutzer_gesamt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
 
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
-    einkaeufe_eingekauft = get_einkaufsarchiv_by_nutzer(nutzer_id, db)
-    einkaeufe_hinzugefuegt = get_einkaufsarchiv_by_nutzer_listen(nutzer_id, db)
+    listen_ids = db.query(ListeMitglieder.listen_id).filter(
+        ListeMitglieder.nutzer_id == nutzer_id
+    ).subquery()
 
-    # Einkäufe zusammenführen und Duplikate entfernen
-    einkaeufe_combined = {einkauf.einkauf_id: einkauf for einkauf in einkaeufe_eingekauft}
-    for einkauf in einkaeufe_hinzugefuegt:
-        einkaeufe_combined[einkauf.einkauf_id] = einkauf
+    einkaeufe = (
+        db.query(
+            Einkaufsarchiv.einkauf_id,
+            Einkaufsarchiv.listen_id,
+            Liste.name.label("listen_name"),
+            Einkaufsarchiv.eingekauft_von,
+            Nutzer.name.label("einkaeufer_name"),
+            func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
+            Einkaufsarchiv.gesamtpreis
+        )
+        .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
+        .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
+        .filter(Einkaufsarchiv.listen_id.in_(listen_ids))
+        .all()
+    )
 
-    einkaeufe_sorted = sorted(
-    einkaeufe_combined.values(),      
-    key=attrgetter("eingekauft_am"),
-    reverse=True                      
-)
-
-    return list(einkaeufe_sorted) 
+    return einkaeufe
 
 @app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
 def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
