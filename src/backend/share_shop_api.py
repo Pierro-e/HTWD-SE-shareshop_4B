@@ -1219,6 +1219,7 @@ def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Se
         .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
         .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
         .filter(Einkaufsarchiv.listen_id.in_(listen_ids))
+        .order_by(Einkaufsarchiv.listen_id.asc(), Einkaufsarchiv.eingekauft_am.desc())
         .all()
     )
 
