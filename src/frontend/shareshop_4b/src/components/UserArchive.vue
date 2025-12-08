@@ -158,12 +158,14 @@ export default {
 .card-list {
   padding-top: 60px;
 }
+
 .filter {
   position: relative;      
   margin-top: 80px;        
   z-index: 1001;           
 }
 
+/* Styles für alle Dropdowns */
 .filter-dropdown {
   width: 100%;
   padding: 8px;
@@ -171,10 +173,17 @@ export default {
   border-radius: 6px;
   border: 1px solid #ccc;
   background-color: white;
+  color: #000;            /* Textfarbe setzen */
+  appearance: none;       /* Standard-Dropdown-Pfeil entfernen (optional) */
+  -webkit-appearance: none;
+  -moz-appearance: none;
   z-index: 1001;          
 }
 
-
-
-
+/* Styles für die Optionen im Dropdown */
+.filter-dropdown option {
+  color: #000;            /* schwarze Schrift */
+  background-color: #fff; /* weißer Hintergrund */
+}
 </style>
+
