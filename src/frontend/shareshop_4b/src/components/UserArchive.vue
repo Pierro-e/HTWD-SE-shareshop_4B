@@ -2,7 +2,7 @@
   <div class="list-archive">
     <AppHeader :title="`Einkaufsarchiv für\n${user.name}`">
       <template #left>
-        <button @click="this.$router.go(-1)" class="button button-cancel back-button">
+        <button @click="this.$router.push(`/listen`)" class="button button-cancel back-button">
           <font-awesome-icon icon='arrow-left'/>
         </button>
       </template>
@@ -72,6 +72,12 @@ export default {
     ListButton, 
     BottomBar
   },
+  props: {
+    listFilter: {
+      type: Number,
+      default: null
+    }
+  },
   data(){
       return{
           purchases: [],
@@ -119,15 +125,19 @@ export default {
   computed: {
     filteredPurchases() {
       return this.purchases.filter(p => {
-        const matchesList = this.selectedListID ? p.listen_id === this.selectedListID : true;
+        const matchesList = this.selectedListID ? Number(p.listen_id) === Number(this.selectedListID) : true;
 
-        const matchesUser = this.onlyOwn ? p.eingekauft_von === this.user.id : true;
+        const matchesUser = this.onlyOwn ? Number(p.eingekauft_von) === Number(this.user.id) : true;
 
         return matchesList && matchesUser;
     });    }
   },
   mounted() {
-    this.getData(this.user.id);
+    this.getData(this.user.id).then(() => {
+      if (this.listFilter !== null) {
+        this.selectedListID = this.listFilter;
+      }
+    });
   },
 };
 </script>

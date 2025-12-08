@@ -9,7 +9,6 @@ import UserSettings from "./components/UserSettings.vue";
 import ProductDetail from "./components/ProductDetail.vue";
 import Einkauf from "./components/Einkauf.vue";
 import Favorites from "./components/favorites/Favorites.vue"
-import ListArchive from "./components/ListArchive.vue";
 import ProductArchive from "./components/ProductArchive.vue";
 import UserArchive from "./components/UserArchive.vue";
 
@@ -29,15 +28,7 @@ const routes = [
     name: "ProductDetail"
   },
   { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
-  {
-    path: "/list/:list_id/archive",
-    component: ListArchive,
-    name: "ListArchive",
-    props: route => ({
-      list_id: route.params.list_id,
-      list_name: route.query.list_name
-    })
-  },
+
   { path: "/product/archive/:purchase_id",
     component: ProductArchive,
     props: route => ({
@@ -49,7 +40,12 @@ const routes = [
     }),
     name: "ProductArchive"
   },
-  { path: "/userArchive", component: UserArchive }
+  { path: "/userArchive", component: UserArchive,
+    name: "UserArchive",
+    props: route => ({
+      listFilter: route.query.listFilter 
+    })
+  },
 ];
 const router = createRouter({
   history: createWebHistory(),

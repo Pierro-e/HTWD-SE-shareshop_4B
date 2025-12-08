@@ -702,9 +702,8 @@ export default {
       const list_id = this.list_id || this.$route.params.id;
       const list_name = this.list_name;
       this.$router.push({ 
-        name: "ListArchive", 
-        params: { list_id},
-        query: { list_name } 
+        name: "UserArchive", 
+        query: { listFilter: list_id }
       });
     },
 
