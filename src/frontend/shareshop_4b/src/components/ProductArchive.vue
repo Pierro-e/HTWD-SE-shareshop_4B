@@ -3,7 +3,7 @@
     <div class="list-archive">
       <AppHeader :title="`${purchase_name}`">
         <template #left>
-          <button @click="back_to_Archive" class="button-cancel back-button">
+          <button @click=this.$router.go(-1) class="button-cancel back-button">
             <font-awesome-icon icon='arrow-left'/>
           </button>
         </template>
@@ -55,7 +55,7 @@ import BottomBar from './BottomBar.vue';
 
 export default {
   name: "ProductArchive",
-  props: ["purchase_id"],
+  props: ["purchase_id", "list_id", "purchase_name", "price"],
   components: { 
     AppHeader,
     ProductCard,
@@ -66,7 +66,6 @@ export default {
           list_id: null,
           purchase_name: "",
           price: null,
-          isUserArchive: false,
           purchased_products: [],
           loadingActive: true,
           errorMessage: "",
@@ -103,14 +102,6 @@ export default {
         this.loadingActive = false;
       }
     },
-
-    back_to_Archive() {
-      if (this.isUserArchive == 'true')
-        this.$router.push(`/userArchive`);
-      else
-      this.$router.push(`/list/${this.list_id}/archive`);
-    },
-
     product_settings(product) {
       // nichts machen
     },
@@ -119,7 +110,6 @@ export default {
     this.purchase_name = this.$route.query.purchase_name;
     this.list_id = this.$route.query.list_id;
     this.price = this.$route.query.price;
-    this.isUserArchive = this.$route.query.isUserArchive;
     this.getData(this.purchase_id);
   }
 }

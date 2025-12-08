@@ -36,7 +36,6 @@ const routes = [
       list_id: route.params.list_id,
       purchase_name: route.params.purchase_name,
       price: route.params.price,
-      isUserArchive: route.params.isUserArchive
     }),
     name: "ProductArchive"
   },

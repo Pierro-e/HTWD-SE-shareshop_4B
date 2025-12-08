@@ -28,7 +28,6 @@ export default {
   props: {
     name: {type: String},
     item: { type: Object, default: null },
-    isUserArchive: { type: Boolean, default: false }
   },
   methods: {
     openList() {
@@ -45,7 +44,6 @@ export default {
             list_id: this.item.listen_id,
             purchase_name: this.name,
             price: this.item.gesamtpreis,
-            isUserArchive: this.isUserArchive
           }
         });
       }

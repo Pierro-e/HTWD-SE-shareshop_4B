@@ -49,7 +49,6 @@
           :key="purchase.einkauf_id"
           :item="purchase"
           :name="`${purchase.listen_name} - ${formatDate(purchase.eingekauft_am)}`"
-          :isUserArchive="true"
         />
       </div>
     </div>
