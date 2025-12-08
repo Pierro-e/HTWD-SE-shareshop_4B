@@ -55,7 +55,7 @@ import BottomBar from './BottomBar.vue';
 
 export default {
   name: "ProductArchive",
-  props: ["purchase_id", "list_id", "purchase_name", "price"],
+  props: ["purchase_id"],
   components: { 
     AppHeader,
     ProductCard,

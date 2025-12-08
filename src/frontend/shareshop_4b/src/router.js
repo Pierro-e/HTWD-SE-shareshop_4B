@@ -32,10 +32,7 @@ const routes = [
   { path: "/product/archive/:purchase_id",
     component: ProductArchive,
     props: route => ({
-      purchase_id: route.params.purchase_id,
-      list_id: route.params.list_id,
-      purchase_name: route.params.purchase_name,
-      price: route.params.price,
+      purchase_id: route.params.purchase_id
     }),
     name: "ProductArchive"
   },
