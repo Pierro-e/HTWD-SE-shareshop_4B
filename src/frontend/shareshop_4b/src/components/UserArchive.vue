@@ -122,12 +122,11 @@ export default {
       }).format(date);  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
     },
     goBack() {
-      if (this.listFilter !== null) {
+      if (this.listFilter) {
         this.$router.push({ 
           name: "List", 
           params: { id: this.listFilter } 
         });
-        return;
       } else 
       {
         this.$router.push(`/listen`);
@@ -148,6 +147,8 @@ export default {
     this.getData(this.user.id).then(() => {
       if (this.listFilter !== null) {
         this.selectedListID = this.listFilter;
+      } else {
+        this.selectedListID = null;
       }
     });
   },
