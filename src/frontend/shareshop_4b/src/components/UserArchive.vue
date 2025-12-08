@@ -11,7 +11,7 @@
         
     <div class="filter">
       <select v-model="selectedListID" class="filter-dropdown">
-        <option :value="null">Alle Einkäufe</option>
+        <option :value="null">Alle Listen</option>
 
         <option 
           v-for="list in userLists" 
@@ -20,6 +20,11 @@
         >
           {{ list.name }}
         </option>
+      </select>
+
+      <select v-model="onlyOwn" class="filter-dropdown">
+        <option :value="false">Alle Einkäufe</option>
+        <option :value="true">Nur eigene Einkäufe</option>
       </select>
     </div>
 
@@ -74,6 +79,7 @@ export default {
           errorMessage: "",
           userLists: [],
           selectedListID: null,
+          onlyOwn: false,
       };
   },
   methods: {
@@ -112,10 +118,13 @@ export default {
   },
   computed: {
     filteredPurchases() {
-      if (!this.selectedListID) return this.purchases;
+      return this.purchases.filter(p => {
+        const matchesList = this.selectedListID ? p.listen_id === this.selectedListID : true;
 
-      return this.purchases.filter(p => p.listen_id === this.selectedListID);
-    }
+        const matchesUser = this.onlyOwn ? p.eingekauft_von === this.user.id : true;
+
+        return matchesList && matchesUser;
+    });    }
   },
   mounted() {
     this.getData(this.user.id);
