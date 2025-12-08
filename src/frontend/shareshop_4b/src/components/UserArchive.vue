@@ -79,16 +79,14 @@ export default {
   methods: {
     async getData(id) {
       try {   
-        const response1 = await axios.get(`http://141.56.137.83:8000/einkaufsarchiv/nutzer_alle/${this.user.id}`);
-        
+        const response1 = await axios.get(`http://141.56.137.83:8000/einkaufsarchiv/nutzer_gesamt/${this.user.id}`);
+               
         const response2 = await axios.get(`http://141.56.137.83:8000/nutzer/${this.user.id}/listen`);
-       
         if (response1.data.length === 0) {
           this.purchases = [];
           return;
         }
         this.purchases = response1.data;
-        console.log(this.purchases);
 
         if (response2.data.length === 0) {
           this.userLists = [];
