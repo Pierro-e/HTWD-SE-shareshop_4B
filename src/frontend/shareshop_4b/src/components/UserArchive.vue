@@ -43,13 +43,16 @@
     </div>
 
     <div v-else>
-      <div class="card-list">
-        <ListButton
-          v-for="purchase in filteredPurchases"
-          :key="purchase.einkauf_id"
-          :item="purchase"
-          :name="`${purchase.listen_name} - ${formatDate(purchase.eingekauft_am)}`"
-        />
+      <div v-for="(group, listName) in groupedPurchases" :key="listName" class="list-group">
+        <h2 class="list-headline">{{ listName }}</h2>
+        <div class="card-list">
+          <ListButton
+            v-for="purchase in group"
+            :key="purchase.einkauf_id"
+            :item="purchase"
+            :name="formatDate(purchase.eingekauft_am)"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -140,7 +143,19 @@ export default {
         const matchesUser = this.onlyOwn ? Number(p.eingekauft_von) === Number(this.user.id) : true;
 
         return matchesList && matchesUser;
-    });    }
+      });    
+    },
+    groupedPurchases() {
+      const groups = {};
+      this.filteredPurchases.forEach(purchase => {
+        const listName = purchase.listen_name;
+        if (!groups[listName]) {
+          groups[listName] = [];
+        }
+        groups[listName].push(purchase);
+      });
+      return groups;
+    }
   },
   mounted() {
     this.getData(this.user.id);
@@ -151,6 +166,12 @@ export default {
 <style scoped>
 .filter {     
   margin-top: 80px;             
+}
+
+.list-headline {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 40px 0 -25px 0;
 }
 
 </style>
