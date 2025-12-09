@@ -44,7 +44,7 @@
 
     <div v-else>
       <div v-for="(group, listName) in groupedPurchases" :key="listName" class="list-group">
-        <h2 class="list-headline">{{ listName }}</h2>
+        <h2 class="info">{{ listName }}</h2>
         <div class="card-list">
           <ListButton
             v-for="purchase in group"
@@ -168,8 +168,8 @@ export default {
   margin-top: 70px;             
 }
 
-.list-headline {
-  margin: 40px 0 -25px 0;
+.card-list {
+  padding: 0;
 }
 
 </style>
