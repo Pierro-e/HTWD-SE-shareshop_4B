@@ -73,7 +73,7 @@ export default {
   },
   props: {
     listFilter: {
-      type: Number,
+      type: [Number, null],
       default: null
     }
   },
@@ -83,7 +83,7 @@ export default {
           loadingActive: true,
           errorMessage: "",
           userLists: [],
-          selectedListID: null,
+          selectedListID: this.listFilter !== null ? this.listFilter : null,
           onlyOwn: false,
       };
   },
@@ -143,47 +143,15 @@ export default {
     });    }
   },
   mounted() {
-    this.getData(this.user.id).then(() => {
-      if (this.listFilter !== null) {
-        this.selectedListID = this.listFilter;
-      } else {
-        this.selectedListID = null;
-      }
-    });
+    this.getData(this.user.id);
   },
 };
 </script>
 
 <style scoped>
-.card-list {
-  padding-top: 60px;
+.filter {     
+  margin-top: 80px;             
 }
 
-.filter {
-  position: relative;      
-  margin-top: 80px;        
-  z-index: 1001;           
-}
-
-/* Styles für alle Dropdowns */
-.filter-dropdown {
-  width: 100%;
-  padding: 8px;
-  font-size: 15px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background-color: white;
-  color: #000;            /* Textfarbe setzen */
-  appearance: none;       /* Standard-Dropdown-Pfeil entfernen (optional) */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  z-index: 1001;          
-}
-
-/* Styles für die Optionen im Dropdown */
-.filter-dropdown option {
-  color: #000;            /* schwarze Schrift */
-  background-color: #fff; /* weißer Hintergrund */
-}
 </style>
 

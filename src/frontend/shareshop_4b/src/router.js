@@ -39,7 +39,7 @@ const routes = [
   { path: "/userArchive", component: UserArchive,
     name: "UserArchive",
     props: route => ({
-      listFilter: Number(route.query.listFilter)
+      listFilter: route.query.listFilter ? Number(route.query.listFilter) : null
     })
   },
 ];
