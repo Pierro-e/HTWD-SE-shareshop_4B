@@ -158,7 +158,24 @@ export default {
     }
   },
   mounted() {
+    const querySelectedListID = this.$route.query.selectedListID;
+    if (querySelectedListID !== undefined && querySelectedListID !== null) {
+      this.selectedListID = querySelectedListID === 'null' ? null : Number(querySelectedListID);
+    }
     this.getData(this.user.id);
+  },
+  watch: {
+    selectedListID(newVal) {
+      const queryValue = newVal === null ? 'null' : newVal;
+      if (this.$route.query.selectedListID != queryValue) {
+        this.$router.replace({ 
+          query: { 
+            ...this.$route.query, 
+            selectedListID: queryValue
+          } 
+        });
+      }
+    }
   },
 };
 </script>

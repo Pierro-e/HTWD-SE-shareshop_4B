@@ -3,7 +3,7 @@
     <div class="list-archive">
       <AppHeader :title="`${purchase_name}`">
         <template #left>
-          <button @click=this.$router.go(-1) class="button-cancel back-button">
+          <button @click="goBack" class="button-cancel back-button">
             <font-awesome-icon icon='arrow-left'/>
           </button>
         </template>
@@ -72,6 +72,23 @@ export default {
       }
   },
   methods: {
+    goBack() {
+      const listFilter = this.$route.query.listFilter;
+      const selectedListID = this.$route.query.selectedListID;
+      
+      const query = {};
+      if (listFilter !== undefined && listFilter !== 'null') {
+        query.listFilter = listFilter;
+      }
+      if (selectedListID !== undefined) {
+        query.selectedListID = selectedListID;
+      }
+      
+      this.$router.push({ 
+        name: "UserArchive", 
+        query: query
+      });
+    },
     async getData(id) {
       try {
         const response = await axios.get(
