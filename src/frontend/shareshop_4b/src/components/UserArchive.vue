@@ -165,12 +165,10 @@ export default {
 
 <style scoped>
 .filter {     
-  margin-top: 80px;             
+  margin-top: 70px;             
 }
 
 .list-headline {
-  font-size: 1.5rem;
-  font-weight: bold;
   margin: 40px 0 -25px 0;
 }
 
