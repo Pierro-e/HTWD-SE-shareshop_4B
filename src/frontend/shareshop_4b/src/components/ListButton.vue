@@ -27,6 +27,7 @@ export default {
   name: "ListButton",
   props: {
     name: {type: String},
+    listName: {type: String, default: ""},  // nur für Archive
     item: { type: Object, default: null },
   },
   methods: {
@@ -45,6 +46,7 @@ export default {
             list_id: this.item.listen_id,
             purchase_name: this.name,
             price: this.item.gesamtpreis,
+            listName: this.listName,
             selectedListID: currentQuery.selectedListID !== undefined ? currentQuery.selectedListID : 'null',
             listFilter: currentQuery.listFilter !== undefined ? currentQuery.listFilter : 'null'
           }

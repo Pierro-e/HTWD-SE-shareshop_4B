@@ -51,6 +51,7 @@
             :key="purchase.einkauf_id"
             :item="purchase"
             :name="formatDate(purchase.eingekauft_am)"
+            :list-name="listName"
           />
         </div>
       </div>
