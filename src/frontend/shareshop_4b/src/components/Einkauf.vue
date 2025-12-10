@@ -1,57 +1,83 @@
 <template>
-  <div class="einkauf">
-    
-    <AppHeader :title="list_name">
+  <AppHeader :title="list_name">
+
+    <template #left>
+      <button @click="einkauf_abbrechen" class="button-cancel">
+        <font-awesome-icon icon='xmark'/>
+      </button>
+    </template>
+
+    <template #right>
+      <button @click="prepare_purchase" class="button button-submit">
+        <font-awesome-icon icon='check'/>
+      </button>
+    </template>
+  </AppHeader>
+
+  <div v-if="loadingActive" class="loading">Laden...</div>
+  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+
+  <div :style="{ paddingTop: errorMessage ? '0' : '80px' }"></div>
+  <div class="card-grid">
+    <ProductCard
+      v-for="(product, index) in listenprodukte"
+      :key="index"
+      :product="product"
+      :onSettings="product_settings"
+      :hideSettings=true
+      @click="product.erledigt = !product.erledigt"
+    >
       <template #left>
-        <button @click="einkauf_abbrechen" class="button button-cancel back-button">
-          Einkauf abbrechen
-        </button>
+        <input
+          type="checkbox"
+          class="produkt-checkbox"
+          :checked="product.erledigt"
+          @change="product.erledigt = $event.target.checked"
+        />
       </template>
-
-      <template #right>
-        <button @click="einkauf_abschließen" class="button button-submit button-submit-header">
-          Einkauf abschließen
-        </button>
-      </template>
-    </AppHeader>
-
-    <div v-if="loadingActive" class="loading">Laden...</div>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-    
-    <div class="produkte-grid">
-      <ProductCard
-        v-for="(produkt, index) in listenprodukte"
-        :key="index"
-        :produkt="produkt"
-        :onSettings="product_settings"
-      >
-        <template #left>
-          <input
-            type="checkbox"
-            :id="`check-${index}`"
-            class="produkt-checkbox"
-            @change="toggle_Erledigt(produkt, $event)"
-          />
-        </template>
-      </ProductCard>
-    </div>
-
+    </ProductCard>
   </div>
+
+  <PopUp
+    v-if="commit_purchase"
+    name="Einkauf abschließen"
+    @close="commit_purchase = false"
+  >
+    <div class="popup-field">
+      <label for="totalPrice">Gesamtpreis (€): </label>
+      <input
+        type="number"
+        id="totalPrice"
+        v-model.number="totalPrice"
+        min="0"
+        step="1"
+      />
+      <button @click="set_price" class="button button-submit">Speichern</button>
+    </div>
+  </PopUp>
+
+  <BottomBar 
+    :highlight-btn="1"
+  />
 </template>
 
 <script>
 import axios from "axios";
-import { inject } from "vue";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
-
+import BottomBar from "./BottomBar.vue";
+import PopUp from "./PopUp.vue";
 
 export default {
   name: "Einkauf",
   inject: ["user", "getUser"],
   props: ["list_id"],
-  components: { AppHeader , ProductCard},
-  
+  components: {
+    AppHeader,
+    ProductCard,
+    BottomBar,
+    PopUp
+  },
   data() {
     return {
       list_name: "",
@@ -59,6 +85,8 @@ export default {
       loadingActive: true,
       listenprodukte: [],
       userData: null,
+      commit_purchase: false,
+      totalPrice: 0,
     };
   },
   methods: {
@@ -89,13 +117,6 @@ export default {
         //console.log(JSON.stringify(response.data, null, 2));
 
         for (const produkt of this.listenprodukte) {
-          // Produktname holen
-          //console.log(produkt.produkt_name);
-          produkt.name = produkt.produkt_name;
-
-          // Einheit holen
-          produkt.einheit_abk = produkt.einheit_abk;
-
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
             produkt.produkt_menge !== undefined &&
@@ -122,7 +143,7 @@ export default {
           this.errorMessage = "Fehler beim Laden der Produkte";
         }
       }
-      loadingActive = false;
+      this.loadingActive = false;
     },
 
     einkauf_abbrechen() {
@@ -130,44 +151,84 @@ export default {
       this.$router.push(`/list/${list_id}`);
     },
 
-    product_details(produkt) {
-      // anzeigen der Produktdetails: von wem hinzugefügt,
+    prepare_purchase() {
+      if (!this.listenprodukte || this.listenprodukte.length === 0) {
+        this.errorMessage = "Keine Produkte vorhanden!";
+        return;
+      }
+      const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
+
+      if (erledigteProdukte.length === 0) {
+          alert("Es sind keine Produkte abgehakt!");
+          return;
+      }
+
+      this.totalPrice = 0;
+
+      this.errorMessage = "";
+      this.commit_purchase = true;
     },
 
-    toggle_Erledigt(produkt, event) {
-      produkt.erledigt = event.target.checked;
+    set_price() {
+      if (this.totalPrice === null || isNaN(this.totalPrice) || this.totalPrice < 0) {
+        this.errorMessage = "Bitte geben Sie einen gültigen Gesamtpreis ein.";
+        return;
+      }
+      this.commit_purchase = false;
+      this.einkauf_abschließen();
     },
-
 
     async einkauf_abschließen() {
       this.errorMessage = "";
       const list_id = this.list_id || this.$route.params.listenId;
+      const price = this.totalPrice;
+      const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
       try {
+        const response = await axios.post(
+          `http://141.56.137.83:8000/create/einkaufsarchiv/list/${list_id}`,
+          {
+            eingekauft_von: this.userData.id,
+            gesamtpreis: price,
+          }
+        );
 
+        const purchase_id = response.data.einkauf_id;
 
-        if (!this.listenprodukte || this.listenprodukte.length === 0) {
-          this.errorMessage = "Keine Produkte vorhanden!";
-          return;
-        }
-        const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
+        await Promise.all(erledigteProdukte.map(produkt =>
+          axios.post(
+            `http://141.56.137.83:8000/create/eingekaufte_produkte/einkauf/${purchase_id}`,
+            {
+              produkt_id: produkt.produkt_id,
+              produkt_menge: produkt.produkt_menge,
+              einheit_id: produkt.einheit_id,
+              hinzugefuegt_von: produkt.hinzugefügt_von,
+              beschreibung: produkt.beschreibung,
+            }
+          )
+        ));
 
-        if (erledigteProdukte.length === 0) {
-          this.errorMessage = "Es sind keine Produkte abgehakt!";
-          return;
-        }
+        await Promise.all(erledigteProdukte.map(produkt =>
+          axios.post(
+            `http://141.56.137.83:8000/bedarfsvorhersage_create/nutzer/${produkt.hinzugefügt_von}`,
+            {
+              produkt_id: produkt.produkt_id,
+            }
+          )
+        ));
 
-        for (const produkt of erledigteProdukte) {
-          await axios.delete(
+        await Promise.all(erledigteProdukte.map(produkt =>
+          axios.delete(
             `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt.produkt_id}`,
             {
               data: {
                 hinzugefügt_von: produkt.hinzugefügt_von,
-              },
-            },
-          );
-        }
+              }
+            }
+          )
+        ));
 
         this.$router.push(`/list/${list_id}`);
+
       } catch (error) {
         if (
           error.response &&
@@ -179,6 +240,10 @@ export default {
           this.errorMessage = "Fehler beim Abschließen des Einkaufs.";
         }
       }
+      this.totalPrice = 0;
+    },
+    product_settings(produkt) {
+      // nichts machen
     },
   },
 
@@ -193,22 +258,6 @@ export default {
 </script>
 
 <style scoped>
-.einkauf {
-  padding-top: 50px;
-}
-
-.back-button {
-  position: absolute;
-  left: 20px;
-  top: 25px;
-}
-
-.button-submit-header {
-  position: absolute;
-  right: 20px;
-  top: 25px;
-}
-
 .erledigt {
   opacity: 0.5;
   filter: grayscale(100%);
@@ -217,26 +266,13 @@ export default {
     filter 0.3s ease;
 }
 
-.produkt-name.erledigt {
-  text-decoration: line-through;
-  color: #777;
-}
-
 .produkt-checkbox {
   width: 1.2rem;
   height: 1.2rem;
   cursor: pointer;
 }
 
-/* Optional: wenn erledigt, z.B. durch Linie durch den Text */
-.produkt-name.erledigt {
-  text-decoration: line-through;
-  color: #777;
-}
-
 .error {
-  margin-top: 2em;
-  z-index: 1100;
-  /* höher als der Header */
+  z-index: 1100;   /* höher als der Header */
 }
 </style>

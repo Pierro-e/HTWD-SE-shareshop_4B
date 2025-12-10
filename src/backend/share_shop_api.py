@@ -2,14 +2,16 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response, Body, Query
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
-from sqlalchemy.orm import sessionmaker, declarative_base, Session
+from sqlalchemy.orm import sessionmaker, declarative_base, Session, aliased
 from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import List, Optional
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from sqlalchemy.sql import case
 from fastapi.middleware.cors import CORSMiddleware
 from datetime import datetime
+from operator import attrgetter
+import numpy as np
 import re
 
 
@@ -31,6 +33,7 @@ class Nutzer(Base):
     passwort_hash = Column(String, nullable=False)
     theme = Column(Integer, default=0)
     color = Column(Integer, default=0)
+    decaydays = Column(Numeric(10,2), nullable=False, default=7.00)
 
 
 class Einheit(Base):
@@ -85,7 +88,7 @@ class Bedarfsvorhersage(Base):
     nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True )
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     counter = Column(Numeric(10, 2), default=0.00)
-    last_update = Column(DateTime, server_default=func.current_timestamp(), onupdate=func.current_timestamp())
+    last_bought = Column(DateTime(timezone=True), server_default=func.current_timestamp())
 
 class Einkaufsarchiv(Base):
     __tablename__ = "Einkaufsarchiv"
@@ -104,8 +107,13 @@ class EingekaufteProdukte(Base):
     einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
     produkt_preis = Column(Numeric(10, 2), nullable=True)
     hinzugefuegt_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
+    beschreibung = Column(String, nullable=True)
 
-
+class Kostenaufteilung(Base):
+    __tablename__ = "Kostenaufteilung"
+    empfaenger_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True)
+    schuldner_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True)
+    betrag = Column(Numeric(10, 2), nullable=True)
 
 # --- Pydantic-Modelle ---
 class NameBasis(BaseModel):
@@ -130,6 +138,7 @@ class NutzerRead(BaseModel):
     passwort_hash: str
     theme: int
     color: int
+    decaydays: Decimal
 
     class Config:
         from_attributes = True
@@ -162,6 +171,7 @@ class ListeRead(BaseModel):
     id: int
     name: str
     ersteller: Optional[int] = None
+    ersteller_name: Optional[str] = None
     datum: Optional[date] = None
 
     class Config:
@@ -195,6 +205,7 @@ class ProduktInListeRead(BaseModel):
     einheit_id: Optional[int] = None
     einheit_abk: Optional[str] = None
     hinzugefügt_von: int
+    hinzufueger_name: Optional[str] = None
     beschreibung: Optional[str] = None
 
     class Config:
@@ -249,13 +260,12 @@ class BedarfsvorhersageRead(BaseModel):
     produkt_id: int
     produkt_name: Optional[str] = None
     counter: Decimal
-    last_update: Optional[datetime] = None
+    last_bought: Optional[datetime] = None
     class Config:
         from_attributes = True
 
 class BedarfvorhersageCreate(BaseModel):
     produkt_id: int
-    counter: Decimal
 
 class PasswortÄndern(BaseModel):
     neues_passwort: str
@@ -269,6 +279,9 @@ class NameAendern(NameBasis):
 
 class EmailAendern(BaseModel):
     neue_email: str
+
+class DecayDaysAendern(BaseModel):
+    neue_decaydays: Decimal
 
 class EinkaufsarchivRead(BaseModel):
     einkauf_id: int
@@ -296,6 +309,7 @@ class eingekaufteProdukteRead(BaseModel):
     produkt_preis: Optional[Decimal] = None
     hinzugefuegt_von: Optional[int] = None
     hinzufueger_name: Optional[str] = None
+    beschreibung: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -306,6 +320,22 @@ class eingekaufteProdukteCreate(BaseModel):
     einheit_id: Optional[int] = None
     produkt_preis: Optional[Decimal] = None
     hinzugefuegt_von: Optional[int] = None
+    beschreibung: Optional[str] = None
+
+class KostenaufteilungRead(BaseModel):
+    empfaenger_id: int
+    empfaenger_name: Optional[str] = None
+    schuldner_id: int
+    schuldner_name: Optional[str] = None
+    betrag: Optional[Decimal] = None
+
+    class Config:
+        from_attributes = True
+
+class KostenaufteilungCreate(BaseModel):
+    empfaenger_id: int
+    schuldner_id: int
+    betrag: Decimal
 
 
 
@@ -387,7 +417,8 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
         "email": nutzer.email,
         "name": nutzer.name,
         "theme": nutzer.theme,
-        "color": nutzer.color
+        "color": nutzer.color,
+        "decaydays": nutzer.decaydays
     }
 
 
@@ -597,6 +628,19 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
 
     return nutzer   
 
+@app.put("/nutzer_change/{nutzer_id}/decaydays", status_code=status.HTTP_200_OK)    
+def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = Depends(get_db)):
+    nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
+
+    if not nutzer:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+    nutzer.decaydays = decaydays.neue_decaydays
+    db.commit()
+    db.refresh(nutzer)
+
+    return nutzer
+
 
 @app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
 def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
@@ -614,8 +658,15 @@ def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends
     Relevante zusätzliche Hinweise: Keine.
     """
     listen = (
-        db.query(Liste)
-        .join(ListeMitglieder)
+        db.query(
+            Liste.id,
+            Liste.name,
+            Liste.ersteller,
+            Nutzer.name.label("ersteller_name"),
+            Liste.datum
+        )
+        .join(ListeMitglieder, Liste.id == ListeMitglieder.listen_id)
+        .outerjoin(Nutzer, Liste.ersteller == Nutzer.id)
         .filter(ListeMitglieder.nutzer_id == nutzer_id)
         .all()
     )
@@ -911,6 +962,10 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
     if vorhandenes_fav_produkt:
         raise HTTPException(
             status_code=400, detail="Das Produkt ist bereits in den Favoriten vorhanden")
+    
+    if fav_produkt.einheit_id == 0 or fav_produkt.menge == 0:
+        fav_produkt.einheit_id = None
+        fav_produkt.menge = None
 
     neues_fav_produkt = FavProdukte(
         nutzer_id=nutzer_id,
@@ -988,8 +1043,9 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     return fav_produkt
 
 # --- Bedarfsvorhersage ---
-def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
-    """
+# Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
+def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Session):
+      """
     Beschreibung:
         Aktualisiert die Bedarfsvorhersage-Einträge für einen Nutzer basierend auf einer Zerfallsrate.
 
@@ -1008,38 +1064,58 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, db: Session):
             Bedarfsvorhersage.nutzer_id == nutzer_id
         ).all()
 
-    now = datetime.utcnow()
-    decay_rate = 0.05  # Zerfallsrate pro Tag
+    now = datetime.now(timezone.utc)
+
+    treshold = 0 
+    # alt:0.00024036947641951407  # bei diesem counter wird der eintrag gelöscht
+
+    berechnete_eintraege = []  
+    decayDays_float = float(decayDays) 
 
     for eintrag in eintraege:
-        # Tage seit last_update
-        delta_days = (now - eintrag.last_update).days if eintrag.last_update else 0
-        # if delta_days <= 0: --------------------------------------------------------------------------muss dann wieder hinzugeügt werden-------------------------------------------------
-        #   continue
+        # Tage seit last_bought
+        deltaDays = max(0,(now.date() - eintrag.last_bought.date()).days)
+        new_counter = float(eintrag.counter) * np.maximum( 0, 1 - deltaDays / decayDays_float )
+        
+        # alt (exponentiell): new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
 
-        new_counter = float(eintrag.counter) * max(0, (1 - decay_rate * delta_days)) # neuen Counter berechnen
-        eintrag.counter = Decimal(round(new_counter, 2))
-        eintrag.last_update = now
+
+        if new_counter <= treshold:
+            db.delete(eintrag)
+        else:
+            berechnete_eintraege.append((eintrag, new_counter))
+        # counter nicht in DB aktualisieren
+        # nur berechnen 
+        # wenn counter < 0.00024036947641951407 rausschmeißen oder mehr als 10 produkte 
+        # --> anhand des aktualisisteren Counters und dem PK (aus neu erstellter Liste) die Produkte rausschmeißen aus der DB --> db.commit()
+    
+    berechnete_eintraege.sort(key=lambda x: x[1], reverse=True)
+ 
+    if len(berechnete_eintraege) > 10:
+        # nach counter sortieren und nur die Top 10 behalten
+        zu_loeschende_eintraege = berechnete_eintraege[10:]
+        berechnete_eintraege = berechnete_eintraege[:10]
+        for eintrag, _ in zu_loeschende_eintraege:
+            db.delete(eintrag)
 
     db.commit()
-    aktualisierte_einträge = []
-    for eintrag in eintraege:
-        produkt = db.query(Produkt).filter(Produkt.id == eintrag.produkt_id).first()
-        aktualisierte_einträge.append(
-            BedarfsvorhersageRead(
-                nutzer_id=eintrag.nutzer_id,
-                produkt_id=eintrag.produkt_id,
-                produkt_name=produkt.name if produkt else None,
-                counter=eintrag.counter,
-                last_update=eintrag.last_update
-            )
-        )
 
-    return aktualisierte_einträge
+    result = []
+    for eintrag, new_counter in berechnete_eintraege:
+        produkt = db.query(Produkt).filter(Produkt.id == eintrag.produkt_id).first()
+        result.append(BedarfsvorhersageRead(
+            nutzer_id=eintrag.nutzer_id,
+            produkt_id=eintrag.produkt_id,
+            produkt_name=produkt.name if produkt else None,
+            counter=Decimal(f"{new_counter:.6f}"),
+            last_bought=eintrag.last_bought.astimezone()
+        ))
+
+    return result
 
 
 @app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
-def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays: Decimal = Query(7,gt=0),db: Session = Depends(get_db)):
     """
     Beschreibung:
         Ruft die Bedarfsvorhersage-Einträge für einen Nutzer ab und aktualisiert sie.
@@ -1047,7 +1123,6 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Sessio
     Parameter:
         nutzer_id (int): Die ID des Nutzers.
         db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
-
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
 
@@ -1060,7 +1135,7 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Sessio
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
      # Bedarfsvorhersage-Einträge aktualisieren
-    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, db)
+    aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, decayDays, db)
 
     return aktualisierte_einträge
 
@@ -1094,6 +1169,11 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+
+# erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
+# der Counter wird erstmal im Body mit übergeben
+
+# nutzerid ist eigentlich falsch --> es ist die ID von dem, der das Produkt hinzugefügt hat
 @app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
     """
@@ -1107,9 +1187,10 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
 
     Mögliche Fehler/Fehlermeldungen:
         - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
-
     Relevante zusätzliche Hinweise: Keine.  
     """
+    now = datetime.now(timezone.utc)
+
      # Prüfen, ob Eintrag existiert
     eintrag = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id,
@@ -1117,14 +1198,14 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
     ).first()
 
     if eintrag:
-        eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(eintrag_data.counter)
-        eintrag.last_update = func.current_timestamp()
+        eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(1)
+        eintrag.last_bought = now
     else:
         eintrag = Bedarfsvorhersage(
             nutzer_id=nutzer_id,
             produkt_id=eintrag_data.produkt_id,
-            counter=Decimal(eintrag_data.counter),
-            last_update=func.current_timestamp()
+            counter=Decimal(1),
+            last_bought=now
         )
         db.add(eintrag)
 
@@ -1134,7 +1215,9 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
     # Top-10 Einträge nach counter
     alle_eintraege = db.query(Bedarfsvorhersage)\
         .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)\
-        .order_by(Bedarfsvorhersage.counter.desc())\
+        .order_by(
+            Bedarfsvorhersage.counter.desc(),
+            Bedarfsvorhersage.last_bought.asc())\
         .all()
 
     if len(alle_eintraege) > 10:
@@ -1179,8 +1262,19 @@ def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db
 
     Relevante zusätzliche Hinweise: Keine.
     """
-     # Liste suchen
-    liste = db.query(Liste).filter(Liste.id == list_id).first()
+  liste = (
+        db.query(
+            Liste.id,
+            Liste.name,
+            Liste.ersteller,
+            Nutzer.name.label("ersteller_name"),
+            Liste.datum
+        )
+        .join(Nutzer, Liste.ersteller == Nutzer.id)
+        .filter(Liste.id == list_id)
+        .first()
+    )
+
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
     return liste
@@ -1347,33 +1441,57 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
 
 
 @app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    """ 
-    Beschreibung:
-        Entfernt ein Mitglied aus einer Liste.
+  """ 
+  Beschreibung:
+      Entfernt ein Mitglied aus einer Liste.
 
-    Parameter:
-        listen_id (int): Die ID der Liste.
-        nutzer_id (int): Die ID des Nutzers.
-        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+  Parameter:
+      listen_id (int): Die ID der Liste.
+      nutzer_id (int): Die ID des Nutzers.
+      db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
 
-    Mögliche Fehler/Fehlermeldungen:
-        - HTTP 404 NOT FOUND: Wenn das Mitglied nicht gefunden wird.
+  Mögliche Fehler/Fehlermeldungen:
+      - HTTP 404 NOT FOUND: Wenn das Mitglied nicht gefunden wird.
 
-    Relevante zusätzliche Hinweise: Keine.
-    """
-     # Mitglied suchen
-    eintrag = db.query(ListeMitglieder).filter(
+  Relevante zusätzliche Hinweise: Keine.
+  """
+def delete_mitglied(
+    listen_id: int = Path(..., gt=0), 
+    nutzer_id: int = Path(..., gt=0), # ID des Nutzers, der entfernt werden soll
+    requester_id: int = Query(..., alias="requesterId", description="ID des Nutzers, der die Entfernung durchführt"), # Aktueller Nutzer (Requester)
+    db: Session = Depends(get_db)
+    ):
+    """Entfernt ein Mitglied aus einer Liste mit Autorisierungsprüfung."""
+    # 1. Liste finden und Ersteller-ID abrufen
+    liste = db.query(Liste).filter(Liste.id == listen_id).first()
+    if not liste:
+        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
+
+    ersteller_id = liste.ersteller
+
+    # 2. Autorisierungsprüfung: Nur Ersteller darf andere entfernen ODER man darf sich selbst entfernen.
+    is_ersteller = (requester_id == ersteller_id)
+    is_self_removal = (requester_id == nutzer_id)
+
+    if not is_ersteller and not is_self_removal:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Nur der Ersteller darf andere Mitglieder entfernen, oder man kann sich selbst verlassen."
+        )
+    # 3. Mitglieds-Eintrag in ListeMitglieder finden
+    mitglied = db.query(ListeMitglieder).filter(
         ListeMitglieder.listen_id == listen_id,
         ListeMitglieder.nutzer_id == nutzer_id
     ).first()
-    if not eintrag:
-        raise HTTPException(status_code=404, detail="Mitglied nicht gefunden")
-    db.delete(eintrag)
+
+    if not mitglied:
+        raise HTTPException(status_code=404, detail="Mitglied nicht in dieser Liste gefunden")
+
+    # 4. Mitglied löschen
+    db.delete(mitglied)
     db.commit()
+
     return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-
 # --- Produkte in Listen ---
 @app.get("/listen/{listen_id}/produkte", response_model=List[ProduktInListeRead])
 def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
@@ -1404,10 +1522,12 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
             ListeProdukte.einheit_id,
             case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),  # gucken ob einheit_id NULL ist
             ListeProdukte.hinzugefügt_von,
+            Nutzer.name.label("hinzufueger_name"),
             ListeProdukte.beschreibung
         )
         .join(Produkt, Produkt.id == ListeProdukte.produkt_id)
         .outerjoin(Einheit, Einheit.id == ListeProdukte.einheit_id)
+        .outerjoin(Nutzer, Nutzer.id == ListeProdukte.hinzugefügt_von)
         .filter(ListeProdukte.listen_id == listen_id)
         .all()
     )
@@ -1568,26 +1688,23 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
 
 # Einkaufsarchiv ------------------------------------
 
-@app.get("/einkaufsarchiv/list/{listen_id}", response_model=List[EinkaufsarchivRead])
-def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    """
-    Beschreibung:
-        Ruft alle Einkäufe aus dem Einkaufsarchiv für eine bestimmte Liste ab.
+# gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat
+@app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
+   """
+  Beschreibung:
+      Ruft alle Einkäufe aus dem Einkaufsarchiv für eine bestimmte Liste ab.
 
-    Parameter:
-        listen_id (int): Die ID der Liste.
-        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+  Parameter:
+      listen_id (int): Die ID der Liste.
+      db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
 
-    Mögliche Fehler/Fehlermeldungen:
-        - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
+  Mögliche Fehler/Fehlermeldungen:
+      - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
 
-    Relevante zusätzliche Hinweise: Keine.
-    """
-    # Prüfen, ob die Liste existiert
-    liste = db.query(Liste).filter(Liste.id == listen_id).first()
-    if not liste:
-        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
-    
+  Relevante zusätzliche Hinweise: Keine.
+  """
+
     einkaeufe = (
         db.query(
             Einkaufsarchiv.einkauf_id,
@@ -1600,10 +1717,43 @@ def get_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(g
         )
         .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
         .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
-        .filter(Einkaufsarchiv.listen_id == listen_id)
+        .join(EingekaufteProdukte, EingekaufteProdukte.hinzugefuegt_von == nutzer_id)
+        .filter(Einkaufsarchiv.einkauf_id == EingekaufteProdukte.einkauf_id)
+        .distinct(Einkaufsarchiv.einkauf_id)
         .all()
     )
 
+    return einkaeufe
+
+# gibt alle Einkäufe zurück, für die Listen, in denen der Nutzer drin ist
+@app.get("/einkaufsarchiv/nutzer_gesamt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
+
+    nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
+
+    if not nutzer:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+    listen_ids = db.query(ListeMitglieder.listen_id).filter(
+        ListeMitglieder.nutzer_id == nutzer_id
+    ).subquery()
+
+    einkaeufe = (
+        db.query(
+            Einkaufsarchiv.einkauf_id,
+            Einkaufsarchiv.listen_id,
+            Liste.name.label("listen_name"),
+            Einkaufsarchiv.eingekauft_von,
+            Nutzer.name.label("einkaeufer_name"),
+            func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
+            Einkaufsarchiv.gesamtpreis
+        )
+        .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
+        .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
+        .filter(Einkaufsarchiv.listen_id.in_(listen_ids))
+        .order_by(Einkaufsarchiv.listen_id.asc(), Einkaufsarchiv.eingekauft_am.desc())
+        .all()
+    )
 
     return einkaeufe
 
@@ -1707,7 +1857,8 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
             Einheit.abkürzung.label("einheit_abk"),
             EingekaufteProdukte.produkt_preis,
             EingekaufteProdukte.hinzugefuegt_von,
-            Nutzer.name.label("hinzufueger_name")
+            Nutzer.name.label("hinzufueger_name"),
+            EingekaufteProdukte.beschreibung
         )
         .join(Produkt, Produkt.id == EingekaufteProdukte.produkt_id)
         .outerjoin(Einheit, Einheit.id == EingekaufteProdukte.einheit_id)
@@ -1717,6 +1868,19 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
     )
 
     return eingekaufte_produkte
+
+@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}/produkt/{produkt_id}/hinzugefuegt_von/{hinzugefuegt_von}", response_model=eingekaufteProdukteRead)
+def get_eingekauftes_produkt(einkauf_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), hinzugefuegt_von: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    eingekauftes_produkt = db.query(EingekaufteProdukte).filter(
+        EingekaufteProdukte.einkauf_id == einkauf_id,
+        EingekaufteProdukte.produkt_id == produkt_id,
+        EingekaufteProdukte.hinzugefuegt_von == hinzugefuegt_von
+    ).first()
+
+    if not eingekauftes_produkt:
+        raise HTTPException(status_code=404, detail="Eingekauftes Produkt nicht gefunden")
+
+    return eingekauftes_produkt
 
 @app.post("/create/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=eingekaufteProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_produkt: eingekaufteProdukteCreate = Body(...), db: Session = Depends(get_db)):
@@ -1746,7 +1910,8 @@ def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_
         produkt_menge = eingekauftes_produkt.produkt_menge,
         einheit_id = eingekauftes_produkt.einheit_id,
         produkt_preis = eingekauftes_produkt.produkt_preis,
-        hinzugefuegt_von = eingekauftes_produkt.hinzugefuegt_von
+        hinzugefuegt_von = eingekauftes_produkt.hinzugefuegt_von,
+        beschreibung = eingekauftes_produkt.beschreibung
     )
 
     db.add(neues_eingekauftes_produkt)
@@ -1756,4 +1921,115 @@ def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_
 
 # delete EingekaufteProdukte fällt weg, da es in der Datenbank durch die Fremdschlüsselbeziehung mit ON DELETE CASCADE automatisch gelöscht wird, wenn der zugehörige Einkauf gelöscht wird
 
+# Kostenaufteilung
 
+# empfaenger_id = nutzer_id 
+# diese Funktion gibt zurück "wer mir Geld schuldet"
+@app.get("/kostenaufteilung/empfaenger/{empfaenger_id}", response_model=List[KostenaufteilungRead])
+def get_kostenaufteilung_empfaenger(empfaenger_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+    user = db.query(Nutzer).filter(Nutzer.id == empfaenger_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+
+    Empfaenger = aliased(Nutzer)    # um Konflikte bei Joins zu vermeiden
+    Schuldner = aliased(Nutzer)
+
+    kostenaufteilung = (
+        db.query(
+            Kostenaufteilung.empfaenger_id,
+            Empfaenger.name.label("empfaenger_name"),
+            Kostenaufteilung.schuldner_id,
+            Schuldner.name.label("schuldner_name"),
+            Kostenaufteilung.betrag
+        )
+        .join(Empfaenger, Empfaenger.id == Kostenaufteilung.empfaenger_id)
+        .join(Schuldner, Schuldner.id == Kostenaufteilung.schuldner_id)
+        .filter(Kostenaufteilung.empfaenger_id == empfaenger_id)
+        .all()
+    )
+    return kostenaufteilung
+
+# schuldner_id = nutzer_id
+# diese Funktion gibt zurück "wem ich Geld schulde"
+@app.get("/kostenaufteilung/schuldner/{schuldner_id}", response_model=List[KostenaufteilungRead])
+def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+
+    user = db.query(Nutzer).filter(Nutzer.id == schuldner_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
+    
+    Empfaenger = aliased(Nutzer)    # um Konflikte bei Joins zu vermeiden
+    Schuldner = aliased(Nutzer)
+
+    kostenaufteilung = (
+        db.query(
+            Kostenaufteilung.empfaenger_id,
+            Empfaenger.name.label("empfaenger_name"),
+            Kostenaufteilung.schuldner_id,
+            Schuldner.name.label("schuldner_name"),
+            Kostenaufteilung.betrag
+        )
+        .join(Empfaenger, Empfaenger.id == Kostenaufteilung.empfaenger_id)
+        .join(Schuldner, Schuldner.id == Kostenaufteilung.schuldner_id)
+        .filter(Kostenaufteilung.schuldner_id == schuldner_id)
+        .all()
+    )
+    return kostenaufteilung
+
+# Schulden in DB speichern
+@app.post("/kostenaufteilung", response_model=KostenaufteilungRead, status_code=status.HTTP_201_CREATED)
+def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Session = Depends(get_db)):
+
+    if eintrag.empfaenger_id == eintrag.schuldner_id:
+        raise HTTPException(status_code=400, detail="Empfänger und Schuldner dürfen nicht identisch sein")
+
+    empfaenger = db.query(Nutzer).filter(Nutzer.id == eintrag.empfaenger_id).first()
+    if not empfaenger:
+        raise HTTPException(status_code=400, detail="Empfänger nicht gefunden")
+
+    schuldner = db.query(Nutzer).filter(Nutzer.id == eintrag.schuldner_id).first()
+    if not schuldner:
+        raise HTTPException(status_code=400, detail="Schuldner nicht gefunden")
+
+    vorhandener_eintrag = db.query(Kostenaufteilung).filter(
+        Kostenaufteilung.empfaenger_id == eintrag.empfaenger_id,
+        Kostenaufteilung.schuldner_id == eintrag.schuldner_id
+    ).first()
+
+    if vorhandener_eintrag:
+        vorhandener_eintrag.betrag += eintrag.betrag
+        db.commit()
+        db.refresh(vorhandener_eintrag)
+        return vorhandener_eintrag
+
+    neuer_eintrag = Kostenaufteilung(
+        empfaenger_id=eintrag.empfaenger_id,
+        schuldner_id=eintrag.schuldner_id,
+        betrag=eintrag.betrag
+    )
+
+    db.add(neuer_eintrag)
+    db.commit()
+    db.refresh(neuer_eintrag)
+    return neuer_eintrag
+
+@app.delete("/kostenaufteilung/empfaenger/{empfaenger_id}/schuldner/{schuldner_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_kostenaufteilung(empfaenger_id: int = Path(..., gt=0), schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    
+    if empfaenger_id == schuldner_id:
+        raise HTTPException(status_code=400, detail="Empfänger und Schuldner dürfen nicht identisch sein")
+
+    eintrag = db.query(Kostenaufteilung).filter(
+        Kostenaufteilung.empfaenger_id == empfaenger_id,
+        Kostenaufteilung.schuldner_id == schuldner_id
+    ).first()
+
+    if not eintrag:
+        raise HTTPException(status_code=404, detail="Eintrag nicht gefunden")
+    
+    db.delete(eintrag)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

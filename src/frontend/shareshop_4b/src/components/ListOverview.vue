@@ -1,30 +1,39 @@
 <template>
-  <header>
-    <h1>{{ user.name }}'s Einkaufslisten</h1>
-    <button @click="newList" id="newlist" class="button-add">+</button>
-    <button @click="$router.push('/fav')">Favorit</button>
-  </header>
+  <AppHeader :title="user.name + '\'s Einkaufslisten'">
+    <template #left>
+
+    </template>
+
+    <template #right>
+      <button @click="newList" id="newlist" class="button-add">
+        <font-awesome-icon icon='plus'/>
+      </button>
+    </template>
+  </AppHeader>
+
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   <main>
-    <ListButton
-      v-for="list in lists"
-      :key="list.id"
-      :id="list.id"
-      :name="list.name"
-    />
+    <div class=card-list>
+      <ListButton
+        v-for="list in lists"
+        :key="list.id"
+        :name="list.name"
+        :item="list"
+      />
+    </div>
   </main>
-  <footer>
-    <button class=button-submit @click="$router.push('/settings')">
-      Zu den Profileinstellungen
-    </button>
-  </footer>
+  <BottomBar 
+    :highlight-btn="1"
+  />
 </template>
 
 <script>
 import ListButton from "./ListButton.vue";
+import AppHeader from "./AppHeader.vue";
 import { inject, ref } from "vue";
 import axios from "axios";
+import BottomBar from "./BottomBar.vue";
 
 export default {
   data() {
@@ -41,6 +50,8 @@ export default {
   },
   components: {
     ListButton,
+    BottomBar,
+    AppHeader
   },
   async mounted() {
     // Listen des momentanen Nutzers holen
@@ -69,8 +80,7 @@ export default {
 </script>
 
 <style scoped>
-
-.error{
+.error {
   width: 300px;
 }
 </style>

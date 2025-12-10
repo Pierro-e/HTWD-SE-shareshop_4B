@@ -1,45 +1,64 @@
 <template>
-  <div class="product-detail">
-    <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">abbrechen</button>
+  <div class="wrapper">
+    <div class="product-detail">
+      <AppHeader :title="this.$route.query.list_name">
+        <template #left>
+          <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">
+            <font-awesome-icon icon='xmark'/>
+          </button>
+        </template>
 
-    <h2 class="product-name">{{ name }}</h2>
+      </AppHeader>
+      <form @submit.prevent="saveProduct">
+        <div class="product-name">{{ name }}</div>
 
-    <form @submit.prevent="saveProduct">
-      <div class="form-group">
-        <label for="beschreibung">Beschreibung:</label>
-        <textarea id="beschreibung" v-model="beschreibung"></textarea>
-      </div>
+        <label for="einheit">Hinzugefügt von: </label>
+        <div class="form-group">{{ hinzufueger_name }}</div>
 
+        <div class="form-group">
+          <label for="beschreibung">Beschreibung:</label>
+          <textarea id="beschreibung" v-model="beschreibung"></textarea>
+        </div>
 
+        <div class="form-group">
+          <label for="einheit">Einheit:</label>
+          <select id="einheit" v-model="einheit">
+            <option value="">Keine Angabe</option>
+            <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
+          </select>
+        </div>
 
-      <div class="form-group">
-        <label for="einheit">Einheit:</label>
-        <select id="einheit" v-model="einheit">
-          <option disabled value="">Bitte wählen</option>
-          <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
-        </select>
-      </div>
+        <div class="form-group">
+          <label for="menge">Menge:</label>
+          <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
+        </div>
 
-      <div class="form-group">
-        <label for="menge">Menge:</label>
-        <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
-      </div>
+        <div class="button-row">
+          <button type="button" class="button-delete" @click="deleteProduct">Löschen</button>
+          <button type="submit" class="button-submit">Speichern</button>
+        </div>
+      </form>
 
-      <div class="button-row">
-        <button type="button" class="button-delete" @click="deleteProduct">Löschen</button>
-        <button type="submit" class="button-submit">Speichern</button>
-      </div>
-    </form>
-
-    <div v-if="message" class="success">{{ message }}</div>
-    <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+      <div v-if="message" class="success">{{ message }}</div>
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+    </div>
   </div>
+
+  <BottomBar 
+    :highlight-btn="1"
+  />
 </template>
 
 <script>
 import axios from "axios";
+import BottomBar from "./BottomBar.vue";
+import AppHeader from "./AppHeader.vue";
 
 export default {
+  components: { 
+    AppHeader,
+    BottomBar
+  },
   props: ["produktId", "listenId", "nutzerId"],
   data() {
     return {
@@ -47,8 +66,9 @@ export default {
       name: "",
       beschreibung: "",
       menge: "",
-      einheit: "",
+      einheit: 0,
       hinzugefügt_von: null,
+      hinzufueger_name: "",
       einheiten: [],
       errorMessage: "",
       message: "",
@@ -58,7 +78,6 @@ export default {
     this.hinzugefügt_von = this.nutzerId;
     await this.fetchEinheiten();
     await this.fetchProduct();
-    await this.fetchProduktName();
   },
   methods: {
     async fetchProduct() {
@@ -76,10 +95,13 @@ export default {
           this.errorMessage = "Produkt in dieser Liste nicht gefunden.";
           return;
         }
+
         this.produkt_id = produkt.produkt_id;
+        this.name = produkt.produkt_name || "";
         this.menge = produkt.produkt_menge || "";
         this.einheit = produkt.einheit_id || "";
         this.beschreibung = produkt.beschreibung || "";
+        this.hinzufueger_name = produkt.hinzufueger_name || "";
       } catch (error) {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Laden des Produkts.";
       }
@@ -92,22 +114,16 @@ export default {
         this.errorMessage = "Einheiten konnten nicht geladen werden.";
       }
     },
-    async fetchProduktName() {
-      try {
-        const response = await axios.get(
-          `http://141.56.137.83:8000/produkte/by-id/${this.produkt_id}`
-        );
-        this.name = response.data.name;
-      } catch {
-        console.warn("Name konnte nicht geladen werden.");
-      }
-    },
     async saveProduct() {
       this.message = "";
       this.errorMessage = "";
-
+      // 1. zuerst die menge als zahl behandeln
+      // '0' setzen, wenn null, leer oder nicht nummerisch
+      const mengeAlsZahl = Number(this.menge);
+      this.menge = mengeAlsZahl; // konvertiere zu Zahl
       // Validierung: Menge > 0 aber keine Einheit ausgewählt
-      if (this.menge > 0 && (!this.einheit || this.einheit === "" || this.einheit === 0)) {
+      // prüft, ob this.einheit null, 0 oder undefined ist
+      if (this.menge > 0 && (!this.einheit || this.einheit === 0)) {
         this.errorMessage = "Bitte wählen Sie eine Einheit aus, wenn eine Menge angegeben ist.";
         return; // abbrechen
       }
@@ -117,9 +133,9 @@ export default {
         this.errorMessage = "Bitte geben Sie eine Menge an, wenn eine Einheit ausgewählt ist.";
         return; 
       } 
-
+      
      // Validierung: Einheit stück, Menge= Dezimalzahl
-      if (this.einheit) {
+      if (this.einheit && this.einheit !== 0) {
         const selectedEinheit = this.einheiten.find(e => e.id === this.einheit);
         if (selectedEinheit && selectedEinheit.name.toLowerCase() === "stück") {
           if (this.menge && !Number.isInteger(this.menge)) {
@@ -171,22 +187,28 @@ export default {
 </script>
 
 <style scoped>
+.wrapper {
+  padding-top: 4em;
+}
+
 .product-detail {
   min-width: 250px;
   max-width: 720px;
   padding: 1rem 1.3rem;
   background-color: var(--box-bg-color);
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
   align-items: center;
   box-shadow: 0 4px 12px var(--box-shadow-color);
 }
 
 .product-name {
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 2em;
   text-align: center;
+  justify-content: center;
+  margin-bottom: 0.5em;
+  word-break: break-word;
+  word-wrap: break-word;  
   width: 100%;
 }
 
@@ -232,20 +254,8 @@ select {
   max-width: 210px;
 }
 
-@media (max-width: 480px) {
-  .product-detail {
-    padding: 1rem 1rem;
-  }
-
-  .button-row {
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  button.button-delete,
-  button.button-submit {
-    min-width: auto;
-    width: 100%;
-  }
+button.button-delete,
+button.button-submit {
+  width: 100%;
 }
 </style>

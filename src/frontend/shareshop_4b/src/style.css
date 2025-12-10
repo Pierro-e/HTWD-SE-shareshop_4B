@@ -19,8 +19,6 @@
   --accent-button-color: #3350d4;
   --accent-button-cancel-color: #66688d;
 
-  --accent-product-card-color: #bccae2;
-
   --accent-header-bg-color: #1a1c3b;
 }
 
@@ -28,8 +26,6 @@
   --accent-color: #9d60ff;
   --accent-button-color: #6728cc;
   --accent-button-cancel-color: #7e7194;
-
-  --accent-product-card-color: #d7cde7;
 
   --accent-header-bg-color: #221438;
 }
@@ -39,8 +35,6 @@
   --accent-button-color: #126862;
   --accent-button-cancel-color: #688383;
 
-  --accent-product-card-color: #c6e2d5;
-
   --accent-header-bg-color: #123131;
 }
 
@@ -48,8 +42,6 @@
   --accent-color: #b25050;
   --accent-button-color: #9e2f2f;
   --accent-button-cancel-color: #b48686;
-  
-  --accent-product-card-color: #e4cccc;
 
   --accent-header-bg-color: #300f0f;
 }
@@ -58,8 +50,6 @@
   --accent-color: #ca7631;
   --accent-button-color: #cc5c00;
   --accent-button-cancel-color: #d89d6c;
-
-  --accent-product-card-color: #d8c7b9;
   
   --accent-header-bg-color: #3d1b00;
   
@@ -68,12 +58,14 @@
 [css-theme="Hell"] {
   --bg-color: #ececec;
   --text-color: #000000;
+  --text-color2: #363636;
 
   --inputbox-color: #000000;
   --inputbox-bg-color: #e6e6e6;
   --inputbox-focus-bg-color: #dfdfdf;
 
-  --box-bg-color: #c5c5c5;
+  --box-bg-color: #dadada;
+  --box-bg-color2: #cdcdcd;
   --box-shadow-color: rgba(0, 0, 0, 0.3);
 
   --success-color: #29692e;
@@ -87,12 +79,14 @@
 [css-theme="Dunkel"] {
   --bg-color: #111111;
   --text-color: #ffffff;
+  --text-color2: #cfcfcf;
 
   --inputbox-color: #ffffff;
   --inputbox-bg-color: #3a3a3a;
   --inputbox-focus-bg-color: #505050;
 
   --box-bg-color: #2a2a2a;
+  --box-bg-color2: #3d3d3d;
   --box-shadow-color: rgba(220, 220, 220, 0.3);
 
   --success-color: #a4ffac;
@@ -108,12 +102,14 @@
   [css-theme="Automatisch"] {
     --bg-color: #ececec;
     --text-color: #000000;
+    --text-color2: #363636;
 
     --inputbox-color: #000000;
     --inputbox-bg-color: #e6e6e6;
     --inputbox-focus-bg-color: #dfdfdf;
 
-    --box-bg-color: #c5c5c5;
+    --box-bg-color: #dadada;
+    --box-bg-color2: #cdcdcd;
     --box-shadow-color: rgba(0, 0, 0, 0.3);
 
     --success-color: #29692e;
@@ -129,12 +125,14 @@
   [css-theme="Automatisch"] {
     --bg-color: #111111;
     --text-color: #ffffff;
+    --text-color2: #cfcfcf;
 
     --inputbox-color: #ffffff;
     --inputbox-bg-color: #3a3a3a;
     --inputbox-focus-bg-color: #505050;
 
     --box-bg-color: #2a2a2a;
+    --box-bg-color2: #3d3d3d;
     --box-shadow-color: rgba(255, 255, 255, 0.3);
 
     --success-color: #a4ffac;
@@ -156,13 +154,6 @@ a:hover {
   color: #535bf2;
 }
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1rem;
-  text-align: center;
-}
-
 html, body {
   margin: 0;
   padding: 0;
@@ -173,6 +164,16 @@ html, body {
   overflow-x: hidden;
 }
 
+#app {
+  width: 97%;
+  max-width: 1280px;
+  padding-top: 0.5em;
+  padding-bottom: 35px; /* für BottomBar */
+  padding-left: 0.5em;
+  padding-right: 1em;
+  text-align: center;
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -180,65 +181,46 @@ h1 {
 
 /*wirkt bei allen <button>-Elementen*/
 button {
-   /*Legt einen Rahmen mit 1 Pixel Breite, durchgehend (solid), aber unsichtbar an */
   border: 1px solid transparent;
   background-color: var(--accent-button-color);
-  /*Textfarbe*/
   color: white;
-  /*Wieviel Padding rund um Schrift -> beeinflusst Groesse des Buttons*/
   padding: 0.6em 1.2em;
-  /*Runde Ecken*/
   border-radius: 0.5em;
-  /*zenriert Text horizontal*/
   text-align: center;
-  /*Sorg dafür, dass margin und padding korrekt greifen*/
-  display: inline-block;
-  /*Schriftgröße relativ zur aktuellen Schriftgröße bzw der des Elternelements. 1em = aktuelle Schriftgröße*/
   font-size: 1em;
-  /*Steuert Dicke der Schrift 700=Fett*/
   font-weight: 500;
-  /*Erbt Schriftart von Elternelement*/
   font-family: inherit;
-  /*Wieviel Abstand der Button nach oben und zur Seite hält*/
   margin: 0.3em;
-  /*veraendert aussehen des Mauszeigers beim hovern*/
   cursor: pointer;
-  /*Animation des Rahmens über 0.25 sek*/
   transition: border-color 0.25s;
-
   transform: translateZ(0) scale(1);
   transition: transform .15s;
 }
 
+button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0.3em 0.6em var(--box-shadow-color); 
+}
+
 /*wirkt nur bei <button>-Elementen mit class="button-add"*/
 .button-add {
-  background-color: #259740; 
+  background-color: #067720; 
 }
 
 .button-cancel {
-  background-color: var(--accent-button-cancel-color); 
-  color: white;
+  background-color: var(--accent-button-cancel-color);
 }
 
 .button-delete {
-  background-color: #dc3545; 
+  background-color: #a50c1b; 
 }
 
 .button-edit {
-  background-color: #0069da; 
+  background-color: #0052aa; 
 }
 
 .button-submit {
   background-color: var(--accent-color);
-}
-
-button:hover {
-  /* Vergrößert das Element um 3% */
-  transform: scale(1.03);
-  /* Fügt einen Schatten hinzu */
-  box-shadow: 0 0.3em 0.6em var(--box-shadow-color); 
-  /*ändert Randfarbe*/
-  border-color: var(--accent-color);
 }
 
 button:focus,
@@ -252,6 +234,7 @@ button:active {
 
 /* Eingabefelder */
 input, textarea, select {
+  width: 100%;
   padding: 0.6em 0.8em;
   border-radius: 0.4em;
   border: 1px solid gray;
@@ -259,6 +242,7 @@ input, textarea, select {
   box-sizing: border-box;
   background-color: var(--inputbox-bg-color);
   color: var(--inputbox-color);
+  accent-color: var(--accent-color);
   font-family: inherit;
   resize: vertical;
   transition:
@@ -399,115 +383,129 @@ form select {
   box-sizing: border-box;
 }
 
-/* Header für Listen und Einkauf */
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100px; /* vorher 60px */
-  background-color: var(--accent-header-bg-color);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 5px var(--box-shadow-color);
-}
-
-/* h2 mittig im Header */
-.header h2 {
-  margin: 0;
-  top: 20px;
-  font-weight: 400;
-  font-size: 1.8rem;
-  color: white;
-  text-align: center;
-  /* Kein position fixed mehr! */
-}
-
-/* Produktgrid und Produktkarten */
-.produkte-grid {
-  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  padding-top: 140px;
-}
-
-@media (min-width: 768px) {
-  .produkte-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
-  .produkte-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.produkt-header {
+/* Karten */
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center; /* Button und Name auf gleicher Höhe */
 }
 
-.produkt-card {
-  min-width: 225px;
-  background-color: var(--accent-product-card-color);
-  border: 1px solid #e5e7eb;
-  border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 1px 2px var(--box-shadow-color);
-  transition: box-shadow 0.3s ease;
+.card-header-buy { /* bei Einkauf */
+  gap: 0.5em;
+  justify-content: left;
+  align-items: center;
 }
 
-.produkt-card:hover {
+.card {
+  max-width: 400px;
+  min-width: 275px;
+  background-color: var(--box-bg-color);
+  border: 1px solid var(--accent-button-color);
+  border-radius: 1rem;
+  padding: 0.75rem;
+  text-align: left;
+  box-shadow: 0 1px 2px var(--box-shadow-color);
+  transition: box-shadow 0.3s ease;
+  gap: 1em;
+}
+
+@media (max-width: 400px) {
+  .card {
+    min-width: 80vw;
+  }
+}
+
+.card:hover {
+  color: var(--text-color);
+  background-image: linear-gradient(to bottom, var(--box-bg-color), var(--box-bg-color2));
+  outline: 2px solid var(--accent-button-color);
+  outline-offset: -1px;
   box-shadow: 0 4px 6px var(--box-shadow-color);
 }
 
-.produkt-name {
+.card-name {
   margin: 0;
-  color: #000000;
+  color: var(--text-color);
   font-size: 1.2em;
   font-weight: bold;
   word-break: break-word;
 }
 
-.produkt-info {
+.card-info {
   font-size: 1rem; /* 14px */
-  color: #000000;
+  color: var(--text-color2);
   font-weight: 450;
   display: flex;
   gap: 0.5rem;
   align-items: center; /* Vertikal zentrieren */
 }
 
-.produkt-info strong {
+.card-info strong {
   font-weight: 600;
-  color: #000000;
+  color: var(--text-color2);
   text-align: left;
 }
 
-.produkt-beschreibung {
+.card-beschreibung {
   font-size: 1rem;
-  color: #000000;
+  color: var(--text-color2);
   font-weight: 450;
   margin-top: 0.5rem;
-  white-space: pre-wrap;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Anzahl sichtbarer Zeilen */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  hyphens: none;
   text-align: left; /* Linksbündig explizit gesetzt */
 }
 
+.card:hover .card-beschreibung {
+  display: flex;
+  word-break: break-word;
+}
+
 .button-product-settings {
+  color: var(--text-color);
   background: none;
-  color: rgb(61, 57, 53);
   border: none;
   font-size: 1.2em;
   cursor: pointer;
   padding: 0;
-  margin-left: 10px;
   line-height: 1; /* optional, für vertikale Ausrichtung */
+}
+
+.card-grid {
+  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+} 
+
+.card-list {
+  padding-top: 65px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  max-width: 500px;
 }
 
 /* Erfolg- und Fehlerboxen */
@@ -542,6 +540,15 @@ form select {
   font-size: larger;
 }
 
-.card {
-  padding: 2em;
+.info {
+  font-weight: bold;
+  font-size: larger;
+}
+
+.info-block {
+  background-color: var(--box-bg-color);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
 }
