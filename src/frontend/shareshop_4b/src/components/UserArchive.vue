@@ -52,7 +52,7 @@
             :key="purchase.einkauf_id"
             :item="purchase"
             :name="formatDate(purchase.eingekauft_am)"
-            :list-name="listName"
+            :list-name="stringLimitLength(listName)"
           />
         </div>
       </div>
@@ -135,6 +135,16 @@ export default {
       {
         this.$router.push(`/listen`);
       }
+    },
+    stringLimitLength(string){
+      const maxLength = 17;
+
+      if (window.innerWidth <= 480) { // nur auf mobile kürzen
+        if (string.length > maxLength) {
+          string = string.substring(0, maxLength) + "...";
+        }
+      }
+      return string;
     }
   },
   computed: {
