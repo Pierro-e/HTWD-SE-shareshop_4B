@@ -510,6 +510,7 @@ form select {
 /* Settings-Container fixiert unter der Überschrift mittig */
 .settings-container {
   display: flex;
+  color: white;
   background-color: var(--accent-header-bg-color);
   box-shadow: 0 2px 5px var(--box-shadow-color);
   position: fixed;
