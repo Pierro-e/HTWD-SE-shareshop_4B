@@ -8,8 +8,9 @@
       </template>
     </AppHeader>
 
-        
-    <div class="filter">
+    <div class="settings-container">
+      <br>
+      <font-awesome-icon icon='filter'/>
       <select v-model="selectedListID" class="filter-dropdown">
         <option :value="null">Alle Listen</option>
 
@@ -24,10 +25,10 @@
 
       <select v-model="onlyOwn" class="filter-dropdown">
         <option :value="false">Alle Einkäufe</option>
-        <option :value="true">Nur eigene Einkäufe</option>
+        <option :value="true">Eigene Einkäufe</option>
       </select>
+      <br>
     </div>
-
 
     <div v-if="loadingActive" class="loading">Laden...</div>
     <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -182,8 +183,8 @@ export default {
 </script>
 
 <style scoped>
-.filter {     
-  margin-top: 70px;             
+.list-archive {
+  margin-top: 125px;             
 }
 
 .card-list {
