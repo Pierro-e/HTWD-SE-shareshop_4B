@@ -343,13 +343,14 @@ class KostenaufteilungCreate(BaseModel):
 # --- Hilfsfunktion zur Buchstabenprüfung ---
 def contains_at_least_one_letter(s: str) -> bool:
     """
-    Prüft, ob der übergebene String mindestens einen Buchstaben enthält (A-Z, äöü).
-
-    Anwendung: Wird im @field_validator des Pydantic-Modells 'NutzerCreate' 
-                für das Feld 'name' verwendet, um reine Zahlen oder Symbole 
-                (z.B. '123' oder '!!!') abzufangen.
-
-    Rückgabe: True, wenn ein Buchstabe gefunden wird, sonst False.
+    Beschreibung:
+        Überprüft, ob der gegebene String mindestens einen Buchstaben (A-Z, a-z) enthält.
+    Parameter:
+        s (str): Der zu überprüfende String.
+    Rückgabewert:   
+        bool: True, wenn mindestens ein Buchstabe vorhanden ist, sonst False.
+    Relevante zusätzliche Hinweise:
+        - Berücksichtigt auch deutsche Umlaute (ä, ö, ü, Ä, Ö, Ü) und das 'ß'.
     """
     return any(c.isalpha() or c in 'äöüÄÖÜß' for c in s)
 # --- FastAPI-App ---
@@ -383,6 +384,20 @@ def start():
 
 @app.post("/login")
 def login(login_data: LoginRequest, db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Authentifiziert einen Nutzer anhand seiner E-Mail-Adresse und des Passwort-Hashs.
+
+    Parameter:
+        login_data (LoginRequest): Pydantic-Modell mit `email` und `passwort` (der Hash).
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 401 UNAUTHORIZED: Wenn die E-Mail nicht gefunden wird oder das Passwort nicht übereinstimmt.
+
+    Relevante zusätzliche Hinweise:
+        - das Passwort-Hashing sollte mitt einer sicheren Methode wie bcrypt erfolgen
+    """
     # Nutzer mit E-Mail suchen
     nutzer = db.query(Nutzer).filter(func.lower(Nutzer.email)
                                      == func.lower(login_data.email)).first()
@@ -409,12 +424,37 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
 
 @app.get("/nutzer", response_model=List[NutzerRead])
 def get_nutzer_all(db: Session = Depends(get_db)):
+    """
+    Beschreibung: 
+        ruft alle Nutzer aus der Datenbank ab.
+
+    Parameter: 
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen: Keine.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     nutzer = db.query(Nutzer).all()
     return nutzer
 
 
 @app.get("/nutzer/by-id", response_model=NutzerRead)
 def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
+    """
+    Beschreibung: 
+        Ruft einen Nutzer anhand seiner ID ab.
+
+    Parameter:
+        id (int): Die ID des Nutzers.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: 
+        Keine.
+    """
     nutzer = db.query(Nutzer).filter(Nutzer.id == id).first()
     if not nutzer:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
@@ -423,6 +463,19 @@ def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
 
 @app.get("/nutzer/by-email", response_model=NutzerRead)
 def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
+    """
+    Beschreibung: 
+        Ruft einen Nutzer anhand seiner E-Mail-Adresse ab.
+
+    Parameter:
+        email (str): Die E-Mail-Adresse des Nutzers.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen E-Mail-Adresse gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     nutzer = db.query(Nutzer).filter(Nutzer.email == email).first()
     if not nutzer:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
@@ -431,7 +484,20 @@ def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
 
 @app.post("/nutzer_create", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
 def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Erstellt einen neuen Nutzer in der Datenbank.
 
+    Parameter:
+        nutzer (NutzerCreate): Pydantic-Modell mit den Nutzerdaten.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 400 BAD REQUEST: Wenn die E-Mail-Adresse bereits existiert.
+
+    Relevante zusätzliche Hinweise:
+        - Der Name wird bereits im Pydantic-Modell `NutzerCreate` validiert.
+    """
     vorhanden = db.query(Nutzer).filter(Nutzer.email == nutzer.email).first()
 
     if vorhanden:
@@ -451,6 +517,19 @@ def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
 
 @app.delete("/nutzer_delete/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Löscht einen Nutzer anhand seiner ID.
+
+    Parameter:
+        nutzer_id (int): Die ID des zu löschenden Nutzers.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
     if not nutzer:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
@@ -462,6 +541,20 @@ def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db
 
 @app.put("/nutzer_change/{nutzer_id}/passwort", status_code=status.HTTP_200_OK)
 def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ändert das Passwort eines Nutzers anhand seiner ID.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        passwort (PasswortÄndern): Pydantic-Modell mit dem neuen Passwort.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
@@ -476,6 +569,22 @@ def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Dep
 
 @app.put("/nutzer_change/{nutzer_id}/name", status_code=status.HTTP_200_OK)
 def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ändert den Namen eines Nutzers anhand seiner ID.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        name_data (NameAendern): Pydantic-Modell mit dem neuen Namen.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise:
+        - Der Name wird bereits im Pydantic-Modell `NameAendern`, welches
+          die Validierungslogik von 'NameBasis' erbt, validiert.
+    """
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
@@ -489,6 +598,21 @@ def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(ge
 
 @app.put("/nutzer_change/{nutzer_id}/email", status_code=status.HTTP_200_OK)
 def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ändert die E-Mail-Adresse eines Nutzers anhand seiner ID.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        email (EmailAendern): Pydantic-Modell mit der neuen E-Mail-Adresse.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+        - HTTP 400 BAD REQUEST: Wenn die neue E-Mail-Adresse bereits vergeben ist.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
@@ -520,6 +644,19 @@ def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = 
 
 @app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
 def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft alle Listen ab, bei denen der Nutzer Mitglied ist.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn keine Listen für den Nutzer gefunden werden.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     listen = (
         db.query(
             Liste.id,
@@ -549,6 +686,21 @@ def change_theme_color(
     color: int = Body(..., ge=0, le=4),                 # color 0–4
     db: Session = Depends(get_db)
 ):
+    """
+    Beschreibung:
+        Ändert die Ansichtseinstellungen (Theme und Color) eines Nutzers anhand seiner ID.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        theme (int): Das neue Theme (0-2).
+        color (int): Die neue Color (0-4).
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     # Prüfen, ob der Nutzer existiert
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
     if not nutzer:
@@ -567,12 +719,36 @@ def change_theme_color(
 
 @app.get("/einheiten", response_model=List[EinheitRead])
 def get_einheiten_all(db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft alle Einheiten aus der Datenbank ab.
+
+    Parameter:
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen: Keine.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     einheiten = db.query(Einheit).all()
     return einheiten
 
 
 @app.get("/einheiten/{einheit_id}", response_model=EinheitRead)
 def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft eine Einheit anhand ihrer ID ab.
+
+    Parameter:
+        einheit_id (int): Die ID der Einheit.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn keine Einheit mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     einheit = db.query(Einheit).filter(Einheit.id == einheit_id).first()
     if einheit is None:
         raise HTTPException(status_code=404, detail="Einheit nicht gefunden")
@@ -582,6 +758,17 @@ def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(g
 # --- Produkte ---
 @app.get("/produkte/", response_model=List[ProduktRead])
 def get_produkte_all(db: Session = Depends(get_db)):
+    """ 
+    Beschreibung:
+        Ruft alle Produkte aus der Datenbank ab.
+
+    Parameter:
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen: Keine. 
+
+    Relevante zusätzliche Hinweise: Keine.
+    """ 
     produkte = db.query(Produkt).all()
 
     return produkte
@@ -589,6 +776,19 @@ def get_produkte_all(db: Session = Depends(get_db)):
 
 @app.get("/produkte/by-id/{produkt_id}", response_model=ProduktRead)
 def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft ein Produkt anhand seiner ID ab.
+
+    Parameter:
+        produkt_id (int): Die ID des Produkts.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.  
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Produkt mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     produkt = db.query(Produkt).filter(Produkt.id == produkt_id).first()
     if not produkt:
         raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
@@ -597,6 +797,20 @@ def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(g
 
 @app.get("/produkte/by-name/{produkt_name}", response_model=ProduktRead)
 def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft ein Produkt anhand seines Namens ab.
+
+    Parameter:
+        produkt_name (str): Der Name des Produkts.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Produkt mit dem angegebenen Namen gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Case-insensitive Suche nach dem Produktnamen
     produkt = db.query(Produkt).filter(func.lower(
         Produkt.name) == produkt_name.lower()).first()
     if not produkt:
@@ -606,9 +820,20 @@ def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get
 
 @app.post("/produkte_create", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Erstellt ein neues Produkt in der Datenbank.
 
-    # product.name ist bereits validiert und formatiert
+    Parameter:
+        produkt (ProduktCreate): Pydantic-Modell mit den Produktdaten.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
 
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 400 BAD REQUEST: Wenn ein Produkt mit dem gleichen Namen bereits existiert.
+
+    Relevante zusätzliche Hinweise:
+        - Der Name wird bereits im Pydantic-Modell `ProduktCreate` validiert.
+    """
     # Prüfen, ob Produkt mit dem formatierten Namen schon existiert
     existing = db.query(Produkt).filter(func.lower(
         Produkt.name) == produkt.name.lower()).first()
@@ -625,13 +850,27 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
     db.refresh(db_produkt)
     return db_produkt
 
-
-# -- Funktion, um Produkte zu suchen anahnd des Namen aber mit 'LIKE' (fur die Suchvorschläge) ---
 @app.get("/produkte/suche", response_model=List[ProduktRead])
 def search_products(
     query: str = Query(..., min_length=1, description="Suchstring für Produktnamen"),
     db: Session = Depends(get_db)
 ):
+    """
+    Beschreibung:
+        Sucht Produkte anhand eines Suchstrings im Namen (LIKE-Suche, nur Anfangsstring).
+
+    Parameter:
+        query (str): Der Suchstring für den Produktnamen und muss mindestens 1 Zeichen sien.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 400 BAD REQUEST: Wenn der Suchstring leer ist.
+        - HTTP 404 NOT FOUND: Wenn keine Produkte gefunden werden.
+
+    Relevante zusätzliche Hinweise:
+        - Die Suche ist case-insensitiv und sucht nur nach Produkten, deren Namen mit dem Suchstring beginnen.
+        - Es werden maximal 10 Treffer zurückgegeben.
+    """
     if not query.strip():  # leerer String oder nur Leerzeichen
         raise HTTPException(status_code=400, detail="Der Suchstring darf nicht leer sein.")
 
@@ -653,7 +892,20 @@ def search_products(
 
 @app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
 def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    
+    """
+    Beschreibung:
+        Ruft alle favorisierten Produkte eines Nutzers ab.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Prüfen, ob der Nutzer existiert
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not user:
@@ -680,7 +932,21 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
 
 @app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Erstellt ein neues favorisiertes Produkt für einen Nutzer.
 
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        fav_produkt (FavProdukteCreate): Pydantic-Modell mit den favorisierten Produktdaten.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 400 BAD REQUEST: Wenn die maximale Anzahl von 10 Favoriten erreicht ist oder das Produkt bereits favorisiert wurde.
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     anzahl_favoriten = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id).count() 
     
@@ -717,6 +983,21 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
 
 @app.delete("/fav_produkte_delete/nutzer/{nutzer_id}/produkt/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Löscht ein favorisiertes Produkt eines Nutzers.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        produkt_id (int): Die ID des Produkts.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn das favorisierte Produkt nicht gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Favorisiertes Produkt suchen
     fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
         FavProdukte.produkt_id == produkt_id
@@ -730,6 +1011,22 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 
 @app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=FavProdukteRead)
 def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteUpdate = Body(...), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Aktualisiert ein favorisiertes Produkt eines Nutzers.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        produkt_id (int): Die ID des Produkts.
+        fav_produkt_update (FavProdukteUpdate): Pydantic-Modell mit den aktualisierten Daten.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+        
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn das favorisierte Produkt nicht gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Favorisiertes Produkt suchen
     fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
         FavProdukte.produkt_id == produkt_id
@@ -748,6 +1045,20 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
 # --- Bedarfsvorhersage ---
 # Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
 def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Session):
+      """
+    Beschreibung:
+        Aktualisiert die Bedarfsvorhersage-Einträge für einen Nutzer basierend auf einer Zerfallsrate.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen: Keine.
+
+    Relevante zusätzliche Hinweise:
+        - Die Zerfallsrate beträgt 5% pro Tag.
+        - Der Counter wird auf zwei Dezimalstellen gerundet.
+    """
     # Alle Bedarfsvorhersage-Objekte des Nutzers holen
     eintraege =db.query(Bedarfsvorhersage).filter(
             Bedarfsvorhersage.nutzer_id == nutzer_id
@@ -803,10 +1114,21 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
     return result
 
 
-# Abrufen der Bedarfsvorhersage für einen Nutzer
 @app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
 def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays: Decimal = Query(7,gt=0),db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft die Bedarfsvorhersage-Einträge für einen Nutzer ab und aktualisiert sie.
 
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Prüfen, ob der Nutzer existiert
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not user:
@@ -817,10 +1139,23 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays:
 
     return aktualisierte_einträge
 
-
-# zum Löschen eines Bedarfvorhersage-Produkt
 @app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
 def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Löscht einen Bedarfsvorhersage-Eintrag für einen Nutzer und ein Produkt.
+
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        produkt_id (int): Die ID des Produkts.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn der Eintrag nicht gefunden wird.
+        
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Bedarfsvorhersage-Eintrag suchen
     eintrag = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id,
         Bedarfsvorhersage.produkt_id == produkt_id
@@ -841,7 +1176,19 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 # nutzerid ist eigentlich falsch --> es ist die ID von dem, der das Produkt hinzugefügt hat
 @app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Erstellt oder aktualisiert einen Bedarfsvorhersage-Eintrag für einen Nutzer.
 
+    Parameter:
+        nutzer_id (int): Die ID des Nutzers.
+        eintrag_data (BedarfvorhersageCreate): Pydantic-Modell mit den Eintragsdaten.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn kein Nutzer mit der angegebenen ID gefunden wird.
+    Relevante zusätzliche Hinweise: Keine.  
+    """
     now = datetime.now(timezone.utc)
 
      # Prüfen, ob Eintrag existiert
@@ -885,13 +1232,37 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
 
 @app.get("/listen", response_model=List[ListeRead])
 def get_listen_all(db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft alle Listen aus der Datenbank ab.
+
+    Parameter:
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen: Keine.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     listen = db.query(Liste).all()
     return listen
 
 
 @app.get("/listen/by-id/{list_id}", response_model=ListeRead)
 def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    liste = (
+    """
+    Beschreibung:
+        Ruft eine Liste anhand ihrer ID ab.
+
+    Parameter:
+        list_id (int): Die ID der Liste.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn keine Liste mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+  liste = (
         db.query(
             Liste.id,
             Liste.name,
@@ -911,7 +1282,21 @@ def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db
 
 @app.post("/listen", response_model=ListeRead, status_code=status.HTTP_201_CREATED)
 def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Erstellt eine neue Liste in der Datenbank.
 
+    Parameter:
+        liste (ListeCreate): Pydantic-Modell mit den Listendaten.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 400 BAD REQUEST: Wenn die Listendaten fehlen oder der Ersteller nicht gefunden wird.
+
+    Relevante zusätzliche Hinweise:
+        - Der Name wird bereits im Pydantic-Modell `ListeCreate` validiert.
+    """
+     # Validierung der Listendaten
     if liste is None:
         raise HTTPException(status_code=400, detail="Listendaten fehlen")
 
@@ -945,6 +1330,21 @@ def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
 
 @app.put("/listen/{listen_id}/datum", response_model=ListeRead)
 def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Aktualisiert das Datum einer Liste.
+
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        datum_update (ListeDatumUpdate): Pydantic-Modell mit dem neuen Datum.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn keine Liste mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Liste suchen
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
@@ -959,6 +1359,20 @@ def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...
 
 @app.delete("/listen/{listen_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Löscht eine Liste anhand ihrer ID.
+
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn keine Liste mit der angegebenen ID gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Liste suchen
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
@@ -970,6 +1384,20 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
 # --- Mitglieder in Listen ---
 @app.get("/listen/{listen_id}/mitglieder", response_model=List[MitgliedRead])
 def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft alle Mitglieder einer Liste anhand der Listen-ID ab.
+
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn keine Mitglieder für die Liste gefunden werden.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Mitglieder der Liste suchen
     mitglieder = db.query(ListeMitglieder).filter(
         ListeMitglieder.listen_id == listen_id).all()
     if not mitglieder:
@@ -980,7 +1408,22 @@ def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depe
 
 @app.post("/listen/{listen_id}/mitglieder/{nutzer_id}", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
 def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Fügt ein Mitglied zu einer Liste hinzu.
 
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        nutzer_id (int): Die ID des Nutzers.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn die Liste oder der Nutzer nicht gefunden wird.
+        - HTTP 400 BAD REQUEST: Wenn der Nutzer bereits Mitglied der Liste ist.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Prüfen, ob die Liste existiert
     vorhanden = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not vorhanden:
@@ -998,6 +1441,20 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
 
 
 @app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
+  """ 
+  Beschreibung:
+      Entfernt ein Mitglied aus einer Liste.
+
+  Parameter:
+      listen_id (int): Die ID der Liste.
+      nutzer_id (int): Die ID des Nutzers.
+      db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+  Mögliche Fehler/Fehlermeldungen:
+      - HTTP 404 NOT FOUND: Wenn das Mitglied nicht gefunden wird.
+
+  Relevante zusätzliche Hinweise: Keine.
+  """
 def delete_mitglied(
     listen_id: int = Path(..., gt=0), 
     nutzer_id: int = Path(..., gt=0), # ID des Nutzers, der entfernt werden soll
@@ -1038,6 +1495,19 @@ def delete_mitglied(
 # --- Produkte in Listen ---
 @app.get("/listen/{listen_id}/produkte", response_model=List[ProduktInListeRead])
 def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft alle Produkte in einer Liste anhand der Listen-ID ab.
+
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     # Prüfen, ob die Liste existiert
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
@@ -1066,7 +1536,23 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
 
 @app.post("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
 def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Fügt ein Produkt zu einer Liste hinzu.
 
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        produkt_id (int): Die ID des Produkts.
+        nutzer_id (int): Die ID des Nutzers, der das Produkt hinzufügt.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
+        - HTTP 400 BAD REQUEST: Wenn das Produkt nicht in der Produkt-Tabelle existiert oder der Nutzer nicht gefunden wird oder das Produkt bereits in der Liste vorhanden ist.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Prüfen, ob die Liste existiert
     existing_list = db.query(Liste).filter_by(id=listen_id).first()
     if not existing_list:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
@@ -1113,7 +1599,24 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Pat
 
 @app.put("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
 def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), produkt: ProduktInListeUpdate = Body(...), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Aktualisiert ein Produkt in einer Liste.
 
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        produkt_id (int): Die ID des Produkts.
+        nutzer_id (int): Die ID des Nutzers, der das Produkt aktualisiert.
+        produkt (ProduktInListeUpdate): Pydantic-Modell mit den aktualisierten Produktdaten.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn die Liste oder das Produkt in der Liste nicht gefunden wird.
+        - HTTP 400 BAD REQUEST: Wenn das Produkt nicht in der Produkt-Tabelle existiert oder der Nutzer nicht gefunden wird.
+    
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Prüfen, ob die Liste existiert
     existing_list = db.query(Liste).filter_by(id=listen_id).first()
     if not existing_list:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
@@ -1154,6 +1657,22 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
     
 @app.delete("/listen/{listen_id}/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), deleteRequest: ProduktDeleteRequest = Body(...), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Löscht ein Produkt aus einer Liste.
+
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        produkt_id (int): Die ID des Produkts.
+        deleteRequest (ProduktDeleteRequest): Pydantic-Modell mit dem Nutzer, der das Produkt hinzugefügt hat.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung. 
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn das Produkt in der Liste nicht gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Produkt in der Liste suchen
     eintrag = db.query(ListeProdukte).filter(
         ListeProdukte.listen_id == listen_id,
         ListeProdukte.produkt_id == produkt_id,
@@ -1172,6 +1691,19 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
 # gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat
 @app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
 def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
+   """
+  Beschreibung:
+      Ruft alle Einkäufe aus dem Einkaufsarchiv für eine bestimmte Liste ab.
+
+  Parameter:
+      listen_id (int): Die ID der Liste.
+      db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+  Mögliche Fehler/Fehlermeldungen:
+      - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
+
+  Relevante zusätzliche Hinweise: Keine.
+  """
 
     einkaeufe = (
         db.query(
@@ -1227,7 +1759,21 @@ def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Se
 
 @app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
 def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Erstellt einen neuen Eintrag im Einkaufsarchiv für eine bestimmte Liste.
 
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        einkauf (EinkaufsarchivCreate): Pydantic-Modell mit den Einkaufsdaten.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn die Liste nicht gefunden wird.
+        - HTTP 400 BAD REQUEST: Wenn der Einkäufer nicht gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
@@ -1251,6 +1797,20 @@ def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: Einkaufsarc
 
 @app.delete("/delete/einkaufsarchiv/list/{listen_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Löscht alle Einkäufe aus dem Einkaufsarchiv für eine bestimmte Liste.
+
+    Parameter:
+        listen_id (int): Die ID der Liste.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn keine Einkäufe für die Liste gefunden werden.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Einkäufe für die Liste suchen
     einkaeufe = db.query(Einkaufsarchiv).filter(
         Einkaufsarchiv.listen_id == listen_id
     ).all()
@@ -1268,7 +1828,20 @@ def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depend
 
 @app.get("/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=List[eingekaufteProdukteRead])
 def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Ruft alle eingekauften Produkte für einen bestimmten Einkauf ab.
 
+    Parameter:
+        einkauf_id (int): Die ID des Einkaufs.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.  
+
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn der Einkauf nicht gefunden wird.
+
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Prüfen, ob der Einkauf existiert
     einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
 
     if not einkauf:
@@ -1311,7 +1884,21 @@ def get_eingekauftes_produkt(einkauf_id: int = Path(..., gt=0), produkt_id: int 
 
 @app.post("/create/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=eingekaufteProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_produkt: eingekaufteProdukteCreate = Body(...), db: Session = Depends(get_db)):
+    """
+    Beschreibung:
+        Erstellt einen neuen Eintrag für ein eingekauftes Produkt in einem bestimmten Einkauf.
+
+    Parameter:
+        einkauf_id (int): Die ID des Einkaufs.
+        eingekauftes_produkt (eingekaufteProdukteCreate): Pydantic-Modell mit den Daten des eingekauften Produkts.
+        db (Session): Aktive SQLAlchemy-Datenbank-Sitzung.
     
+    Mögliche Fehler/Fehlermeldungen:
+        - HTTP 404 NOT FOUND: Wenn der Einkauf nicht gefunden wird.
+    
+    Relevante zusätzliche Hinweise: Keine.
+    """
+     # Prüfen, ob der Einkauf existiert  
     einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
 
     if not einkauf:
