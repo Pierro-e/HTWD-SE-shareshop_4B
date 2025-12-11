@@ -10,6 +10,7 @@
       </AppHeader>
 
       <div class="info-block">
+        <strong>Einkäufer:</strong> {{ this.buyer || "Nicht angegeben" }} <br>
         <strong>Gesamtpreis:</strong> {{ this.price || "Nicht angegeben" }} €
       </div>
       <br>
