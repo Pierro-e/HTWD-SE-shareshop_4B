@@ -67,6 +67,7 @@ export default {
           purchase_name: "",
           listName: "",
           combinedName: "",
+          buyer: "",
           price: null,
           purchased_products: [],
           loadingActive: true,
@@ -129,6 +130,7 @@ export default {
     this.purchase_name = this.$route.query.purchase_name;
     this.listName = this.$route.query.listName;
     this.combinedName = this.listName + ' ' + this.purchase_name;
+    this.buyer = this.$route.query.buyer;
     this.list_id = this.$route.query.list_id;
     this.price = this.$route.query.price;
     this.getData(this.purchase_id);
