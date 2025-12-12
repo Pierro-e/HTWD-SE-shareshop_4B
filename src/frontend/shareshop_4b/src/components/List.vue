@@ -621,7 +621,11 @@ export default {
           error.response.data.detail
         ) {
           this.errorMessage = error.response.data.detail;
-        } else {
+        } 
+        if (mitglied_id == requester_id && error.response.status != 403) {
+            this.get_list_members(list_id); 
+          }
+        else {
           this.errorMessage = "Fehler beim Entfernen des Mitglieds";
         }
       }
