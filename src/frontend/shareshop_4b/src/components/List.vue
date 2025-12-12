@@ -593,12 +593,6 @@ export default {
           error.response.data.detail
         ) {
           this.errorMessage = error.response.data.detail;
-          // Wenn es ein Fehler ist, der nicht 403 (Forbidden) ist und die eigene ID betrifft, 
-          // lade die Mitgliederliste neu (z.B. nach erfolgreicher Selbstentfernung, 
-          // falls das Popup noch offen ist)
-          if (mitglied_id == requester_id && error.response.status != 403) {
-            this.get_list_members(list_id); 
-          }
         } else {
           this.errorMessage = "Fehler beim Entfernen des Mitglieds";
         }
