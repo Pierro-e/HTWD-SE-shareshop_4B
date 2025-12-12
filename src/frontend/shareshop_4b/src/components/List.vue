@@ -739,6 +739,9 @@ export default {
         }
       }
     },
+    handle_ersteller_verlassen() {
+      this.showpopup_delete_list_confirm = true;
+    }, 
   },
   mounted() {
     this.errorMessage = "";
