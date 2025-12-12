@@ -566,6 +566,10 @@ export default {
       const list_id = this.list_id || this.$route.params.id;
       const requester_id = this.user.id; 
       
+      if (requester_id === this.list_creator_id && mitglied_id === requester_id) {
+        this.handle_ersteller_verlassen();
+        return; 
+      }
       try {
         await axios.delete(
           `http://141.56.137.83:8000/listen/${list_id}/mitglieder/${mitglied_id}`,
