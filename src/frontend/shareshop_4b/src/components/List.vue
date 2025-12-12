@@ -210,7 +210,8 @@ export default {
       dropdownSelected: "",
       dropdownOptions: [],
       searchTimeout: 0,
-      prevSearchText: ""
+      prevSearchText: "",
+      showpopup_delete_list_confirm: false,
     };
   },
   methods: {
@@ -563,12 +564,9 @@ export default {
 
     async mitglied_entfernen(mitglied_id) {
       const list_id = this.list_id || this.$route.params.id;
-      
-      // Füge die ID des aktuellen Nutzers (Requester) hinzu
       const requester_id = this.user.id; 
-
+      
       try {
-        // ÄNDERUNG: 'requesterId' als Query-Parameter im DELETE-Request übergeben
         await axios.delete(
           `http://141.56.137.83:8000/listen/${list_id}/mitglieder/${mitglied_id}`,
           {
