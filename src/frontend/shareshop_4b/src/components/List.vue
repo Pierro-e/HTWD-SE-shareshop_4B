@@ -168,6 +168,34 @@
   <BottomBar 
     :highlight-btn="1"
   />
+  <div
+  v-if="showpopup_delete_list_confirm"
+  class="popup-overlay"
+  @click.self="showpopup_delete_list_confirm = false"
+>
+  <div class="popup-content">
+    <h3>Liste verlassen und löschen</h3>
+    <p>
+    Da Sie der Ersteller dieser Liste sind, wird die Liste für andere Mitglider gelöscht, sobald Sie diese verlassen.
+    </p>
+    <p>Möchten Sie die Liste unwiderruflich löschen?</p>
+
+    <div class="button-container">
+      <button
+        @click="showpopup_delete_list_confirm = false"
+        class="button button-cancel"
+      >
+        Abbrechen
+      </button>
+      <button
+        @click="liste_endgültig_löschen()"
+        class="button button-delete"
+      >
+        Bestätigen und Liste löschen
+      </button>
+    </div>
+  </div>
+</div>
     
 </template>
 
