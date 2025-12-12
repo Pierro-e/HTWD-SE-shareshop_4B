@@ -19,7 +19,7 @@
           :key="list.id" 
           :value="list.id"
         >
-          {{ list.name }}
+          {{ this.stringLimitLength(list.name, true) }}
         </option>
       </select>
 
@@ -53,7 +53,7 @@
             :item="purchase"
             :name="formatDate(purchase.eingekauft_am)"
             :buyer="purchase.einkaeufer_name"
-            :list-name="stringLimitLength(listName)"
+            :list-name="stringLimitLength(listName, false)"
           />
         </div>
       </div>
@@ -137,14 +137,23 @@ export default {
         this.$router.push(`/listen`);
       }
     },
-    stringLimitLength(string){
-      const maxLength = 17;
-
-      if (window.innerWidth <= 480) { // nur auf mobile kürzen
-        if (string.length > maxLength) {
-          string = string.substring(0, maxLength) + "...";
+    stringLimitLength(string, comboBox){
+      var maxLength;
+      if (window.innerWidth <= 480) { // Mobile
+        maxLength = 16;
+      }
+      else { // Desktop
+        if (comboBox) { // nur in der Combobox stark begrenzen
+          maxLength = 35;
+        } else {
+          maxLength = 100;
         }
       }
+      
+      if (string.length > maxLength) {
+        string = string.substring(0, maxLength) + "...";
+      }
+      
       return string;
     }
   },
@@ -195,7 +204,7 @@ export default {
 
 <style scoped>
 .list-archive {
-  margin-top: 125px;             
+  margin-top: 120px;             
 }
 
 .card-list {
