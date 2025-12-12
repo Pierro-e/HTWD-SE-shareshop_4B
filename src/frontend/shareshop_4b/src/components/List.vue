@@ -614,9 +614,6 @@ export default {
         this.infoMessage = ""; 
         }, 2000);
         
-        if (mitglied_id === requester_id) {
-            this.$router.push('/listen');
-        }
       } catch (error) {
         if (
           error.response &&
