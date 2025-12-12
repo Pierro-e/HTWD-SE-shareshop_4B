@@ -744,6 +744,33 @@ export default {
     handle_ersteller_verlassen() {
       this.showpopup_delete_list_confirm = true;
     }, 
+    async liste_endgültig_löschen() {
+  const list_id = this.list_id || this.$route.params.id;
+  const requester_id = this.user.id;
+  
+  // Schließe das Popup sofort
+  this.showpopup_delete_list_confirm = false;
+
+  try {
+    
+    await axios.delete(
+        `http://141.56.137.83:8000/listen/${list_id}`,
+        {
+          params: {
+            requesterId: requester_id,
+          },
+        }
+    );
+    this.infoMessage = "Liste wurde erfolgreich gelöscht.";
+    this.errorMessage = "";
+    // zur Listenübersicht nach erfolgreicher Löschung
+    this.$router.push('/listen');
+
+  } catch (error) {
+    this.errorMessage = "Fehler beim Löschen der Liste: " + (error.response?.data?.detail || error.message);
+  }
+},
+
   },
   mounted() {
     this.errorMessage = "";
