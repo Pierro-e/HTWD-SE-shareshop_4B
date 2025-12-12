@@ -610,7 +610,10 @@ export default {
         this.infoMessage = "Mitglied erfolgreich entfernt.";
         this.get_list_members(list_id); // Aktualisiere die Mitgliederliste
         this.errorMessage = "";
-
+         setTimeout(() => {
+        this.infoMessage = ""; 
+        }, 2000);
+        
         if (mitglied_id === requester_id) {
             this.$router.push('/listen');
         }
