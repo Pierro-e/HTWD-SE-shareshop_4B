@@ -966,34 +966,6 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-@app.delete("/listen/{listen_id}/loeschen", status_code=status.HTTP_204_NO_CONTENT)
-def delete_list_permanently(
-    listen_id: int = Path(..., gt=0),
-    # vorläfig mit delete Mitglied (discription und kurze beschreibung, da Entwicklerdoku nocht nicht gemergt wurde)
-    # wird später mit restlichen neuen Endpunkten anhand Docstring angepasst
-    # ändert sich aber nicht viel
-    requester_id: int = Query(..., alias="requesterId", description="ID des Erstellers, der die Löschung anfordert"),
-    db: Session = Depends(get_db)
-):
-    """Löscht eine Liste permanent, wenn der Ersteller die Aktion ausführt, nämlich die Liste verlässt."""
-
-    liste = db.query(Liste).filter(Liste.id == listen_id).first()
-    if not liste:
-        raise HTTPException(status_code=404, detail="Liste nicht gefunden")
-
-
-    if liste.ersteller != requester_id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Nur der Ersteller darf eine Liste permanent löschen."
-        )
-
-    db.delete(liste)
-    db.commit()
-
-    return Response(status_code=status.HTTP_204_NO_CONTENT)
-
-
 # --- Mitglieder in Listen ---
 @app.get("/listen/{listen_id}/mitglieder", response_model=List[MitgliedRead])
 def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
