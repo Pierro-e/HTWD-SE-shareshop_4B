@@ -176,9 +176,9 @@
   <div class="popup-content">
     <h3>Liste verlassen und löschen</h3>
     <p>
-    Da Sie der Ersteller dieser Liste sind, wird die Liste für andere Mitglider gelöscht, sobald Sie diese verlassen.
+      Diese Liste wird gelöscht, da sie der Ersteller sind.
     </p>
-    <p>Möchten Sie die Liste unwiderruflich löschen?</p>
+    <p>Möchten Sie die Liste wirklich löschen?</p>
 
     <div class="button-container">
       <button
@@ -191,7 +191,7 @@
         @click="liste_endgültig_löschen()"
         class="button button-delete"
       >
-        Bestätigen und Liste löschen
+        Bestätigen und löschen
       </button>
     </div>
   </div>
