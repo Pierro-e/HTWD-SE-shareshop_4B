@@ -244,6 +244,7 @@ input, textarea, select {
   accent-color: var(--accent-color);
   font-family: inherit;
   resize: vertical;
+  text-overflow: ellipsis;
   transition:
     background-color 0.25s,
     border-color 0.25s;

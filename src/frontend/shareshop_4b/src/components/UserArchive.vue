@@ -140,9 +140,12 @@ export default {
     stringLimitLength(string, comboBox){
       var maxLength;
       if (window.innerWidth <= 480) { // Mobile
-        maxLength = 16;
-      }
-      else { // Desktop
+        if (comboBox) {
+          maxLength = 35;
+        } else {
+          maxLength = 16;
+        }
+      } else { // Desktop
         if (comboBox) { // nur in der Combobox stark begrenzen
           maxLength = 35;
         } else {
