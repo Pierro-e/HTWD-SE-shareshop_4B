@@ -607,13 +607,18 @@ export default {
             },
           }
         );
+        // nur wenn ersteller andere person entfernt, nicht wenn nicht ertsleller sich selbst entfernt
+        if (mitglied_id != requester_id){
+
         this.infoMessage = "Mitglied erfolgreich entfernt.";
+        }
         this.get_list_members(list_id); // Aktualisiere die Mitgliederliste
         this.errorMessage = "";
          setTimeout(() => {
         this.infoMessage = ""; 
         }, 2000);
         
+       
       } catch (error) {
         if (
           error.response &&
