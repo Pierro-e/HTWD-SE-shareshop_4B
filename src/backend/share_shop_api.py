@@ -883,13 +883,13 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
 
 # --- Listen ---
 
-@app.get("/listen", response_model=List[ListeRead])
+@app.get("/listen", description="Gibt alle Liste aus | ResponseModel: ListeRead",  response_model=List[ListeRead])
 def get_listen_all(db: Session = Depends(get_db)):
     listen = db.query(Liste).all()
     return listen
 
 
-@app.get("/listen/by-id/{list_id}", response_model=ListeRead)
+@app.get("/listen/by-id/{list_id}", description="Gibt eine Liste anhand der id aus | ResponseModel: ListeRead",  response_model=ListeRead)
 def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     liste = (
         db.query(
@@ -909,7 +909,7 @@ def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db
     return liste
 
 
-@app.post("/listen", response_model=ListeRead, status_code=status.HTTP_201_CREATED)
+@app.post("/listen", description="Erstellt eine Liste | InputModel: ListeCreate ResponseModel: ListeRead",  response_model=ListeRead, status_code=status.HTTP_201_CREATED)
 def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
 
     if liste is None:
@@ -943,7 +943,7 @@ def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
     return db_liste
 
 
-@app.put("/listen/{listen_id}/datum", response_model=ListeRead)
+@app.put("/listen/{listen_id}/datum", description="Ändert das Datum einer Liste | InputModelL: ListeDatumUpdate ResponseModel: ListeRead",  response_model=ListeRead)
 def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...), db: Session = Depends(get_db)):
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
@@ -957,7 +957,7 @@ def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...
     return liste
 
 
-@app.delete("/listen/{listen_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/listen/{listen_id}", description="Löscht eine Liste",  status_code=status.HTTP_204_NO_CONTENT)
 def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
@@ -967,7 +967,7 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 # --- Mitglieder in Listen ---
-@app.get("/listen/{listen_id}/mitglieder", response_model=List[MitgliedRead])
+@app.get("/listen/{listen_id}/mitglieder", description="Gibt alle Mitglieder einer Liste aus | ResponseModel: MitgliedRead", response_model=List[MitgliedRead])
 def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     mitglieder = db.query(ListeMitglieder).filter(
         ListeMitglieder.listen_id == listen_id).all()
@@ -977,7 +977,7 @@ def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depe
     return mitglieder
 
 
-@app.post("/listen/{listen_id}/mitglieder/{nutzer_id}", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
+@app.post("/listen/{listen_id}/mitglieder/{nutzer_id}", description="Fügt ein Mitglied zu einer Liste hinzu | ResponseModel: MitgliedRead", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
 def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     vorhanden = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -996,7 +996,7 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
     return neues_mitglied
 
 
-@app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", description="Entfernt ein Mitglied aus einer Liste", status_code=status.HTTP_204_NO_CONTENT)
 def delete_mitglied(
     listen_id: int = Path(..., gt=0), 
     nutzer_id: int = Path(..., gt=0), # ID des Nutzers, der entfernt werden soll
@@ -1035,7 +1035,7 @@ def delete_mitglied(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 # --- Produkte in Listen ---
-@app.get("/listen/{listen_id}/produkte", response_model=List[ProduktInListeRead])
+@app.get("/listen/{listen_id}/produkte", description="Gibt alle Produkte aus einer Liste aus | ResponseModel: ProduktInListeRead", response_model=List[ProduktInListeRead])
 def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     # Prüfen, ob die Liste existiert
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
@@ -1063,7 +1063,7 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
     return produkte
 
 
-@app.post("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
+@app.post("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", description="Fügt ein Produkt zu einer Liste hinzu | ResponseModel: ProduktInListeRead", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
 def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     existing_list = db.query(Liste).filter_by(id=listen_id).first()
@@ -1110,7 +1110,7 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Pat
     return neues_Produkt
 
 
-@app.put("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
+@app.put("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", description="Ändert ein Produkt in einer Liste | InputModel: ProduktInListeUpdate ResponseModel: ProduktInListeRead", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
 def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), produkt: ProduktInListeUpdate = Body(...), db: Session = Depends(get_db)):
 
     existing_list = db.query(Liste).filter_by(id=listen_id).first()
@@ -1151,7 +1151,7 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
         return vorhandenes_produkt
     
     
-@app.delete("/listen/{listen_id}/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/listen/{listen_id}/produkte/{produkt_id}", description="Entfernt ein Produkt aus einer Liste", status_code=status.HTTP_204_NO_CONTENT)
 def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), deleteRequest: ProduktDeleteRequest = Body(...), db: Session = Depends(get_db)):
     eintrag = db.query(ListeProdukte).filter(
         ListeProdukte.listen_id == listen_id,
