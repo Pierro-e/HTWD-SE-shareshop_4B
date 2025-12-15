@@ -627,7 +627,7 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
 
 
 # -- Funktion, um Produkte zu suchen anahnd des Namen aber mit 'LIKE' (fur die Suchvorschläge) ---
-@app.get("/produkte/suche", response_model=List[ProduktRead])
+@app.get("/produkte/suche", description="Gibt einen Suchvorschlag für ein Produkt aus | ResponseModel: ProduktRead", response_model=List[ProduktRead])
 def search_products(
     query: str = Query(..., min_length=1, description="Suchstring für Produktnamen"),
     db: Session = Depends(get_db)
@@ -651,7 +651,7 @@ def search_products(
 
 # --- FavProdukte ---
 
-@app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
+@app.get("/fav_produkte/nutzer/{nutzer_id}", description="Gibt ein Favoritenprodukt für einen Nutzer anhand der id aus | ResponseModel: FavProdukteRead", response_model=List[FavProdukteRead])
 def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -678,7 +678,7 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
     )
     return fav_produkte
 
-@app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
+@app.post("/fav_produkte_create/nutzer/{nutzer_id}", description="Erstellt eine Favoritenprodukt für einen Nutzer | InputModel: FavProdukteCreate ResponseModel: FavProdukteRead",  response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
 
     anzahl_favoriten = db.query(FavProdukte).filter(
@@ -715,7 +715,7 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
     return neues_fav_produkt
 
 
-@app.delete("/fav_produkte_delete/nutzer/{nutzer_id}/produkt/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/fav_produkte_delete/nutzer/{nutzer_id}/produkt/{produkt_id}", description="Löscht ein Favoritenprodukt für einen Nutzer",  status_code=status.HTTP_204_NO_CONTENT)
 def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
@@ -728,7 +728,7 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=FavProdukteRead)
+@app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", description="Ändert ein FavoritenProdukt für einen Nutzer | InputModel: FavProdukteUpdate ResponseModel: FavProdukteRead",  response_model=FavProdukteRead)
 def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteUpdate = Body(...), db: Session = Depends(get_db)):
     fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
@@ -804,7 +804,7 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
 
 
 # Abrufen der Bedarfsvorhersage für einen Nutzer
-@app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
+@app.get("/bedarfsvorhersage/{nutzer_id}", description="Gibt die Produktbedarfsvorhersage für einen Nutzer aus | ResponseModel: BedarfsvorhersageRead",  response_model=List[BedarfsvorhersageRead])
 def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays: Decimal = Query(7,gt=0),db: Session = Depends(get_db)):
 
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -819,7 +819,7 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays:
 
 
 # zum Löschen eines Bedarfvorhersage-Produkt
-@app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
+@app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", description="Löscht einen Eintrag in der Produktbedarfsvorhersage für einen Nutzer",  response_model=BedarfsvorhersageRead)
 def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     eintrag = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id,
@@ -839,7 +839,7 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 # der Counter wird erstmal im Body mit übergeben
 
 # nutzerid ist eigentlich falsch --> es ist die ID von dem, der das Produkt hinzugefügt hat
-@app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
+@app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", description="Erstellt einen Bedarfsvorhersageprodukt für einen Nutzer | InputModel: BedarfsvorhersageCreate ResponseModel: BedarfsvorhersageRead", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
 
     now = datetime.now(timezone.utc)
