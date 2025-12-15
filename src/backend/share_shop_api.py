@@ -966,7 +966,6 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-
 # --- Mitglieder in Listen ---
 @app.get("/listen/{listen_id}/mitglieder", response_model=List[MitgliedRead])
 def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
