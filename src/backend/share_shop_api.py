@@ -381,7 +381,7 @@ def start():
 # --- Nutzer ---
 
 
-@app.post("/login")
+@app.post("/login", description="Funktion zum Anmelden eines Nutzers")
 def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     # Nutzer mit E-Mail suchen
     nutzer = db.query(Nutzer).filter(func.lower(Nutzer.email)
@@ -407,13 +407,13 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     }
 
 
-@app.get("/nutzer", response_model=List[NutzerRead])
+@app.get("/nutzer", description="Gibt alle Nutzer aus der DB zurück", response_model=List[NutzerRead])
 def get_nutzer_all(db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).all()
     return nutzer
 
 
-@app.get("/nutzer/by-id", response_model=NutzerRead)
+@app.get("/nutzer/by-id", description="Gibt einen Nutzer anhand seiner id aus", response_model=NutzerRead)
 def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == id).first()
     if not nutzer:
@@ -421,7 +421,7 @@ def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     return nutzer
 
 
-@app.get("/nutzer/by-email", response_model=NutzerRead)
+@app.get("/nutzer/by-email", description="Gibt einen Nutzer anhand seiner email aus", response_model=NutzerRead)
 def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.email == email).first()
     if not nutzer:
@@ -429,7 +429,7 @@ def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
     return nutzer
 
 
-@app.post("/nutzer_create", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
+@app.post("/nutzer_create", description="Erstellt einen neuen Nutzer", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
 def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
 
     vorhanden = db.query(Nutzer).filter(Nutzer.email == nutzer.email).first()
@@ -449,7 +449,7 @@ def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
         return db_nutzer
 
 
-@app.delete("/nutzer_delete/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/nutzer_delete/{nutzer_id}", description="Löscht einen Nutzer anhand seiner id", status_code=status.HTTP_204_NO_CONTENT)
 def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
     if not nutzer:
@@ -460,7 +460,7 @@ def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.put("/nutzer_change/{nutzer_id}/passwort", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/passwort", description="Ändert das Passwort eines Nutzers", status_code=status.HTTP_200_OK)
 def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -474,7 +474,7 @@ def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Dep
     return nutzer
 
 
-@app.put("/nutzer_change/{nutzer_id}/name", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/name", description="Ändert den Namen eines Nutzers", status_code=status.HTTP_200_OK)
 def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -487,7 +487,7 @@ def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(ge
 
     return nutzer
 
-@app.put("/nutzer_change/{nutzer_id}/email", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/email", description="Ändert die Email eines Nutzers", status_code=status.HTTP_200_OK)
 def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -504,7 +504,7 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
 
     return nutzer   
 
-@app.put("/nutzer_change/{nutzer_id}/decaydays", status_code=status.HTTP_200_OK)    
+@app.put("/nutzer_change/{nutzer_id}/decaydays", description="Ändert die Einstellungen für die Bedarfsvorhersage eines Nutzers", status_code=status.HTTP_200_OK)    
 def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
