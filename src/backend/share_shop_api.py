@@ -1337,7 +1337,7 @@ def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_
 
 # empfaenger_id = nutzer_id 
 # diese Funktion gibt zurück "wer mir Geld schuldet"
-@app.get("/kostenaufteilung/empfaenger/{empfaenger_id}", response_model=List[KostenaufteilungRead])
+@app.get("/kostenaufteilung/empfaenger/{empfaenger_id}", description="Gibt die Kostenaufteilung für einen Nutzer aus (Wer schuldet mir Geld?)| ResponseModel: KostenaufteilungRead", response_model=List[KostenaufteilungRead])
 def get_kostenaufteilung_empfaenger(empfaenger_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     user = db.query(Nutzer).filter(Nutzer.id == empfaenger_id).first()
@@ -1365,7 +1365,7 @@ def get_kostenaufteilung_empfaenger(empfaenger_id: int = Path(..., gt=0), db: Se
 
 # schuldner_id = nutzer_id
 # diese Funktion gibt zurück "wem ich Geld schulde"
-@app.get("/kostenaufteilung/schuldner/{schuldner_id}", response_model=List[KostenaufteilungRead])
+@app.get("/kostenaufteilung/schuldner/{schuldner_id}", description="Gibt die Kostenaufteilung für einen Nutzer aus (Wem schulde ich Geld?) | ResponseModel: KostenaufteilungRead", response_model=List[KostenaufteilungRead])
 def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     user = db.query(Nutzer).filter(Nutzer.id == schuldner_id).first()
@@ -1392,7 +1392,7 @@ def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Sess
     return kostenaufteilung
 
 # Schulden in DB speichern
-@app.post("/kostenaufteilung", response_model=KostenaufteilungRead, status_code=status.HTTP_201_CREATED)
+@app.post("/kostenaufteilung", response_model=KostenaufteilungRead, description="Erstellt einen Eintrag in der KOstenaufteilung (Schuldner und Empfänger | InputModel: KostenaufteilungCreate)", status_code=status.HTTP_201_CREATED)
 def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Session = Depends(get_db)):
 
     if eintrag.empfaenger_id == eintrag.schuldner_id:
@@ -1428,7 +1428,7 @@ def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Ses
     db.refresh(neuer_eintrag)
     return neuer_eintrag
 
-@app.delete("/kostenaufteilung/empfaenger/{empfaenger_id}/schuldner/{schuldner_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/kostenaufteilung/empfaenger/{empfaenger_id}/schuldner/{schuldner_id}", description="Löscht einen Eintrag aus der Kostenaufteilung", status_code=status.HTTP_204_NO_CONTENT)
 def delete_kostenaufteilung(empfaenger_id: int = Path(..., gt=0), schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     
     if empfaenger_id == schuldner_id:
