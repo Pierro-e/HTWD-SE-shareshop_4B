@@ -1169,7 +1169,7 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
 # Einkaufsarchiv ------------------------------------
 
 # gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat
-@app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+@app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", description="Gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat | ResponseMode: EinkaufsarchivRead", response_model=List[EinkaufsarchivRead])
 def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
 
     einkaeufe = (
@@ -1193,7 +1193,7 @@ def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Se
     return einkaeufe
 
 # gibt alle Einkäufe zurück, für die Listen, in denen der Nutzer drin ist
-@app.get("/einkaufsarchiv/nutzer_gesamt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+@app.get("/einkaufsarchiv/nutzer_gesamt/{nutzer_id}",  description="Gibt die Einkäufe für alle Listen zurück, in denen der Nutzer Mitglied ist | ResponseModel: EinkaufsarchivRead", response_model=List[EinkaufsarchivRead])
 def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
 
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -1224,7 +1224,7 @@ def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Se
 
     return einkaeufe
 
-@app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
+@app.post("/create/einkaufsarchiv/list/{listen_id}",  description="Erstellt einen Einkauf für eine Liste | InputModel: EinkaufsarchivCreate ResponseModel: EinkaufsarchivCreate", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
 def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
 
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
@@ -1248,7 +1248,7 @@ def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: Einkaufsarc
     db.refresh(neuer_einkauf)
     return neuer_einkauf
 
-@app.delete("/delete/einkaufsarchiv/list/{listen_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/delete/einkaufsarchiv/list/{listen_id}",  description="Löscht einen Einkauf aus dem Archiv", status_code=status.HTTP_204_NO_CONTENT)
 def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     einkaeufe = db.query(Einkaufsarchiv).filter(
         Einkaufsarchiv.listen_id == listen_id
@@ -1265,7 +1265,7 @@ def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depend
 
 # eingekaufte Produkte ------------------------------------
 
-@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=List[eingekaufteProdukteRead])
+@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}", description="Gibt alle Produkte, die zu dem Einkauf gehören aus | ResponseModel: eingekaufteProdukteRead", response_model=List[eingekaufteProdukteRead])
 def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
@@ -1295,7 +1295,7 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
 
     return eingekaufte_produkte
 
-@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}/produkt/{produkt_id}/hinzugefuegt_von/{hinzugefuegt_von}", response_model=eingekaufteProdukteRead)
+@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}/produkt/{produkt_id}/hinzugefuegt_von/{hinzugefuegt_von}",  description="Gibt ein eingekauftes Produkt aus | ResponseModel: eingekaufteProdukteRead", response_model=eingekaufteProdukteRead)
 def get_eingekauftes_produkt(einkauf_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), hinzugefuegt_von: int = Path(..., gt=0), db: Session = Depends(get_db)):
     eingekauftes_produkt = db.query(EingekaufteProdukte).filter(
         EingekaufteProdukte.einkauf_id == einkauf_id,
