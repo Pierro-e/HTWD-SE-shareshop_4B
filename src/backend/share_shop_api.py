@@ -407,13 +407,13 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     }
 
 
-@app.get("/nutzer", description="Gibt alle Nutzer aus der DB zurück", response_model=List[NutzerRead])
+@app.get("/nutzer", description="Gibt alle Nutzer aus der DB zurück | ResponseModel: NutzerRead", response_model=List[NutzerRead])
 def get_nutzer_all(db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).all()
     return nutzer
 
 
-@app.get("/nutzer/by-id", description="Gibt einen Nutzer anhand seiner id aus", response_model=NutzerRead)
+@app.get("/nutzer/by-id", description="Gibt einen Nutzer anhand seiner id aus | ResponseModel: NutzerRead", response_model=NutzerRead)
 def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == id).first()
     if not nutzer:
@@ -421,7 +421,7 @@ def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     return nutzer
 
 
-@app.get("/nutzer/by-email", description="Gibt einen Nutzer anhand seiner email aus", response_model=NutzerRead)
+@app.get("/nutzer/by-email", description="Gibt einen Nutzer anhand seiner email aus | ResponseModel: NutzerRead", response_model=NutzerRead)
 def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.email == email).first()
     if not nutzer:
@@ -429,7 +429,7 @@ def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
     return nutzer
 
 
-@app.post("/nutzer_create", description="Erstellt einen neuen Nutzer", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
+@app.post("/nutzer_create", description="Erstellt einen neuen Nutzer | InputModel: NutzerCreate ResponseModel: NutzerRead", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
 def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
 
     vorhanden = db.query(Nutzer).filter(Nutzer.email == nutzer.email).first()
@@ -460,7 +460,7 @@ def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.put("/nutzer_change/{nutzer_id}/passwort", description="Ändert das Passwort eines Nutzers", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/passwort", description="Ändert das Passwort eines Nutzers | InputModel: PasswortÄndern", status_code=status.HTTP_200_OK)
 def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -474,7 +474,7 @@ def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Dep
     return nutzer
 
 
-@app.put("/nutzer_change/{nutzer_id}/name", description="Ändert den Namen eines Nutzers", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/name", description="Ändert den Namen eines Nutzers | InputModel: NameAendern", status_code=status.HTTP_200_OK)
 def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -487,7 +487,7 @@ def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(ge
 
     return nutzer
 
-@app.put("/nutzer_change/{nutzer_id}/email", description="Ändert die Email eines Nutzers", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/email", description="Ändert die Email eines Nutzers | InputModel: EmailAendern", status_code=status.HTTP_200_OK)
 def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -504,7 +504,7 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
 
     return nutzer   
 
-@app.put("/nutzer_change/{nutzer_id}/decaydays", description="Ändert die Einstellungen für die Bedarfsvorhersage eines Nutzers", status_code=status.HTTP_200_OK)    
+@app.put("/nutzer_change/{nutzer_id}/decaydays", description="Ändert die Einstellungen für die Bedarfsvorhersage eines Nutzers | InputModel: DecayDaysAendern", status_code=status.HTTP_200_OK)    
 def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -518,8 +518,8 @@ def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = 
     return nutzer
 
 
-@app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
-def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+@app.get("/nutzer/{nutzer_id}/listen", description="Gibt alle Listen aus, in denen der Nutzer Mitglied ist | ResponseModel: ListeRead", response_model=List[ListeRead])
+def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)): 
     listen = (
         db.query(
             Liste.id,
@@ -542,7 +542,7 @@ def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends
 
 
 # -- Funktion, in der die Ansichtseinstellungen des Nutzer geändert werden können ---
-@app.put("/nutzer_change/{nutzer_id}/theme_color", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/theme_color", description="Ändert die Ansichtseinstellungen des Nutzers", status_code=status.HTTP_200_OK)
 def change_theme_color(
     nutzer_id: int = Path(..., gt=0),                   # muss >0 sein
     theme: int = Body(..., ge=0, le=2),                 # theme 0–2  ge = greater equal, le = less equal
@@ -565,13 +565,13 @@ def change_theme_color(
 
 # --- Einheiten ---
 
-@app.get("/einheiten", response_model=List[EinheitRead])
+@app.get("/einheiten", description="Gibt alle Mengeneinheiten aus | ResponseModel: EinheitRead", response_model=List[EinheitRead])
 def get_einheiten_all(db: Session = Depends(get_db)):
     einheiten = db.query(Einheit).all()
     return einheiten
 
 
-@app.get("/einheiten/{einheit_id}", response_model=EinheitRead)
+@app.get("/einheiten/{einheit_id}", description="Gibt eine Einheit anhand der id aus | ResponseModel: EinheitRead", response_model=EinheitRead)
 def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     einheit = db.query(Einheit).filter(Einheit.id == einheit_id).first()
     if einheit is None:
@@ -580,14 +580,14 @@ def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(g
 
 
 # --- Produkte ---
-@app.get("/produkte/", response_model=List[ProduktRead])
+@app.get("/produkte/", description="Gibt alle Produkte aus | ResponseModel: ProduktRead", response_model=List[ProduktRead])
 def get_produkte_all(db: Session = Depends(get_db)):
     produkte = db.query(Produkt).all()
 
     return produkte
 
 
-@app.get("/produkte/by-id/{produkt_id}", response_model=ProduktRead)
+@app.get("/produkte/by-id/{produkt_id}", description="Gibt ein Produkt anhand seiner id aus | ResponseModel: ProduktRead", response_model=ProduktRead)
 def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     produkt = db.query(Produkt).filter(Produkt.id == produkt_id).first()
     if not produkt:
@@ -595,7 +595,7 @@ def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(g
     return produkt
 
 
-@app.get("/produkte/by-name/{produkt_name}", response_model=ProduktRead)
+@app.get("/produkte/by-name/{produkt_name}", description="Gibt ein Produkt anhand seines Namen aus | ResponseModel ProduktRead" , response_model=ProduktRead)
 def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get_db)):
     produkt = db.query(Produkt).filter(func.lower(
         Produkt.name) == produkt_name.lower()).first()
@@ -604,7 +604,7 @@ def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get
     return produkt
 
 
-@app.post("/produkte_create", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
+@app.post("/produkte_create", description="Erstellt ein Produkt | InputModel: ProduktCreate ResponseModel: ProduktRead", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
 
     # product.name ist bereits validiert und formatiert
