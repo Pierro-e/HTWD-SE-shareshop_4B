@@ -18,38 +18,51 @@
   <main v-if="!loadingActive && !errorMessage">
     <div class="card-list">
 
-      <!-- Forderungen -->
-      <div class="card">
-        <h3>Ich bekomme Geld von</h3>
-        <ul v-if="forderungen.length">
-          <li v-for="f in forderungen" :key="f.schuldner_id">
-            <strong>{{ f.schuldner_name }}</strong>:
-            {{  Number(f.betrag).toFixed(2) }} €
-          </li>
-        </ul>
-        <p v-else>Niemand schuldet dir Geld.</p>
-      </div>
+  
+    <h3>Ich bekomme Geld von</h3>
 
-      <!-- Schulden -->
-      <div class="card">
-        <h3>Ich schulde Geld an</h3>
-        <ul v-if="schulden.length">
-          <li v-for="s in schulden" :key="s.empfaenger_id">
-            <strong>{{ s.empfaenger_name }}</strong>:
-            {{  Number(s.betrag).toFixed(2) }} €
-          </li>
-        </ul>
-        <p v-else>Du schuldest niemandem Geld.</p>
-      </div>
+    <ProductCard
+      v-for="f in forderungen"
+      :key="f.schuldner_id"
+      :product="mapForderung(f)"
+      :hideSettings="true"
+    >
+      <!-- Extra Slot: Löschen-Button -->
+      <template #extra>
+        <button
+          class="button button-danger"
+          @click="markAsReceived(f)"
+        >
+          Geld erhalten
+        </button>
+      </template>
+    </ProductCard>
 
-    </div>
+    <p v-if="!forderungen.length">Niemand schuldet dir Geld.</p>
+
+  
+    <h3>Ich schulde Geld an</h3>
+
+    <ProductCard
+      v-for="s in schulden"
+      :key="s.empfaenger_id"
+      :product="mapSchuld(s)"
+      :hideSettings="true"
+    />
+
+    <p v-if="!schulden.length">Du schuldest niemandem Geld.</p>
+
+  </div>
   </main>
+
+  
 
   <BottomBar :highlight-btn="1" />
 </template>
 
 <script>
 import AppHeader from "./AppHeader.vue"
+import ProductCard from "./ProductCard.vue"
 import BottomBar from "./BottomBar.vue"
 import axios from "axios"
 import { inject } from "vue"
@@ -57,7 +70,12 @@ import { inject } from "vue"
 export default {
   components: {
     AppHeader,
+    ProductCard,
     BottomBar
+  },
+  props: {
+    forderungen: Array,
+    schulden: Array
   },
   data() {
    // const userRef = inject("user")
@@ -98,7 +116,7 @@ export default {
         this.loadingActive = false
         return
     }
-    console.log("userRef initial:", userRef.value)
+   
     // Reaktiv auf User-ID warten
     this.$watch(
         () => userRef.value.id,
@@ -114,8 +132,48 @@ export default {
     },
 
     methods: {
-    //this.user = userRef.value
-    //const user_id = this.user.id
+
+        mapForderung(f) {
+            return {
+                produkt_name: f.schuldner_name,
+                produkt_menge: Number(f.betrag).toFixed(2),
+                einheit_abk: "€",
+                beschreibung: ""
+            }
+        },
+
+        mapSchuld(s) {
+            return {
+                produkt_name: s.empfaenger_name,
+                produkt_menge: Number(s.betrag).toFixed(2),
+                einheit_abk: "€",
+                beschreibung: ""
+            }
+        },
+
+        async markAsReceived(f) {
+        if (!confirm(`Geld von ${f.schuldner_name} wirklich erhalten?`)) return
+
+        try {
+            await axios.delete(
+            `http://141.56.137.83:8000/kostenaufteilung/empfaenger/${this.user.id}/schuldner/${f.schuldner_id}`
+            )
+
+            // lokal entfernen (UI sofort aktualisieren)
+            const index = this.forderungen.findIndex(
+            x => x.schuldner_id === f.schuldner_id
+            )
+            if (index !== -1) {
+            this.forderungen.splice(index, 1)
+            }
+
+        } catch (error) {
+            alert(
+            error.response?.data?.detail ||
+            "Fehler beim Löschen der Kostenaufteilung"
+            )
+        }
+        },
 
         async loadFinanzen(user_id) {
             try {
@@ -142,20 +200,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.card {
-  background: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-}
-
-.positiv {
-  color: green;
-}
-
-.negativ {
-  color: red;
 }
 
 .error {
