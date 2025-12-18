@@ -12,6 +12,7 @@ import Favorites from "./components/favorites/Favorites.vue"
 import ListArchive from "./components/ListArchive.vue";
 import ProductArchive from "./components/ProductArchive.vue";
 import UserArchive from "./components/UserArchive.vue";
+import Finanzen from "./components/Finanzen.vue";
 
 const routes = [
   { path: "/", component: Login },
@@ -49,7 +50,8 @@ const routes = [
     }),
     name: "ProductArchive"
   },
-  { path: "/userArchive", component: UserArchive }
+  { path: "/userArchive", component: UserArchive },
+  { path: "/finanzen", component: Finanzen }
 ];
 const router = createRouter({
   history: createWebHistory(),
