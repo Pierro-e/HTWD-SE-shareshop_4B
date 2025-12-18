@@ -18,46 +18,42 @@
   <main v-if="!loadingActive && !errorMessage">
     <div class="card-list">
 
-  
-    <h3>Ich bekomme Geld von</h3>
+        <h3>Ich bekomme Geld von</h3>
 
-    <ProductCard
-      v-for="f in forderungen"
-      :key="f.schuldner_id"
-      :product="mapForderung(f)"
-      :hideSettings="true"
-    >
-      <!-- Extra Slot: Löschen-Button -->
-      <template #extra>
-        <button
-          class="button button-danger"
-          @click="markAsReceived(f)"
+        <ProductCard
+        v-for="f in forderungen"
+        :key="f.schuldner_id"
+        :product="mapForderung(f)"
+        :hideSettings="true"
         >
-          Geld erhalten
-        </button>
-      </template>
-    </ProductCard>
+        <!-- Extra Slot: Löschen-Button -->
+        <template #extra>
+            <button
+            class="button button-danger"
+            @click="markAsReceived(f)"
+            >
+            Geld erhalten
+            </button>
+        </template>
+        </ProductCard>
 
-    <p v-if="!forderungen.length">Niemand schuldet dir Geld.</p>
+        <p v-if="!forderungen.length">Niemand schuldet dir Geld.</p>
 
-  
-    <h3>Ich schulde Geld an</h3>
+        <h3>Ich schulde Geld an</h3>
 
-    <ProductCard
-      v-for="s in schulden"
-      :key="s.empfaenger_id"
-      :product="mapSchuld(s)"
-      :hideSettings="true"
-    />
+        <ProductCard
+        v-for="s in schulden"
+        :key="s.empfaenger_id"
+        :product="mapSchuld(s)"
+        :hideSettings="true"
+        />
 
-    <p v-if="!schulden.length">Du schuldest niemandem Geld.</p>
+        <p v-if="!schulden.length">Du schuldest niemandem Geld.</p>
 
-  </div>
+    </div>
   </main>
 
-  
-
-  <BottomBar :highlight-btn="1" />
+  <BottomBar :highlight-btn="5" />
 </template>
 
 <script>
@@ -78,8 +74,7 @@ export default {
     schulden: Array
   },
   data() {
-   // const userRef = inject("user")
-   // console.log("inject user:", userRef)
+   
     return {
       user: null,
       forderungen: [],
@@ -117,7 +112,6 @@ export default {
         return
     }
    
-    // Reaktiv auf User-ID warten
     this.$watch(
         () => userRef.value.id,
         (newId) => {

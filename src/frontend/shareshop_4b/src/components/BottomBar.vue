@@ -15,7 +15,7 @@
         <span>Archiv</span>
       </button>
 
-      <button class="bottom-btn" :class="{ highlight: highlightBtn === 1 }" @click="$router.push('/finanzen')">
+      <button class="bottom-btn" :class="{ highlight: highlightBtn === 5 }" @click="$router.push('/finanzen')">
         <div class=icon>
           <font-awesome-icon icon='euro-sign'/>
         </div>
