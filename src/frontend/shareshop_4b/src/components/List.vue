@@ -522,7 +522,6 @@ export default {
         await axios.post(
           `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`,
         );
-        this.showpopup_product = false;
         this.errorMessage = "";
       } catch (error) {
         if (error.response) {
@@ -574,6 +573,7 @@ export default {
         }
       }
 
+      this.dropdownSelected = "";
       this.new_product = "";
       this.get_products(list_id);
     },
@@ -582,6 +582,7 @@ export default {
       this.errorMessage = "";
       this.showpopup_product = false;
       this.new_product = "";
+      this.dropdownSelected = "";
     },
 
     mitglied_hinzufügen_popup() {
