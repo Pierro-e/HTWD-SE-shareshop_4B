@@ -176,6 +176,8 @@ export default {
       }
       this.commit_purchase = false;
       this.einkauf_abschließen();
+      //this.kosten_aufteilen();
+      
     },
 
     async einkauf_abschließen() {
@@ -191,6 +193,7 @@ export default {
             gesamtpreis: price,
           }
         );
+          this.kosten_aufteilen(price, list_id);
 
         const purchase_id = response.data.einkauf_id;
 
@@ -241,6 +244,27 @@ export default {
         }
       }
       this.totalPrice = 0;
+    },
+
+    async kosten_aufteilen(price, list_id){
+      const response = await axios.get (`http://141.56.137.83:8000/listen/${list_id}/mitglieder`);
+      this.members = response.data;
+      this.price_per_member = price / this.members.length;
+      if (this.members.length === 1) {
+        return;
+      }
+      for (let i =0; i<this.members.length; i++)
+      {
+        const response = await axios.post (`http://141.56.137.83:8000/kostenaufteilung`,
+        {
+          empfaenger_id:  this.userData.id,
+          schuldner_id: this.members[i].id,
+          betrag: price_per_member,
+        }
+        )
+        
+      }
+      
     },
     product_settings(produkt) {
       // nichts machen
