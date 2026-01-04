@@ -1,6 +1,5 @@
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
@@ -165,10 +164,10 @@ html, body {
 }
 
 #app {
-  width: 97%;
+  width: 97.5%;
   max-width: 1280px;
   padding-top: 0.5em;
-  padding-bottom: 35px; /* für BottomBar */
+  padding-bottom: 2.5em; /* für BottomBar */
   padding-left: 0.5em;
   padding-right: 1em;
   text-align: center;
@@ -245,6 +244,7 @@ input, textarea, select {
   accent-color: var(--accent-color);
   font-family: inherit;
   resize: vertical;
+  text-overflow: ellipsis;
   transition:
     background-color 0.25s,
     border-color 0.25s;
@@ -258,7 +258,7 @@ input:focus, textarea:focus {
 
 select:focus {
   outline: 2px solid var(--accent-color);
-  outline-offset: -2px;
+  outline-offset: -1px;
 }
 
 /* Vue Select */
@@ -411,7 +411,7 @@ form select {
 
 @media (max-width: 400px) {
   .card {
-    min-width: 80vw;
+    min-width: 88vw;
   }
 }
 
@@ -500,12 +500,43 @@ form select {
   padding-top: 65px;
   margin-top: 10px;
   margin-bottom: 10px;
-  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
+  width: 100%;
   box-sizing: border-box;
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
-  max-width: 500px;
+  max-width: 400px;
+  margin: auto auto; /* zentrieren */
+}
+
+/* Settings-Container fixiert unter der Überschrift mittig */
+.settings-container {
+  display: flex;
+  color: white;
+  background-color: var(--accent-header-bg-color);
+  box-shadow: 0 2px 5px var(--box-shadow-color);
+  position: fixed;
+
+  top: 70px;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  gap: 0.5em;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-container button {
+  padding: 0.5em 1.0em;
+  margin: 0em;
+}
+
+.settings-container input,
+.settings-container select {
+  max-width: 300px;
+  padding: 0.5em 1.0em;
 }
 
 /* Erfolg- und Fehlerboxen */
@@ -543,6 +574,7 @@ form select {
 .info {
   font-weight: bold;
   font-size: larger;
+  word-wrap: break-word;
 }
 
 .info-block {
@@ -551,4 +583,5 @@ form select {
   margin-bottom: 1rem;
   border-radius: 0.5rem;
   font-size: 0.95rem;
+
 }

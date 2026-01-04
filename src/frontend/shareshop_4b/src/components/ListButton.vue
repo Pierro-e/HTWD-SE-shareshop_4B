@@ -27,8 +27,9 @@ export default {
   name: "ListButton",
   props: {
     name: {type: String},
+    listName: {type: String, default: ""},  // nur für Archive
+    buyer: {type: String, default: ""}, // nur für Archive
     item: { type: Object, default: null },
-    isUserArchive: { type: Boolean, default: false }
   },
   methods: {
     openList() {
@@ -38,6 +39,7 @@ export default {
         params: { id: this.item.id }
       });
       } else if(this.item.einkauf_id){    // bei Übergabe durch ListArchive ist es einkauf_id (noch auf deutsch, da es direkt aus der DB kommt)
+        const currentQuery = this.$route.query || {};
         this.$router.push({ 
           name: "ProductArchive", 
           params: { purchase_id: this.item.einkauf_id },
@@ -45,7 +47,10 @@ export default {
             list_id: this.item.listen_id,
             purchase_name: this.name,
             price: this.item.gesamtpreis,
-            isUserArchive: this.isUserArchive
+            buyer: this.buyer,
+            listName: this.listName,
+            selectedListID: currentQuery.selectedListID !== undefined ? currentQuery.selectedListID : 'null',
+            listFilter: currentQuery.listFilter !== undefined ? currentQuery.listFilter : 'null'
           }
         });
       }

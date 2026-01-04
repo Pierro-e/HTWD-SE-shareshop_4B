@@ -21,44 +21,42 @@
   </template>
   </AppHeader>
 
-  <div class="settings-section">
-    <div class="settings-container">
-      <button
-        :disabled="
-          showpopup_product || showpopup_list || showpopup_add_member
-        "
-        @click="openListPopup()"
-        class="button button-settings"
-      >
-        <font-awesome-icon icon='circle-info'/> Info
-      </button>
-      <button
-        :disabled="
-          showpopup_product || showpopup_list || showpopup_add_member
-        "
-        @click="einkauf_abschließen"
-        class="button button-submit button-einkauf-tätigen"
-      >
-        <font-awesome-icon icon='cart-shopping'/> Einkauf
-      </button>
-      <button @click="list_archive">
-        <font-awesome-icon icon='box-archive'/> Archiv
-      </button>
-    </div>
-    <!--
-    <div class="buy-container" >
-      <button
-        :disabled="
-          showpopup_product || showpopup_list || showpopup_add_member
-        "
-        @click="einkauf_abschließen"
-        class="button button-submit button-einkauf-tätigen"
-      >
-        <font-awesome-icon icon='cart-shopping'/> Einkauf
-      </button>
-    </div>
-    -->
+  <div class="settings-container">
+    <button
+      :disabled="
+        showpopup_product || showpopup_list || showpopup_add_member
+      "
+      @click="openListPopup()"
+      class="button button-settings"
+    >
+      <font-awesome-icon icon='circle-info'/> Info
+    </button>
+    <button
+      :disabled="
+        showpopup_product || showpopup_list || showpopup_add_member
+      "
+      @click="einkauf_abschließen"
+      class="button button-submit button-einkauf-tätigen"
+    >
+      <font-awesome-icon icon='cart-shopping'/> Einkauf
+    </button>
+    <button @click="list_archive">
+      <font-awesome-icon icon='box-archive'/> Archiv
+    </button>
   </div>
+  <!--
+  <div class="buy-container" >
+    <button
+      :disabled="
+        showpopup_product || showpopup_list || showpopup_add_member
+      "
+      @click="einkauf_abschließen"
+      class="button button-submit button-einkauf-tätigen"
+    >
+      <font-awesome-icon icon='cart-shopping'/> Einkauf
+    </button>
+  </div>
+  -->
 
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
@@ -208,7 +206,7 @@ import BottomBar from "./BottomBar.vue";
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
-  props: ["list_id"],
+  props: ["id"],
   components: {
     AppHeader, 
     ProductCard, 
@@ -740,9 +738,8 @@ export default {
       const list_id = this.list_id || this.$route.params.id;
       const list_name = this.list_name;
       this.$router.push({ 
-        name: "ListArchive", 
-        params: { list_id},
-        query: { list_name } 
+        name: "UserArchive", 
+        query: { listFilter: list_id }
       });
     },
 
@@ -827,25 +824,6 @@ export default {
 .button-einkauf-tätigen {
   position: relative;
   margin-top: 0px;
-}
-
-/* Settings-Container fixiert unter der Überschrift mittig */
-.settings-container {
-  background-color: var(--accent-header-bg-color);
-  box-shadow: 0 2px 5px var(--box-shadow-color);
-  position: fixed;
-  top: 70px; /* vorher 60px */
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  padding: 5px 0;
-  gap: 5px; /* Abstand zwischen Buttons */
-  justify-content: center;
-  align-items: center;
-}
-
-.settings-container button {
-  padding: 0.5em 1.0em;
 }
 
 /*
