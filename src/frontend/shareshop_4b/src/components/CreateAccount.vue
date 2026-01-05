@@ -56,6 +56,10 @@ export default {
     }
   },
   methods: {
+    /**
+     * Sendet die Registrierungsdaten an die API und behandelt die Antwort.
+     * @return {void} -- Gibt nichts zurück.
+     */
     async onSubmit() {
       this.errorMessage = ''
       try {
