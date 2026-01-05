@@ -94,6 +94,11 @@ export default {
       };
   },
   methods: {
+    /**
+     * Holt die Listen und deren Einkaufsarchiv, in denen der Nutzer Mitglied ist.
+     * @param id -- Die ID des Nutzers
+     * @return {void} -- Gibt nichts zurück. 
+     */
     async getData(id) {
       try {   
         const response1 = await axios.get(`http://141.56.137.83:8000/einkaufsarchiv/nutzer_gesamt/${this.user.id}`);
@@ -117,6 +122,11 @@ export default {
         this.loadingActive = false;
       }
     },
+    /**
+     * Formatiert ein Datum in deutsches Format.
+     * @param dateStr -- das Datum als String
+     * @return {string} -- Das formatierte Datum im Format "TT.MM.JJJJ"
+     */
     formatDate(dateStr) {
       if (!dateStr) return "";
       const date = new Date(dateStr);
@@ -126,6 +136,10 @@ export default {
         year: "numeric"
       }).format(date);  // aus "JJJJ-MM-TT" wird "TT.MM.JJJJ"
     },
+    /**
+     * Ruft die Komponente List.vue auf.
+     * @return {void} -- Gibt nichts zurück.
+     */
     goBack() {
       if (this.listFilter) {
         this.$router.push({ 
@@ -137,6 +151,12 @@ export default {
         this.$router.push(`/listen`);
       }
     },
+    /**
+     * Kürzt einen String auf eine maximale Länge, abhängig von der Bildschirmgröße.
+     * @param string -- Der zu kürzende String
+     * @param comboBox -- Boolean, ob der String in einer Combobox angezeigt wird
+     * @return {string} -- Der gekürzte String (mit "..." am Ende, falls gekürzt)
+     */
     stringLimitLength(string, comboBox){
       var maxLength;
       if (window.innerWidth <= 480) { // Mobile
@@ -161,6 +181,10 @@ export default {
     }
   },
   computed: {
+    /**
+     * Filtert die Einkäufe basierend auf der ausgewählten Liste und dem Nutzer.
+     * @return {Array} -- Das gefilterte Array der Einkäufe.
+     */
     filteredPurchases() {
       return this.purchases.filter(p => {
         const matchesList = this.selectedListID ? Number(p.listen_id) === Number(this.selectedListID) : true;
@@ -170,6 +194,10 @@ export default {
         return matchesList && matchesUser;
       });    
     },
+    /**
+     * Gruppiert die gefilterten Einkäufe nach Listenname.
+     * @return {Object} -- Ein Objekt, bei dem die Schlüssel die Listennamen sind und die Werte Arrays der Einkäufe.
+     */
     groupedPurchases() {
       const groups = {};
       this.filteredPurchases.forEach(purchase => {
@@ -190,6 +218,11 @@ export default {
     this.getData(this.user.id);
   },
   watch: {
+    /**
+     * Wenn sich selectedListID ändert, wird die URL-Query entsprechend aktualisiert.
+     * @param newVal -- Der neue Wert von selectedListID
+     * @return {void} -- Gibt nichts zurück.
+     */
     selectedListID(newVal) {
       const queryValue = newVal === null ? 'null' : newVal;
       if (this.$route.query.selectedListID != queryValue) {

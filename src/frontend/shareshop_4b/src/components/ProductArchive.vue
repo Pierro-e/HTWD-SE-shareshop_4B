@@ -77,7 +77,7 @@ export default {
   },
   /**
    * Ruft die Komponente UserArchive auf.#
-   * @return {void} Gibt nichts zurück.
+   * @return {void} -- Gibt nichts zurück.
    */
   methods: {
     goBack() {
@@ -99,8 +99,8 @@ export default {
     },
     /**
      * Holt die Daten (Archivierte Produkte) von der API.
-     * @param {int }id - Die ID des Einkaufs. 
-     * @return {void} Gibt nichts zurück (schreibt die Daten direkt in das vorgesehene Array).
+     * @param {int }id -- Die ID des Einkaufs. 
+     * @return {void} -- Gibt nichts zurück (schreibt die Daten direkt in das vorgesehene Array).
      */
     async getData(id) {
       try {
