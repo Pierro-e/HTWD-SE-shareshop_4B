@@ -75,6 +75,10 @@ export default {
           errorMessage: "",
       }
   },
+  /**
+   * Ruft die Komponente UserArchive auf.#
+   * @return {void} Gibt nichts zurück.
+   */
   methods: {
     goBack() {
       const listFilter = this.$route.query.listFilter;
@@ -93,6 +97,11 @@ export default {
         query: query
       });
     },
+    /**
+     * Holt die Daten (Archivierte Produkte) von der API.
+     * @param {int }id - Die ID des Einkaufs. 
+     * @return {void} Gibt nichts zurück (schreibt die Daten direkt in das vorgesehene Array).
+     */
     async getData(id) {
       try {
         const response = await axios.get(
