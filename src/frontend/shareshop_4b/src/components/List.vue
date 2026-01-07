@@ -203,6 +203,13 @@ import { inject } from "vue";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
 import BottomBar from "./BottomBar.vue";
+
+/**
+ * Zeigt Produkte einer Liste an und bietet Möglichkeiten zum Hinzufügen/Bearbeiten eines Produkts, Bearbeiten der Mitglieder, 
+ * Löschen der Liste, Starten eines Einkaufs und Anzeigen des Einkaufsarchives der Liste.
+ *
+ * @vue-prop {number} id ID der Liste
+ */
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
@@ -241,6 +248,10 @@ export default {
     };
   },
   methods: {
+    /**
+     * Lädt Liste von API und setzt Listenname und Listenersteller.
+     * @param id {number} Listen-ID
+     */
     async get_list(id) {
       this.errorMessage = "";
       try {
@@ -264,7 +275,10 @@ export default {
         }
       }
     },
-
+    /**
+     * Lädt Listenmitglieder von API.
+     * @param id {number} Listen-ID
+     */
     async get_list_members(id) {
       this.errorMessage = "";
       try {
@@ -309,7 +323,10 @@ export default {
         }
       }
     },
-
+    /**
+     * Lädt Produkte der Liste von API, formatiert Menge und zählt Anzahl an Produkten.
+     * @param id {number} ListenID
+     */
     async get_products(id) {
       this.errorMessage = "";
       try {
@@ -349,13 +366,17 @@ export default {
       }
       this.loadingActive = false;
     },
-
+    /**
+     * Öffnet das Listeninfo-Popup.
+     */
     openListPopup() {
       this.errorMessage = "";
       this.showpopup_list = true;
       this.showpopup_product = false;
     },
-
+    /**
+     * Öffnet das Produkt-Hinzufügen-Popup und initalisiert Elemente.
+     */
     async openProductPopup() {
       this.errorMessage = "";
       this.showpopup_product = true;
@@ -369,7 +390,13 @@ export default {
 
       this.loadDropdownList(0, "");
     },
-
+    /**
+     * Befüllt die Liste des Dropdowns bei Produkt hinzufügen je nach Typ. 
+     * Bei Typ 0 werden Bedarfsvorhersage und Favoriten von API geladen und damit das Dropdown gefüllt. 
+     * Bei Typ 1 wird mittels Suchtext über API eine Suche gemacht und das Dropdown mit Suchvorschlägen gefüllt. 
+     * @param type {number} Typ (0: Bedarfsvorhersage/Favoriten, 1: Suchvorschläge)
+     * @param searchText {string} Suchtext (leer lassen bei Typ 0)
+     */
     async loadDropdownList(type, searchText){
       this.dropdownOptions = [];
       if (type == 0) { // Bedarfsvorhersage/Favoriten
@@ -442,8 +469,13 @@ export default {
         }
       }
     },
-
-    async onSearch(searchText){ // aufgerufen, wenn was ins Dropdown eingegeben wird
+    /**
+     * Wird aufgerufen, wenn im Textfeld des Dropdowns etwas eingegeben wird. 
+     * Wenn kein Zeichen eingeben ist, wird Dropdown mit Bedarfsvorsage/Favoriten gefüllt, bei 1 oder mehr Zeichen mit Suchvorschlägen.
+     * Timeout von 1 Sek. verhindert spammen der API beim Suchen.
+     * @param searchText {string} Suchtext
+     */
+    async onSearch(searchText){
       clearTimeout(this.searchTimeout);
 
       if (searchText.length == 0){ // Bedarfsvorhersage/Favoriten
@@ -460,7 +492,11 @@ export default {
         this.prevSearchText = searchText
       }
     },
-
+    /**
+     * Fügt ein neues Produkt der Liste hinzu. 
+     * Es wird die Eingabe überprüft, über API geschaut ob das Produkt exisiert und schlussendlich hochgeladen.
+     * Falls es sich bei dem Produkt um ein Favorit handelt, werden Menge und Beschreibung des Favorits dem neuen Produkt zusätzlich hinzugefügt.
+     */
     async add_product() {
       const list_id = this.list_id || this.$route.params.id;
       const user_id = this.user.id;
@@ -575,7 +611,9 @@ export default {
       this.new_product = "";
       this.get_products(list_id);
     },
-
+    /**
+     * Schließt das Produkt-hinzufügen-Popup.
+     */
     cancel_product_popup() {
       this.errorMessage = "";
       this.showpopup_product = false;
