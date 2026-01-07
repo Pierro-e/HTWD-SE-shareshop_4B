@@ -45,6 +45,10 @@
 <script>
 import axios from 'axios'
 
+/**
+ * CreateAccount-Komponente - behandelt die Registrierung eines neuen Nutzers.
+ */
+
 export default {
   name: 'CreateAccount',
   data() {
@@ -58,7 +62,6 @@ export default {
   methods: {
     /**
      * Sendet die Registrierungsdaten an die API und behandelt die Antwort.
-     * @return {void} -- Gibt nichts zurück.
      */
     async onSubmit() {
       this.errorMessage = ''
