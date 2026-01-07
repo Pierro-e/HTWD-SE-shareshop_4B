@@ -69,6 +69,13 @@ import axios from "axios";
 import AppHeader from "./AppHeader.vue";
 import ListButton from "./ListButton.vue";
 import BottomBar from "./BottomBar.vue";
+
+/**
+ * UserArchiv-Komponente – zeigt das Einkaufsarchiv des Nutzers an.
+ * 
+ * @vue-prop {number|null} listFilter Optionale ID der Liste, um das Archiv direkt auf diese Liste zu filtern.
+ */
+
 export default {
   name: "userArchive",
   inject: ["user"],
@@ -96,8 +103,8 @@ export default {
   methods: {
     /**
      * Holt die Listen und deren Einkaufsarchiv, in denen der Nutzer Mitglied ist.
-     * @param id -- Die ID des Nutzers
-     * @return {void} -- Gibt nichts zurück. 
+     * 
+     * @param {int} id Die ID des Nutzers 
      */
     async getData(id) {
       try {   
@@ -124,8 +131,10 @@ export default {
     },
     /**
      * Formatiert ein Datum in deutsches Format.
-     * @param dateStr -- das Datum als String
-     * @return {string} -- Das formatierte Datum im Format "TT.MM.JJJJ"
+     * 
+     * @param {string} dateStr das Datum als String
+     * 
+     * @return {string} Das formatierte Datum im Format "TT.MM.JJJJ"
      */
     formatDate(dateStr) {
       if (!dateStr) return "";
@@ -138,7 +147,6 @@ export default {
     },
     /**
      * Ruft die Komponente List.vue auf.
-     * @return {void} -- Gibt nichts zurück.
      */
     goBack() {
       if (this.listFilter) {
@@ -153,9 +161,10 @@ export default {
     },
     /**
      * Kürzt einen String auf eine maximale Länge, abhängig von der Bildschirmgröße.
-     * @param string -- Der zu kürzende String
-     * @param comboBox -- Boolean, ob der String in einer Combobox angezeigt wird
-     * @return {string} -- Der gekürzte String (mit "..." am Ende, falls gekürzt)
+     * @param {string} string Der zu kürzende String
+     * @param {boolean} comboBox true, wenn der String in einer Combobox angezeigt wird
+     * 
+     * @return {string} Der gekürzte String (mit "..." am Ende, falls gekürzt)
      */
     stringLimitLength(string, comboBox){
       var maxLength;
@@ -183,7 +192,8 @@ export default {
   computed: {
     /**
      * Filtert die Einkäufe basierend auf der ausgewählten Liste und dem Nutzer.
-     * @return {Array} -- Das gefilterte Array der Einkäufe.
+     * 
+     * @return {Array} Das gefilterte Array der Einkäufe.
      */
     filteredPurchases() {
       return this.purchases.filter(p => {
@@ -196,7 +206,8 @@ export default {
     },
     /**
      * Gruppiert die gefilterten Einkäufe nach Listenname.
-     * @return {Object} -- Ein Objekt, bei dem die Schlüssel die Listennamen sind und die Werte Arrays der Einkäufe.
+     * 
+     * @return {Object} Ein Objekt, bei dem die Schlüssel die Listennamen sind und die Werte Arrays der Einkäufe.
      */
     groupedPurchases() {
       const groups = {};
@@ -220,8 +231,8 @@ export default {
   watch: {
     /**
      * Wenn sich selectedListID ändert, wird die URL-Query entsprechend aktualisiert.
-     * @param newVal -- Der neue Wert von selectedListID
-     * @return {void} -- Gibt nichts zurück.
+     * 
+     * @param {int} newVal Der neue Wert von selectedListID
      */
     selectedListID(newVal) {
       const queryValue = newVal === null ? 'null' : newVal;

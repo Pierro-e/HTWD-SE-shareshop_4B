@@ -81,8 +81,7 @@ export default {
       }
   },
   /**
-   * Ruft die Komponente UserArchive auf.#
-   * @return {void} -- Gibt nichts zurück.
+   * Ruft die Komponente UserArchive auf.
    */
   methods: {
     goBack() {
@@ -104,8 +103,8 @@ export default {
     },
     /**
      * Holt die Daten (Archivierte Produkte) von der API.
-     * @param {int }id -- Die ID des Einkaufs. 
-     * @return {void} -- Gibt nichts zurück (schreibt die Daten direkt in das vorgesehene Array).
+     * 
+     * @param {int} id  Die ID des Einkaufs. 
      */
     async getData(id) {
       try {
@@ -137,6 +136,11 @@ export default {
         this.loadingActive = false;
       }
     },
+    /**
+     * aktuell nur Platzhalter
+     * 
+     * @param product Das Produkt als Objekt
+     */
     product_settings(product) {
       // nichts machen
     },
