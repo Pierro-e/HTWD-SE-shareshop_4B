@@ -232,7 +232,6 @@ export default {
       document.documentElement.setAttribute("css-theme", this.theme); // Thema setzen
       document.documentElement.setAttribute("css-accent", this.accent); // Farbe setzen
     },
-
     /**
      * Konvertiert String in Integerwert für Akzentfarbe.
      * @param {string} userAccent Farbe (Blau, Lila, Grün, Rot, Orange)
@@ -251,7 +250,7 @@ export default {
      /**
      * Konvertiert String in Integerwert für Thema.
      * @param {string} userTheme Thema (Automatisch, Dunkel, Hell)
-     * @returns {number} Themenummer (0-2), Standard: 0
+     * @return {number} Themenummer (0-2), Standard: 0
      */ 
     getThemeNumber(userTheme) {
       switch (userTheme){
@@ -336,7 +335,7 @@ export default {
       this.loadUserData();
     },
     /**
-     * Löscht aktuellen Nutzer und geht zurück zur Startseite.
+     * Löscht aktuellen Nutzer und navigiert zurück zur Startseite.
      */
     logout() {
       this.deleteUser()

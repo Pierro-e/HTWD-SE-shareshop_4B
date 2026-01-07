@@ -71,11 +71,10 @@ import ListButton from "./ListButton.vue";
 import BottomBar from "./BottomBar.vue";
 
 /**
- *  Zeigt vergangene Einkäufe an mit optionaler Filterung.
+ * Zeigt vergangene Einkäufe an mit optionaler Filterung.
  * 
  * @vue-prop {number|null} listFilter Optionale ID der Liste, um das Archiv direkt auf diese Liste zu filtern.
  */
-
 export default {
   name: "userArchive",
   inject: ["user"],

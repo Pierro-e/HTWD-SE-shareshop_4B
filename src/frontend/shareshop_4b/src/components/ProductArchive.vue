@@ -80,9 +80,6 @@ export default {
           errorMessage: "",
       }
   },
-  /**
-   * Ruft die Komponente UserArchive auf.
-   */
   methods: {
     goBack() {
       const listFilter = this.$route.query.listFilter;

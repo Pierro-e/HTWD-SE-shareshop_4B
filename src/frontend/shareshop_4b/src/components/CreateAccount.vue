@@ -46,9 +46,8 @@
 import axios from 'axios'
 
 /**
- * CreateAccount-Komponente - behandelt die Registrierung eines neuen Nutzers.
+ * Behandelt die Registrierung eines neuen Nutzers.
  */
-
 export default {
   name: 'CreateAccount',
   data() {

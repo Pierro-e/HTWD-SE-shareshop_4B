@@ -54,6 +54,13 @@ import axios from "axios";
 import BottomBar from "./BottomBar.vue";
 import AppHeader from "./AppHeader.vue";
 
+/**
+ * Anzeigen/Bearbeiten der Details eines Produktes.
+ * 
+ * @vue-prop {number} produktId ID des Produkts
+ * @vue-prop {number} listenId ID der Liste, in der sich das Produkt befindet
+ * @vue-prop {number} nutzerId ID des Nutzers, welcher Produkt hinzugefügt hat
+ */
 export default {
   components: { 
     AppHeader,
@@ -80,6 +87,9 @@ export default {
     await this.fetchProduct();
   },
   methods: {
+    /**
+     * Lädt Eigenschaften des Produkts von API und setzt lokale Variablen.
+     */
     async fetchProduct() {
       try {
         const response = await axios.get(
@@ -106,6 +116,9 @@ export default {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Laden des Produkts.";
       }
     },
+    /**
+     * Lädt Einheiten von API und setzt lokale Variable.
+     */
     async fetchEinheiten() {
       try {
         const response = await axios.get(`http://141.56.137.83:8000/einheiten`);
@@ -114,6 +127,9 @@ export default {
         this.errorMessage = "Einheiten konnten nicht geladen werden.";
       }
     },
+    /**
+     * Validiert und sendet Eigenschaften des Produkts an API. 
+     */
     async saveProduct() {
       this.message = "";
       this.errorMessage = "";
@@ -165,7 +181,9 @@ export default {
         this.errorMessage = error.response?.data?.detail || "Fehler beim Speichern";
       }
     },
-
+    /**
+     * Löscht Produkt über API und navigiert zurück zur Liste. 
+     */
     async deleteProduct() {
       this.message = "";
       this.errorMessage = "";

@@ -7,12 +7,7 @@
   "opts": {
     "destination": "docs",
     "recurse": true,
-    "template": "node_modules/minami"
-  },
-    "templates": {
-        "cleverLinks": false,
-        "monospaceLinks": true,
-        "useLongnameInNav": false,
-        "showInheritedInNav": true
-    }
+    "template": "node_modules/minami",
+    "readme": "README.md"
+  }
 }
