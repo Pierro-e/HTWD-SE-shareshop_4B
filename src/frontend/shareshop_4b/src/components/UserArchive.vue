@@ -69,6 +69,11 @@ import axios from "axios";
 import AppHeader from "./AppHeader.vue";
 import ListButton from "./ListButton.vue";
 import BottomBar from "./BottomBar.vue";
+
+/**
+ * Zeigt vergangene Einkäufe an mit optionaler Filterung.
+ */
+
 export default {
   name: "userArchive",
   inject: ["user"],

@@ -6,6 +6,13 @@
   "plugins": ["node_modules/jsdoc-vuejs/index.js"],
   "opts": {
     "destination": "docs",
-    "recurse": true
-  }
+    "recurse": true,
+    "template": "node_modules/minami"
+  },
+    "templates": {
+        "cleverLinks": false,
+        "monospaceLinks": true,
+        "useLongnameInNav": false,
+        "showInheritedInNav": true
+    }
 }

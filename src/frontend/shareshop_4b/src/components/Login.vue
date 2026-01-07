@@ -44,10 +44,7 @@
 import axios from "axios";
 
 /**
- * Login-Komponente
- *
  * Behandelt das Einloggen des Nutzers.
- *
  */
 export default {
   name: "Login",
