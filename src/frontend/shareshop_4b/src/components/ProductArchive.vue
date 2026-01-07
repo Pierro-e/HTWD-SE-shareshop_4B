@@ -54,6 +54,11 @@ import AppHeader from './AppHeader.vue';
 import ProductCard from './ProductCard.vue';
 import BottomBar from './BottomBar.vue';
 
+/**
+ * ProductArchive-Komponente – zeigt die Produkte eines vergangenen Einkaufs an.
+ *
+ * @vue-prop {number} purchase_id ID des Einkaufs
+ */
 export default {
   name: "ProductArchive",
   props: ["purchase_id"],

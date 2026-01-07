@@ -1,0 +1,11 @@
+{
+  "source": {
+    "include": ["src/components"], 
+    "includePattern": "\\.(vue|js)$"
+  },
+  "plugins": ["node_modules/jsdoc-vuejs/index.js"],
+  "opts": {
+    "destination": "docs",
+    "recurse": true
+  }
+}
