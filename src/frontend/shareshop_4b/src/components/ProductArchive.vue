@@ -1,15 +1,16 @@
 <template>
   <div class="wrapper">
     <div class="list-archive">
-      <AppHeader :title="`${purchase_name}`">
+      <AppHeader :title="`${combinedName}`">
         <template #left>
-          <button @click="back_to_Archive" class="button-cancel back-button">
+          <button @click="goBack" class="button-cancel back-button">
             <font-awesome-icon icon='arrow-left'/>
           </button>
         </template>
       </AppHeader>
 
       <div class="info-block">
+        <strong>Einkäufer:</strong> {{ this.buyer || "Nicht angegeben" }} <br>
         <strong>Gesamtpreis:</strong> {{ this.price || "Nicht angegeben" }} €
       </div>
       <br>
@@ -53,6 +54,11 @@ import AppHeader from './AppHeader.vue';
 import ProductCard from './ProductCard.vue';
 import BottomBar from './BottomBar.vue';
 
+/**
+ * Zeigt die Produkte eines vergangenen Einkaufs an.
+ *
+ * @vue-prop {number} purchase_id ID des Einkaufs
+ */
 export default {
   name: "ProductArchive",
   props: ["purchase_id"],
@@ -65,14 +71,38 @@ export default {
       return{
           list_id: null,
           purchase_name: "",
+          listName: "",
+          combinedName: "",
+          buyer: "",
           price: null,
-          isUserArchive: false,
           purchased_products: [],
           loadingActive: true,
           errorMessage: "",
       }
   },
   methods: {
+    goBack() {
+      const listFilter = this.$route.query.listFilter;
+      const selectedListID = this.$route.query.selectedListID;
+      
+      const query = {};
+      if (listFilter !== undefined && listFilter !== 'null') {
+        query.listFilter = listFilter;
+      }
+      if (selectedListID !== undefined) {
+        query.selectedListID = selectedListID;
+      }
+      
+      this.$router.push({ 
+        name: "UserArchive", 
+        query: query
+      });
+    },
+    /**
+     * Holt die Daten (Archivierte Produkte) von der API.
+     * 
+     * @param {int} id  Die ID des Einkaufs. 
+     */
     async getData(id) {
       try {
         const response = await axios.get(
@@ -103,23 +133,22 @@ export default {
         this.loadingActive = false;
       }
     },
-
-    back_to_Archive() {
-      if (this.isUserArchive == 'true')
-        this.$router.push(`/userArchive`);
-      else
-      this.$router.push(`/list/${this.list_id}/archive`);
-    },
-
+    /**
+     * aktuell nur Platzhalter
+     * 
+     * @param product Das Produkt als Objekt
+     */
     product_settings(product) {
       // nichts machen
     },
   },
   mounted() {
     this.purchase_name = this.$route.query.purchase_name;
+    this.listName = this.$route.query.listName;
+    this.combinedName = this.listName + ' ' + this.purchase_name;
+    this.buyer = this.$route.query.buyer;
     this.list_id = this.$route.query.list_id;
     this.price = this.$route.query.price;
-    this.isUserArchive = this.$route.query.isUserArchive;
     this.getData(this.purchase_id);
   }
 }

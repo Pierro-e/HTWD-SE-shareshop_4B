@@ -43,6 +43,9 @@
 <script>
 import axios from "axios";
 
+/**
+ * Behandelt das Einloggen des Nutzers.
+ */
 export default {
   name: "Login",
   inject: ["setUser", 'getThemeText', 'getAccentText', 'deleteUser'], // theme, accent, setUser aus app.vue injizieren
@@ -58,10 +61,16 @@ export default {
     };
   },
   methods: {
+    /**
+     * Schaltet die Sichtbarkeit des Passwortes um.
+     */ 
     togglePasswordVisibility() {
       this.passwordFieldType =
         this.passwordFieldType === "password" ? "text" : "password";
     },
+    /**
+     * Sendet die eingegebenen Logindaten an die API, behandelt die Antwort und setzt die Nutzereinstellungen.
+     */ 
     async onSubmit() {
       this.errorMessage = "";
       let response;

@@ -381,7 +381,7 @@ def start():
 # --- Nutzer ---
 
 
-@app.post("/login")
+@app.post("/login", description="Funktion zum Anmelden eines Nutzers")
 def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     # Nutzer mit E-Mail suchen
     nutzer = db.query(Nutzer).filter(func.lower(Nutzer.email)
@@ -407,13 +407,13 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     }
 
 
-@app.get("/nutzer", response_model=List[NutzerRead])
+@app.get("/nutzer", description="Gibt alle Nutzer aus der DB zurück | ResponseModel: NutzerRead", response_model=List[NutzerRead])
 def get_nutzer_all(db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).all()
     return nutzer
 
 
-@app.get("/nutzer/by-id", response_model=NutzerRead)
+@app.get("/nutzer/by-id", description="Gibt einen Nutzer anhand seiner id aus | ResponseModel: NutzerRead", response_model=NutzerRead)
 def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == id).first()
     if not nutzer:
@@ -421,7 +421,7 @@ def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     return nutzer
 
 
-@app.get("/nutzer/by-email", response_model=NutzerRead)
+@app.get("/nutzer/by-email", description="Gibt einen Nutzer anhand seiner email aus | ResponseModel: NutzerRead", response_model=NutzerRead)
 def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.email == email).first()
     if not nutzer:
@@ -429,7 +429,7 @@ def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
     return nutzer
 
 
-@app.post("/nutzer_create", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
+@app.post("/nutzer_create", description="Erstellt einen neuen Nutzer | InputModel: NutzerCreate ResponseModel: NutzerRead", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
 def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
 
     vorhanden = db.query(Nutzer).filter(Nutzer.email == nutzer.email).first()
@@ -449,7 +449,7 @@ def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
         return db_nutzer
 
 
-@app.delete("/nutzer_delete/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/nutzer_delete/{nutzer_id}", description="Löscht einen Nutzer anhand seiner id", status_code=status.HTTP_204_NO_CONTENT)
 def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
     if not nutzer:
@@ -460,7 +460,7 @@ def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.put("/nutzer_change/{nutzer_id}/passwort", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/passwort", description="Ändert das Passwort eines Nutzers | InputModel: PasswortÄndern", status_code=status.HTTP_200_OK)
 def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -474,7 +474,7 @@ def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Dep
     return nutzer
 
 
-@app.put("/nutzer_change/{nutzer_id}/name", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/name", description="Ändert den Namen eines Nutzers | InputModel: NameAendern", status_code=status.HTTP_200_OK)
 def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -487,7 +487,7 @@ def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(ge
 
     return nutzer
 
-@app.put("/nutzer_change/{nutzer_id}/email", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/email", description="Ändert die Email eines Nutzers | InputModel: EmailAendern", status_code=status.HTTP_200_OK)
 def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -504,7 +504,7 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
 
     return nutzer   
 
-@app.put("/nutzer_change/{nutzer_id}/decaydays", status_code=status.HTTP_200_OK)    
+@app.put("/nutzer_change/{nutzer_id}/decaydays", description="Ändert die Einstellungen für die Bedarfsvorhersage eines Nutzers | InputModel: DecayDaysAendern", status_code=status.HTTP_200_OK)    
 def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -518,8 +518,8 @@ def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = 
     return nutzer
 
 
-@app.get("/nutzer/{nutzer_id}/listen", response_model=List[ListeRead])
-def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+@app.get("/nutzer/{nutzer_id}/listen", description="Gibt alle Listen aus, in denen der Nutzer Mitglied ist | ResponseModel: ListeRead", response_model=List[ListeRead])
+def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)): 
     listen = (
         db.query(
             Liste.id,
@@ -542,7 +542,7 @@ def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends
 
 
 # -- Funktion, in der die Ansichtseinstellungen des Nutzer geändert werden können ---
-@app.put("/nutzer_change/{nutzer_id}/theme_color", status_code=status.HTTP_200_OK)
+@app.put("/nutzer_change/{nutzer_id}/theme_color", description="Ändert die Ansichtseinstellungen des Nutzers", status_code=status.HTTP_200_OK)
 def change_theme_color(
     nutzer_id: int = Path(..., gt=0),                   # muss >0 sein
     theme: int = Body(..., ge=0, le=2),                 # theme 0–2  ge = greater equal, le = less equal
@@ -565,13 +565,13 @@ def change_theme_color(
 
 # --- Einheiten ---
 
-@app.get("/einheiten", response_model=List[EinheitRead])
+@app.get("/einheiten", description="Gibt alle Mengeneinheiten aus | ResponseModel: EinheitRead", response_model=List[EinheitRead])
 def get_einheiten_all(db: Session = Depends(get_db)):
     einheiten = db.query(Einheit).all()
     return einheiten
 
 
-@app.get("/einheiten/{einheit_id}", response_model=EinheitRead)
+@app.get("/einheiten/{einheit_id}", description="Gibt eine Einheit anhand der id aus | ResponseModel: EinheitRead", response_model=EinheitRead)
 def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     einheit = db.query(Einheit).filter(Einheit.id == einheit_id).first()
     if einheit is None:
@@ -580,14 +580,14 @@ def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(g
 
 
 # --- Produkte ---
-@app.get("/produkte/", response_model=List[ProduktRead])
+@app.get("/produkte/", description="Gibt alle Produkte aus | ResponseModel: ProduktRead", response_model=List[ProduktRead])
 def get_produkte_all(db: Session = Depends(get_db)):
     produkte = db.query(Produkt).all()
 
     return produkte
 
 
-@app.get("/produkte/by-id/{produkt_id}", response_model=ProduktRead)
+@app.get("/produkte/by-id/{produkt_id}", description="Gibt ein Produkt anhand seiner id aus | ResponseModel: ProduktRead", response_model=ProduktRead)
 def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     produkt = db.query(Produkt).filter(Produkt.id == produkt_id).first()
     if not produkt:
@@ -595,7 +595,7 @@ def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(g
     return produkt
 
 
-@app.get("/produkte/by-name/{produkt_name}", response_model=ProduktRead)
+@app.get("/produkte/by-name/{produkt_name}", description="Gibt ein Produkt anhand seines Namen aus | ResponseModel ProduktRead" , response_model=ProduktRead)
 def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get_db)):
     produkt = db.query(Produkt).filter(func.lower(
         Produkt.name) == produkt_name.lower()).first()
@@ -604,7 +604,7 @@ def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get
     return produkt
 
 
-@app.post("/produkte_create", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
+@app.post("/produkte_create", description="Erstellt ein Produkt | InputModel: ProduktCreate ResponseModel: ProduktRead", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
 
     # product.name ist bereits validiert und formatiert
@@ -627,7 +627,7 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
 
 
 # -- Funktion, um Produkte zu suchen anahnd des Namen aber mit 'LIKE' (fur die Suchvorschläge) ---
-@app.get("/produkte/suche", response_model=List[ProduktRead])
+@app.get("/produkte/suche", description="Gibt einen Suchvorschlag für ein Produkt aus | ResponseModel: ProduktRead", response_model=List[ProduktRead])
 def search_products(
     query: str = Query(..., min_length=1, description="Suchstring für Produktnamen"),
     db: Session = Depends(get_db)
@@ -651,7 +651,7 @@ def search_products(
 
 # --- FavProdukte ---
 
-@app.get("/fav_produkte/nutzer/{nutzer_id}", response_model=List[FavProdukteRead])
+@app.get("/fav_produkte/nutzer/{nutzer_id}", description="Gibt ein Favoritenprodukt für einen Nutzer anhand der id aus | ResponseModel: FavProdukteRead", response_model=List[FavProdukteRead])
 def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -678,7 +678,7 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
     )
     return fav_produkte
 
-@app.post("/fav_produkte_create/nutzer/{nutzer_id}", response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
+@app.post("/fav_produkte_create/nutzer/{nutzer_id}", description="Erstellt eine Favoritenprodukt für einen Nutzer | InputModel: FavProdukteCreate ResponseModel: FavProdukteRead",  response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
 def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
 
     anzahl_favoriten = db.query(FavProdukte).filter(
@@ -715,7 +715,7 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
     return neues_fav_produkt
 
 
-@app.delete("/fav_produkte_delete/nutzer/{nutzer_id}/produkt/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/fav_produkte_delete/nutzer/{nutzer_id}/produkt/{produkt_id}", description="Löscht ein Favoritenprodukt für einen Nutzer",  status_code=status.HTTP_204_NO_CONTENT)
 def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
@@ -728,7 +728,7 @@ def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=FavProdukteRead)
+@app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", description="Ändert ein FavoritenProdukt für einen Nutzer | InputModel: FavProdukteUpdate ResponseModel: FavProdukteRead",  response_model=FavProdukteRead)
 def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteUpdate = Body(...), db: Session = Depends(get_db)):
     fav_produkt = db.query(FavProdukte).filter(
         FavProdukte.nutzer_id == nutzer_id,
@@ -804,7 +804,7 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
 
 
 # Abrufen der Bedarfsvorhersage für einen Nutzer
-@app.get("/bedarfsvorhersage/{nutzer_id}", response_model=List[BedarfsvorhersageRead])
+@app.get("/bedarfsvorhersage/{nutzer_id}", description="Gibt die Produktbedarfsvorhersage für einen Nutzer aus | ResponseModel: BedarfsvorhersageRead",  response_model=List[BedarfsvorhersageRead])
 def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays: Decimal = Query(7,gt=0),db: Session = Depends(get_db)):
 
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -819,7 +819,7 @@ def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays:
 
 
 # zum Löschen eines Bedarfvorhersage-Produkt
-@app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", response_model=BedarfsvorhersageRead)
+@app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", description="Löscht einen Eintrag in der Produktbedarfsvorhersage für einen Nutzer",  response_model=BedarfsvorhersageRead)
 def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     eintrag = db.query(Bedarfsvorhersage).filter(
         Bedarfsvorhersage.nutzer_id == nutzer_id,
@@ -839,7 +839,7 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 # der Counter wird erstmal im Body mit übergeben
 
 # nutzerid ist eigentlich falsch --> es ist die ID von dem, der das Produkt hinzugefügt hat
-@app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
+@app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", description="Erstellt einen Bedarfsvorhersageprodukt für einen Nutzer | InputModel: BedarfsvorhersageCreate ResponseModel: BedarfsvorhersageRead", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
 def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
 
     now = datetime.now(timezone.utc)
@@ -883,13 +883,13 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
 
 # --- Listen ---
 
-@app.get("/listen", response_model=List[ListeRead])
+@app.get("/listen", description="Gibt alle Liste aus | ResponseModel: ListeRead",  response_model=List[ListeRead])
 def get_listen_all(db: Session = Depends(get_db)):
     listen = db.query(Liste).all()
     return listen
 
 
-@app.get("/listen/by-id/{list_id}", response_model=ListeRead)
+@app.get("/listen/by-id/{list_id}", description="Gibt eine Liste anhand der id aus | ResponseModel: ListeRead",  response_model=ListeRead)
 def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     liste = (
         db.query(
@@ -909,7 +909,7 @@ def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db
     return liste
 
 
-@app.post("/listen", response_model=ListeRead, status_code=status.HTTP_201_CREATED)
+@app.post("/listen", description="Erstellt eine Liste | InputModel: ListeCreate ResponseModel: ListeRead",  response_model=ListeRead, status_code=status.HTTP_201_CREATED)
 def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
 
     if liste is None:
@@ -943,7 +943,7 @@ def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
     return db_liste
 
 
-@app.put("/listen/{listen_id}/datum", response_model=ListeRead)
+@app.put("/listen/{listen_id}/datum", description="Ändert das Datum einer Liste | InputModelL: ListeDatumUpdate ResponseModel: ListeRead",  response_model=ListeRead)
 def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...), db: Session = Depends(get_db)):
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
@@ -957,7 +957,7 @@ def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...
     return liste
 
 
-@app.delete("/listen/{listen_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/listen/{listen_id}", description="Löscht eine Liste",  status_code=status.HTTP_204_NO_CONTENT)
 def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
@@ -966,9 +966,8 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-
 # --- Mitglieder in Listen ---
-@app.get("/listen/{listen_id}/mitglieder", response_model=List[MitgliedRead])
+@app.get("/listen/{listen_id}/mitglieder", description="Gibt alle Mitglieder einer Liste aus | ResponseModel: MitgliedRead", response_model=List[MitgliedRead])
 def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     mitglieder = db.query(ListeMitglieder).filter(
         ListeMitglieder.listen_id == listen_id).all()
@@ -978,7 +977,7 @@ def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depe
     return mitglieder
 
 
-@app.post("/listen/{listen_id}/mitglieder/{nutzer_id}", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
+@app.post("/listen/{listen_id}/mitglieder/{nutzer_id}", description="Fügt ein Mitglied zu einer Liste hinzu | ResponseModel: MitgliedRead", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
 def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     vorhanden = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -997,7 +996,7 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
     return neues_mitglied
 
 
-@app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", description="Entfernt ein Mitglied aus einer Liste", status_code=status.HTTP_204_NO_CONTENT)
 def delete_mitglied(
     listen_id: int = Path(..., gt=0), 
     nutzer_id: int = Path(..., gt=0), # ID des Nutzers, der entfernt werden soll
@@ -1036,7 +1035,7 @@ def delete_mitglied(
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 # --- Produkte in Listen ---
-@app.get("/listen/{listen_id}/produkte", response_model=List[ProduktInListeRead])
+@app.get("/listen/{listen_id}/produkte", description="Gibt alle Produkte aus einer Liste aus | ResponseModel: ProduktInListeRead", response_model=List[ProduktInListeRead])
 def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     # Prüfen, ob die Liste existiert
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
@@ -1064,7 +1063,7 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
     return produkte
 
 
-@app.post("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
+@app.post("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", description="Fügt ein Produkt zu einer Liste hinzu | ResponseModel: ProduktInListeRead", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
 def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     existing_list = db.query(Liste).filter_by(id=listen_id).first()
@@ -1111,7 +1110,7 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Pat
     return neues_Produkt
 
 
-@app.put("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
+@app.put("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", description="Ändert ein Produkt in einer Liste | InputModel: ProduktInListeUpdate ResponseModel: ProduktInListeRead", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
 def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), produkt: ProduktInListeUpdate = Body(...), db: Session = Depends(get_db)):
 
     existing_list = db.query(Liste).filter_by(id=listen_id).first()
@@ -1152,7 +1151,7 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
         return vorhandenes_produkt
     
     
-@app.delete("/listen/{listen_id}/produkte/{produkt_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/listen/{listen_id}/produkte/{produkt_id}", description="Entfernt ein Produkt aus einer Liste", status_code=status.HTTP_204_NO_CONTENT)
 def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), deleteRequest: ProduktDeleteRequest = Body(...), db: Session = Depends(get_db)):
     eintrag = db.query(ListeProdukte).filter(
         ListeProdukte.listen_id == listen_id,
@@ -1170,7 +1169,7 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
 # Einkaufsarchiv ------------------------------------
 
 # gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat
-@app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+@app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", description="Gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat | ResponseMode: EinkaufsarchivRead", response_model=List[EinkaufsarchivRead])
 def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
 
     einkaeufe = (
@@ -1194,7 +1193,7 @@ def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Se
     return einkaeufe
 
 # gibt alle Einkäufe zurück, für die Listen, in denen der Nutzer drin ist
-@app.get("/einkaufsarchiv/nutzer_gesamt/{nutzer_id}", response_model=List[EinkaufsarchivRead])
+@app.get("/einkaufsarchiv/nutzer_gesamt/{nutzer_id}",  description="Gibt die Einkäufe für alle Listen zurück, in denen der Nutzer Mitglied ist | ResponseModel: EinkaufsarchivRead", response_model=List[EinkaufsarchivRead])
 def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
 
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -1225,7 +1224,7 @@ def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Se
 
     return einkaeufe
 
-@app.post("/create/einkaufsarchiv/list/{listen_id}", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
+@app.post("/create/einkaufsarchiv/list/{listen_id}",  description="Erstellt einen Einkauf für eine Liste | InputModel: EinkaufsarchivCreate ResponseModel: EinkaufsarchivCreate", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
 def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
 
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
@@ -1249,7 +1248,7 @@ def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: Einkaufsarc
     db.refresh(neuer_einkauf)
     return neuer_einkauf
 
-@app.delete("/delete/einkaufsarchiv/list/{listen_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/delete/einkaufsarchiv/list/{listen_id}",  description="Löscht einen Einkauf aus dem Archiv", status_code=status.HTTP_204_NO_CONTENT)
 def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     einkaeufe = db.query(Einkaufsarchiv).filter(
         Einkaufsarchiv.listen_id == listen_id
@@ -1266,7 +1265,7 @@ def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depend
 
 # eingekaufte Produkte ------------------------------------
 
-@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=List[eingekaufteProdukteRead])
+@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}", description="Gibt alle Produkte, die zu dem Einkauf gehören aus | ResponseModel: eingekaufteProdukteRead", response_model=List[eingekaufteProdukteRead])
 def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
@@ -1296,7 +1295,7 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
 
     return eingekaufte_produkte
 
-@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}/produkt/{produkt_id}/hinzugefuegt_von/{hinzugefuegt_von}", response_model=eingekaufteProdukteRead)
+@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}/produkt/{produkt_id}/hinzugefuegt_von/{hinzugefuegt_von}",  description="Gibt ein eingekauftes Produkt aus | ResponseModel: eingekaufteProdukteRead", response_model=eingekaufteProdukteRead)
 def get_eingekauftes_produkt(einkauf_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), hinzugefuegt_von: int = Path(..., gt=0), db: Session = Depends(get_db)):
     eingekauftes_produkt = db.query(EingekaufteProdukte).filter(
         EingekaufteProdukte.einkauf_id == einkauf_id,
@@ -1338,7 +1337,7 @@ def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_
 
 # empfaenger_id = nutzer_id 
 # diese Funktion gibt zurück "wer mir Geld schuldet"
-@app.get("/kostenaufteilung/empfaenger/{empfaenger_id}", response_model=List[KostenaufteilungRead])
+@app.get("/kostenaufteilung/empfaenger/{empfaenger_id}", description="Gibt die Kostenaufteilung für einen Nutzer aus (Wer schuldet mir Geld?)| ResponseModel: KostenaufteilungRead", response_model=List[KostenaufteilungRead])
 def get_kostenaufteilung_empfaenger(empfaenger_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     user = db.query(Nutzer).filter(Nutzer.id == empfaenger_id).first()
@@ -1366,7 +1365,7 @@ def get_kostenaufteilung_empfaenger(empfaenger_id: int = Path(..., gt=0), db: Se
 
 # schuldner_id = nutzer_id
 # diese Funktion gibt zurück "wem ich Geld schulde"
-@app.get("/kostenaufteilung/schuldner/{schuldner_id}", response_model=List[KostenaufteilungRead])
+@app.get("/kostenaufteilung/schuldner/{schuldner_id}", description="Gibt die Kostenaufteilung für einen Nutzer aus (Wem schulde ich Geld?) | ResponseModel: KostenaufteilungRead", response_model=List[KostenaufteilungRead])
 def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
     user = db.query(Nutzer).filter(Nutzer.id == schuldner_id).first()
@@ -1393,7 +1392,7 @@ def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Sess
     return kostenaufteilung
 
 # Schulden in DB speichern
-@app.post("/kostenaufteilung", response_model=KostenaufteilungRead, status_code=status.HTTP_201_CREATED)
+@app.post("/kostenaufteilung", response_model=KostenaufteilungRead, description="Erstellt einen Eintrag in der KOstenaufteilung (Schuldner und Empfänger | InputModel: KostenaufteilungCreate)", status_code=status.HTTP_201_CREATED)
 def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Session = Depends(get_db)):
 
     if eintrag.empfaenger_id == eintrag.schuldner_id:
@@ -1429,7 +1428,7 @@ def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Ses
     db.refresh(neuer_eintrag)
     return neuer_eintrag
 
-@app.delete("/kostenaufteilung/empfaenger/{empfaenger_id}/schuldner/{schuldner_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/kostenaufteilung/empfaenger/{empfaenger_id}/schuldner/{schuldner_id}", description="Löscht einen Eintrag aus der Kostenaufteilung", status_code=status.HTTP_204_NO_CONTENT)
 def delete_kostenaufteilung(empfaenger_id: int = Path(..., gt=0), schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     
     if empfaenger_id == schuldner_id:

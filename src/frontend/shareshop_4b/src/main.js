@@ -10,6 +10,8 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faEye, faEyeSlash, faArrowLeft, faPlus, faXmark, faCheck, faCircleInfo, faCartShopping, faBoxArchive, faGear, faList, faStar, faPen, faEuroSign  } from '@fortawesome/free-solid-svg-icons'
 library.add(faEye, faEyeSlash, faArrowLeft, faPlus, faXmark, faCheck, faCircleInfo, faCartShopping, faBoxArchive , faStar, faList, faGear, faPen, faEuroSign)
+import { faEye, faEyeSlash, faArrowLeft, faPlus, faXmark, faCheck, faCircleInfo, faCartShopping, faBoxArchive, faGear, faList, faStar, faPen, faFilter } from '@fortawesome/free-solid-svg-icons'
+library.add(faEye, faEyeSlash, faArrowLeft, faPlus, faXmark, faCheck, faCircleInfo, faCartShopping, faBoxArchive , faStar, faList, faGear, faPen, faFilter)
 
 const app = createApp(App);
 app.component('v-select', vSelect)

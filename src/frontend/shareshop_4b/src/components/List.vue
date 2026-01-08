@@ -21,44 +21,42 @@
   </template>
   </AppHeader>
 
-  <div class="settings-section">
-    <div class="settings-container">
-      <button
-        :disabled="
-          showpopup_product || showpopup_list || showpopup_add_member
-        "
-        @click="openListPopup()"
-        class="button button-settings"
-      >
-        <font-awesome-icon icon='circle-info'/> Info
-      </button>
-      <button
-        :disabled="
-          showpopup_product || showpopup_list || showpopup_add_member
-        "
-        @click="einkauf_abschließen"
-        class="button button-submit button-einkauf-tätigen"
-      >
-        <font-awesome-icon icon='cart-shopping'/> Einkauf
-      </button>
-      <button @click="list_archive">
-        <font-awesome-icon icon='box-archive'/> Archiv
-      </button>
-    </div>
-    <!--
-    <div class="buy-container" >
-      <button
-        :disabled="
-          showpopup_product || showpopup_list || showpopup_add_member
-        "
-        @click="einkauf_abschließen"
-        class="button button-submit button-einkauf-tätigen"
-      >
-        <font-awesome-icon icon='cart-shopping'/> Einkauf
-      </button>
-    </div>
-    -->
+  <div class="settings-container">
+    <button
+      :disabled="
+        showpopup_product || showpopup_list || showpopup_add_member
+      "
+      @click="openListPopup()"
+      class="button button-settings"
+    >
+      <font-awesome-icon icon='circle-info'/> Info
+    </button>
+    <button
+      :disabled="
+        showpopup_product || showpopup_list || showpopup_add_member
+      "
+      @click="einkauf_abschließen"
+      class="button button-submit button-einkauf-tätigen"
+    >
+      <font-awesome-icon icon='cart-shopping'/> Einkauf
+    </button>
+    <button @click="list_archive">
+      <font-awesome-icon icon='box-archive'/> Archiv
+    </button>
   </div>
+  <!--
+  <div class="buy-container" >
+    <button
+      :disabled="
+        showpopup_product || showpopup_list || showpopup_add_member
+      "
+      @click="einkauf_abschließen"
+      class="button button-submit button-einkauf-tätigen"
+    >
+      <font-awesome-icon icon='cart-shopping'/> Einkauf
+    </button>
+  </div>
+  -->
 
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage && !showpopup_product && !showpopup_list && !showpopup_add_member" class="error">{{ errorMessage }}</div>
@@ -168,6 +166,34 @@
   <BottomBar 
     :highlight-btn="1"
   />
+  <div
+  v-if="showpopup_delete_list_confirm"
+  class="popup-overlay"
+  @click.self="showpopup_delete_list_confirm = false"
+>
+  <div class="popup-content">
+    <h3>Liste verlassen und löschen</h3>
+    <p>
+      Diese Liste wird gelöscht, da sie der Ersteller sind.
+    </p>
+    <p>Möchten Sie die Liste wirklich löschen?</p>
+
+    <div class="button-container">
+      <button
+        @click="showpopup_delete_list_confirm = false"
+        class="button button-cancel"
+      >
+        Abbrechen
+      </button>
+      <button
+        @click="liste_endgültig_löschen()"
+        class="button button-delete"
+      >
+        Bestätigen und löschen
+      </button>
+    </div>
+  </div>
+</div>
     
 </template>
 
@@ -177,10 +203,17 @@ import { inject } from "vue";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
 import BottomBar from "./BottomBar.vue";
+
+/**
+ * Zeigt Produkte einer Liste an und bietet Möglichkeiten zum Hinzufügen/Bearbeiten eines Produkts, Bearbeiten der Mitglieder, 
+ * Löschen der Liste, Starten eines Einkaufs und Anzeigen des Einkaufsarchives der Liste.
+ *
+ * @vue-prop {number} id ID der Liste
+ */
 export default {
   name: "Liste",
   inject: ["user", "getUser"],
-  props: ["list_id"],
+  props: ["id"],
   components: {
     AppHeader, 
     ProductCard, 
@@ -210,10 +243,15 @@ export default {
       dropdownSelected: "",
       dropdownOptions: [],
       searchTimeout: 0,
-      prevSearchText: ""
+      prevSearchText: "",
+      showpopup_delete_list_confirm: false,
     };
   },
   methods: {
+    /**
+     * Lädt Liste von API und setzt Listenname und Listenersteller.
+     * @param id {number} Listen-ID
+     */
     async get_list(id) {
       this.errorMessage = "";
       try {
@@ -237,7 +275,10 @@ export default {
         }
       }
     },
-
+    /**
+     * Lädt Listenmitglieder von API.
+     * @param id {number} Listen-ID
+     */
     async get_list_members(id) {
       this.errorMessage = "";
       try {
@@ -282,7 +323,10 @@ export default {
         }
       }
     },
-
+    /**
+     * Lädt Produkte der Liste von API, formatiert Menge und zählt Anzahl an Produkten.
+     * @param id {number} ListenID
+     */
     async get_products(id) {
       this.errorMessage = "";
       try {
@@ -322,13 +366,17 @@ export default {
       }
       this.loadingActive = false;
     },
-
+    /**
+     * Öffnet das Listeninfo-Popup.
+     */
     openListPopup() {
       this.errorMessage = "";
       this.showpopup_list = true;
       this.showpopup_product = false;
     },
-
+    /**
+     * Öffnet das Produkt-Hinzufügen-Popup und initalisiert Elemente.
+     */
     async openProductPopup() {
       this.errorMessage = "";
       this.showpopup_product = true;
@@ -342,7 +390,13 @@ export default {
 
       this.loadDropdownList(0, "");
     },
-
+    /**
+     * Befüllt die Liste des Dropdowns bei Produkt hinzufügen je nach Typ. 
+     * Bei Typ 0 werden Bedarfsvorhersage und Favoriten von API geladen und damit das Dropdown gefüllt. 
+     * Bei Typ 1 wird mittels Suchtext über API eine Suche gemacht und das Dropdown mit Suchvorschlägen gefüllt. 
+     * @param type {number} Typ (0: Bedarfsvorhersage/Favoriten, 1: Suchvorschläge)
+     * @param searchText {string} Suchtext (leer lassen bei Typ 0)
+     */
     async loadDropdownList(type, searchText){
       this.dropdownOptions = [];
       if (type == 0) { // Bedarfsvorhersage/Favoriten
@@ -415,8 +469,13 @@ export default {
         }
       }
     },
-
-    async onSearch(searchText){ // aufgerufen, wenn was ins Dropdown eingegeben wird
+    /**
+     * Wird aufgerufen, wenn im Textfeld des Dropdowns etwas eingegeben wird. 
+     * Wenn kein Zeichen eingeben ist, wird Dropdown mit Bedarfsvorsage/Favoriten gefüllt, bei 1 oder mehr Zeichen mit Suchvorschlägen.
+     * Timeout von 1 Sek. verhindert spammen der API beim Suchen.
+     * @param searchText {string} Suchtext
+     */
+    async onSearch(searchText){
       clearTimeout(this.searchTimeout);
 
       if (searchText.length == 0){ // Bedarfsvorhersage/Favoriten
@@ -433,7 +492,11 @@ export default {
         this.prevSearchText = searchText
       }
     },
-
+    /**
+     * Fügt ein neues Produkt der Liste hinzu. 
+     * Es wird die Eingabe überprüft, über API geschaut ob das Produkt exisiert und schlussendlich hochgeladen.
+     * Falls es sich bei dem Produkt um ein Favorit handelt, werden Menge und Beschreibung des Favorits dem neuen Produkt zusätzlich hinzugefügt.
+     */
     async add_product() {
       const list_id = this.list_id || this.$route.params.id;
       const user_id = this.user.id;
@@ -493,7 +556,6 @@ export default {
         await axios.post(
           `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt_Id}/nutzer/${user_id}`,
         );
-        this.showpopup_product = false;
         this.errorMessage = "";
       } catch (error) {
         if (error.response) {
@@ -545,14 +607,18 @@ export default {
         }
       }
 
+      this.dropdownSelected = "";
       this.new_product = "";
       this.get_products(list_id);
     },
-
+    /**
+     * Schließt das Produkt-hinzufügen-Popup.
+     */
     cancel_product_popup() {
       this.errorMessage = "";
       this.showpopup_product = false;
       this.new_product = "";
+      this.dropdownSelected = "";
     },
 
     mitglied_hinzufügen_popup() {
@@ -563,12 +629,13 @@ export default {
 
     async mitglied_entfernen(mitglied_id) {
       const list_id = this.list_id || this.$route.params.id;
-      
-      // Füge die ID des aktuellen Nutzers (Requester) hinzu
       const requester_id = this.user.id; 
-
+      
+      if (requester_id === this.list_creator_id && mitglied_id === requester_id) {
+        this.handle_ersteller_verlassen();
+        return; 
+      }
       try {
-        // ÄNDERUNG: 'requesterId' als Query-Parameter im DELETE-Request übergeben
         await axios.delete(
           `http://141.56.137.83:8000/listen/${list_id}/mitglieder/${mitglied_id}`,
           {
@@ -577,9 +644,18 @@ export default {
             },
           }
         );
+        // nur wenn ersteller andere person entfernt, nicht wenn nicht ertsleller sich selbst entfernt
+        if (mitglied_id != requester_id){
+
         this.infoMessage = "Mitglied erfolgreich entfernt.";
+        }
         this.get_list_members(list_id); // Aktualisiere die Mitgliederliste
         this.errorMessage = "";
+         setTimeout(() => {
+        this.infoMessage = ""; 
+        }, 2000);
+        
+       
       } catch (error) {
         if (
           error.response &&
@@ -587,13 +663,11 @@ export default {
           error.response.data.detail
         ) {
           this.errorMessage = error.response.data.detail;
-          // Wenn es ein Fehler ist, der nicht 403 (Forbidden) ist und die eigene ID betrifft, 
-          // lade die Mitgliederliste neu (z.B. nach erfolgreicher Selbstentfernung, 
-          // falls das Popup noch offen ist)
-          if (mitglied_id == requester_id && error.response.status != 403) {
+        } 
+        if (mitglied_id == requester_id && error.response.status != 403) {
             this.get_list_members(list_id); 
           }
-        } else {
+        else {
           this.errorMessage = "Fehler beim Entfernen des Mitglieds";
         }
       }
@@ -702,9 +776,8 @@ export default {
       const list_id = this.list_id || this.$route.params.id;
       const list_name = this.list_name;
       this.$router.push({ 
-        name: "ListArchive", 
-        params: { list_id},
-        query: { list_name } 
+        name: "UserArchive", 
+        query: { listFilter: list_id }
       });
     },
 
@@ -741,6 +814,36 @@ export default {
         }
       }
     },
+    handle_ersteller_verlassen() {
+      this.showpopup_delete_list_confirm = true;
+    }, 
+    async liste_endgültig_löschen() {
+  const list_id = this.list_id || this.$route.params.id;
+  const requester_id = this.user.id;
+  
+  // Schließe das Popup sofort
+  this.showpopup_delete_list_confirm = false;
+
+  try {
+    
+    await axios.delete(
+        `http://141.56.137.83:8000/listen/${list_id}`,
+        {
+          params: {
+            requesterId: requester_id,
+          },
+        }
+    );
+    this.infoMessage = "Liste wurde erfolgreich gelöscht.";
+    this.errorMessage = "";
+    // zur Listenübersicht nach erfolgreicher Löschung
+    this.$router.push('/listen');
+
+  } catch (error) {
+    this.errorMessage = "Fehler beim Löschen der Liste: " + (error.response?.data?.detail || error.message);
+  }
+},
+
   },
   mounted() {
     this.errorMessage = "";
@@ -759,25 +862,6 @@ export default {
 .button-einkauf-tätigen {
   position: relative;
   margin-top: 0px;
-}
-
-/* Settings-Container fixiert unter der Überschrift mittig */
-.settings-container {
-  background-color: var(--accent-header-bg-color);
-  box-shadow: 0 2px 5px var(--box-shadow-color);
-  position: fixed;
-  top: 70px; /* vorher 60px */
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  padding: 5px 0;
-  gap: 5px; /* Abstand zwischen Buttons */
-  justify-content: center;
-  align-items: center;
-}
-
-.settings-container button {
-  padding: 0.5em 1.0em;
 }
 
 /*

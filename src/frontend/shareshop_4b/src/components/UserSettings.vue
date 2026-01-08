@@ -130,6 +130,9 @@ import AppHeader from "./AppHeader.vue";
 import axios from 'axios'
 import BottomBar from "./BottomBar.vue";
 
+/**
+ * Lässt den Nutzer Einstellungen zur Ansicht, Produktvorschlägen und zum Profil vornehmen.
+ */
 export default {
   name: 'UserSettings',
   inject: ['user', 'deleteUser', 'getThemeText', 'getAccentText'],
@@ -154,7 +157,6 @@ export default {
       loadingActive: true
     };
   },
-
   async mounted() {
     this.loadAppearanceData();
     // Beim Laden: Werte aus globalem User setzen
@@ -164,6 +166,9 @@ export default {
   },
 
   methods: {
+    /**
+     * Lädt Ansichtsdaten aus localStorage.
+     */
     async loadAppearanceData() {
       // Theme laden
       this.theme = this.getThemeText(this.user.theme)
@@ -174,7 +179,9 @@ export default {
       document.documentElement.setAttribute('css-accent', this.accent) // Farbe setzen
 
     },
-
+    /**
+     * Lädt Nutzerdaten von der API, behandelt Antwort und setzt lokale Variablen.
+     */
     async loadUserData() {
       try {
         const response = await axios.get(`http://141.56.137.83:8000/nutzer/by-id?id=${this.user.id}`)
@@ -196,7 +203,9 @@ export default {
       }
       this.loadingActive = false;
     },
-
+    /**
+     * Sendet Ansichtseinstellungen an API, setzt Einstellungen in localStorage und für die Seite
+     */
     async applyAppearance(){
        try {
           await axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/theme_color`, {
@@ -223,8 +232,11 @@ export default {
       document.documentElement.setAttribute("css-theme", this.theme); // Thema setzen
       document.documentElement.setAttribute("css-accent", this.accent); // Farbe setzen
     },
-
-    // Integerwert als Farbe interpretieren
+    /**
+     * Konvertiert String in Integerwert für Akzentfarbe.
+     * @param {string} userAccent Farbe (Blau, Lila, Grün, Rot, Orange)
+     * @return {number} Farbnummer (0-4), Standard: 0
+     */ 
     getAccentNumber(userAccent) {
       switch (userAccent){
         case "Blau": return 0;
@@ -235,7 +247,11 @@ export default {
         default: return 0 // Default setzen
       }
     },
-
+     /**
+     * Konvertiert String in Integerwert für Thema.
+     * @param {string} userTheme Thema (Automatisch, Dunkel, Hell)
+     * @return {number} Themenummer (0-2), Standard: 0
+     */ 
     getThemeNumber(userTheme) {
       switch (userTheme){
         case "Automatisch": return 0;
@@ -244,7 +260,9 @@ export default {
         default: return 0 // Default setzen
       }
     },
-
+    /**
+     * Sendet DecayDays an API und behandelt Antwort.
+     */
     async applyDecayDays(){
        try {
           await axios.put(`http://141.56.137.83:8000/nutzer_change/${this.user.id}/decaydays`, {
@@ -262,7 +280,9 @@ export default {
         }
       }
     },
-
+    /**
+     * Überprüft eingebenen Namen, E-Mail und Passwort und sendet diese bei Änderung an API.
+     */
     async updateUser() {
       this.message = ''
       this.errorMessage = ''
@@ -314,7 +334,9 @@ export default {
       }
       this.loadUserData();
     },
-
+    /**
+     * Löscht aktuellen Nutzer und navigiert zurück zur Startseite.
+     */
     logout() {
       this.deleteUser()
       this.$router.push('/')
