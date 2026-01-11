@@ -620,13 +620,18 @@ export default {
       this.new_product = "";
       this.dropdownSelected = "";
     },
-
+    /**
+     * Öffnet das Mitglied-hinzufügen-Popup.
+     */
     mitglied_hinzufügen_popup() {
       this.errorMessage = "";
       this.showpopup_list = false;
       this.showpopup_add_member = true;
     },
-
+    /**
+     * Entfernt ein Mitglied aus der Liste.
+     * @param mitglied_id {number} ID des zu entfernenden Mitglieds
+     */
     async mitglied_entfernen(mitglied_id) {
       const list_id = this.list_id || this.$route.params.id;
       const requester_id = this.user.id; 
@@ -672,7 +677,9 @@ export default {
         }
       }
     },
-
+    /**
+     * Fügt ein neues Mitglied zur Liste hinzu.
+     */
     async mitglied_hinzufügen() {
       this.errorMessage = "";
       const list_id = this.list_id || this.$route.params.id;
@@ -735,13 +742,18 @@ export default {
         this.showpopup_list = true;
       }
     },
-
+    /**
+     * Schließt das Mitglied-hinzufügen-Popup.
+     */
     cancel_mitglied_hinzufügen() {
       this.errorMessage = "";
       this.showpopup_add_member = false;
       this.new_member_email = "";
     },
-
+    /**
+     * Öffnet die Produkt-Detailansicht für das ausgewählte Produkt.
+     * @param product {object} das ausgewählte Produkt
+     */
     product_settings(product) {
       const listenId = this.list_id || this.$route.params.id;
       const listenName = this.list_name;
@@ -761,7 +773,9 @@ export default {
       });
     },
 
-
+    /**
+     * Leitet zum Einkaufsbildschirm der Liste weiter.
+     */
     einkauf_abschließen() {
       if (this.productNum == 0){
         alert("Liste ist leer! Füge Produkte hinzu, um einzukaufen!");
@@ -771,7 +785,9 @@ export default {
 
       this.$router.push(`/list/${list_id}/einkauf`);
     },
-
+    /**
+     * Leitet zum Archiv der Liste weiter.
+     */
     list_archive() {
       const list_id = this.list_id || this.$route.params.id;
       const list_name = this.list_name;
@@ -780,7 +796,9 @@ export default {
         query: { listFilter: list_id }
       });
     },
-
+    /**
+     * Löscht die Liste nach Bestätigung.
+     */
     async delete_list() {
       if (!confirm("Möchtest du diese Liste wirklich löschen? Alle Daten gehen verloren!")) {
         return;
@@ -814,35 +832,41 @@ export default {
         }
       }
     },
+    /**
+     * Behandelt das Verlassen der Liste durch den Ersteller.
+     */
     handle_ersteller_verlassen() {
       this.showpopup_delete_list_confirm = true;
     }, 
+    /**
+     * Löscht die Liste endgültig, wenn der Ersteller die Liste verlässt.
+     */
     async liste_endgültig_löschen() {
-  const list_id = this.list_id || this.$route.params.id;
-  const requester_id = this.user.id;
-  
-  // Schließe das Popup sofort
-  this.showpopup_delete_list_confirm = false;
+      const list_id = this.list_id || this.$route.params.id;
+      const requester_id = this.user.id;
+      
+      // Schließe das Popup sofort
+      this.showpopup_delete_list_confirm = false;
 
-  try {
-    
-    await axios.delete(
-        `http://141.56.137.83:8000/listen/${list_id}`,
-        {
-          params: {
-            requesterId: requester_id,
-          },
-        }
-    );
-    this.infoMessage = "Liste wurde erfolgreich gelöscht.";
-    this.errorMessage = "";
-    // zur Listenübersicht nach erfolgreicher Löschung
-    this.$router.push('/listen');
+      try {
+        
+        await axios.delete(
+            `http://141.56.137.83:8000/listen/${list_id}`,
+            {
+              params: {
+                requesterId: requester_id,
+              },
+            }
+        );
+        this.infoMessage = "Liste wurde erfolgreich gelöscht.";
+        this.errorMessage = "";
+        // zur Listenübersicht nach erfolgreicher Löschung
+        this.$router.push('/listen');
 
-  } catch (error) {
-    this.errorMessage = "Fehler beim Löschen der Liste: " + (error.response?.data?.detail || error.message);
-  }
-},
+      } catch (error) {
+        this.errorMessage = "Fehler beim Löschen der Liste: " + (error.response?.data?.detail || error.message);
+      }
+    },
 
   },
   mounted() {
