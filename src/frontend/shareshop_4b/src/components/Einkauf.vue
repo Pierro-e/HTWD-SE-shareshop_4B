@@ -176,6 +176,8 @@ export default {
       }
       this.commit_purchase = false;
       this.einkauf_abschließen();
+      
+      
     },
 
     async einkauf_abschließen() {
@@ -191,6 +193,7 @@ export default {
             gesamtpreis: price,
           }
         );
+          
 
         const purchase_id = response.data.einkauf_id;
 
@@ -206,6 +209,8 @@ export default {
             }
           )
         ));
+
+        await this.kosten_aufteilen(price, purchase_id);
 
         await Promise.all(erledigteProdukte.map(produkt =>
           axios.post(
@@ -241,6 +246,88 @@ export default {
         }
       }
       this.totalPrice = 0;
+    },
+
+    async kosten_aufteilen(price, einkauf_id){
+    /*Kostenaufteilung für allemitglider, die etwas zur liste hinzugefügt haben und 
+      dieses Produkt eingekauft wurde*/
+      try {
+        // Eingekaufte Produkte laden
+        const response = await axios.get(
+          `http://141.56.137.83:8000/eingekaufte_produkte/einkauf/${einkauf_id}`
+        );
+
+        const produkte = response.data;
+
+        // Eindeutige Nutzer extrahieren, Set speichert jeden Wert nur einmal
+        const beteiligteNutzerIds = [
+          ...new Set(produkte.map(p => p.hinzugefuegt_von))
+        ];
+        console.log("Produkte:", produkte);
+        console.log("Beteiligte IDs:", beteiligteNutzerIds);
+        console.log("Käufer:", this.userData.id);
+        // Falls nur der Käufer selbst etwas zur liste hinzugefügt hat → keine Aufteilung
+        if (beteiligteNutzerIds.length === 1 &&
+            beteiligteNutzerIds[0]===this.userData.id
+            ) return;
+
+        const price_per_member = price / beteiligteNutzerIds.length;
+
+        await Promise.all(
+          beteiligteNutzerIds
+            .filter(nutzerId => nutzerId !== this.userData.id)
+            .map(nutzerId =>
+              axios.post("http://141.56.137.83:8000/kostenaufteilung", {
+                empfaenger_id: this.userData.id,
+                schuldner_id: nutzerId,
+                betrag: price_per_member
+              })
+            )
+        );
+          
+      } catch (error) {
+        console.error("Fehler bei kosten_aufteilen:", error);
+        throw error;
+      }
+
+
+      /*
+
+      ansatz für Kostenaufteilung für jedes Mitglied der Liste außer Einkäufer
+      
+      try {
+        const response = await axios.get (`http://141.56.137.83:8000/listen/${list_id}/mitglieder`);
+        
+        const members = response.data;
+
+        if (members.length <= 1) {
+          return;
+        }
+
+        const price_per_member = price / members.length;
+        
+
+        await Promise.all(
+          members
+            .filter(m => m.nutzer_id !== this.userData.id)
+            .map(m =>
+              axios.post("http://141.56.137.83:8000/kostenaufteilung", {
+                empfaenger_id: this.userData.id,
+                schuldner_id: m.nutzer_id,
+                betrag: price_per_member
+                }
+              )
+            )
+        );
+
+      } catch (error) {
+        console.error("Fehler bei kosten_aufteilen:", error);
+
+        throw error;
+      }*/
+
+
+      
     },
     product_settings(produkt) {
       // nichts machen
