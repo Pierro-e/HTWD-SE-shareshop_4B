@@ -2,10 +2,10 @@
   <AppHeader :title="user?.name + '\'s Finanzen'">
     <template #left>
         <button
-            @click="$router.push('/listen')"
-            class="button button-cancel back-button"
+          @click="$router.push('/listen')"
+          class="button button-cancel back-button"
         >
-            <font-awesome-icon icon='arrow-left'/>
+          <font-awesome-icon icon='arrow-left'/>
         </button>
     </template>
 
@@ -18,38 +18,37 @@
   <main v-if="!loadingActive && !errorMessage">
     <div class="card-list">
 
-        <h3>Ich bekomme Geld von</h3>
+      <h3>Ich bekomme Geld von</h3>
 
-        <ProductCard
+      <ProductCard
         v-for="f in forderungen"
         :key="f.schuldner_id"
         :product="mapForderung(f)"
         :hideSettings="true"
+      >
+      <!-- Extra Slot: Löschen-Button -->
+      <template #extra>
+        <button
+        class="button button-danger"
+        @click="markAsReceived(f)"
         >
-        <!-- Extra Slot: Löschen-Button -->
-        <template #extra>
-            <button
-            class="button button-danger"
-            @click="markAsReceived(f)"
-            >
-            Geld erhalten
-            </button>
-        </template>
-        </ProductCard>
+        Geld erhalten
+        </button>
+      </template>
+      </ProductCard>
 
-        <p v-if="!forderungen.length">Niemand schuldet dir Geld.</p>
+      <p v-if="!forderungen.length">Niemand schuldet dir Geld.</p>
 
-        <h3>Ich schulde Geld an</h3>
+      <h3>Ich schulde Geld an</h3>
 
-        <ProductCard
+      <ProductCard
         v-for="s in schulden"
         :key="s.empfaenger_id"
         :product="mapSchuld(s)"
         :hideSettings="true"
-        />
+      />
 
-        <p v-if="!schulden.length">Du schuldest niemandem Geld.</p>
-
+      <p v-if="!schulden.length">Du schuldest niemandem Geld.</p>
     </div>
   </main>
 
@@ -74,7 +73,6 @@ export default {
     schulden: Array
   },
   data() {
-   
     return {
       user: null,
       forderungen: [],
@@ -103,89 +101,77 @@ export default {
     }
   },
   async mounted() {
-
     const userRef = inject("user")
 
     if (!userRef || !userRef.value) {
-        this.errorMessage = "Nutzer nicht verfügbar"
-        this.loadingActive = false
-        return
+      this.errorMessage = "Nutzer nicht verfügbar"
+      this.loadingActive = false
+      return
     }
    
     this.$watch(
-        () => userRef.value.id,
-        (newId) => {
-            console.log("WATCH user.id:", newId)
-        if (newId) {
-            this.user = userRef.value
-            this.loadFinanzen(newId)
-        }
-        },
-        { immediate: true }
+      () => userRef.value.id,
+      (newId) => {
+        console.log("WATCH user.id:", newId)
+      if (newId) {
+        this.user = userRef.value
+        this.loadFinanzen(newId)
+      }
+      },
+      { immediate: true }
     )
     },
+  methods: {
+    mapForderung(f) {
+      return {
+       produkt_name: f.schuldner_name,
+       produkt_menge: Number(f.betrag).toFixed(2),
+       einheit_abk: "€",
+       beschreibung: ""
+      }
+    },
+    mapSchuld(s) {
+      return {
+       produkt_name: s.empfaenger_name,
+       produkt_menge: Number(s.betrag).toFixed(2),
+       einheit_abk: "€",
+       beschreibung: ""
+       }
+    },
+    async markAsReceived(f) {
+    if (!confirm(`Geld von ${f.schuldner_name} wirklich erhalten?`)) return
 
-    methods: {
+    try {
+      await axios.delete(
+      `http://141.56.137.83:8000/kostenaufteilung/empfaenger/${this.user.id}/schuldner/${f.schuldner_id}`
+      )
 
-        mapForderung(f) {
-            return {
-                produkt_name: f.schuldner_name,
-                produkt_menge: Number(f.betrag).toFixed(2),
-                einheit_abk: "€",
-                beschreibung: ""
-            }
-        },
+      // lokal entfernen (UI sofort aktualisieren)
+      const index = this.forderungen.findIndex(x => x.schuldner_id === f.schuldner_id)
+      if (index !== -1) {
+        this.forderungen.splice(index, 1)
+      }
 
-        mapSchuld(s) {
-            return {
-                produkt_name: s.empfaenger_name,
-                produkt_menge: Number(s.betrag).toFixed(2),
-                einheit_abk: "€",
-                beschreibung: ""
-            }
-        },
-
-        async markAsReceived(f) {
-        if (!confirm(`Geld von ${f.schuldner_name} wirklich erhalten?`)) return
-
-        try {
-            await axios.delete(
-            `http://141.56.137.83:8000/kostenaufteilung/empfaenger/${this.user.id}/schuldner/${f.schuldner_id}`
-            )
-
-            // lokal entfernen (UI sofort aktualisieren)
-            const index = this.forderungen.findIndex(
-            x => x.schuldner_id === f.schuldner_id
-            )
-            if (index !== -1) {
-            this.forderungen.splice(index, 1)
-            }
-
-        } catch (error) {
-            alert(
-            error.response?.data?.detail ||
-            "Fehler beim Löschen der Kostenaufteilung"
-            )
-        }
-        },
-
-        async loadFinanzen(user_id) {
-            try {
-            const [empfaengerRes, schuldnerRes] = await Promise.all([
-                axios.get(`http://141.56.137.83:8000/kostenaufteilung/empfaenger/${user_id}`),
-                axios.get(`http://141.56.137.83:8000/kostenaufteilung/schuldner/${user_id}`)
-            ])
-
-            this.forderungen = empfaengerRes.data
-            this.schulden = schuldnerRes.data
-            } catch (error) {
-            this.errorMessage =
-                error.response?.data?.detail || "Fehler beim Laden der Finanzen"
-            } finally {
-            this.loadingActive = false
-            }
-        }
+    } catch (error) {
+       alert(error.response?.data?.detail || "Fehler beim Löschen der Kostenaufteilung")
     }
+    },
+    async loadFinanzen(user_id) {
+      try {
+        const [empfaengerRes, schuldnerRes] = await Promise.all([
+          axios.get(`http://141.56.137.83:8000/kostenaufteilung/empfaenger/${user_id}`),
+          axios.get(`http://141.56.137.83:8000/kostenaufteilung/schuldner/${user_id}`)
+        ])
+
+        this.forderungen = empfaengerRes.data
+        this.schulden = schuldnerRes.data
+      } catch (error) {
+        this.errorMessage = error.response?.data?.detail || "Fehler beim Laden der Finanzen"
+      } finally {
+        this.loadingActive = false
+      }
+    }
+  }
 };
 </script>
 
