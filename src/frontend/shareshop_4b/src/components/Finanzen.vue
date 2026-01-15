@@ -62,15 +62,17 @@ import BottomBar from "./BottomBar.vue"
 import axios from "axios"
 import { inject } from "vue"
 
+/**
+ * Zeigt an, wieviel Geld der Nutzer von anderen Nutzern bekommt oder ihnen noch schuldet.
+ * <br>Empfänger: Personen, von denen der Nutzer Geld bekommt
+ * <br>Schuldner: Personen, denen der Nutzer Geld schuldet
+ */
+
 export default {
   components: {
     AppHeader,
     ProductCard,
     BottomBar
-  },
-  props: {
-    forderungen: Array,
-    schulden: Array
   },
   data() {
     return {
@@ -120,8 +122,12 @@ export default {
       },
       { immediate: true }
     )
-    },
+  },
   methods: {
+    /**
+     * Mappt forderungen-Objekt, sodass es korrekt in ProductCard angezeigt wird.
+     * @param {object} f Forderung
+     */
     mapForderung(f) {
       return {
        produkt_name: f.schuldner_name,
@@ -130,6 +136,10 @@ export default {
        beschreibung: ""
       }
     },
+    /**
+     * Mappt schulden-Objekt, sodass es korrekt in ProductCard angezeigt wird.
+     * @param {object} s Schulden
+     */
     mapSchuld(s) {
       return {
        produkt_name: s.empfaenger_name,
@@ -138,24 +148,34 @@ export default {
        beschreibung: ""
        }
     },
+    /**
+     * Markiert eine Forderung als erhalten.
+     * Nach Bestätigung wird die Forderung über API gelöscht und Seite aktualisiert.
+     * @param {object} f Erhaltene Forderung
+     */
     async markAsReceived(f) {
-    if (!confirm(`Geld von ${f.schuldner_name} wirklich erhalten?`)) return
+      if (!confirm(`Geld von ${f.schuldner_name} wirklich erhalten?`)) return
 
-    try {
-      await axios.delete(
-      `http://141.56.137.83:8000/kostenaufteilung/empfaenger/${this.user.id}/schuldner/${f.schuldner_id}`
-      )
+      try {
+        await axios.delete(
+        `http://141.56.137.83:8000/kostenaufteilung/empfaenger/${this.user.id}/schuldner/${f.schuldner_id}`
+        )
 
-      // lokal entfernen (UI sofort aktualisieren)
-      const index = this.forderungen.findIndex(x => x.schuldner_id === f.schuldner_id)
-      if (index !== -1) {
-        this.forderungen.splice(index, 1)
+        // lokal entfernen (UI sofort aktualisieren)
+        const index = this.forderungen.findIndex(x => x.schuldner_id === f.schuldner_id)
+        if (index !== -1) {
+          this.forderungen.splice(index, 1)
+        }
+
+      } catch (error) {
+        alert(error.response?.data?.detail || "Fehler beim Löschen der Kostenaufteilung")
       }
-
-    } catch (error) {
-       alert(error.response?.data?.detail || "Fehler beim Löschen der Kostenaufteilung")
-    }
     },
+    /**
+     * Holt Finanzen (Empfänger und Schuldner des Nutzers) von API. 
+     * Empfänger wird in forderungen-Objekt und Schuldner in schulden-Objekt gespeichert.
+     * @param user_id {number} ID des Nutzers
+     */
     async loadFinanzen(user_id) {
       try {
         const [empfaengerRes, schuldnerRes] = await Promise.all([
