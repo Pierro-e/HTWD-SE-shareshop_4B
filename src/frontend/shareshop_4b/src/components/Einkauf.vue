@@ -68,6 +68,13 @@ import ProductCard from "./ProductCard.vue";
 import BottomBar from "./BottomBar.vue";
 import PopUp from "./PopUp.vue";
 
+/**
+ * Komponente zur Anzeige der Einkaufansicht einer Liste
+ * @param {string} list_id - ID der Liste, die eingekauft werden soll (prop)
+ * @param {object} user - aktueller Nutzer
+ * @param {function} getUser - Funktion zum Abrufen der aktuellen Nutzerdaten
+ */
+
 export default {
   name: "Einkauf",
   inject: ["user", "getUser"],
@@ -90,6 +97,10 @@ export default {
     };
   },
   methods: {
+    /**
+     * Lädt die Liste mit der gegebenen ID
+     * @param id {number} - ID der Liste
+     */
     async get_list(id) {
       this.errorMessage = "";
       try {
@@ -106,7 +117,10 @@ export default {
       }
       this.loadingActive = false;
     },
-
+    /**
+     * Lädt die Produkte der Liste mit der gegebenen ID
+     * @param id {number} - ID der Liste
+     */
    async get_products(id) {
       this.errorMessage = "";
       try {
@@ -145,12 +159,16 @@ export default {
       }
       this.loadingActive = false;
     },
-
+    /**
+     * Nutzer möchte Einkauf abbrechen
+     */
     einkauf_abbrechen() {
       const list_id = this.list_id || this.$route.params.listenId;
       this.$router.push(`/list/${list_id}`);
     },
-
+    /**
+     * Nutzer möchte Einkauf abschließen --> Produkte filtern und PopUp öffnen
+     */
     prepare_purchase() {
       if (!this.listenprodukte || this.listenprodukte.length === 0) {
         this.errorMessage = "Keine Produkte vorhanden!";
@@ -168,7 +186,9 @@ export default {
       this.errorMessage = "";
       this.commit_purchase = true;
     },
-
+    /**
+     * Nutzer hat Gesamtpreis eingegeben und möchte Einkauf abschließen
+     */
     set_price() {
       if (this.totalPrice === null || isNaN(this.totalPrice) || this.totalPrice < 0) {
         this.errorMessage = "Bitte geben Sie einen gültigen Gesamtpreis ein.";
@@ -179,7 +199,9 @@ export default {
       
       
     },
-
+    /**
+     * Nutzer möchte Einkauf endgültig abschließen (letzte Funktion --> danach ist der Einkauf vollzogen und gespeichert)
+     */
     async einkauf_abschließen() {
       this.errorMessage = "";
       const list_id = this.list_id || this.$route.params.listenId;
@@ -247,7 +269,11 @@ export default {
       }
       this.totalPrice = 0;
     },
-
+    /**
+     * Ermittelt die Kostenaufteilung für den Einkauf und speichert diese
+     * @param price {number} - Gesamtpreis des Einkaufs
+     * @param einkauf_id {number} - ID des getätigten Einkaufs
+     */
     async kosten_aufteilen(price, einkauf_id){
     /*Kostenaufteilung für allemitglider, die etwas zur liste hinzugefügt haben und 
       dieses Produkt eingekauft wurde*/

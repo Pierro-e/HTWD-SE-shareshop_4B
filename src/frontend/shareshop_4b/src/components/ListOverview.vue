@@ -35,6 +35,10 @@ import { inject, ref } from "vue";
 import axios from "axios";
 import BottomBar from "./BottomBar.vue";
 
+/**
+ * Komponente zur Anzeige der Listenübersicht des Nutzers
+ */
+
 export default {
   data() {
     // momentanen Nutzer holen
