@@ -32,6 +32,10 @@ import axios from "axios";
 import AppHeader from "./AppHeader.vue";
 import BottomBar from "./BottomBar.vue";
 
+/**
+ * Ermöglicht das Erstellen einer neue Liste.
+ */
+
 export default {
   inject: ["user"],
   components: {
@@ -45,6 +49,9 @@ export default {
     };
   },
   methods: {
+    /**
+     * Schickt Listenname an API, welche die neue Liste erstellt. Danach wird zur neuen Liste navigiert.
+     */
     async onSubmit() {
       this.errorMessage = "";
       
