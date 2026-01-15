@@ -35,7 +35,7 @@
       :disabled="
         showpopup_product || showpopup_list || showpopup_add_member
       "
-      @click="einkauf_abschließen"
+      @click="einkauf_abschliessen"
       class="button button-submit button-einkauf-tätigen"
     >
       <font-awesome-icon icon='cart-shopping'/> Einkauf
@@ -50,7 +50,7 @@
       :disabled="
         showpopup_product || showpopup_list || showpopup_add_member
       "
-      @click="einkauf_abschließen"
+      @click="einkauf_abschliessen"
       class="button button-submit button-einkauf-tätigen"
     >
       <font-awesome-icon icon='cart-shopping'/> Einkauf
@@ -96,7 +96,7 @@
       <button @click="showpopup_list = false" class="button button-cancel">
         Schließen
       </button>
-      <button @click="mitglied_hinzufügen_popup()" class="button button-add">
+      <button @click="mitglied_hinzufuegen_popup()" class="button button-add">
         Mitglied hinzufügen
       </button>
       <button v-if="user.name == list_creator_name" @click="delete_list()" class="button-delete">
@@ -144,12 +144,12 @@
       />
       <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
       <button
-        @click="cancel_mitglied_hinzufügen"
+        @click="cancel_mitglied_hinzufuegen"
         class="button button-cancel"
       >
         Abbrechen
       </button>
-      <button @click="mitglied_hinzufügen" class="button button-submit">
+      <button @click="mitglied_hinzufuegen" class="button button-submit">
         Hinzufügen
       </button>
     </div>
@@ -186,7 +186,7 @@
         Abbrechen
       </button>
       <button
-        @click="liste_endgültig_löschen()"
+        @click="liste_endgueltig_loeschen()"
         class="button button-delete"
       >
         Bestätigen und löschen
@@ -623,7 +623,7 @@ export default {
     /**
      * Öffnet das Mitglied-hinzufügen-Popup.
      */
-    mitglied_hinzufügen_popup() {
+    mitglied_hinzufuegen_popup() {
       this.errorMessage = "";
       this.showpopup_list = false;
       this.showpopup_add_member = true;
@@ -680,7 +680,7 @@ export default {
     /**
      * Fügt ein neues Mitglied zur Liste hinzu.
      */
-    async mitglied_hinzufügen() {
+    async mitglied_hinzufuegen() {
       this.errorMessage = "";
       const list_id = this.list_id || this.$route.params.id;
       const user_email = this.new_member_email.trim();
@@ -745,7 +745,7 @@ export default {
     /**
      * Schließt das Mitglied-hinzufügen-Popup.
      */
-    cancel_mitglied_hinzufügen() {
+    cancel_mitglied_hinzufuegen() {
       this.errorMessage = "";
       this.showpopup_add_member = false;
       this.new_member_email = "";
@@ -776,7 +776,7 @@ export default {
     /**
      * Leitet zum Einkaufsbildschirm der Liste weiter.
      */
-    einkauf_abschließen() {
+    einkauf_abschliessen() {
       if (this.productNum == 0){
         alert("Liste ist leer! Füge Produkte hinzu, um einzukaufen!");
         return;
@@ -841,7 +841,7 @@ export default {
     /**
      * Löscht die Liste endgültig, wenn der Ersteller die Liste verlässt.
      */
-    async liste_endgültig_löschen() {
+    async liste_endgueltig_loeschen() {
       const list_id = this.list_id || this.$route.params.id;
       const requester_id = this.user.id;
       

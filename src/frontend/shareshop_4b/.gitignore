@@ -14,6 +14,7 @@ dist-ssr
 *.local
 
 docs
+docs_pdf
 
 # Editor directories and files
 .vscode/*
