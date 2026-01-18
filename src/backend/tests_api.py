@@ -152,3 +152,20 @@ def test_get_produkte_all_success(mock_session_local):
     assert len(result) == 2
     assert result[0].id == 1
     assert result[0].name == 'Apfel'
+
+@patch('share_shop_api.SessionLocal')
+def test_get_produkt_by_id_success(mock_session_local):
+    """ Testet das erfolgreiche Abrufen eines Produkts nach ID. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_produkt = create_mock_produkt(1, 'Apfel')
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_produkt
+
+    # Act
+    result = get_produkt_by_id(1, db=mock_db)
+
+    # Assert
+    assert result.id == 1
+    assert result.name == 'Apfel'
