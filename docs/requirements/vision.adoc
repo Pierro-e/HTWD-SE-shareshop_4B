@@ -1,5 +1,5 @@
 = Vision: {project-name}
-Erik Wenke <erik.wenke@stud.htw-dresden.de>; Maximilian Paul <s87085@htw-dresden.de>; Marlene Fritz <s87181@htw-dresden.de>; Levin Heirich <s87139@htw-dresden.de>; Pierre Kißling <s86388@htw-dresden.de>;
+Erik Wenke <erik.wenke@stud.htw-dresden.de>; Maximilian Paul <s87085@htw-dresden.de>; Marlene Fritz <s87181@htw-dresden.de>; Levin Heirich <s87139@htw-dresden.de>; Pierre Kißling <s86388@htw-dresden.de>; Ahmad Alrmih  <s86396@htw-dresden.de>; Eric Hübel <s86462@htw-dresden.de>
 {localdatetime}
 include::../_includes/default-attributes.inc.adoc[]
 
@@ -80,16 +80,15 @@ Die Verfeinerung der Stakeholder erfolgt mittels <<persona, Personas>>.
 [%header, cols="4,1,4"]
 |===
 | Bedarf | Priorität | Features / Funktionen
-| WG möchte Einkäufe zusammen organisieren | hoch | gemeinsame Einkaufsliste (jeder kann bearbeiten) und Kalender für Einkaufsrythmen
+| WG möchte Einkäufe zusammen organisieren | hoch | gemeinsame Einkaufsliste (jeder kann bearbeiten)
 | Mitglieder möchten Kosten für Einkauf teilen | hoch | nachvollziehbare Rechnung zur Kostenverteilung
-| Im Supermarkt ist schlechte Internetverbindung | mittel | Liste auch offline bereitstellen
+| Mitglieder möchten öfter zu kaufende Produkte nicht bei jedem Einkauf neu in die Einkaufsliste eintragen | hoch | Persönliche Favoriten anlegen + verwalten
+| Mitglieder möchten auch bei schlechter Verbindung einen Einkauf abschließen könenn | mittel | Liste auch offline bereitstellen
 | Person möchte beim Einkaufen die Übersicht behalten  | hoch | Sortiermöglichkeit und abhaken der Items
-| ShareShop soll dem Nutzer Arbeit abnehmen / Planung erleichtern | hoch | Bedarfsvorhersage basierend auf Nutzungsmuster
-| WG-Mitglied will individuelle Bedürfnisse kennzeichnen | hoch | personalisierte Tags
+| ShareShop soll dem Nutzer Arbeit abnehmen / Planung erleichtern | hoch | Bedarfsvorhersage basierend auf bereits öfter gekauften produkten
 | Überblick über gemeinsame Ausgaben gewünscht | mittel | Ausgabenstatistik pro Person und Haushalt (evtl. Budgetfunktion)
-| Nächstes Item am Anfang der Liste  | xx | Manuelles sortieren (+ Sortieralgorithmus ?)
-| umweltbewusste Nutzer wollen nachhaltig einkaufen | niedrig | Nachhaltigkeits-Tracking mit CO2- und Verpackungsstatistik
-| Vorräte sollen verwaltet werden | niedrig | Inventarliste
+| Nächstes Item am Anfang der Liste  | niedrig | Manuelles sortieren (+ Sortieralgorithmus ?)
+| umweltbewusste Nutzer wollen nachhaltig einkaufen | niedrig | Nachhaltigkeits-Tracking mit CO2-statistik
 |===
 
 === Zusätzliche Produktanforderungen
@@ -107,15 +106,14 @@ Die Verfeinerung der Stakeholder erfolgt mittels <<persona, Personas>>.
 [%header, cols="4,1"]
 |===
 | Anforderung | Priorität
-| Betriebssystem unabhängig | sehr hoch
-| Browser-Support | Hoch
+| Betriebssystem unabhängig | Sehr hoch
+| Browser-Support für Chrome/Safari/Firefox | Sehr hoch
 | DSGVO-Konformität | Hoch
+| minimalistisches Design | Mittel
 | Effizienz/Performance | Mittel
-| Offline-Funktion/Synchronisation | Hoch
+| Offline-Funktion/Synchronisation | Mittel
 | App-Hilfen | Niedrig
 | Push-Benachrichtigungen | Niedrig
 | Mehrsprachlichkeit | Niedrig
-| minimalistisches Design | mittel
-
 |===
 

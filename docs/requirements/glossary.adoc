@@ -10,13 +10,13 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 | Begriff | Definition und Erläuterung | Synonyme
 
-| *Task*
+| Task
 | Tätigkeit, welche ein PBI (bzw. dessen Akzeptankriterium) teilweise realisiert
 |
 
-| *Artikel*
+| Artikel
 | Gegenstand, welcher eingekauft werden soll
-| Item
+| Item, Produkt
 
 | Einkäufer
 | WG-Mitglied, welcher gerade dabei ist Artikel einzukaufen
@@ -28,7 +28,7 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 
 | WG-Mitglied
 | Nutzer der Software
-| -
+| Bewohner, Mitglied
 
 
 | Einkaufsliste
@@ -54,6 +54,10 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Validierung
 | Test, der prüft, ob ein Ergebnis den spezifizierten Anforderungen und dem Nutzerbedarf entspricht
 | Überprüfung, Verifizierung
+
+| Favoriten-Items
+| Artikel, die der Bewohner öfter kaufen möchte und deshalb in einer persönlichen extra Liste für schnelleren zugriff Gespeichert hat.  
+| Favoriten
 |===
 
 == Abkürzungen und Akronyme
@@ -65,6 +69,10 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | WG
 | Wohngemeinschaft
 | Gruppe von Personen, die gemeinsam wohnen und Kosten teilen
+
+| Fav.
+| Favoriten
+| Artikel, die der Bewohner öfter kaufen möchte und deshalb in einer persönlichen extra Liste für schnelleren zugriff Gespeichert hat.
 
 |===
 
@@ -79,10 +87,17 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | `id` INT +
 `email` VARCHAR(255) +
 `name` VARCHAR(150) +
-`passwort_hash` VARCHAR(255)
+`passwort_hash` VARCHAR(255) +
+`theme` INT +
+`color` INT +
+`DecayDays` DECIMAL(10,2)
 |  `id` ist Primärschlüssel (PK) und eindeutig  +
  `email` muss eindeutig sein und sowohl `@` als auch `.` enthalten  +
- alle Felder not null
+ `name` not null  +
+ `passwort_hash` not null  +
+ `theme` ist optional (nullable), Default = 0  +
+ `color` ist optional (nullable), Default = 0  +
+ `DecayDays` ist optional (nullable), Default = 7.00
 | User
 
 | Listen
@@ -93,8 +108,9 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 `datum` DATE
 |  `id` PK, eindeutig  +
  `name` darf nicht leer sein  +
- `ersteller` referenziert `Nutzer.id`  +
- `datum` muss gültiges Datum sein
+ `ersteller` ist optional (nullable); falls gesetzt: FK -> `Nutzer.id`  +
++  `datum` ist optional (nullable); falls gesetzt: gültiges Datum
+
 | ShoppingList
 
 | ListenMitglieder
@@ -113,39 +129,48 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 `produkt_id` INT +
 `produkt_menge` DECIMAL(10,2) +
 `einheit_id` INT +
-`hinzugefugt_von` INT +
+`hinzugefügt_von` INT +
 `beschreibung` TEXT
-|  PK (`listen_id`,`produkt_id`)  +
- `einheit_id` FK → `Einheiten.id`  +
- `hinzugefugt_von` FK → `Nutzer.id`  +
- Mengenwert ≥ 0
+|  Zusammengsetzter PK (`listen_id`,`produkt_id`,`hinzugefügt_von`)  +
+ `listen_id` FK -> `Listen.id`  +
+ `produkt_id` FK -> `Produkt.id`  +
+ `einheit_id` ist optional (nullable); falls gesetzt: FK -> `Einheiten.id`  +
+ `hinzugefugt_von` FK -> `Nutzer.id`  +
+ `produkt_menge` ist optional (nullable); falls gesetzt: Mengenwert ≥ 0
 | ListItems
 
 | Einkaufsarchiv
 | Abgeschlossener Einkauf einer Liste (Historie).
-| `id` INT +
+| `einkauf_id` INT +
 `listen_id` INT +
-`getatigt_von` INT +
-`getatigt_am` DATE +
+`eingekauft_von` INT +
+`eingekauft_am` DATE +
 `gesamtpreis` DECIMAL(10,2)
-|  `id` PK  +
- `listen_id` FK → `Listen.id`  +
- `getatigt_von` FK → `Nutzer.id`  +
- `gesamtpreis` ≥ 0 +
+|  `einkauf_id`, eindeutig, auto increment PK  +
+ `listen_id` not null; FK → `Listen.id`  +
+ `eingekauft_von` ist optional (nullable); falls gesetzt: FK → `Nutzer.id`  +
+ `eingekauft_am` ist optional (nullable); falls gesetzt: gültiges Datum +
+ `gesamtpreis` ist optional (nullable); falls gesetzt:`gesamtpreis` ≥ 0
 | Purchase
 
 | eingekaufte_Produkte
 | Produkte, die in einem bestimmten Einkauf gekauft wurden.
-| `einkauf_id` INT +
+| `id` INT +
+`einkauf_id` INT +
 `produkt_id` INT +
 `produkt_menge` DECIMAL(10,2) +
-`einheit_id` INT, `produkt_preis` DECIMAL(10,2) +
-`hinzugefugt_von` INT
-| PK (`einkauf_id`,`produkt_id`)  +
- `einkauf_id` FK → `Einkaufsarchiv.id`  +
- `produkt_id` FK → `Produkt.id`  +
- `einheit_id` FK → `Einheiten.id`  +
- Preis & Menge ≥ 0 +
+`einheit_id` INT, +
+`produkt_preis` DECIMAL(10,2) +
+`hinzugefugt_von` INT +
+`beschreibung` TEXT
+| `id` PK, eindeutig, auto increment +
+ `einkauf_id` not null; FK → `Einkaufsarchiv.einkauf_id`  +
+ `produkt_id` not null; FK → `Produkt.id`  +
+ `einheit_id` ist optional(nullable); falls gesetzt: FK → `Einheiten.id`  +
+ `produkt_menge` ist optional (nullable); falls gesetzt: Menge ≥ 0  +
+ `produkt_preis` ist optional (nullable); falls gesetzt: Preis ≥ 0  +
+ `hinzugefuegt_von` ist optional (nullable); falls gesetzt: FK → `Nutzer.id`  +
+ `beschreibung` ist optional (nullable)
 | PurchasedItems
 
 | Produkt
@@ -163,11 +188,52 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 `abkurzung` VARCHAR(10)
 |  `id` PK  +
  `name` unique, not null +
- `abkurzung` not null +
+ `abkurzung` ist optional (nullable)
 | Units
+
+| Bedarfsvorhersage
+| Speichert nutzerspezifische Zähler/Informationen zur Bedarfsvorhersage je Produkt.
+| `nutzer_id` INT +
+`produkt_id` INT +
+`counter` DECIMAL(10,2) +
+`last_bought` TIMESTAMP
+|  Zusammengesetzter PK (`nutzer_id`,`produkt_id`)  +
+`nutzer_id` FK → `Nutzer.id`  +
+`produkt_id` FK → `Produkt.id`  +
+`counter` ist optional (nullable), Default = 0.00; falls gesetzt: counter ≥ 0  +
+`last_bought` ist optional (nullable), Default = CURRENT_TIMESTAMP
+| DemandForecast
+
+
+| fav_Produkte
+| Favorisierte/gespeicherte Produkte eines Nutzers (z.B. als Vorlage für Listen).
+| `nutzer_id` INT +
+`produkt_id` INT +
+`menge` DECIMAL(10,2) +
+`einheit_id` INT +
+`beschreibung` TEXT
+|  Zusammengesetzter PK (`nutzer_id`,`produkt_id`)  +
+`nutzer_id` FK → `Nutzer.id`  +
+`produkt_id` FK → `Produkt.id`  +
+`einheit_id` ist optional (nullable); falls gesetzt: FK → `Einheiten.id`  +
+`menge` ist optional (nullable); falls gesetzt: menge ≥ 0
+| FavoriteItems
+
+| Kostenaufteilung
+| Speichert, wer wem wie viel Geld schuldet (Empfänger ↔ Schuldner).
+| `empfaenger_id` INT +
+`schuldner_id` INT +
+`betrag` DECIMAL(10,2)
+|  Zusammengesetzter PK (`empfaenger_id`,`schuldner_id`)  +
+`empfaenger_id` FK → `Nutzer.id`  +
+`schuldner_id` FK → `Nutzer.id`  +
+`betrag` ist optional (nullable); falls gesetzt: betrag ≥ 0
+| CostSplit
+
+
 |===
 
 
 == Domänenmodell
 
-image::plantuml/domänenmodell_shareshop.svg[width=70%, height=30%, alt="Domänenmodell ShareShop", title="Domänenmodell ShareShop"]
+image::plantuml/DomänenmodellV2.svg[width=100%, height=40%, alt="Domänenmodell ShareShop", title="Domänenmodell ShareShop"]

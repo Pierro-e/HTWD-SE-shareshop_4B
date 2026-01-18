@@ -1,0 +1,125 @@
+@startuml Domänenmodell
+hide methods
+
+' === Grundklassen ===
+class Nutzer {
+  +id
+  +email
+  +name
+  +passwort_hash
+  +theme
+  +color
+  +DecayDays
+}
+
+class Listen {
+  +id
+  +name
+  +ersteller
+  +datum
+}
+
+class ListeMitglieder {
+  +listen_id
+  +nutzer_id
+  +beigetreten_am
+}
+
+class Produkt {
+  +id
+  +name
+}
+
+class Einheiten {
+  +id
+  +name
+  +abkürzung
+}
+
+class ListeProdukte {
+  +listen_id
+  +produkt_id
+  +produkt_menge
+  +einheit_id
+  +hinzugefügt_von
+  +beschreibung
+}
+
+class Einkaufsarchiv {
+  +einkauf_id
+  +listen_id
+  +eingekauft_von
+  +eingekauft_am
+  +gesamtpreis
+}
+
+class eingekaufte_Produkte {
+  +id
+  +einkauf_id
+  +produkt_id
+  +produkt_menge
+  +einheit_id
+  +produkt_preis
+  +hinzugefuegt_von
+  +beschreibung
+}
+
+' === Neue Tabellen ===
+class fav_Produkte {
+  +nutzer_id
+  +produkt_id
+  +menge
+  +einheit_id
+  +beschreibung
+}
+
+class Bedarfsvorhersage {
+  +nutzer_id
+  +produkt_id
+  +counter
+  +last_bought
+}
+
+class Kostenaufteilung {
+  +empfaenger_id
+  +schuldner_id
+  +betrag
+}
+
+' === Beziehungen ===
+
+' Listen-Ersteller (ersteller ist nullable)
+Listen "0..*" --> "0..1" Nutzer : ersteller
+
+' Mitgliedschaften (Join-Tabelle)
+Listen "1" <-- "0..*" ListeMitglieder : listen_id
+Nutzer "1" <-- "0..*" ListeMitglieder : nutzer_id
+
+' Listen-Produkte
+Listen "1" <-- "0..*" ListeProdukte : listen_id
+ListeProdukte "0..*" --> "1" Produkt : produkt_id
+ListeProdukte "0..*" --> "0..1" Einheiten : einheit_id
+ListeProdukte "0..*" --> "1" Nutzer : hinzugefügt_von
+
+' Einkaufsarchiv + gekaufte Produkte
+Listen "1" <-- "0..*" Einkaufsarchiv : listen_id
+Einkaufsarchiv "0..*" --> "0..1" Nutzer : eingekauft_von
+Einkaufsarchiv "1" <-- "0..*" eingekaufte_Produkte : einkauf_id
+eingekaufte_Produkte "0..*" --> "1" Produkt : produkt_id
+eingekaufte_Produkte "0..*" --> "0..1" Einheiten : einheit_id
+eingekaufte_Produkte "0..*" --> "0..1" Nutzer : hinzugefuegt_von
+
+' Favoriten
+Nutzer "1" <-- "0..*" fav_Produkte : nutzer_id
+Produkt "1" <-- "0..*" fav_Produkte : produkt_id
+fav_Produkte "0..*" --> "0..1" Einheiten : einheit_id
+
+' Bedarfsvorhersage
+Nutzer "1" <-- "0..*" Bedarfsvorhersage : nutzer_id
+Produkt "1" <-- "0..*" Bedarfsvorhersage : produkt_id
+
+' Kostenaufteilung (2 Beziehungen zur selben Klasse Nutzer)
+Kostenaufteilung "0..*" --> "1" Nutzer : empfaenger_id
+Kostenaufteilung "0..*" --> "1" Nutzer : schuldner_id
+
+@enduml
