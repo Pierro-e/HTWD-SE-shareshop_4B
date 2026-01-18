@@ -39,7 +39,7 @@ def create_mock_produkt(id, name):
     mock.name = name
     return mock
 
-# Tests für Nutzer-Endpunkte
+######################################## Tests für Nutzer-Endpunkte############################################################
 @patch('share_shop_api.SessionLocal')
 def test_get_nutzer_all_success(mock_session_local):
     # Arrange
