@@ -38,6 +38,17 @@ def create_mock_produkt(id, name):
     mock.id = id
     mock.name = name
     return mock
+# Hilfsfunktion zum Erstellen von Dummy-FavProdukte-Objekten
+def create_mock_fav_produkt(nutzer_id, produkt_id, produkt_name, menge=None, einheit_id=None, einheit_abk=None, beschreibung=None):
+    mock = MagicMock()
+    mock.nutzer_id = nutzer_id
+    mock.produkt_id = produkt_id
+    mock.produkt_name = produkt_name
+    mock.menge = menge
+    mock.einheit_id = einheit_id
+    mock.einheit_abk = einheit_abk
+    mock.beschreibung = beschreibung
+    return mock
 
 ######################################## Tests für Nutzer-Endpunkte############################################################
 @patch('share_shop_api.SessionLocal')
@@ -221,3 +232,6 @@ def test_create_produkt_already_exists(mock_session_local):
     with pytest.raises(Exception) as exc_info:
         create_produkt(produkt_data, db=mock_db)
     assert "Produkt mit diesem Namen existiert bereits" in str(exc_info.value)
+
+# ###############Tests für Favoriten-Endpunkte#############################
+
