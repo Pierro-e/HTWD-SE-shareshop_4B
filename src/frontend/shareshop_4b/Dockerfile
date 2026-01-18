@@ -1,72 +1,47 @@
-# syntax=docker/dockerfile:1
+# =========================================
+# Stage 1: Build the Vue.js Application
+# =========================================
 
-# Comments are provided throughout this file to help you get started.
-# If you need more help, visit the Dockerfile reference guide at
-# https://docs.docker.com/go/dockerfile-reference/
+ARG NODE_VERSION=24.12.0-alpine
+ARG NGINX_VERSION=alpine3.22
 
-# Want to help us make this template better? Share your feedback here: https://forms.gle/ybq9Krt8jtBL3iCk7
+# Use a lightweight Node.js image for building (customizable via ARG)
+FROM node:${NODE_VERSION} AS builder
 
-ARG NODE_VERSION=25.2.1
+# Set the working directory inside the container
+WORKDIR /app
 
-################################################################################
-# Use node image for base image for all stages.
-FROM node:${NODE_VERSION}-alpine as base
+# Copy package-related files first to leverage Docker's caching mechanism
+COPY package.json package-lock.json* ./
 
-# Set working directory for all build stages.
-WORKDIR /usr/src/app
+# Install project dependencies using npm ci (ensures a clean, reproducible install)
+RUN --mount=type=cache,target=/root/.npm npm ci
 
-
-################################################################################
-# Create a stage for installing production dependecies.
-FROM base as deps
-
-# Download dependencies as a separate step to take advantage of Docker's caching.
-# Leverage a cache mount to /root/.npm to speed up subsequent builds.
-# Leverage bind mounts to package.json and package-lock.json to avoid having to copy them
-# into this layer.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev
-
-################################################################################
-# Create a stage for building the application.
-FROM deps as build
-
-# Download additional development dependencies before building, as some projects require
-# "devDependencies" to be installed to build. If you don't need this, remove this step.
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=package-lock.json \
-    --mount=type=cache,target=/root/.npm \
-    npm ci
-
-# Copy the rest of the source files into the image.
+# Copy the rest of the application source code into the container
 COPY . .
-# Run the build script.
+
+# Build the Vue.js application
 RUN npm run build
 
-################################################################################
-# Create a new stage to run the application with minimal runtime dependencies
-# where the necessary files are copied from the build stage.
-FROM base as final
+# =========================================
+# Stage 2: Prepare Nginx to Serve Static Files
+# =========================================
 
-# Use production node environment by default.
-ENV NODE_ENV production
+FROM nginxinc/nginx-unprivileged:${NGINX_VERSION} AS runner
 
-# Run the application as a non-root user.
-USER node
+# Copy custom Nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copy package.json so that package manager commands can be used.
-COPY package.json .
+# Copy the static build output from the build stage to Nginx's default HTML serving directory
+COPY --chown=nginx:nginx --from=builder /app/dist /usr/share/nginx/html
 
-# Copy the production dependencies from the deps stage and also
-# the built application from the build stage into the image.
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/dist ./dist
+# Use a built-in non-root user for security best practices
+USER nginx
 
-
-# Expose the port that the application listens on.
+# Expose port 8080 to allow HTTP traffic
+# Note: The default Nginx container now listens on port 8080 instead of 80
 EXPOSE 8080
 
-# Run the application.
-CMD npm run build
+# Start Nginx directly with custom config
+ENTRYPOINT ["nginx", "-c", "/etc/nginx/nginx.conf"]
+CMD ["-g", "daemon off;"]
