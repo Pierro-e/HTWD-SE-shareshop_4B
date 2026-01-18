@@ -1,36 +1,32 @@
 services:
-  frontend:
-    build:
-      context: ./frontend
-    env_file:
-      - .env
+  ui:
+    image: share_shop_ui:latest
     ports:
       - "8080:8080"
     depends_on:
-      - backend
-
-  backend:
-    build:
-      context: ./backend
-    env_file:
-      - .env
+      - api
+  api:
+    image: share_shop_api:latest
+    environment:
+      DB_NAME: share_shop
+      DB_USER: userAdmin
+      DB_PASSWORD: xdb_Admin890!
+      DB_HOST: db
     ports:
       - "8000:8000"
     depends_on:
       - db
-
   db:
     image: mysql:8.4
     restart: always
     environment:
-      MYSQL_DATABASE: ${DB_NAME}
-      MYSQL_USER: ${DB_USER}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: share_shop
+      MYSQL_USER: userAdmin
+      MYSQL_PASSWORD: xdb_Admin890!
       MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
-
 volumes:
   mysql_data:
