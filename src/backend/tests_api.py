@@ -130,3 +130,25 @@ def test_create_nutzer_already_exists(mock_session_local):
     with pytest.raises(Exception) as exc_info:
         create_nutzer(nutzer_data, db=mock_db)
     assert "Nutzeremail existiert bereits" in str(exc_info.value)
+
+
+########################### Tests für Produkte-Endpunkte###############################
+
+@patch('share_shop_api.SessionLocal')
+def test_get_produkte_all_success(mock_session_local):
+    """ Testet das erfolgreiche Abrufen aller Produkte. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_produkt1 = create_mock_produkt(1, 'Apfel')
+    mock_produkt2 = create_mock_produkt(2, 'Banane')
+    mock_db.query.return_value.all.return_value = [mock_produkt1, mock_produkt2]
+
+    # Act
+    result = get_produkte_all(db=mock_db)
+
+    # Assert
+    assert len(result) == 2
+    assert result[0].id == 1
+    assert result[0].name == 'Apfel'
