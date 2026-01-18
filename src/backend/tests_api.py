@@ -31,3 +31,11 @@ def create_mock_produkt(id, name):
     mock.id = id
     mock.name = name
     return mock
+
+# Hilfsfunktion zum Erstellen von Dummy-Produkt-Objekten
+def create_mock_produkt(id, name):
+    mock = MagicMock()
+    mock.id = id
+    mock.name = name
+    return mock
+
