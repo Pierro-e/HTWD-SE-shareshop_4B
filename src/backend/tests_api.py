@@ -39,3 +39,22 @@ def create_mock_produkt(id, name):
     mock.name = name
     return mock
 
+# Tests für Nutzer-Endpunkte
+@patch('share_shop_api.SessionLocal')
+def test_get_nutzer_all_success(mock_session_local):
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_nutzer1 = create_mock_nutzer(1, 'user1@example.com', 'User1')
+    mock_nutzer2 = create_mock_nutzer(2, 'user2@example.com', 'User2')
+    mock_db.query.return_value.all.return_value = [mock_nutzer1, mock_nutzer2]
+
+    # Act
+    result = get_nutzer_all(db=mock_db)
+
+    # Assert
+    assert len(result) == 2
+    assert result[0].id == 1
+    assert result[0].email == 'user1@example.com'
+    assert result[1].id == 2
