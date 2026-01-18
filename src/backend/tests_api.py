@@ -90,3 +90,26 @@ def test_get_nutzer_by_id_not_found(mock_session_local):
     with pytest.raises(Exception) as exc_info:
         get_nutzer_by_id(999, db=mock_db)
     assert "Nutzer nicht gefunden" in str(exc_info.value)
+
+
+@patch('share_shop_api.SessionLocal')
+def test_create_nutzer_success(mock_session_local):
+    """ Testet das erfolgreiche Erstellen eines neuen Nutzers. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_db.query.return_value.filter.return_value.first.return_value = None  # Kein vorhandener Nutzer
+    mock_nutzer = create_mock_nutzer(1, 'newuser@example.com', 'New User')
+    mock_db.add.return_value = None
+    mock_db.commit.return_value = None
+    mock_db.refresh.side_effect = lambda obj: setattr(obj, 'id', 1)
+
+    nutzer_data = NutzerCreate(email="newuser@example.com", name="New User", passwort_hash="hashedpassword")
+
+    # Act
+    result = create_nutzer(nutzer_data, db=mock_db)
+
+    # Assert
+    assert result.id == 1
+    assert result.email == 'newuser@example.com' 
