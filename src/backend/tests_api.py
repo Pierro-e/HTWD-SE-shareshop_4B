@@ -113,3 +113,20 @@ def test_create_nutzer_success(mock_session_local):
     # Assert
     assert result.id == 1
     assert result.email == 'newuser@example.com' 
+
+@patch('share_shop_api.SessionLocal')
+def test_create_nutzer_already_exists(mock_session_local):
+    """ Testet das Verhalten beim Erstellen eines Nutzers mit bereits existierender Email. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_existing = create_mock_nutzer(1, 'existing@example.com', 'Existing')
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_existing
+
+    nutzer_data = NutzerCreate(email="existing@example.com", name="New User", passwort_hash="hashedpassword")
+
+    # Act & Assert
+    with pytest.raises(Exception) as exc_info:
+        create_nutzer(nutzer_data, db=mock_db)
+    assert "Nutzeremail existiert bereits" in str(exc_info.value)
