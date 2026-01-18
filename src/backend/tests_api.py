@@ -182,3 +182,25 @@ def test_get_produkt_by_id_not_found(mock_session_local):
     with pytest.raises(Exception) as exc_info:
         get_produkt_by_id(999, db=mock_db)
     assert "Produkt nicht gefunden" in str(exc_info.value)
+
+@patch('share_shop_api.SessionLocal')
+def test_create_produkt_success(mock_session_local):
+    """ Testet das erfolgreiche Erstellen eines neuen Produkts. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_db.query.return_value.filter.return_value.first.return_value = None  # Kein vorhandenes Produkt
+    mock_produkt = create_mock_produkt(1, 'Neues Produkt')
+    mock_db.add.return_value = None
+    mock_db.commit.return_value = None
+    mock_db.refresh.side_effect = lambda obj: setattr(obj, 'id', 1)
+
+    produkt_data = ProduktCreate(name="Neues Produkt")
+
+    # Act
+    result = create_produkt(produkt_data, db=mock_db)
+
+    # Assert
+    assert result.id == 1
+    assert result.name == 'Neues Produkt'
