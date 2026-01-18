@@ -235,3 +235,26 @@ def test_create_produkt_already_exists(mock_session_local):
 
 # ###############Tests für Favoriten-Endpunkte#############################
 
+@patch('share_shop_api.SessionLocal')
+def test_get_fav_produkte_by_nutzer_success(mock_session_local):
+    """ Testet das erfolgreiche Abrufen der Favoriten-Produkte eines Nutzers. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_user = create_mock_nutzer(1, 'user@example.com', 'User')
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_user
+
+    mock_fav1 = create_mock_fav_produkt(1, 1, 'Apfel', 2.0, 1, 'kg', 'Frisch')
+    mock_fav2 = create_mock_fav_produkt(1, 2, 'Banane', 1.0, 2, 'Stück', None)
+    # Mock the complex query chain
+    mock_query = mock_db.query.return_value
+    mock_query.join.return_value.outerjoin.return_value.filter.return_value.all.return_value = [mock_fav1, mock_fav2]
+
+    # Act
+    result = get_fav_produkte_by_nutzer(1, db=mock_db)
+
+    # Assert
+    assert len(result) == 2
+    assert result[0].nutzer_id == 1
+    assert result[0].produkt_name == 'Apfel'
