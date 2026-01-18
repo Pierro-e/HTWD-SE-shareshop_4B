@@ -18,9 +18,10 @@ export default {
   name: "AppHeader",
   props: {
     title: {
-      type: String, required: true,
-    }
-  }
+      type: String,
+      required: true,
+    },
+  },
 };
 </script>
 
@@ -69,5 +70,5 @@ export default {
   right: 10px;
   top: 10px;
 }
-
 </style>
+

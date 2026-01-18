@@ -23,7 +23,7 @@
 
 <script>
 import { inject } from "vue";
-import axios from "axios";
+import { api } from "../../api/client";
 import TextInput from "../input/TextInput.vue";
 import NumInput from "../input/NumInput.vue";
 import SelectObjectArray from "../input/SelectObjectArray.vue";
@@ -67,17 +67,15 @@ export default {
 
       // Bezugsprodukt finden/erstellen
       try {
-        url =
-          "http://141.56.137.83:8000/produkte/by-name/" +
-          encodeURIComponent(name);
-        response = await axios.get(url);
+        url = "/produkte/by-name/" + encodeURIComponent(name);
+        response = await api.get(url);
         id = response.data.id;
       } catch (error) {
         // es gibt kein Bezugsprodukt
         if (error.response && error.response.status === 404) {
           try {
-            url = "http://141.56.137.83:8000/produkte_create";
-            response = await axios.post(url, { name: name });
+            url = "/produkte_create";
+            response = await api.post(url, { name: name });
             id = response.data.id;
           } catch {
             this.errMsg =
@@ -95,10 +93,8 @@ export default {
       };
       // Favoriten erstellen
       try {
-        url =
-          "http://141.56.137.83:8000/fav_produkte_create/nutzer/" +
-          this.user.id;
-        await axios.post(url, fav);
+        url = "/fav_produkte_create/nutzer/" + this.user.id;
+        await api.post(url, fav);
       } catch {
         this.errMsg = "Fehler beim erstellen des Favoriten.";
       }

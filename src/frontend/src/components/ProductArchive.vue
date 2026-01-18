@@ -4,26 +4,27 @@
       <AppHeader :title="`${combinedName}`">
         <template #left>
           <button @click="goBack" class="button-cancel back-button">
-            <font-awesome-icon icon='arrow-left'/>
+            <font-awesome-icon icon="arrow-left" />
           </button>
         </template>
       </AppHeader>
 
       <div class="info-block">
-        <strong>Einkäufer:</strong> {{ this.buyer || "Nicht angegeben" }} <br>
+        <strong>Einkäufer:</strong> {{ this.buyer || "Nicht angegeben" }} <br />
         <strong>Gesamtpreis:</strong> {{ this.price || "Nicht angegeben" }} €
       </div>
-      <br>
+      <br />
 
       <div v-if="loadingActive" class="loading">Laden...</div>
       <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
 
       <div v-else-if="purchased_products.length === 0" class="info">
-        Es wurden noch keine Produkte eingekauft.    <!-- eigentlich unnötig, da ein Einkauf nur existiert, wenn Produkte gekauft wurden -->
-      </div> 
+        Es wurden noch keine Produkte eingekauft.
+        <!-- eigentlich unnötig, da ein Einkauf nur existiert, wenn Produkte gekauft wurden -->
+      </div>
 
       <div v-else>
-        <div class=card-grid>
+        <div class="card-grid">
           <ProductCard
             v-for="product in purchased_products"
             :key="product.produkt_id"
@@ -32,27 +33,25 @@
             :hideSettings="true"
           >
             <template #extra>
-              <div v-if="product.hinzufueger_name">    <!-- class und css Code muss noch gemacht werden -->
+              <div v-if="product.hinzufueger_name">
+                <!-- class und css Code muss noch gemacht werden -->
                 {{ product.hinzufueger_name }}
               </div>
             </template>
           </ProductCard>
         </div>
       </div>
-
     </div>
   </div>
-  
-  <BottomBar 
-    :highlight-btn="2"
-  />
+
+  <BottomBar :highlight-btn="2" />
 </template>
 
 <script>
-import axios from 'axios';
-import AppHeader from './AppHeader.vue';
-import ProductCard from './ProductCard.vue';
-import BottomBar from './BottomBar.vue';
+import { api } from "../api/client";
+import AppHeader from "./AppHeader.vue";
+import ProductCard from "./ProductCard.vue";
+import BottomBar from "./BottomBar.vue";
 
 /**
  * Zeigt die Produkte eines vergangenen Einkaufs an.
@@ -62,56 +61,56 @@ import BottomBar from './BottomBar.vue';
 export default {
   name: "ProductArchive",
   props: ["purchase_id"],
-  components: { 
+  components: {
     AppHeader,
     ProductCard,
-    BottomBar 
+    BottomBar,
   },
   data() {
-      return{
-          list_id: null,
-          purchase_name: "",
-          listName: "",
-          combinedName: "",
-          buyer: "",
-          price: null,
-          purchased_products: [],
-          loadingActive: true,
-          errorMessage: "",
-      }
+    return {
+      list_id: null,
+      purchase_name: "",
+      listName: "",
+      combinedName: "",
+      buyer: "",
+      price: null,
+      purchased_products: [],
+      loadingActive: true,
+      errorMessage: "",
+    };
   },
   methods: {
     goBack() {
       const listFilter = this.$route.query.listFilter;
       const selectedListID = this.$route.query.selectedListID;
-      
+
       const query = {};
-      if (listFilter !== undefined && listFilter !== 'null') {
+      if (listFilter !== undefined && listFilter !== "null") {
         query.listFilter = listFilter;
       }
       if (selectedListID !== undefined) {
         query.selectedListID = selectedListID;
       }
-      
-      this.$router.push({ 
-        name: "UserArchive", 
-        query: query
+
+      this.$router.push({
+        name: "UserArchive",
+        query: query,
       });
     },
     /**
      * Holt die Daten (Archivierte Produkte) von der API.
-     * 
-     * @param {int} id  Die ID des Einkaufs. 
+     *
+     * @param {int} id  Die ID des Einkaufs.
      */
     async getData(id) {
       try {
-        const response = await axios.get(
-          `http://141.56.137.83:8000/eingekaufte_produkte/einkauf/${this.purchase_id}`,
+        const response = await api.get(
+          `/eingekaufte_produkte/einkauf/${this.purchase_id}`,
         );
 
         this.purchased_products = response.data;
 
-         for (const product of this.purchased_products) {
+        for (const product of this.purchased_products) {
           // produkt_menge formatieren: Wenn Nachkommastellen == 0, als Integer anzeigen
           if (
             product.produkt_menge !== undefined &&
@@ -135,7 +134,7 @@ export default {
     },
     /**
      * aktuell nur Platzhalter
-     * 
+     *
      * @param product Das Produkt als Objekt
      */
     product_settings(product) {
@@ -145,13 +144,13 @@ export default {
   mounted() {
     this.purchase_name = this.$route.query.purchase_name;
     this.listName = this.$route.query.listName;
-    this.combinedName = this.listName + ' ' + this.purchase_name;
+    this.combinedName = this.listName + " " + this.purchase_name;
     this.buyer = this.$route.query.buyer;
     this.list_id = this.$route.query.list_id;
     this.price = this.$route.query.price;
     this.getData(this.purchase_id);
-  }
-}
+  },
+};
 </script>
 <style scoped>
 .wrapper {

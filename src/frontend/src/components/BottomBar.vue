@@ -1,34 +1,49 @@
 <template>
-    <!--BottomBar ist überall gleich, deswegen hart geschrieben ohne slots-->
-    <div class="bottom-bar">
-      <button class="bottom-btn" :class="{ highlight: highlightBtn === 1 }" @click="$router.push('/listen')">
-        <div class=icon>
-          <font-awesome-icon icon='list'/>
-        </div>
-        <span>Listen</span>
-      </button>
-    
-      <button class="bottom-btn" :class="{ highlight: highlightBtn === 2 }" @click="$router.push('/userArchive')">
-        <div class=icon>
-          <font-awesome-icon icon='box-archive'/>
-        </div> 
-        <span>Archiv</span>
-      </button>
+  <!--BottomBar ist überall gleich, deswegen hart geschrieben ohne slots-->
+  <div class="bottom-bar">
+    <button
+      class="bottom-btn"
+      :class="{ highlight: highlightBtn === 1 }"
+      @click="$router.push('/listen')"
+    >
+      <div class="icon">
+        <font-awesome-icon icon="list" />
+      </div>
+      <span>Listen</span>
+    </button>
 
-      <button class="bottom-btn" :class="{ highlight: highlightBtn === 3 }" @click="$router.push('/fav')">
-        <div class=icon>
-          <font-awesome-icon icon='star'/>
-        </div> 
-        <span>Favoriten</span>
-      </button>
-   
-      <button class="bottom-btn" :class="{ highlight: highlightBtn === 4 }" @click="$router.push('/settings')">
-        <div class=icon>
-          <font-awesome-icon icon='gear'/> 
-        </div>
-        <span>Einstellungen</span>
-      </button>
-    
+    <button
+      class="bottom-btn"
+      :class="{ highlight: highlightBtn === 2 }"
+      @click="$router.push('/userArchive')"
+    >
+      <div class="icon">
+        <font-awesome-icon icon="box-archive" />
+      </div>
+      <span>Archiv</span>
+    </button>
+
+    <button
+      class="bottom-btn"
+      :class="{ highlight: highlightBtn === 3 }"
+      @click="$router.push('/fav')"
+    >
+      <div class="icon">
+        <font-awesome-icon icon="star" />
+      </div>
+      <span>Favoriten</span>
+    </button>
+
+    <button
+      class="bottom-btn"
+      :class="{ highlight: highlightBtn === 4 }"
+      @click="$router.push('/settings')"
+    >
+      <div class="icon">
+        <font-awesome-icon icon="gear" />
+      </div>
+      <span>Einstellungen</span>
+    </button>
   </div>
 </template>
 
@@ -36,8 +51,8 @@
 export default {
   name: "BottomBar",
   props: {
-    highlightBtn: { type: Number }
-  }
+    highlightBtn: { type: Number },
+  },
 };
 </script>
 
@@ -78,7 +93,8 @@ export default {
 }
 
 .bottom-btn .icon {
-  font-size: large; 
+  font-size: large;
   margin-bottom: 4px;
 }
 </style>
+

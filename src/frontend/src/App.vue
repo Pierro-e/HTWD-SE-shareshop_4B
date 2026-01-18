@@ -5,8 +5,8 @@
 </template>
 
 <script>
+import { api } from "./api/client";
 import { ref, provide, onMounted, watch } from "vue";
-import axios from "axios";
 
 // TODO: formal der Options API von Vue.js anpassen
 export default {
@@ -122,12 +122,9 @@ export default {
 
     async function getUser(id) {
       try {
-        const response = await axios.get(
-          `http://141.56.137.83:8000/nutzer/by-id`,
-          {
-            params: { id: id },
-          },
-        );
+        const response = await api.get(`/nutzer/by-id`, {
+          params: { id: id },
+        });
         return response.data;
       } catch (error) {
         console.error("Fehler beim Laden des Nutzers:", error);
@@ -138,7 +135,7 @@ export default {
     // Abfragen der möglichen Einheiten
     async function fetchUnits() {
       try {
-        const response = await axios.get(`http://141.56.137.83:8000/einheiten`);
+        const response = await api.get(`/einheiten`);
         const units = response.data;
         return units;
       } catch {
@@ -150,10 +147,11 @@ export default {
     // aktuelle Favoriten bekommen
     async function updateFavorites() {
       try {
-        const url = `http://141.56.137.83:8000/fav_produkte/nutzer/${user.value.id}`;
-        const response = await axios.get(url);
+        const url = `/fav_produkte/nutzer/${user.value.id}`;
+        const response = await api.get(url);
         favorites.value = response.data;
-        if (favorites.value.length == 0){ // keine Favs
+        if (favorites.value.length == 0) {
+          // keine Favs
           return 0;
         }
       } catch (error) {
@@ -167,8 +165,8 @@ export default {
     async function updateProducts() {
       try {
         const id = this.$route.params.listenId;
-        const response = await axios.get(
-          `http://141.56.137.83:8000/listen/${id}/produkte`,
+        const response = await api.get(
+          `/listen/${id}/produkte`,
         );
         products.value = response.data;
         //console.log(JSON.stringify(response.data, null, 2));

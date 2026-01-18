@@ -1,86 +1,90 @@
 <template>
-    <div class="create_account-container">
-        <div class="register-header">
-            <button class="button-cancel" @click="$router.push('/')">Zurück</button>
-            <h1>Registrieren</h1>
-        </div>
-        <form @submit.prevent="onSubmit">
-            <div class="create_email">
-                <label for="email" class="create_block">E-Mail: </label>
-                <input
-                    v-model="email"
-                    type="email"
-                    id="email"
-                    placeholder="E-Mail"
-                    required
-                >
-            </div>
-            <div class="create_name">
-                <label for="name" class="create_block">Vorname: </label>
-                <input
-                    v-model="name"
-                    type="text"
-                    id="name"
-                    placeholder="Name"
-                    required
-                >
-            </div>
-            <div class="create_pw">
-                <label for="password" class="create_block">Passwort: </label>
-                <input
-                    v-model="password"
-                    type="password"
-                    id="password"
-                    maxlength="30"
-                    placeholder="Passwort"
-                    required
-                >
-            </div>
-            <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-            <button class="button-submit" type="submit">Account erstellen</button>
-        </form>
+  <div class="create_account-container">
+    <div class="register-header">
+      <button class="button-cancel" @click="$router.push('/')">Zurück</button>
+      <h1>Registrieren</h1>
     </div>
+    <form @submit.prevent="onSubmit">
+      <div class="create_email">
+        <label for="email" class="create_block">E-Mail: </label>
+        <input
+          v-model="email"
+          type="email"
+          id="email"
+          placeholder="E-Mail"
+          required
+        />
+      </div>
+      <div class="create_name">
+        <label for="name" class="create_block">Vorname: </label>
+        <input
+          v-model="name"
+          type="text"
+          id="name"
+          placeholder="Name"
+          required
+        />
+      </div>
+      <div class="create_pw">
+        <label for="password" class="create_block">Passwort: </label>
+        <input
+          v-model="password"
+          type="password"
+          id="password"
+          maxlength="30"
+          placeholder="Passwort"
+          required
+        />
+      </div>
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+      <button class="button-submit" type="submit">Account erstellen</button>
+    </form>
+  </div>
 </template>
 
 <script>
-import axios from 'axios'
+import { api } from "../api/client";
 
 /**
  * Behandelt die Registrierung eines neuen Nutzers.
  */
 export default {
-  name: 'CreateAccount',
+  name: "CreateAccount",
   data() {
     return {
-      email: '',
-      name: '',
-      password: '',
-      errorMessage: ''
-    }
+      email: "",
+      name: "",
+      password: "",
+      errorMessage: "",
+    };
   },
   methods: {
     /**
      * Sendet die Registrierungsdaten an die API und behandelt die Antwort.
      */
     async onSubmit() {
-      this.errorMessage = ''
+      this.errorMessage = "";
       try {
-        const response = await axios.post('http://141.56.137.83:8000/nutzer_create', {
+        const response = await api.post("/nutzer_create", {
           email: this.email,
           name: this.name,
           passwort_hash: this.password,
-        })
-        this.$router.push('/')
+        });
+        this.$router.push("/");
       } catch (error) {
-        if (error.response && error.response.data && error.response.data.detail) {
-          this.errorMessage = error.response.data.detail
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.detail
+        ) {
+          this.errorMessage = error.response.data.detail;
         } else {
-          this.errorMessage = 'Ein unbekannter Fehler ist aufgetreten.'
+          this.errorMessage = "Ein unbekannter Fehler ist aufgetreten.";
         }
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>

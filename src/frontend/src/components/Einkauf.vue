@@ -1,15 +1,14 @@
 <template>
   <AppHeader :title="list_name">
-
     <template #left>
       <button @click="einkauf_abbrechen" class="button-cancel">
-        <font-awesome-icon icon='xmark'/>
+        <font-awesome-icon icon="xmark" />
       </button>
     </template>
 
     <template #right>
       <button @click="prepare_purchase" class="button button-submit">
-        <font-awesome-icon icon='check'/>
+        <font-awesome-icon icon="check" />
       </button>
     </template>
   </AppHeader>
@@ -24,7 +23,7 @@
       :key="index"
       :product="product"
       :onSettings="product_settings"
-      :hideSettings=true
+      :hideSettings="true"
       @click="product.erledigt = !product.erledigt"
     >
       <template #left>
@@ -56,13 +55,11 @@
     </div>
   </PopUp>
 
-  <BottomBar 
-    :highlight-btn="1"
-  />
+  <BottomBar :highlight-btn="1" />
 </template>
 
 <script>
-import axios from "axios";
+import { api } from "../api/client";
 import AppHeader from "./AppHeader.vue";
 import ProductCard from "./ProductCard.vue";
 import BottomBar from "./BottomBar.vue";
@@ -76,7 +73,7 @@ export default {
     AppHeader,
     ProductCard,
     BottomBar,
-    PopUp
+    PopUp,
   },
   data() {
     return {
@@ -93,9 +90,7 @@ export default {
     async get_list(id) {
       this.errorMessage = "";
       try {
-        const response = await axios.get(
-          `http://141.56.137.83:8000/listen/by-id/${id}`,
-        );
+        const response = await api.get(`/listen/by-id/${id}`);
         this.list_name = response.data.name;
       } catch (error) {
         if (error.response?.data?.detail) {
@@ -107,12 +102,10 @@ export default {
       this.loadingActive = false;
     },
 
-   async get_products(id) {
+    async get_products(id) {
       this.errorMessage = "";
       try {
-        const response = await axios.get(
-          `http://141.56.137.83:8000/listen/${id}/produkte`,
-        );
+        const response = await api.get(`/listen/${id}/produkte`);
         this.listenprodukte = response.data;
         //console.log(JSON.stringify(response.data, null, 2));
 
@@ -159,8 +152,8 @@ export default {
       const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
 
       if (erledigteProdukte.length === 0) {
-          alert("Es sind keine Produkte abgehakt!");
-          return;
+        alert("Es sind keine Produkte abgehakt!");
+        return;
       }
 
       this.totalPrice = 0;
@@ -170,7 +163,11 @@ export default {
     },
 
     set_price() {
-      if (this.totalPrice === null || isNaN(this.totalPrice) || this.totalPrice < 0) {
+      if (
+        this.totalPrice === null ||
+        isNaN(this.totalPrice) ||
+        this.totalPrice < 0
+      ) {
         this.errorMessage = "Bitte geben Sie einen gültigen Gesamtpreis ein.";
         return;
       }
@@ -184,51 +181,50 @@ export default {
       const price = this.totalPrice;
       const erledigteProdukte = this.listenprodukte.filter((p) => p.erledigt);
       try {
-        const response = await axios.post(
-          `http://141.56.137.83:8000/create/einkaufsarchiv/list/${list_id}`,
+        const response = await api.post(
+          `/create/einkaufsarchiv/list/${list_id}`,
           {
             eingekauft_von: this.userData.id,
             gesamtpreis: price,
-          }
+          },
         );
 
         const purchase_id = response.data.einkauf_id;
 
-        await Promise.all(erledigteProdukte.map(produkt =>
-          axios.post(
-            `http://141.56.137.83:8000/create/eingekaufte_produkte/einkauf/${purchase_id}`,
-            {
+        await Promise.all(
+          erledigteProdukte.map((produkt) =>
+            api.post(`/create/eingekaufte_produkte/einkauf/${purchase_id}`, {
               produkt_id: produkt.produkt_id,
               produkt_menge: produkt.produkt_menge,
               einheit_id: produkt.einheit_id,
               hinzugefuegt_von: produkt.hinzugefügt_von,
               beschreibung: produkt.beschreibung,
-            }
-          )
-        ));
+            }),
+          ),
+        );
 
-        await Promise.all(erledigteProdukte.map(produkt =>
-          axios.post(
-            `http://141.56.137.83:8000/bedarfsvorhersage_create/nutzer/${produkt.hinzugefügt_von}`,
-            {
-              produkt_id: produkt.produkt_id,
-            }
-          )
-        ));
+        await Promise.all(
+          erledigteProdukte.map((produkt) =>
+            api.post(
+              `/bedarfsvorhersage_create/nutzer/${produkt.hinzugefügt_von}`,
+              {
+                produkt_id: produkt.produkt_id,
+              },
+            ),
+          ),
+        );
 
-        await Promise.all(erledigteProdukte.map(produkt =>
-          axios.delete(
-            `http://141.56.137.83:8000/listen/${list_id}/produkte/${produkt.produkt_id}`,
-            {
+        await Promise.all(
+          erledigteProdukte.map((produkt) =>
+            api.delete(`/listen/${list_id}/produkte/${produkt.produkt_id}`, {
               data: {
                 hinzugefügt_von: produkt.hinzugefügt_von,
-              }
-            }
-          )
-        ));
+              },
+            }),
+          ),
+        );
 
         this.$router.push(`/list/${list_id}`);
-
       } catch (error) {
         if (
           error.response &&
@@ -273,6 +269,6 @@ export default {
 }
 
 .error {
-  z-index: 1100;   /* höher als der Header */
+  z-index: 1100; /* höher als der Header */
 }
 </style>

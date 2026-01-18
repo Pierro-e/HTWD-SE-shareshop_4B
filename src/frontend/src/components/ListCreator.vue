@@ -1,10 +1,8 @@
 <template>
-    <AppHeader :title="String('Neue Liste')">
-    <template #left>
-    </template>
+  <AppHeader :title="String('Neue Liste')">
+    <template #left> </template>
 
-    <template #right>
-    </template>
+    <template #right> </template>
   </AppHeader>
 
   <form @submit.prevent="onSubmit">
@@ -19,8 +17,10 @@
         />
       </div>
     </div>
-    
-    <button class="button-cancel" @click="$router.push(`/listen`)">Abbrechen</button>
+
+    <button class="button-cancel" @click="$router.push(`/listen`)">
+      Abbrechen
+    </button>
     <button class="button-submit" type="submit">Erstellen</button>
   </form>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import axios from "axios";
+import { api } from "../api/client";
 import AppHeader from "./AppHeader.vue";
 import BottomBar from "./BottomBar.vue";
 
@@ -36,7 +36,7 @@ export default {
   inject: ["user"],
   components: {
     AppHeader,
-    BottomBar
+    BottomBar,
   },
   data() {
     return {
@@ -47,8 +47,8 @@ export default {
   methods: {
     async onSubmit() {
       this.errorMessage = "";
-      
-      if (this.name === ""){
+
+      if (this.name === "") {
         this.errorMessage = "Listenname darf nicht leer sein";
         return;
       }
@@ -56,12 +56,12 @@ export default {
       try {
         // neue Liste erstellen
         const date = new Date(Date.now());
-        const ISODate = date.toISOString().split('T')[0];
+        const ISODate = date.toISOString().split("T")[0];
 
-        const res = await axios.post("http://141.56.137.83:8000/listen", {
+        const res = await api.post("/listen", {
           name: this.name,
           ersteller: this.user.id,
-          datum: ISODate
+          datum: ISODate,
         });
 
         // neu erstellte Liste aufrufen
@@ -83,17 +83,17 @@ export default {
 </script>
 
 <style scoped>
-  @media (min-width: 480px) {
-    input {
-      width: 300px;
-    }
+@media (min-width: 480px) {
+  input {
+    width: 300px;
   }
+}
 
-  .error {
-    width: 90%;
-  }
+.error {
+  width: 90%;
+}
 
-  form label {
-    width: 40px;
-  }
+form label {
+  width: 40px;
+}
 </style>

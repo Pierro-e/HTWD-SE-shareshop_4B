@@ -10,7 +10,9 @@
       label="Einheit"
     />
     <button type="submit" class="button-submit">speichern</button>
-    <button type="button" class="button-delete" @click="delete_fav">löschen</button>
+    <button type="button" class="button-delete" @click="delete_fav">
+      löschen
+    </button>
   </form>
 </template>
 
@@ -18,7 +20,7 @@
 import TextInput from "../input/TextInput.vue";
 import NumInput from "../input/NumInput.vue";
 import SelectObjectArray from "../input/SelectObjectArray.vue";
-import axios from "axios";
+import { api } from "../../api/client";
 
 export default {
   inject: ["fetchUnits", "user", "updateFavorites"],
@@ -33,39 +35,38 @@ export default {
   methods: {
     async alter_fav() {
       const url =
-        "http://141.56.137.83:8000/fav_produkte_update/nutzer/" +
+        "/fav_produkte_update/nutzer/" +
         this.user.id +
         "/produkt/" +
         this.fav.produkt_id;
 
-      const response = await axios.put(url, this.fav_copy);
-      
+      const response = await api.put(url, this.fav_copy);
+
       this.$parent.$emit("close"); // Popup schließen
       this.$parent.$emit("update"); // Fav updaten
     },
     async delete_fav() {
       const url =
-        "http://141.56.137.83:8000/fav_produkte_delete/nutzer/" +
+        "/fav_produkte_delete/nutzer/" +
         this.user.id +
         "/produkt/" +
         this.fav.produkt_id;
-      const response = await axios.delete(url);
+      const response = await api.delete(url);
 
       this.$parent.$emit("close"); // Popup schließen
       this.$parent.$emit("update"); // Fav updaten
     },
   },
   data() {
-    return { 
+    return {
       units: [],
-      fav_copy: {} 
+      fav_copy: {},
     };
   },
   async mounted() {
     this.fav_copy = { ...this.fav }; // Arbeitskopie
     try {
       this.units = await this.fetchUnits();
-
     } catch (error) {
       console.log(error);
       return;
@@ -85,3 +86,4 @@ form {
   margin-bottom: 1.25rem;
 }
 </style>
+
