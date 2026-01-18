@@ -258,3 +258,17 @@ def test_get_fav_produkte_by_nutzer_success(mock_session_local):
     assert len(result) == 2
     assert result[0].nutzer_id == 1
     assert result[0].produkt_name == 'Apfel'
+
+@patch('share_shop_api.SessionLocal')
+def test_get_fav_produkte_by_nutzer_not_found(mock_session_local):
+    """ Testet das Verhalten beim Abrufen der Favoriten-Produkte eines nicht existierenden Nutzers. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_db.query.return_value.filter.return_value.first.return_value = None  # Nutzer nicht gefunden
+
+    # Act & Assert
+    with pytest.raises(Exception) as exc_info:
+        get_fav_produkte_by_nutzer(999, db=mock_db)
+    assert "Nutzer nicht gefunden" in str(exc_info.value)
