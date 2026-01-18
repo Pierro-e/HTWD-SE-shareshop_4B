@@ -39,9 +39,9 @@ Base = declarative_base()
 class Nutzer(Base):
     __tablename__ = "Nutzer"
     id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    name = Column(String, nullable=False)
-    passwort_hash = Column(String, nullable=False)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    name = Column(String(20), nullable=False)
+    passwort_hash = Column(String(255), nullable=False)
     theme = Column(Integer, default=0)
     color = Column(Integer, default=0)
     decaydays = Column(Numeric(10, 2), nullable=False, default=7.00)
@@ -92,7 +92,7 @@ class ListeProdukte(Base):
     )
     produkt_menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, nullable=True)
-    beschreibung = Column(String, nullable=True)
+    beschreibung = Column(String(255), nullable=True)
 
 
 class FavProdukte(Base):
@@ -103,7 +103,7 @@ class FavProdukte(Base):
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
-    beschreibung = Column(String, nullable=True)
+    beschreibung = Column(String(255), nullable=True)
 
 
 class Bedarfsvorhersage(Base):
@@ -146,7 +146,7 @@ class EingekaufteProdukte(Base):
     hinzugefuegt_von = Column(
         Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True
     )
-    beschreibung = Column(String, nullable=True)
+    beschreibung = Column(String(255), nullable=True)
 
 
 class Kostenaufteilung(Base):
