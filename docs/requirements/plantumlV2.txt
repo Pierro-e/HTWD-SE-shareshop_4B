@@ -64,7 +64,6 @@ class eingekaufte_Produkte {
   +beschreibung
 }
 
-' === Neue Tabellen ===
 class fav_Produkte {
   +nutzer_id
   +produkt_id
