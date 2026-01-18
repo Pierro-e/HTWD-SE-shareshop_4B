@@ -76,3 +76,17 @@ def test_get_nutzer_by_id_success(mock_session_local):
     # Assert
     assert result.id == 1
     assert result.email == 'user1@example.com'
+
+@patch('share_shop_api.SessionLocal')
+def test_get_nutzer_by_id_not_found(mock_session_local):
+    """ Testet das Verhalten beim Abrufen eines nicht existierenden Nutzers nach ID. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_db.query.return_value.filter.return_value.first.return_value = None
+
+    # Act & Assert
+    with pytest.raises(Exception) as exc_info:
+        get_nutzer_by_id(999, db=mock_db)
+    assert "Nutzer nicht gefunden" in str(exc_info.value)
