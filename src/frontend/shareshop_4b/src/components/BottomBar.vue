@@ -42,6 +42,7 @@
 <script>
 /**
  * Erstellt die untere Leiste, welche Zugriff auf die Hauptseiten ermöglicht.
+ * 
  * @vue-prop {number} highlightBtn Nr. (1-5) des aktiven Buttons, der hervorgehoben wird
  */
 
