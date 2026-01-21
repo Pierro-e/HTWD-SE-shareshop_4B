@@ -195,14 +195,12 @@ export default {
         return;
       }
       this.commit_purchase = false;
-      this.einkauf_abschließen();
-      
-      
+      this.einkauf_abschliessen();
     },
     /**
      * Nutzer möchte Einkauf endgültig abschließen (letzte Funktion --> danach ist der Einkauf vollzogen und gespeichert)
      */
-    async einkauf_abschließen() {
+    async einkauf_abschliessen() {
       this.errorMessage = "";
       const list_id = this.list_id || this.$route.params.listenId;
       const price = this.totalPrice;
@@ -215,7 +213,6 @@ export default {
             gesamtpreis: price,
           }
         );
-          
 
         const purchase_id = response.data.einkauf_id;
 
@@ -275,8 +272,8 @@ export default {
      * @param einkauf_id {number} - ID des getätigten Einkaufs
      */
     async kosten_aufteilen(price, einkauf_id){
-    /*Kostenaufteilung für allemitglider, die etwas zur liste hinzugefügt haben und 
-      dieses Produkt eingekauft wurde*/
+      /* Kostenaufteilung für alle Mitglider, die etwas zur Liste hinzugefügt haben und 
+      dieses Produkt eingekauft wurde */
       try {
         // Eingekaufte Produkte laden
         const response = await axios.get(
@@ -315,12 +312,8 @@ export default {
         console.error("Fehler bei kosten_aufteilen:", error);
         throw error;
       }
-
-
       /*
-
-      ansatz für Kostenaufteilung für jedes Mitglied der Liste außer Einkäufer
-      
+      Ansatz für Kostenaufteilung für jedes Mitglied der Liste außer Einkäufer
       try {
         const response = await axios.get (`http://141.56.137.83:8000/listen/${list_id}/mitglieder`);
         
@@ -331,8 +324,7 @@ export default {
         }
 
         const price_per_member = price / members.length;
-        
-
+      
         await Promise.all(
           members
             .filter(m => m.nutzer_id !== this.userData.id)
@@ -350,10 +342,8 @@ export default {
         console.error("Fehler bei kosten_aufteilen:", error);
 
         throw error;
-      }*/
-
-
-      
+      }
+      */
     },
     product_settings(produkt) {
       // nichts machen

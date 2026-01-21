@@ -1,5 +1,8 @@
-# Vue 3 + Vite
+# ShareShop Frontend
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Das Frontend des ShareShop von Team 4B geschrieben in Vue 3 + Vite.
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## Links
+- Github: [https://github.com/Pierro-e/HTWD-SE-shareshop_4B/](https://github.com/Pierro-e/HTWD-SE-shareshop_4B/)
+- Github Projects: [https://github.com/users/Pierro-e/projects/3/](https://github.com/users/Pierro-e/projects/3)
+- Miro: [https://miro.com/app/board/uXjVIEJUxFI=/](https://miro.com/app/board/uXjVIEJUxFI=/)
