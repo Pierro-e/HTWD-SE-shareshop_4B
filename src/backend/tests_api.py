@@ -45,6 +45,15 @@ def create_mock_fav_produkt(nutzer_id, produkt_id, produkt_name, menge=None, ein
     mock.beschreibung = beschreibung
     return mock
 
+# Hilfsfunktion zum Erstellen von Dummy-EingekaufteProdukte-Objekten
+def create_mock_eingekauftes_produkt(einkauf_id, produkt_id, hinzugefuegt_von, menge, preis):
+    mock = MagicMock()
+    mock.einkauf_id = einkauf_id
+    mock.produkt_id = produkt_id
+    mock.hinzugefuegt_von = hinzugefuegt_von
+    mock.menge = menge
+    mock.preis = preis
+    return mock
 ######################################## Tests für Nutzer-Endpunkte############################################################
 @patch('share_shop_api.SessionLocal')
 def test_get_nutzer_all_success(mock_session_local):
@@ -288,7 +297,7 @@ def test_delete_nutzer_success(mock_session_local):
     assert result.status_code == 204
     mock_db.delete.assert_called_once_with(mock_nutzer)
     mock_db.commit.assert_called_once()
-    
+
 @patch('share_shop_api.SessionLocal')
 def test_delete_nutzer_not_found(mock_session_local):
     # Arrange
@@ -301,3 +310,4 @@ def test_delete_nutzer_not_found(mock_session_local):
     with pytest.raises(Exception) as exc_info:
         delete_nutzer(999, db=mock_db)
     assert "Nutzer nicht gefunden" in str(exc_info.value)
+
