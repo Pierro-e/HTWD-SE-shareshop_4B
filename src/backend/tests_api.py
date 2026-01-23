@@ -142,6 +142,8 @@ def test_create_nutzer_already_exists(mock_session_local):
         create_nutzer(nutzer_data, db=mock_db)
     assert "Nutzeremail existiert bereits" in str(exc_info.value)
 
+     
+
 
 ########################### Tests für Produkte-Endpunkte###############################
 
@@ -272,3 +274,22 @@ def test_get_fav_produkte_by_nutzer_not_found(mock_session_local):
     with pytest.raises(Exception) as exc_info:
         get_fav_produkte_by_nutzer(999, db=mock_db)
     assert "Nutzer nicht gefunden" in str(exc_info.value)
+
+# Tests für DELETE-Endpunkte
+
+@patch('share_shop_api.SessionLocal')
+def test_delete_nutzer_success(mock_session_local):
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_nutzer = create_mock_nutzer(1, 'user@example.com', 'User')
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_nutzer
+
+    # Act
+    result = delete_nutzer(1, db=mock_db)
+
+    # Assert
+    assert result.status_code == 204
+    mock_db.delete.assert_called_once_with(mock_nutzer)
+    mock_db.commit.assert_called_once()
