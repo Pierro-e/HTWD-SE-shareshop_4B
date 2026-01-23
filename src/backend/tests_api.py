@@ -342,3 +342,28 @@ def test_get_eingekaufte_produkte_success(mock_session_local):
     assert len(result) == 2
     assert result[0].einkauf_id == 1
     assert result[0].produkt_id == 1
+
+@patch('share_shop_api.SessionLocal')
+def test_get_eingekaufte_produkte_empty(mock_session_local):
+    """ Testt das Abrufen der eingekauften Produkte eines Einkaufs, wenn keine Produkte vorhanden sind. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_einkauf = MagicMock()
+    mock_einkauf.einkauf_id = 1
+
+    # Mock query mit side_effect für zwei Aufrufe
+    mock_query1 = MagicMock()
+    mock_query1.filter.return_value.first.return_value = mock_einkauf
+
+    mock_query2 = MagicMock()
+    mock_query2.join.return_value.outerjoin.return_value.outerjoin.return_value.filter.return_value.all.return_value = []
+
+    mock_db.query.side_effect = [mock_query1, mock_query2]
+
+    # Act
+    result = get_eingekaufte_produkte(1, db=mock_db)
+
+    # Assert
+    assert result == []
