@@ -11,7 +11,7 @@ with patch.dict(os.environ, {
     'DB_NAME': 'test'
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer
-    from share_shop_api import delete_nutzer
+    from share_shop_api import delete_nutzer, get_eingekaufte_produkte
     from share_shop_api import NutzerCreate, ProduktCreate
 
 # Hilfsfunktion zum Erstellen von Dummy-Nutzer-Objekten (als MagicMock mit Attributen)
@@ -311,3 +311,34 @@ def test_delete_nutzer_not_found(mock_session_local):
         delete_nutzer(999, db=mock_db)
     assert "Nutzer nicht gefunden" in str(exc_info.value)
 
+################Tests für Eingekaufte Produkte############################
+
+@patch('share_shop_api.SessionLocal')
+def test_get_eingekaufte_produkte_success(mock_session_local):
+    """ Testet das erfolgreiche Abrufen der eingekauften Produkte eines Einkaufs. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_einkauf = MagicMock()
+    mock_einkauf.einkauf_id = 1
+
+    mock_produkt1 = create_mock_eingekauftes_produkt(1, 1, 1, 2.0, 5.50)
+    mock_produkt2 = create_mock_eingekauftes_produkt(1, 2, 2, 1.0, 3.20)
+
+    # Mock query mit side_effect für zwei Aufrufe
+    mock_query1 = MagicMock()
+    mock_query1.filter.return_value.first.return_value = mock_einkauf
+
+    mock_query2 = MagicMock()
+    mock_query2.join.return_value.outerjoin.return_value.outerjoin.return_value.filter.return_value.all.return_value = [mock_produkt1, mock_produkt2]
+
+    mock_db.query.side_effect = [mock_query1, mock_query2]
+
+    # Act
+    result = get_eingekaufte_produkte(1, db=mock_db)
+
+    # Assert
+    assert len(result) == 2
+    assert result[0].einkauf_id == 1
+    assert result[0].produkt_id == 1
