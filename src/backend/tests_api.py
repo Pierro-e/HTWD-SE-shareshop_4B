@@ -54,6 +54,14 @@ def create_mock_eingekauftes_produkt(einkauf_id, produkt_id, hinzugefuegt_von, m
     mock.menge = menge
     mock.preis = preis
     return mock
+
+# Hilfsunktion zum Erstellen von Dummy-Kostenaufteilung-Objekten
+def create_mock_kostenaufteilung(empfaenger_id, schuldner_id, betrag):
+    mock = MagicMock()
+    mock.empfaenger_id = empfaenger_id
+    mock.schuldner_id = schuldner_id
+    mock.betrag = betrag
+    return mock
 ######################################## Tests für Nutzer-Endpunkte############################################################
 @patch('share_shop_api.SessionLocal')
 def test_get_nutzer_all_success(mock_session_local):
