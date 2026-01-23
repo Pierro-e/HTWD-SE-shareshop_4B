@@ -11,6 +11,7 @@ with patch.dict(os.environ, {
     'DB_NAME': 'test'
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer
+    from share_shop_api import delete_nutzer
     from share_shop_api import NutzerCreate, ProduktCreate
 
 # Hilfsfunktion zum Erstellen von Dummy-Nutzer-Objekten (als MagicMock mit Attributen)
@@ -32,12 +33,6 @@ def create_mock_produkt(id, name):
     mock.name = name
     return mock
 
-# Hilfsfunktion zum Erstellen von Dummy-Produkt-Objekten
-def create_mock_produkt(id, name):
-    mock = MagicMock()
-    mock.id = id
-    mock.name = name
-    return mock
 # Hilfsfunktion zum Erstellen von Dummy-FavProdukte-Objekten
 def create_mock_fav_produkt(nutzer_id, produkt_id, produkt_name, menge=None, einheit_id=None, einheit_abk=None, beschreibung=None):
     mock = MagicMock()
