@@ -99,13 +99,14 @@ Das User Interface wird mit link:https://vuejs.org/[Vue.js] entwickelt
 und mit link:https://vite.dev/[Vite] gebaut.
 Vue.js ist ein modernes Framework für Web Anwendungen (SPA),
 welches Modulariät durch Single File Components stark begünstigt.
+Vue.js baut auf JavaScript, HTML und CSS auf.
 Zudem können mit Vite gebaute Anwendungen können von einem Nginx Server gehostet werden,
 welcher wiederum auf der bereitgestellten VM problemlos läuft.
 
 === API
 
 Die Schnittstelle soll dem Architektur prinzip einer REST-API folgen.
-Hierfür bietet es sich an link:https://fastapi.tiangolo.com/[FastAPI] zu nutzen.
+Hierfür bietet es sich an link:https://fastapi.tiangolo.com/[FastAPI] (Python) zu nutzen.
 Dies kann mit link:https://uvicorn.dev/[Uvicorn] zugänglich gemacht werden.
 Uvicorn läuft auf der bereitgestellten VM.
 Zudem harmoniert FastAPI sehr gut mit MySQL und SQLAlchemy.
