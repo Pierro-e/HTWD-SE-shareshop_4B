@@ -51,6 +51,7 @@ Deshalb verzichten wir darauf Web-Client spezifische Optimierungen zu nutzen
 === Standort
 
 Die Anwendung muss kompatibel mit den Anforderungen des deutschen Gesetzes sein.
+Dazu zählt zum Beispiel auch die link:https://dsgvo-gesetz.de/[DSGVO].
 
 === Teilzeit
 
