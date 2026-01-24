@@ -48,6 +48,10 @@ Deshalb verzichten wir darauf Web-Client spezifische Optimierungen zu nutzen
 
 //[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
 
+=== Standort
+
+Die Anwendung muss kompatibel mit den Anforderungen des deutschen Gesetzes sein.
+
 === Teilzeit
 
 Alle Team-Mitglieder bearbeiten das Projekt in Teilzeit.
