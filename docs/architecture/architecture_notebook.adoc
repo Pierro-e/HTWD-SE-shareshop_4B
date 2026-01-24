@@ -5,44 +5,10 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Architekturziele
 
-=== Modularität
-
-Um eine bessere Wartbarkeit und Skalierung des komplexen Systems zu ermöglichen,
-wird die Anwendung grob in Frontend (User Interface) und Backend (Funktionalitäten) geteilt.
-Diese wiederum sind in einzelne Komponenten / Module aufgeteilt die modulare Aufgaben erfüllen.
-Um dies zu gewährleisten,
-benutzen wir Frameworks,
-die spezialisierte Aufgaben lösen (link:https://www.sqlalchemy.org/[SQLAlchemy])
-oder die Modulärität stark begünstigen (link:https://vuejs.org/[Vue.js]).
-
-=== Offline
-
-Die primäre Nutzungsumgebung sind geschlossene Gebäude wie Supermärkte,
-in denen nicht immer eine stabile Internetverbindung angenommen werden kann.
-Deshalb muss unsere Software ihre grundsätzlichen Funktionalität auch ohne Internet ausführen können.
-Oder die zeitweise Trennung vom Internet vor dem Nutzer verstecken.
-Hierfür bietet sich eine link:https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps[PWA] an.
-
-=== Platformunabhängig
-
-Endgeräte kommen mit vielen Verschiedenen Betriebssystemen.
-Die Software sollte so viele Platformen wie möglich unterstützen.
-Auch dieses Ziel wird durch eine link:https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps[PWA] erfüllt.
-
-=== Responsive
-
-Displays als User Interface kommen in vielen verschiedenen Varianten.
-Die Anwendung sollte möglichst alle typischen Standards abdecken und
-so für einge große Menge an Endgeräten eine angenehme User Experience ermöglichen.
-Um dies umzusetzen,
-nutzen wird die Resposive-Fähigkeiten von Web Anwendungen.
-
-=== Kompatibilität
-
-Kompatibilität ist ein wichtiger Grundsatz,
-um nachhaltige Anwendungen zu entwickeln.
-Dabei sollen diese einen höheren Stellenwerte als Funktionalität haben.
-Deshalb verzichten wir darauf Web-Client spezifische Optimierungen zu nutzen
+- Langlebigkeit
+- Sicherheit & Schutz
+- Minimalismus
+- Unabhängigkeit
 
 == Annahmen und Abhängigkeiten
 
@@ -85,11 +51,49 @@ wird sie als Technologie-Treiber identifiziert.
 Datenbank, User Interface und API mussen miteinander kompatibel sein.
 
 == Architektur-relevante Anforderungen
-//Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
 
-Die arichitektur-relevanten Anforderungen sind in der <<anforderungen, Vision.adoc>> unter Produktüberblick beschrieben.
-// links funktionieren erstmal nur in Belegabgabe.adoc
+=== Kompatibilität (sehr hoch)
 
+Kompatibilität ist ein wichtiger Grundsatz,
+um nachhaltige Anwendungen zu entwickeln
+und die Langlebigkeit der Architektur zu unterstützen.
+Dabei sollen diese einen höheren Stellenwerte als Funktionalität haben.
+Deshalb verzichten wir darauf Web-Client spezifische Optimierungen zu nutzen
+
+=== Platformunabhängig (sehr hoch)
+
+Endgeräte kommen mit vielen Verschiedenen Betriebssystemen.
+Die Software sollte so viele Platformen wie möglich unterstützen,
+also möglichst unabhängig von den Präferenzen des Nutzers funktionieren.
+Dieses Ziel wird durch link:https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps[PWAs] erfüllt.
+
+=== Responsive (hoch)
+
+Displays als User Interface kommen in vielen verschiedenen Varianten.
+Die Anwendung sollte möglichst alle typischen Standards abdecken und
+so für einge große Menge an Endgeräten eine angenehme User Experience ermöglichen.
+Um dies umzusetzen,
+nutzen wird die Resposive-Fähigkeiten von Web Anwendungen.
+
+=== Modularität (mittel)
+
+Um eine bessere Wartbarkeit und Skalierung des komplexen Systems zu ermöglichen
+und damit die Langlebigkeit der entwickelten Architektur zu unterstützen,
+wird die Anwendung grob in Frontend (User Interface) und Backend (Funktionalitäten) geteilt.
+Diese wiederum sind in einzelne Komponenten / Module aufgeteilt die modulare Aufgaben erfüllen.
+Um dies zu gewährleisten,
+benutzen wir Frameworks,
+die spezialisierte Aufgaben lösen (link:https://www.sqlalchemy.org/[SQLAlchemy])
+oder die Modulärität stark begünstigen (link:https://vuejs.org/[Vue.js]).
+
+=== Offline (mittel)
+
+Die primäre Nutzungsumgebung sind geschlossene Gebäude wie Supermärkte,
+in denen nicht immer eine stabile Internetverbindung angenommen werden kann.
+Deshalb muss unsere Software ihre grundsätzlichen Funktionalität auch ohne Internet ausführen können
+und somit unabhängig von der gegebenen Internetverbindung funktionieren.
+Oder die zeitweise Trennung vom Internet vor dem Nutzer verstecken.
+Hierfür bietet sich eine link:https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps[PWA] an.
 
 == Entscheidungen, Nebenbedingungen und Begründungen
 //[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
