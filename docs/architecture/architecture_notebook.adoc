@@ -136,6 +136,7 @@ und erleichtert sowohl die Entwicklung als auch die Fehlersuche und Erweiterung.
 * Implementiert die Geschäftslogik
 * Überprüft, verarbeitet und validiert Anfragen aus dem Frontend
 * schreibt und holt zum/vom Backend
+* link:http://141.56.137.83:8000/docs[ausführliche Dokumentation]
 
 === Backend - Datenbankmanagementsystem
 
