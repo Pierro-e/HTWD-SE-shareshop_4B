@@ -1,20 +1,23 @@
-= Architecture Notebook: {project-name}
+= Architecture Notebook
 include::../_includes/default-attributes.inc.adoc[]
 
-== Zweck
-Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Begründungen, wesentliche Elemente und andere übergreifende Aspekte des Systems, die Einfluss auf Entwurf und Implementierung haben.
-
-//Hinweise: Bearbeiten Sie immer die Abschnitte 2-6 dieser Vorlage. Nachfolgende Abschnitte sind empfohlen, aber optional und sollten je nach Umfang der künftigen Wartungsarbeiten, Fähigkeiten des Entwicklungsteams und Bedeutung anderer architektureller Belange.
-
-//Anmerkung: Die Architektur legt wesentliche EINSCHRÄNKUNGEN für den Systementwurf fest und ist ein Schlüssel für die Erfüllung nicht-funktionaler Eigenschaften!
-
+// Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Begründungen, wesentliche Elemente und andere übergreifende Aspekte des Systems, die Einfluss auf Entwurf und Implementierung haben.
 
 == Architekturziele
 //Hinweise: Beschreiben Sie den zentralen Ansatz für ihre Architektur. Identifizieren Sie alle Aspekte, die die Philosophie beeinflussen, z.B. komplexe Auslieferung Aspekte, Anpassung von Altsystemen oder besondere Geschwindigkeitsanforderungen. Muss es besonders robust sein, um eine langfristige Wartung und Pflege zu ermöglichen?
 
 //Formulieren Sie eine Reihe von Zielen, die die Architektur in ihrer Struktur und ihrem Verhalten erfüllen muss. Identifizieren Sie kritische Fragen, die von der Architektur adressiert werden müssen, z.B. besondere Hardware-Abhängigkeiten, die vom Rest des Systems isoliert werden sollten oder Sicherstellung der Funktionsfähigkeit unter besonderen Bedingungen (z.B. Offline-Nutzung).
 
-- Trennung von Frontend (Vue.js) und Backend (Python mit FastAPI)
+=== Modularität
+
+Um eine bessere Wartbarkeit und Skalierung des komplexen Systems zu ermöglichen,
+wird die Anwendung grob in Frontend (User Interface) und Backend (Funktionalitäten) geteilt.
+Diese wiederum sind in einzelne Komponenten / Module aufgeteilt die modulare Aufgaben erfüllen.
+Um dies zu gewährleisten,
+benutzen wir Frameworks,
+die spezialisierte Aufgaben lösen (link:https://www.sqlalchemy.org/[SQLAlchemy])
+oder die Modulärität stark begünstigen (link:https://vuejs.org/[Vue.js]).
+
 - Offline-Fähigkeit (z.B. mit PWA-Funktionalität) für Einkauf ohne Internet
 - Hardware/Betriebssystem unabhängige Architektur, sodass die Anwendung auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann
 - responsive UI für Desktop und Mobile zur flexiblen Nutzung (Größe der Website passt sich automatisch an)
