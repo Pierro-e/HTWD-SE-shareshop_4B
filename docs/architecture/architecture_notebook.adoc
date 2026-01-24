@@ -159,12 +159,9 @@ image::api-component-diagram.png[alt="Component: API"]
 
 image::db-component-diagram.png[alt="Component: Datenbank"]
 
-=== Verteilungsdiagramm (Deployment Diagramm)
+=== Verteilungsdiagramm
 //Beschreibt die physischen Knoten (Rechner) des Systems und Komponenten, die in diesen Knoten ausgeführt werden. Diese Sicht wird nicht benötigt, wenn das System in einem einzelnen Prozess oder Thread ausgeführt wird.
 
-- Server-Setup:
-* Ein Server (VM der Hochschule) beherbergt:
-** Nginx-Webserver für das Frontend (stellt SPA bereit)
-** FastAPI-Backend  via uvicorn
-** MySQL-Datenbank  lokal installiert
-- Nutzer greifen über Webbrowser (PC, Tablet, Smartphone) auf das System zu
+Alle 3 Components (User Interface, API & Datenbank) können auf dedizierten Knoten gehostet werden.
+Es wird aber auch ein Docker-Compose-File zur Verfügung gestellt,
+der alle Components auf einem Knoten installiert.
