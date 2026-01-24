@@ -273,8 +273,8 @@ export default {
       dieses Produkt eingekauft wurde */
       try {
         // Eingekaufte Produkte laden
-        const response = await axios.get(
-          `http://141.56.137.83:8000/eingekaufte_produkte/einkauf/${einkauf_id}`
+        const response = await api.get(
+          `/eingekaufte_produkte/einkauf/${einkauf_id}`
         );
 
         const produkte = response.data;
@@ -297,7 +297,7 @@ export default {
           beteiligteNutzerIds
             .filter(nutzerId => nutzerId !== this.userData.id)
             .map(nutzerId =>
-              axios.post("http://141.56.137.83:8000/kostenaufteilung", {
+              api.post("/kostenaufteilung", {
                 empfaenger_id: this.userData.id,
                 schuldner_id: nutzerId,
                 betrag: price_per_member
@@ -312,7 +312,7 @@ export default {
       /*
       Ansatz für Kostenaufteilung für jedes Mitglied der Liste außer Einkäufer
       try {
-        const response = await axios.get (`http://141.56.137.83:8000/listen/${list_id}/mitglieder`);
+        const response = await api.get (`/listen/${list_id}/mitglieder`);
 
         const members = response.data;
 
@@ -326,7 +326,7 @@ export default {
           members
             .filter(m => m.nutzer_id !== this.userData.id)
             .map(m =>
-              axios.post("http://141.56.137.83:8000/kostenaufteilung", {
+              api.post("/kostenaufteilung", {
                 empfaenger_id: this.userData.id,
                 schuldner_id: m.nutzer_id,
                 betrag: price_per_member

@@ -31,7 +31,7 @@
     </button>
     <button
       :disabled="showpopup_product || showpopup_list || showpopup_add_member"
-      @click="einkauf_abschließen"
+      @click="einkauf_abschliessen"
       class="button button-submit button-einkauf-tätigen"
     >
       <font-awesome-icon icon="cart-shopping" /> Einkauf
