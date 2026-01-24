@@ -1,17 +1,31 @@
-ARG PYTHON_VERSION=3.14.2
-FROM python:${PYTHON_VERSION}-slim AS base
+# =========================================
+# Configurations
+# =========================================
+
+ARG PYTHON_VERSION=3.14.2-slim
+ARG DB_NAME=share_shop
+ARG DB_USER=userAdmin
+ARG DB_PASSWORD=xdb_Admin890!
+ARG DB_HOST=localhost
+
+# =========================================
+# Stage 1: Build and Serve
+# =========================================
+
+FROM python:${PYTHON_VERSION}
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-ENV DB_NAME=share_shop
-ENV DB_USER=userAdmin
-ENV DB_PASSWORD=xdb_Admin890!
-ENV DB_HOST=localhost
+ENV DB_NAME=${DB_NAME}
+ENV DB_USER=${DB_USER}
+ENV DB_PASSWORD=${DB_PASSWORD}
+ENV DB_HOST=${DB_HOST}
 
 WORKDIR /app
 
 ARG UID=10001
+
 RUN adduser \
     --disabled-password \
     --gecos "" \
