@@ -1,1 +1,4 @@
-= ShareShop: Vision Dokumentation
+include::attributes.adoc[]
+
+= {system-name}: Vision Dokumentation
+{docdate}

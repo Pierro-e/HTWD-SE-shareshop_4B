@@ -1,1 +1,4 @@
-= ShareShop: Betriebs Dokumentation
+include::attributes.adoc[]
+
+= {system-name}: Betriebs Dokumentation
+{docdate}

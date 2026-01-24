@@ -1,6 +1,6 @@
-:docs: ../../docs/
-:imageDir: images/
+include::attributes.adoc[]
 
-= ShareShop: Entwickler Dokumentation
+= {system-name}: Entwickler Dokumentation
+{docdate}
 
 include::{docs}architecture/architecture_notebook.adoc[lines=1..1;5..-1,leveloffset=+1]

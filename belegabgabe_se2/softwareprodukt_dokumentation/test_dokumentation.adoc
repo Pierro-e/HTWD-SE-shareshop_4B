@@ -1,1 +1,4 @@
-= ShareShop: Test Dokumentation
+include::attributes.adoc[]
+
+= {system-name}: Test Dokumentation
+{docdate}

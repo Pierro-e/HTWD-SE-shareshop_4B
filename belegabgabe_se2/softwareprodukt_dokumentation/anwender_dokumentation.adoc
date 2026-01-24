@@ -1,1 +1,4 @@
-= ShareShop: Anwender Dokumentation
+include::attributes.adoc[]
+
+= {system-name}: Anwender Dokumentation
+{docdate}
