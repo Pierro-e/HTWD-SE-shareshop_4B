@@ -32,7 +32,14 @@ Endgeräte kommen mit vielen Verschiedenen Betriebssystemen.
 Die Software sollte so viele Platformen wie möglich unterstützen.
 Auch dieses Ziel wird durch eine link:https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps[PWA] erfüllt.
 
-- responsive UI für Desktop und Mobile zur flexiblen Nutzung (Größe der Website passt sich automatisch an)
+=== Responsive
+
+Displays als User Interface kommen in vielen verschiedenen Varianten.
+Die Anwendung sollte möglichst alle typischen Standards abdecken und
+so für einge große Menge an Endgeräten eine angenehme User Experience ermöglichen.
+Um dies umzusetzen,
+nutzen wird die Resposive-Fähigkeiten von Web Anwendungen.
+
 - Skalierbarkeit und Erweiterbarkeit der Architektur für zukünftige Features (gut strukturierter und wartbarer Code)
 
 
