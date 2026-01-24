@@ -1,49 +1,42 @@
 # =========================================
-# Stage 1: Build the Vue.js Application
+#  Einstellungen
 # =========================================
 
 ARG NODE_VERSION=24.12.0-alpine
 ARG NGINX_VERSION=alpine3.22
+ARG API_BASE_URL=http://37.205.9.138:8000
 
-# Use a lightweight Node.js image for building (customizable via ARG)
+# =========================================
+# Stage 1: Build
+# =========================================
+
 FROM node:${NODE_VERSION} AS builder
 
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy package-related files first to leverage Docker's caching mechanism
 COPY package.json package-lock.json* ./
 
-# Install project dependencies using npm ci (ensures a clean, reproducible install)
 RUN --mount=type=cache,target=/root/.npm npm ci
 
-# Copy the rest of the application source code into the container
 COPY . .
 
-ENV VITE_API_BASE_URL=http://37.205.9.138:8000
+ENV VITE_API_BASE_URL=${API_BASE_URL}
 
-# Build the Vue.js application
 RUN npm run build
 
 # =========================================
-# Stage 2: Prepare Nginx to Serve Static Files
+# Stage 2: Serve
 # =========================================
 
-FROM nginxinc/nginx-unprivileged:${NGINX_VERSION} AS runner
+FROM nginxinc/nginx-unprivileged:${NGINX_VERSION}
 
-# Copy custom Nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copy the static build output from the build stage to Nginx's default HTML serving directory
 COPY --chown=nginx:nginx --from=builder /app/dist /usr/share/nginx/html
 
-# Use a built-in non-root user for security best practices
 USER nginx
 
-# Expose port 8080 to allow HTTP traffic
-# Note: The default Nginx container now listens on port 8080 instead of 80
 EXPOSE 8080
 
-# Start Nginx directly with custom config
 ENTRYPOINT ["nginx", "-c", "/etc/nginx/nginx.conf"]
 CMD ["-g", "daemon off;"]
