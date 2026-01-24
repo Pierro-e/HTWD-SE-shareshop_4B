@@ -40,8 +40,12 @@ so für einge große Menge an Endgeräten eine angenehme User Experience ermögl
 Um dies umzusetzen,
 nutzen wird die Resposive-Fähigkeiten von Web Anwendungen.
 
-- Skalierbarkeit und Erweiterbarkeit der Architektur für zukünftige Features (gut strukturierter und wartbarer Code)
+=== Kompatibilität
 
+Kompatibilität ist ein wichtiger Grundsatz,
+um nachhaltige Anwendungen zu entwickeln.
+Dabei sollen diese einen höheren Stellenwerte als Funktionalität haben.
+Deshalb verzichten wir darauf Web-Client spezifische Optimierungen zu nutzen
 
 == Annahmen und Abhängigkeiten
 //[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
