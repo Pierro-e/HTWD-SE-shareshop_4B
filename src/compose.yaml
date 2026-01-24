@@ -7,6 +7,7 @@ services:
       - api
   api:
     build: ./backend/
+    # TODO:
     environment:
       DB_NAME: share_shop
       DB_USER: userAdmin
@@ -19,6 +20,7 @@ services:
   db:
     image: mysql:8.4
     restart: always
+    # TODO:
     environment:
       MYSQL_DATABASE: share_shop
       MYSQL_USER: userAdmin
