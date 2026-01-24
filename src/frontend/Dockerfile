@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 # Copy the rest of the application source code into the container
 COPY . .
 
-ENV VITE_API_BASE_URL=http://localhost:8000
+ENV VITE_API_BASE_URL=http://37.205.9.138:8000
 
 # Build the Vue.js application
 RUN npm run build
