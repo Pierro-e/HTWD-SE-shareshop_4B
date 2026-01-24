@@ -1,12 +1,12 @@
 services:
   ui:
-    image: share_shop_ui:latest
+    build: ./frontend/
     ports:
       - "8080:8080"
     depends_on:
       - api
   api:
-    image: share_shop_api:latest
+    build: ./backend/
     environment:
       DB_NAME: share_shop
       DB_USER: userAdmin
