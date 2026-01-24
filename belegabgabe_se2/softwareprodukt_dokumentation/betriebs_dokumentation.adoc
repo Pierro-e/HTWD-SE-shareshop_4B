@@ -19,6 +19,9 @@ include::attributes.adoc[]
 * ASGI Server: Uvicorn 0.34.3
 * Datenbank: MySQL 8.0.44
 
+* Docker
+* Git
+
 == Systemeinrichtung
 
 === aktuelles System

@@ -351,7 +351,7 @@ class EinkaufsarchivRead(BaseModel):
     listen_name: Optional[str] = None
     eingekauft_von: Optional[int] = None
     einkaeufer_name: Optional[str] = None
-    eingekauft_am: Optional[date] = None
+    eingekauft_am: Optional[datetime] = None
     gesamtpreis: Optional[Decimal] = None
 
     class Config:
