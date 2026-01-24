@@ -118,27 +118,28 @@ ist hier MySQL gewählt worden,
 da sie sicher auf der bereitgestellten VM läuft.
 
 == Schichten oder Architektur-Framework
-//[Describe the architectural pattern that you will use or how the architecture will be consistent and uniform. This could be a simple reference to an existing or well-known architectural pattern, such as the Layer framework, a reference to a high-level model of the framework, or a description of how the major system components should be put together.]
-- Wir verwenden eine Schichtenarchitektur (Layered Architecture), um das System klar zu strukturieren und die Erweitbarkeit zu gewährleisten.
 
-- Präsentationsschicht (Frontend)
-* Implementiert mit Vue.js als Single Page Application (SPA)
-* Präsentiert die Benutzeroberfläche im Webbrowser
+Wir oreintieren uns an einer Layered Architecture,
+um klar und minimalistische Struktur, sowie deren Erweitbarkeit zu gewährleisten.
+Diese Struktur ermöglicht eine klare Trennung von Verantwortlichkeiten
+und erleichtert sowohl die Entwicklung als auch die Fehlersuche und Erweiterung.
+
+=== Frontend - Single Page Application
+
+* UI im Web-Client
 * Verwaltet die Bennutzerinteraktion und Darstellung
-* Kommuniziert mit dem Backend über HTTP-Requests (REST-API)
+* nutzt Schnittstelle
 
-- Logikschicht (Backend)
-* Implementiert mit Python und FastAPI
-* Verarbeitet Anfragen aus dem Frontend
+=== Schnittstelle - REST-API
+
 * Implementiert die Geschäftslogik
-* Überprüft, verarbeitet und validiert Daten
+* Überprüft, verarbeitet und validiert Anfragen aus dem Frontend
+* schreibt und holt zum/vom Backend
 
-- Datenschicht (Datenbank)
-* MySQL-Datenbank und SQLAlchemy als ORM
-* Verwwaltet den Zugriff auf die relationale Datenbank
-* Kommuniziert direkt mit MySQL für Datenoperationen
+=== Backend - Datenbankmanagementsystem
 
-Diese Struktur ermöglicht eine klare Trennung von Verantwortlichkeiten und erleichtert sowohl die Entwicklung als auch die Fehlersuche und Erweiterung.
+* Verwaltet den Zugriff auf die relationale Datenbank
+* Datenstruktur wird über ORM definiert
 
 == Architektursichten (Views)
 //[Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
