@@ -175,19 +175,20 @@
       <p>Diese Liste wird gelöscht, da sie der Ersteller sind.</p>
       <p>Möchten Sie die Liste wirklich löschen?</p>
 
-    <div class="button-container">
-      <button
-        @click="showpopup_delete_list_confirm = false"
-        class="button button-cancel"
-      >
-        Abbrechen
-      </button>
-      <button
-        @click="liste_endgueltig_loeschen()"
-        class="button button-delete"
-      >
-        Bestätigen und löschen
-      </button>
+      <div class="button-container">
+        <button
+          @click="showpopup_delete_list_confirm = false"
+          class="button button-cancel"
+        >
+          Abbrechen
+        </button>
+        <button
+          @click="liste_endgueltig_loeschen()"
+          class="button button-delete"
+        >
+          Bestätigen und löschen
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -275,9 +276,7 @@ export default {
     async get_list_members(id) {
       this.errorMessage = "";
       try {
-        const response = await api.get(
-          `/listen/${id}/mitglieder`,
-        );
+        const response = await api.get(`/listen/${id}/mitglieder`);
         let mitgliederData = response.data;
 
         // Wenn response.data kein Array ist, packe es in ein Array (falls einzelnes Objekt)
@@ -323,9 +322,7 @@ export default {
     async get_products(id) {
       this.errorMessage = "";
       try {
-        const response = await api.get(
-          `/listen/${id}/produkte`,
-        );
+        const response = await api.get(`/listen/${id}/produkte`);
         this.listenprodukte = response.data;
 
         this.productNum = 0;
@@ -396,17 +393,12 @@ export default {
       if (type == 0) {
         // Bedarfsvorhersage/Favoriten
         try {
-          var response = await api.get(
-            `/bedarfsvorhersage/${this.user.id}`,
-            {
-              params: { decayDays: this.userData.decaydays },
-            },
-          );
+          var response = await api.get(`/bedarfsvorhersage/${this.user.id}`, {
+            params: { decayDays: this.userData.decaydays },
+          });
           var recommendedProducts = response.data;
 
-          response = await api.get(
-            `/fav_produkte/nutzer/${this.user.id}`,
-          );
+          response = await api.get(`/fav_produkte/nutzer/${this.user.id}`);
           var favoriteProducts = response.data;
 
           var tempOptions = [];
@@ -441,10 +433,9 @@ export default {
       } else if (type == 1) {
         // Suchvorschläge > mind. 1 Zeichen eingegeben
         try {
-          const response = await api.get(
-            `/produkte/suche/`,
-            { params: { query: searchText } },
-          );
+          const response = await api.get(`/produkte/suche/`, {
+            params: { query: searchText },
+          });
           var suggestions = response.data;
           var tempOptions = [];
 
@@ -529,12 +520,9 @@ export default {
         // Wenn 404 (Produkt nicht gefunden), dann neu anlegen
         if (error.response && error.response.status === 404) {
           try {
-            const responseCreate = await api.post(
-              `/produkte_create`,
-              {
-                name: this.new_product.trim(),
-              },
-            );
+            const responseCreate = await api.post(`/produkte_create`, {
+              name: this.new_product.trim(),
+            });
             produkt_Id = responseCreate.data.id;
           } catch (error) {
             if (
@@ -570,9 +558,7 @@ export default {
       }
 
       // ist neues Produkt ein Favorit?
-      const response = await api.get(
-        `/fav_produkte/nutzer/${user_id}`,
-      );
+      const response = await api.get(`/fav_produkte/nutzer/${user_id}`);
       var favoriteProducts = response.data;
 
       var favFound = false;
@@ -650,14 +636,11 @@ export default {
         return;
       }
       try {
-        await api.delete(
-          `/listen/${list_id}/mitglieder/${mitglied_id}`,
-          {
-            params: {
-              requesterId: requester_id,
-            },
+        await api.delete(`/listen/${list_id}/mitglieder/${mitglied_id}`, {
+          params: {
+            requesterId: requester_id,
           },
-        );
+        });
         // nur wenn ersteller andere person entfernt, nicht wenn nicht ertsleller sich selbst entfernt
         if (mitglied_id != requester_id) {
           this.infoMessage = "Mitglied erfolgreich entfernt.";
@@ -705,12 +688,9 @@ export default {
       }
 
       try {
-        const userResponse = await api.get(
-          `/nutzer/by-email`,
-          {
-            params: { email: user_email },
-          },
-        );
+        const userResponse = await api.get(`/nutzer/by-email`, {
+          params: { email: user_email },
+        });
         new_member_id = userResponse.data.id;
       } catch (error) {
         if (
@@ -782,7 +762,7 @@ export default {
      * Leitet zum Einkaufsbildschirm der Liste weiter.
      */
     einkauf_abschliessen() {
-      if (this.productNum == 0){
+      if (this.productNum == 0) {
         alert("Liste ist leer! Füge Produkte hinzu, um einzukaufen!");
         return;
       }
