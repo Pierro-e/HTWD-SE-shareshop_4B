@@ -12,8 +12,6 @@ include::../_includes/default-attributes.inc.adoc[]
 
 == Annahmen und Abhängigkeiten
 
-//[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
-
 === Standort
 
 Die Anwendung muss kompatibel mit den Anforderungen des deutschen Gesetzes sein.
@@ -65,15 +63,12 @@ Deshalb verzichten wir darauf Web-Client spezifische Optimierungen zu nutzen
 Endgeräte kommen mit vielen Verschiedenen Betriebssystemen.
 Die Software sollte so viele Platformen wie möglich unterstützen,
 also möglichst unabhängig von den Präferenzen des Nutzers funktionieren.
-Dieses Ziel wird durch link:https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps[PWAs] erfüllt.
 
 === Responsive (hoch)
 
 Displays als User Interface kommen in vielen verschiedenen Varianten.
 Die Anwendung sollte möglichst alle typischen Standards abdecken und
 so für einge große Menge an Endgeräten eine angenehme User Experience ermöglichen.
-Um dies umzusetzen,
-nutzen wird die Resposive-Fähigkeiten von Web Anwendungen.
 
 === Modularität (mittel)
 
@@ -81,10 +76,6 @@ Um eine bessere Wartbarkeit und Skalierung des komplexen Systems zu ermöglichen
 und damit die Langlebigkeit der entwickelten Architektur zu unterstützen,
 wird die Anwendung grob in Frontend (User Interface) und Backend (Funktionalitäten) geteilt.
 Diese wiederum sind in einzelne Komponenten / Module aufgeteilt die modulare Aufgaben erfüllen.
-Um dies zu gewährleisten,
-benutzen wir Frameworks,
-die spezialisierte Aufgaben lösen (link:https://www.sqlalchemy.org/[SQLAlchemy])
-oder die Modulärität stark begünstigen (link:https://vuejs.org/[Vue.js]).
 
 === Offline (mittel)
 
@@ -93,19 +84,38 @@ in denen nicht immer eine stabile Internetverbindung angenommen werden kann.
 Deshalb muss unsere Software ihre grundsätzlichen Funktionalität auch ohne Internet ausführen können
 und somit unabhängig von der gegebenen Internetverbindung funktionieren.
 Oder die zeitweise Trennung vom Internet vor dem Nutzer verstecken.
-Hierfür bietet sich eine link:https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps[PWA] an.
 
 == Entscheidungen, Nebenbedingungen und Begründungen
-//[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
-- die Anwendung wird als Webanwendung bereitgestellt (im späteren Verlauf wird sie um PWA-Funktionalität erweitert), da es Betriebssystem unabhängig ist und auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann
-- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM
-- Vue.js bietet eine klare Proejktstruktur und sorgt für eine klare Trennung der Komponenten
-- das Frontend ist eine Single Page Application (SPA), die im Browser des Nutzers läuft, was kurze Ladezeiten mit sich bringt
-- REST-API im Backend wird mit Python mit FastAPI enwtickelt und läuft auch auf der VM
-- FastAPI ermöglicht eine schnelle Entwicklung von APIs und bietet eine gute Performance, zudem harmoniert es mit MySQL über SQLAlchemy
-- Datenerhaltung erfolgt über eine relationale Datenbank mit MySQL, ebenfalls auf der VM
-- MySQL ist optimal für unsere Datenstruktur (Nutzer, Produkte, Listen, ...) geeignet
+=== Progressive Web Application
+
+Wir haben uns dazu entschieden das Produkt als Progressive Web Application umzusetzen.
+Dies erfüllt Unabhängigkeit von Betriebssystemen und Hardware.
+Auch lässt sich damit die Offline Anforderung erfüllen.
+
+=== User Interface
+
+Das User Interface wird mit link:https://vuejs.org/[Vue.js] entwickelt
+und mit link:https://vite.dev/[Vite] gebaut.
+Vue.js ist ein modernes Framework für Web Anwendungen (SPA),
+welches Modulariät durch Single File Components stark begünstigt.
+Zudem können mit Vite gebaute Anwendungen können von einem Nginx Server gehostet werden,
+welcher wiederum auf der bereitgestellten VM problemlos läuft.
+
+=== API
+
+Die Schnittstelle soll dem Architektur prinzip einer REST-API folgen.
+Hierfür bietet es sich an link:https://fastapi.tiangolo.com/[FastAPI] zu nutzen.
+Dies kann mit link:https://uvicorn.dev/[Uvicorn] zugänglich gemacht werden.
+Uvicorn läuft auf der bereitgestellten VM.
+Zudem harmoniert FastAPI sehr gut mit MySQL und SQLAlchemy.
+
+=== Datenbank
+
+Die Verwaltung der Daten erfolg über eine relationale Datenbank.
+Auch wenn SQLAlchemy viele Datenbanksysteme unterstütz,
+ist hier MySQL gewählt worden,
+da sie sicher auf der bereitgestellten VM läuft.
 
 == Schichten oder Architektur-Framework
 //[Describe the architectural pattern that you will use or how the architecture will be consistent and uniform. This could be a simple reference to an existing or well-known architectural pattern, such as the Layer framework, a reference to a high-level model of the framework, or a description of how the major system components should be put together.]
