@@ -147,11 +147,18 @@ und erleichtert sowohl die Entwicklung als auch die Fehlersuche und Erweiterung.
 
 === Kontextabgrenzung
 
+Die Nutzer interagieren nur mit der Anwendung {system-name} um mit ihre Einkäufe zu organisieren.
+
 image::{imageDir}system_context_diagram.png[alt="C4-Modell: System Context Diagram"]
 
 <<<
 
 === Container
+
+{syste-name} besteht aus 3 Containern.
+Der Nutzer bedient die eine Single Page Application im Web-Client seiner Wahl.
+Dies kommuniziert über eine API mit der Datenbank,
+welche die Informationen über Einkäufe und Nutzer organisiert.
 
 image::{imageDir}container_diagram.png[alt="C4-Modell: Container Diagram"]
 
@@ -167,11 +174,17 @@ image::{imageDir}ui-component-diagram.png[alt="Component: User Interface"]
 
 ==== Component: API
 
+Die Application Programming Interface stellt die Funktionalitäten der Verwaltung und Organisation
+von Einkäufen zur Verfügung.
+Sie wird durch einen ASGI Server zugänglich gemacht.
+
 image::{imageDir}api-component-diagram.png[alt="Component: API"]
 
 <<<
 
 ==== Component: Datenbank
+
+Die Datenbank verwaltet alle Daten der Nutzer und deren Einkaufslisten.
 
 image::{imageDir}db-component-diagram.png[alt="Component: Datenbank"]
 

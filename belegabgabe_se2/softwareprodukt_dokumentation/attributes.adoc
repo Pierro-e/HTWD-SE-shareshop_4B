@@ -1,5 +1,5 @@
 // Meta
-:system-name: FairShop
+:system-name: ShareShop
 // Dokumenten
 :doctype: book
 :sectnums:
