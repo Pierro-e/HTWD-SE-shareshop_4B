@@ -20,6 +20,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY . .
 
+ARG API_BASE_URL
 ENV VITE_API_BASE_URL=${API_BASE_URL}
 
 RUN npm run build
