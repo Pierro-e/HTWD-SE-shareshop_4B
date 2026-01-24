@@ -8,15 +8,14 @@ include::attributes.adoc[]
 
 === Testobjekte und Teststufen Die Tests orientieren sich an der klassischen Testpyramide und decken mehrere Teststufen ab:
 
-Modultests:
-Funktionen und Methoden der App, 
+* Modultests:
 API-Endpunkte und Funktionen mit gemockter Datenbank
 
-Integrationstests (Backend):
+* Integrationstests:
+Zusammensoiel von API, Routing, HTTP-Statuscodes mit gemockter Datenbank
 
-
-Manuelle Systemtests (Frontend):
-Zusammenspiel von Frontend und Backend aus Anwendersicht
+* Systemtests:
+Zusammenspiel von Frontend und Backend aus Anwendersicht, manuelles Testen
 
 === Testmethoden
 
@@ -44,12 +43,14 @@ Dadurch Testen, wie ein Nutzer die Oberfläche sieht und bedient, wie Fehlermeld
 
 === Testdurchführungsplanung
 
-Wann: Backend-Tests: ??
-Frontend-Tests: Dev Team: nach Änderungen an der Oberfläche und Funktionalität beim Review des Pull-Requestes bzw während der Entwicklung
+* Wann: 
+** Backend-Tests: ?? 
+** Frontend-Tests: Dev Team: nach Änderungen an der Oberfläche und Funktionalität beim Review des Pull-Requestes bzw während der Entwicklung
 PO unregelmäßig bei Überpfüfen der gestellten Anforderungen
 
-Wie: Backend: automatisiert über python -m pytest 
-Frontend: manuell im Browser mit "durchklicken"
+* Wie: 
+** Backend: automatisiert über python -m pytest 
+** Frontend: manuell im Browser mit "durchklicken"
 
 == Testergebnisse
 
@@ -62,6 +63,8 @@ Zentrale API-Endpunkte (z. B. Login, Root-Endpunkt) liefern die erwarteten HTTP-
 Die manuell getesteten Frontend-Funktionen verhalten sich erwartungsgemäß und ermöglichen eine fehlerfreie Bedienung der Anwendung.
 
 === Erkannte Abweichungen und Konsequenzen
+
+??Ist das relevant? bisher nur bei mit(malrene aufgetreten)
 
 Während der Testdurchführung wurde festgestellt, dass das Backend beim Import der API-Module zwingend gesetzte Umgebungsvariablen erwartet.
 
