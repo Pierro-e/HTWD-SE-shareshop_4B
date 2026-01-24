@@ -54,16 +54,30 @@ Alle Team-Mitglieder bearbeiten das Projekt in Teilzeit.
 Es biete sich daher an, wenn möglich,
 so gut wie möglich auf bereits bekannte Technologien und Konzepte aufzubauen.
 
-=== User Interface Framework
+=== Bekannte Frameworks & Technologien
 
-link:https://vuejs.org/[Vue.js] ist ein modernes Framework zum bauen von Web-Anwendungen.
-Es ist den meisten Team-Mitgliedern bekannt und wird für dieses Projekt genutzt.
+Folgende Frameworks sind dem Team bekannt und finden daher Anwendung bzw. wurden/werden evaluiert:
 
-- im Backend nutzen wir Python mit FastAPI, da es ebenfalls bekannt ist
-- das Team hat ebenfalls Erfahrung mit SQL
-- externe API's können integriert werden, bspw. für Bereitstellung der Produkte inkl. deren Preise
-- Vorraussetzung: Datenbank und API laufen problemlos auf der bereitgestellten VM
-- Datenbank (MySQL) funktioniert wie erwartet und harmoniert gut mit dem Backend (FastAPI + SQLAlchemy)
+- link:https://vuejs.org/[Vue.js - UI Web Anwendung]
+- link:https://nuxt.com/[Nuxt - Full-Stack Vue.js Framework]
+- link:https://fastapi.tiangolo.com/[FastAPI - API]
+- link:https://uvicorn.dev/[Uvicorn - ASGI web server for Python]
+- link:https://nginx.org/en/[Nginx - HTTP web server]
+- link:https://github.com/torvalds/linux[Linux - OS]
+- link:https://www.docker.com/[Docker - Deployment]
+
+=== VM
+
+Die Resourcen zum Bereitstellen unserer Anwendung beschränken sich auf
+eine VM unter dem Betriebssystem link:https://ubuntu.com/[Ubuntu].
+Diese ist nur aus dem internen Netzwerk der link:https://www.htw-dresden.de/[HTW Dresden]
+oder über eine link:https://www.htw-dresden.de/hochschule/organisation/zid/dienste-und-anleitungen/virtual-private-network-vpn[VPN Verbindung] zu erreichen.
+
+=== API
+
+Da die API zwischen Datenbank und User Interface vermittelt,
+wird sie als Technologie-Treiber identifiziert.
+Datenbank, User Interface und API mussen miteinander kompatibel sein.
 
 == Architektur-relevante Anforderungen
 //Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
