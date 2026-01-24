@@ -54,7 +54,11 @@ Alle Team-Mitglieder bearbeiten das Projekt in Teilzeit.
 Es biete sich daher an, wenn möglich,
 so gut wie möglich auf bereits bekannte Technologien und Konzepte aufzubauen.
 
-- Vue.js ist beim Großteil des Teams bekannt, was die Fronted-Entwicklung erleichtert
+=== User Interface Framework
+
+link:https://vuejs.org/[Vue.js] ist ein modernes Framework zum bauen von Web-Anwendungen.
+Es ist den meisten Team-Mitgliedern bekannt und wird für dieses Projekt genutzt.
+
 - im Backend nutzen wir Python mit FastAPI, da es ebenfalls bekannt ist
 - das Team hat ebenfalls Erfahrung mit SQL
 - externe API's können integriert werden, bspw. für Bereitstellung der Produkte inkl. deren Preise
