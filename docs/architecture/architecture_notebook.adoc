@@ -26,7 +26,12 @@ Deshalb muss unsere Software ihre grundsätzlichen Funktionalität auch ohne Int
 Oder die zeitweise Trennung vom Internet vor dem Nutzer verstecken.
 Hierfür bietet sich eine link:https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps[PWA] an.
 
-- Hardware/Betriebssystem unabhängige Architektur, sodass die Anwendung auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann
+=== Platformunabhängig
+
+Endgeräte kommen mit vielen Verschiedenen Betriebssystemen.
+Die Software sollte so viele Platformen wie möglich unterstützen.
+Auch dieses Ziel wird durch eine link:https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps[PWA] erfüllt.
+
 - responsive UI für Desktop und Mobile zur flexiblen Nutzung (Größe der Website passt sich automatisch an)
 - Skalierbarkeit und Erweiterbarkeit der Architektur für zukünftige Features (gut strukturierter und wartbarer Code)
 
