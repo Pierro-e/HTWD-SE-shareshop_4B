@@ -2,3 +2,100 @@ include::attributes.adoc[]
 
 = {system-name}: Betriebs Dokumentation
 {docdate}
+
+== Systemvorraussetzungen
+
+=== Hardwareanforderungen
+
+* CPU: vergleichbar oder besser als Intel Xeon Gold 6132 (2) @ 2.593GHz
+* Memory: 1000 MiB (für leere Datenbank)
+
+=== Softwareanforderungen
+
+* Betriebssystem: Ubuntu 24.04.2 LTS x86_64
+* WebServer: Nginx 1.24.0
+* Backend Runtime: Python 3.12.3
+* Backend Framework: FastAPI 0.115.12
+* ASGI Server: Uvicorn 0.34.3
+* Datenbank: MySQL 8.0.44
+
+== Systemeinrichtung
+
+=== aktuelles System
+
+* Anwendung: http://141.56.137.83/
+* API: http://141.56.137.83:8000
+* API-Dokumenation: http://141.56.137.83:8000/docs
+* Voraussetzungen für die Nutzung:
+** Web-Client mit JavaScript
+** Netzwerkzugriff auf die Server-IP (VPN zur HTW Dresden)
+
+=== manuele Konfiguration
+
+==== Frontend (Vue.js)
+
+. Build-Ausgabe liegt unter /var/www/shareshop/dist
+. Auslieferung über Web Server (Nginx)
+
+==== Web Server (Nginx)
+
+. Frontend: "/"
+. Weiterleitung an Backend: "8000"
+
+=== API (FastAPI)
+
+. Umgebungsvariablen
+.. DB_HOST
+.. DB_PASSWORD
+.. DB_USER
+.. DB_NAME
+. Start über Uvicorn
+. Betrieb als systemd-Service (fastapi.service)
+
+=== Datenbank (MySQL)
+
+. Datenbankname: share_shop
+
+=== Web-Client
+
+* keine speziellen Einstellungen notwendig
+
+== Systembetreuung
+
+=== FAQ für Benutzersupport
+
+. Frontend lädt nicht
+.. Nginx-Service prüfen
+. API antwortet nicht
+.. Status von fastapi.service prüfen
+.. Backend-Logs einsehen
+. Daten fehlen oder sind inkonsistent
+.. MySQL-Service prüfen
+.. Datenbank share_shop prüfen
+
+=== Fehlerdiagnose (Logfile-Einträge)
+
+* Backend-Logs: 'journalctl -u fastapi.service'
+* Webserver-Logs: '/var/log/nginx/error.log'
+* Datenbank-Logs: systemd (mysql.service)
+
+=== Typische Fehler
+
+* 502/504 -> Backend nicht erreichbar
+* Datenbankfehler -> falsche Zugangsdaten oder DB nicht verfügbar
+
+== Datensicherung und Wiederherstellung
+
+=== Strategien
+
+* Manuell
+* Sicherung der Datenbank
+
+=== Durchführung
+
+* 'mysqldump -u root -p share_shop > backup.sql'
+
+=== Wiederherstellung
+
+* 'mysql -u root -p share_shop < share_shop'
+* Quellcode liegt im GitHub-Repository
