@@ -145,22 +145,21 @@ und erleichtert sowohl die Entwicklung als auch die Fehlersuche und Erweiterung.
 
 === Kontextabgrenzung
 
-image::system_context_diagram.png[alt="C4-Modell: System Context Diagram"]
+image::{imageDir}system_context_diagram.png[alt="C4-Modell: System Context Diagram"]
 
 === Container
 
-image::container_diagram.png[alt="C4-Modell: Container Diagram"]
+image::{imageDir}container_diagram.png[alt="C4-Modell: Container Diagram"]
 
 === Components
 
-image::ui-component-diagram.png[alt="Component: User Interface"]
+image::{imageDir}ui-component-diagram.png[alt="Component: User Interface"]
 
-image::api-component-diagram.png[alt="Component: API"]
+image::{imageDir}api-component-diagram.png[alt="Component: API"]
 
-image::db-component-diagram.png[alt="Component: Datenbank"]
+image::{imageDir}db-component-diagram.png[alt="Component: Datenbank"]
 
 === Verteilungsdiagramm
-//Beschreibt die physischen Knoten (Rechner) des Systems und Komponenten, die in diesen Knoten ausgeführt werden. Diese Sicht wird nicht benötigt, wenn das System in einem einzelnen Prozess oder Thread ausgeführt wird.
 
 Alle 3 Components (User Interface, API & Datenbank) können auf dedizierten Knoten gehostet werden.
 Es wird aber auch ein Docker-Compose-File zur Verfügung gestellt,
