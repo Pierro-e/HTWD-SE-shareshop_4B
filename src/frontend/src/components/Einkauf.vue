@@ -65,6 +65,13 @@ import ProductCard from "./ProductCard.vue";
 import BottomBar from "./BottomBar.vue";
 import PopUp from "./PopUp.vue";
 
+/**
+ * Komponente zur Anzeige der Einkaufansicht einer Liste
+ * @param {string} list_id - ID der Liste, die eingekauft werden soll (prop)
+ * @param {object} user - aktueller Nutzer
+ * @param {function} getUser - Funktion zum Abrufen der aktuellen Nutzerdaten
+ */
+
 export default {
   name: "Einkauf",
   inject: ["user", "getUser"],
@@ -87,6 +94,10 @@ export default {
     };
   },
   methods: {
+    /**
+     * Lädt die Liste mit der gegebenen ID
+     * @param id {number} - ID der Liste
+     */
     async get_list(id) {
       this.errorMessage = "";
       try {
@@ -102,7 +113,11 @@ export default {
       this.loadingActive = false;
     },
 
-    async get_products(id) {
+    /**
+     * Lädt die Produkte der Liste mit der gegebenen ID
+     * @param id {number} - ID der Liste
+     */
+   async get_products(id) {
       this.errorMessage = "";
       try {
         const response = await api.get(`/listen/${id}/produkte`);
@@ -138,12 +153,16 @@ export default {
       }
       this.loadingActive = false;
     },
-
+    /**
+     * Nutzer möchte Einkauf abbrechen
+     */
     einkauf_abbrechen() {
       const list_id = this.list_id || this.$route.params.listenId;
       this.$router.push(`/list/${list_id}`);
     },
-
+    /**
+     * Nutzer möchte Einkauf abschließen --> Produkte filtern und PopUp öffnen
+     */
     prepare_purchase() {
       if (!this.listenprodukte || this.listenprodukte.length === 0) {
         this.errorMessage = "Keine Produkte vorhanden!";
@@ -161,7 +180,9 @@ export default {
       this.errorMessage = "";
       this.commit_purchase = true;
     },
-
+    /**
+     * Nutzer hat Gesamtpreis eingegeben und möchte Einkauf abschließen
+     */
     set_price() {
       if (
         this.totalPrice === null ||
@@ -172,10 +193,12 @@ export default {
         return;
       }
       this.commit_purchase = false;
-      this.einkauf_abschließen();
+      this.einkauf_abschliessen();
     },
-
-    async einkauf_abschließen() {
+    /**
+     * Nutzer möchte Einkauf endgültig abschließen (letzte Funktion --> danach ist der Einkauf vollzogen und gespeichert)
+     */
+    async einkauf_abschliessen() {
       this.errorMessage = "";
       const list_id = this.list_id || this.$route.params.listenId;
       const price = this.totalPrice;
@@ -202,6 +225,8 @@ export default {
             }),
           ),
         );
+
+        await this.kosten_aufteilen(price, purchase_id);
 
         await Promise.all(
           erledigteProdukte.map((produkt) =>
@@ -237,6 +262,85 @@ export default {
         }
       }
       this.totalPrice = 0;
+    },
+    /**
+     * Ermittelt die Kostenaufteilung für den Einkauf und speichert diese
+     * @param price {number} - Gesamtpreis des Einkaufs
+     * @param einkauf_id {number} - ID des getätigten Einkaufs
+     */
+    async kosten_aufteilen(price, einkauf_id){
+      /* Kostenaufteilung für alle Mitglider, die etwas zur Liste hinzugefügt haben und
+      dieses Produkt eingekauft wurde */
+      try {
+        // Eingekaufte Produkte laden
+        const response = await axios.get(
+          `http://141.56.137.83:8000/eingekaufte_produkte/einkauf/${einkauf_id}`
+        );
+
+        const produkte = response.data;
+
+        // Eindeutige Nutzer extrahieren, Set speichert jeden Wert nur einmal
+        const beteiligteNutzerIds = [
+          ...new Set(produkte.map(p => p.hinzugefuegt_von))
+        ];
+        console.log("Produkte:", produkte);
+        console.log("Beteiligte IDs:", beteiligteNutzerIds);
+        console.log("Käufer:", this.userData.id);
+        // Falls nur der Käufer selbst etwas zur liste hinzugefügt hat → keine Aufteilung
+        if (beteiligteNutzerIds.length === 1 &&
+            beteiligteNutzerIds[0]===this.userData.id
+            ) return;
+
+        const price_per_member = price / beteiligteNutzerIds.length;
+
+        await Promise.all(
+          beteiligteNutzerIds
+            .filter(nutzerId => nutzerId !== this.userData.id)
+            .map(nutzerId =>
+              axios.post("http://141.56.137.83:8000/kostenaufteilung", {
+                empfaenger_id: this.userData.id,
+                schuldner_id: nutzerId,
+                betrag: price_per_member
+              })
+            )
+        );
+
+      } catch (error) {
+        console.error("Fehler bei kosten_aufteilen:", error);
+        throw error;
+      }
+      /*
+      Ansatz für Kostenaufteilung für jedes Mitglied der Liste außer Einkäufer
+      try {
+        const response = await axios.get (`http://141.56.137.83:8000/listen/${list_id}/mitglieder`);
+
+        const members = response.data;
+
+        if (members.length <= 1) {
+          return;
+        }
+
+        const price_per_member = price / members.length;
+
+        await Promise.all(
+          members
+            .filter(m => m.nutzer_id !== this.userData.id)
+            .map(m =>
+              axios.post("http://141.56.137.83:8000/kostenaufteilung", {
+                empfaenger_id: this.userData.id,
+                schuldner_id: m.nutzer_id,
+                betrag: price_per_member
+                }
+              )
+            )
+        );
+
+      } catch (error) {
+        console.error("Fehler bei kosten_aufteilen:", error);
+
+        throw error;
+      }
+      */
     },
     product_settings(produkt) {
       // nichts machen

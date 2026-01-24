@@ -36,6 +36,13 @@
 </template>
 
 <script>
+/**
+ * Erstellt eine Produktkarte mit den Produkteigenschaften und optionalen Einstellungsbutton.
+ * 
+ * @vue-prop {object} product Objekt des Produkts mit Name, Menge, Einheit, Beschreibung, Erledigt
+ * @vue-prop {function} [onSettings] Funktion beim Klick auf Einstellungsbutton
+ * @vue-prop {boolean} [hideSettings=false] Einstellungsbutton verstecken
+ */
 export default {
   name: "ProductCard",
   props: {

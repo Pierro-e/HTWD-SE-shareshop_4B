@@ -1,0 +1,4 @@
+include::attributes.adoc[]
+
+= {system-name}: Test Dokumentation
+{docdate}

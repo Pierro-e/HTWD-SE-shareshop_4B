@@ -1,126 +1,199 @@
-= Architecture Notebook: {project-name}
+= Architecture Notebook
 include::../_includes/default-attributes.inc.adoc[]
 
-== Zweck
-Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Begründungen, wesentliche Elemente und andere übergreifende Aspekte des Systems, die Einfluss auf Entwurf und Implementierung haben.
-
-//Hinweise: Bearbeiten Sie immer die Abschnitte 2-6 dieser Vorlage. Nachfolgende Abschnitte sind empfohlen, aber optional und sollten je nach Umfang der künftigen Wartungsarbeiten, Fähigkeiten des Entwicklungsteams und Bedeutung anderer architektureller Belange.
-
-//Anmerkung: Die Architektur legt wesentliche EINSCHRÄNKUNGEN für den Systementwurf fest und ist ein Schlüssel für die Erfüllung nicht-funktionaler Eigenschaften!
-
+// Dieses Dokument beschreibt die Philosophie, Entscheidungen, Nebenbedingungen, Begründungen, wesentliche Elemente und andere übergreifende Aspekte des Systems, die Einfluss auf Entwurf und Implementierung haben.
 
 == Architekturziele
-//Hinweise: Beschreiben Sie den zentralen Ansatz für ihre Architektur. Identifizieren Sie alle Aspekte, die die Philosophie beeinflussen, z.B. komplexe Auslieferung Aspekte, Anpassung von Altsystemen oder besondere Geschwindigkeitsanforderungen. Muss es besonders robust sein, um eine langfristige Wartung und Pflege zu ermöglichen?
 
-//Formulieren Sie eine Reihe von Zielen, die die Architektur in ihrer Struktur und ihrem Verhalten erfüllen muss. Identifizieren Sie kritische Fragen, die von der Architektur adressiert werden müssen, z.B. besondere Hardware-Abhängigkeiten, die vom Rest des Systems isoliert werden sollten oder Sicherstellung der Funktionsfähigkeit unter besonderen Bedingungen (z.B. Offline-Nutzung).
-
-- Trennung von Frontend (Vue.js) und Backend (Python mit FastAPI)
-- Offline-Fähigkeit (z.B. mit PWA-Funktionalität) für Einkauf ohne Internet
-- Hardware/Betriebssystem unabhängige Architektur, sodass die Anwendung auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann
-- responsive UI für Desktop und Mobile zur flexiblen Nutzung (Größe der Website passt sich automatisch an)
-- Skalierbarkeit und Erweiterbarkeit der Architektur für zukünftige Features (gut strukturierter und wartbarer Code)
-
+- Langlebigkeit
+- Sicherheit & Schutz
+- Minimalismus
+- Unabhängigkeit
 
 == Annahmen und Abhängigkeiten
-//[List the assumptions and dependencies that drive architectural decisions. This could include sensitive or critical areas, dependencies on legacy interfaces, the skill and experience of the team, the availability of important resources, and so forth]
-- Vue.js ist beim Großteil des Teams bekannt, was die Fronted-Entwicklung erleichtert
-- im Backend nutzen wir Python mit FastAPI, da es ebenfalls bekannt ist
-- das Team hat ebenfalls Erfahrung mit SQL
-- externe API's können integriert werden, bspw. für Bereitstellung der Produkte inkl. deren Preise
-- Vorraussetzung: Datenbank und API laufen problemlos auf der bereitgestellten VM
-- Datenbank (MySQL) funktioniert wie erwartet und harmoniert gut mit dem Backend (FastAPI + SQLAlchemy)
+
+=== Standort
+
+Die Anwendung muss kompatibel mit den Anforderungen des deutschen Gesetzes sein.
+Dazu zählt zum Beispiel auch die link:https://dsgvo-gesetz.de/[DSGVO].
+
+=== Teilzeit
+
+Alle Team-Mitglieder bearbeiten das Projekt in Teilzeit.
+Es biete sich daher an, wenn möglich,
+so gut wie möglich auf bereits bekannte Technologien und Konzepte aufzubauen.
+
+=== Bekannte Frameworks & Technologien
+
+Folgende Frameworks sind dem Team bekannt und finden daher Anwendung bzw. wurden/werden evaluiert:
+
+- link:https://vuejs.org/[Vue.js - UI Web Anwendung]
+- link:https://nuxt.com/[Nuxt - Full-Stack Vue.js Framework]
+- link:https://fastapi.tiangolo.com/[FastAPI - API]
+- link:https://uvicorn.dev/[Uvicorn - ASGI web server for Python]
+- link:https://nginx.org/en/[Nginx - HTTP web server]
+- link:https://github.com/torvalds/linux[Linux - OS]
+- link:https://www.docker.com/[Docker - Deployment]
+
+=== VM
+
+Die Resourcen zum Bereitstellen unserer Anwendung beschränken sich auf
+eine VM unter dem Betriebssystem link:https://ubuntu.com/[Ubuntu].
+Diese ist nur aus dem internen Netzwerk der link:https://www.htw-dresden.de/[HTW Dresden]
+oder über eine link:https://www.htw-dresden.de/hochschule/organisation/zid/dienste-und-anleitungen/virtual-private-network-vpn[VPN Verbindung] zu erreichen.
+
+=== API
+
+Da die API zwischen Datenbank und User Interface vermittelt,
+wird sie als Technologie-Treiber identifiziert.
+Datenbank, User Interface und API mussen miteinander kompatibel sein.
 
 == Architektur-relevante Anforderungen
-//Fügen Sie eine Referenz / Link zu den Anforderungen ein, die implementiert werden müssen, um die Architektur zu erzeugen.
 
-Die arichitektur-relevanten Anforderungen sind in der <<anforderungen, Vision.adoc>> unter Produktüberblick beschrieben.
-// links funktionieren erstmal nur in Belegabgabe.adoc
+=== Kompatibilität (sehr hoch)
 
+Kompatibilität ist ein wichtiger Grundsatz,
+um nachhaltige Anwendungen zu entwickeln
+und die Langlebigkeit der Architektur zu unterstützen.
+Dabei sollen diese einen höheren Stellenwerte als Funktionalität haben.
+Deshalb verzichten wir darauf Web-Client spezifische Optimierungen zu nutzen
+
+=== Platformunabhängig (sehr hoch)
+
+Endgeräte kommen mit vielen Verschiedenen Betriebssystemen.
+Die Software sollte so viele Platformen wie möglich unterstützen,
+also möglichst unabhängig von den Präferenzen des Nutzers funktionieren.
+
+=== Responsive (hoch)
+
+Displays als User Interface kommen in vielen verschiedenen Varianten.
+Die Anwendung sollte möglichst alle typischen Standards abdecken und
+so für einge große Menge an Endgeräten eine angenehme User Experience ermöglichen.
+
+=== Modularität (mittel)
+
+Um eine bessere Wartbarkeit und Skalierung des komplexen Systems zu ermöglichen
+und damit die Langlebigkeit der entwickelten Architektur zu unterstützen,
+wird die Anwendung grob in Frontend (User Interface) und Backend (Funktionalitäten) geteilt.
+Diese wiederum sind in einzelne Komponenten / Module aufgeteilt die modulare Aufgaben erfüllen.
+
+=== Offline (mittel)
+
+Die primäre Nutzungsumgebung sind geschlossene Gebäude wie Supermärkte,
+in denen nicht immer eine stabile Internetverbindung angenommen werden kann.
+Deshalb muss unsere Software ihre grundsätzlichen Funktionalität auch ohne Internet ausführen können
+und somit unabhängig von der gegebenen Internetverbindung funktionieren.
+Oder die zeitweise Trennung vom Internet vor dem Nutzer verstecken.
 
 == Entscheidungen, Nebenbedingungen und Begründungen
-//[List the decisions that have been made regarding architectural approaches and the constraints being placed on the way that the developers build the system. These will serve as guidelines for defining architecturally significant parts of the system. Justify each decision or constraint so that developers understand the importance of building the system according to the context created by those decisions and constraints. This may include a list of DOs and DON’Ts to guide the developers in building the system.]
 
-- die Anwendung wird als Webanwendung bereitgestellt (im späteren Verlauf wird sie um PWA-Funktionalität erweitert), da es Betriebssystem unabhängig ist und auf verschiedenen Geräten (PC, Tablet, Smartphone) genutzt werden kann
-- Frontend wird mit Vue.js (Vite) entwickelt und läuft auf einem Nginx-Webserver auf der VM
-- Vue.js bietet eine klare Proejktstruktur und sorgt für eine klare Trennung der Komponenten
-- das Frontend ist eine Single Page Application (SPA), die im Browser des Nutzers läuft, was kurze Ladezeiten mit sich bringt
-- REST-API im Backend wird mit Python mit FastAPI enwtickelt und läuft auch auf der VM
-- FastAPI ermöglicht eine schnelle Entwicklung von APIs und bietet eine gute Performance, zudem harmoniert es mit MySQL über SQLAlchemy
-- Datenerhaltung erfolgt über eine relationale Datenbank mit MySQL, ebenfalls auf der VM
-- MySQL ist optimal für unsere Datenstruktur (Nutzer, Produkte, Listen, ...) geeignet
+=== Progressive Web Application
+
+Wir haben uns dazu entschieden das Produkt als Progressive Web Application umzusetzen.
+Dies erfüllt Unabhängigkeit von Betriebssystemen und Hardware.
+Auch lässt sich damit die Offline Anforderung erfüllen.
+
+=== User Interface
+
+Das User Interface wird mit link:https://vuejs.org/[Vue.js] entwickelt
+und mit link:https://vite.dev/[Vite] gebaut.
+Vue.js ist ein modernes Framework für Web Anwendungen (SPA),
+welches Modulariät durch Single File Components stark begünstigt.
+Vue.js baut auf JavaScript, HTML und CSS auf.
+Zudem können mit Vite gebaute Anwendungen können von einem Nginx Server gehostet werden,
+welcher wiederum auf der bereitgestellten VM problemlos läuft.
+
+=== API
+
+Die Schnittstelle soll dem Architektur prinzip einer REST-API folgen.
+Hierfür bietet es sich an link:https://fastapi.tiangolo.com/[FastAPI] (Python) zu nutzen.
+Dies kann mit link:https://uvicorn.dev/[Uvicorn] zugänglich gemacht werden.
+Uvicorn läuft auf der bereitgestellten VM.
+Zudem harmoniert FastAPI sehr gut mit MySQL und SQLAlchemy.
+
+=== Datenbank
+
+Die Verwaltung der Daten erfolg über eine relationale Datenbank.
+Auch wenn SQLAlchemy viele Datenbanksysteme unterstütz,
+ist hier MySQL gewählt worden,
+da sie sicher auf der bereitgestellten VM läuft.
 
 == Schichten oder Architektur-Framework
-//[Describe the architectural pattern that you will use or how the architecture will be consistent and uniform. This could be a simple reference to an existing or well-known architectural pattern, such as the Layer framework, a reference to a high-level model of the framework, or a description of how the major system components should be put together.]
-- Wir verwenden eine Schichtenarchitektur (Layered Architecture), um das System klar zu strukturieren und die Erweitbarkeit zu gewährleisten.
 
-- Präsentationsschicht (Frontend)
-* Implementiert mit Vue.js als Single Page Application (SPA)
-* Präsentiert die Benutzeroberfläche im Webbrowser
+Wir oreintieren uns an einer Layered Architecture,
+um klar und minimalistische Struktur, sowie deren Erweitbarkeit zu gewährleisten.
+Diese Struktur ermöglicht eine klare Trennung von Verantwortlichkeiten
+und erleichtert sowohl die Entwicklung als auch die Fehlersuche und Erweiterung.
+
+=== Frontend - Single Page Application
+
+* UI im Web-Client
 * Verwaltet die Bennutzerinteraktion und Darstellung
-* Kommuniziert mit dem Backend über HTTP-Requests (REST-API)
+* nutzt Schnittstelle
 
-- Logikschicht (Backend)
-* Implementiert mit Python und FastAPI
-* Verarbeitet Anfragen aus dem Frontend
+=== Schnittstelle - REST-API
+
 * Implementiert die Geschäftslogik
-* Überprüft, verarbeitet und validiert Daten
+* Überprüft, verarbeitet und validiert Anfragen aus dem Frontend
+* schreibt und holt zum/vom Backend
+* link:http://141.56.137.83:8000/docs[ausführliche Dokumentation]
 
-- Datenschicht (Datenbank)
-* MySQL-Datenbank und SQLAlchemy als ORM
-* Verwwaltet den Zugriff auf die relationale Datenbank
-* Kommuniziert direkt mit MySQL für Datenoperationen
+=== Backend - Datenbankmanagementsystem
 
-Diese Struktur ermöglicht eine klare Trennung von Verantwortlichkeiten und erleichtert sowohl die Entwicklung als auch die Fehlersuche und Erweiterung.
+* Verwaltet den Zugriff auf die relationale Datenbank
+* Datenstruktur wird über ORM definiert
 
-== Architektursichten (Views)
-//[Describe the architectural views that you will use to describe the software architecture. This illustrates the different perspectives that you will make available to review and to document architectural decisions.]
+<<<
+
+== Architektursichten
 
 === Kontextabgrenzung
 
-image::C4-Modell_Level_1.png[width=60%,alt="C4-Modell Level 1"]
+Die Nutzer interagieren nur mit der Anwendung {system-name} um mit ihre Einkäufe zu organisieren.
 
-Das System ist eine Webanwendung zur Organisation von Einkäufen in Wohngemeinschaften.
+image::{imageDir}system_context_diagram.png[alt="C4-Modell: System Context Diagram"]
 
-* interagierende Personen und Systeme:
-* Nutzer (WG-Mitglieder): greifen über das Frontend im Browser auf die Anwendung zu
+<<<
 
 === Container
 
-image::C4-Modell_Level_2.png[width=60%,alt="C4-Modell Level 2"]
+{syste-name} besteht aus 3 Containern.
+Der Nutzer bedient die eine Single Page Application im Web-Client seiner Wahl.
+Dies kommuniziert über eine API mit der Datenbank,
+welche die Informationen über Einkäufe und Nutzer organisiert.
 
-* Frontend (Vue.js):
-** Läuft im Browser und übernimmt die Benutzerinteraktionen, sowie die Darstellung der Anwendung.
-** realisiert als Single Page Application (SPA)
-** Kommuniziert über HTTP mit der REST-API des Backends.
-* Backend (FastAPI):
-** Läuft auf einem Server und stellt eine REST-API bereit, welche die Anwendungslogik implementiert und die Datenverwaltung übernimmt.
-** Verarbeitet Anfragen des Frontends
-** Kommuniziert mit der Datenbank (MySQL) über SQLAlchemy (ORM).
-* Datenbank (MySQL):
-** Läuft auf dem Server und speichert alle persistente Daten.
-* Stellt die Daten für das Backend bereit
+image::{imageDir}container_diagram.png[alt="C4-Modell: Container Diagram"]
 
-* Zusätzlich:
-** Server (VM) für das Hosting von Frontend, Backend und Datenbank
-** (geplant) PWA-Funktionalität für Offline-Nutzung des Frontends
+<<<
 
 === Components
 
-- Komponenten im Frontend (SPA = PWA):
-* CreateAccount: Komponente zur Erstellung eines neuen Nutzerkontos
-* Login: Komponente für die Anmeldung eines Nutzers
-* List: Komponente zur Anzeige und Verwaltung einer einzelnen Einkaufsliste mit Anzeige der enthaltenen Produkte
-* ListOverview: Komponente zur Anzeige aller Listen eines Nutzers
-* ListCreator: Komponente zur Erstellung einer neuen Einkaufsliste (zusammen mit Komponente NewListForm)
-* ProductDetail: Komponente zur Bearbeitung der Details (Menge, Beschreibung, ...) eines einzelnen Produkts
-* UserSettings: Komponente zur Verwaltung der Nutzereinstellungen (z.B. Name, E-Mail, Passwort)
+==== Component: User Interface
 
-=== Verteilungsdiagramm (Deployment Diagramm)
-//Beschreibt die physischen Knoten (Rechner) des Systems und Komponenten, die in diesen Knoten ausgeführt werden. Diese Sicht wird nicht benötigt, wenn das System in einem einzelnen Prozess oder Thread ausgeführt wird.
+image::{imageDir}ui-component-diagram.png[alt="Component: User Interface"]
 
-- Server-Setup:
-* Ein Server (VM der Hochschule) beherbergt:
-** Nginx-Webserver für das Frontend (stellt SPA bereit)
-** FastAPI-Backend  via uvicorn
-** MySQL-Datenbank  lokal installiert
-- Nutzer greifen über Webbrowser (PC, Tablet, Smartphone) auf das System zu
+<<<
+
+==== Component: API
+
+Die Application Programming Interface stellt die Funktionalitäten der Verwaltung und Organisation
+von Einkäufen zur Verfügung.
+Sie wird durch einen ASGI Server zugänglich gemacht.
+
+image::{imageDir}api-component-diagram.png[alt="Component: API"]
+
+<<<
+
+==== Component: Datenbank
+
+Die Datenbank verwaltet alle Daten der Nutzer und deren Einkaufslisten.
+
+image::{imageDir}db-component-diagram.png[alt="Component: Datenbank"]
+
+<<<
+
+=== Verteilungsdiagramm
+
+Alle 3 Components (User Interface, API & Datenbank) können auf dedizierten Knoten gehostet werden.
+Es wird aber auch ein Docker-Compose-File zur Verfügung gestellt,
+der alle Components auf einem Knoten installiert.

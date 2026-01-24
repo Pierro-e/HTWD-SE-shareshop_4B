@@ -1,0 +1,6 @@
+include::attributes.adoc[]
+
+= {system-name}: Vision Dokumentation
+{docdate}
+
+include::{docs}requirements/vision.adoc[lines=1..1;5..-1,leveloffset=+1]

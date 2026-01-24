@@ -31,6 +31,10 @@ import { inject, ref } from "vue";
 import { api } from "../api/client";
 import BottomBar from "./BottomBar.vue";
 
+/**
+ * Komponente zur Anzeige der Listenübersicht des Nutzers
+ */
+
 export default {
   data() {
     // momentanen Nutzer holen

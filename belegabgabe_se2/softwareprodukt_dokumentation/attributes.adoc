@@ -1,0 +1,14 @@
+// Meta
+:system-name: ShareShop
+// Dokumenten
+:doctype: book
+:sectnums:
+:lang: DE
+:experimental:
+// Assets
+:docs: ../../docs/
+:imageDir: images/
+// Inhaltsverzeichnis
+:toc:
+:toclevels: 2
+:toc-title: Inhaltsverzeichnis

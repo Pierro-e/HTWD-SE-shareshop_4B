@@ -10,6 +10,11 @@
 </template>
 
 <script>
+/**
+ * Erstellt einen Popup-Dialog über den aktuellen Content.
+ * 
+ * @vue-prop {string} [name=PopUp] Popuptitel
+ */
 export default {
   props: {
     name: { type: String, default: "PopUp" },

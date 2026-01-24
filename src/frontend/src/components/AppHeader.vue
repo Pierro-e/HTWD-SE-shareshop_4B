@@ -14,6 +14,11 @@
 </template>
 
 <script>
+/**
+ * Erstellt die Kopfzeile der App.
+ * 
+ * @vue-prop {string} title Seitentitel
+ */
 export default {
   name: "AppHeader",
   props: {

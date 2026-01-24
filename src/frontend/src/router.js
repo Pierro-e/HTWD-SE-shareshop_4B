@@ -11,6 +11,7 @@ import Einkauf from "./components/Einkauf.vue";
 import Favorites from "./components/favorites/Favorites.vue"
 import ProductArchive from "./components/ProductArchive.vue";
 import UserArchive from "./components/UserArchive.vue";
+import Finanzen from "./components/Finanzen.vue";
 
 const routes = [
   { path: "/", component: Login },
@@ -36,6 +37,9 @@ const routes = [
     }),
     name: "ProductArchive"
   },
+  
+  { path: "/finanzen", component: Finanzen },
+  
   { path: "/userArchive", component: UserArchive,
     name: "UserArchive",
     props: route => ({
