@@ -1,23 +1,27 @@
-= Vision: {project-name}
-Erik Wenke <erik.wenke@stud.htw-dresden.de>; Maximilian Paul <s87085@htw-dresden.de>; Marlene Fritz <s87181@htw-dresden.de>; Levin Heirich <s87139@htw-dresden.de>; Pierre Kißling <s86388@htw-dresden.de>; Ahmad Alrmih  <s86396@htw-dresden.de>; Eric Hübel <s86462@htw-dresden.de>
-{localdatetime}
+= Vision
 include::../_includes/default-attributes.inc.adoc[]
+// Dieses Dokument beschreibt aus Anwendersicht die grundlegenden Anforderungen an das System ShareShop – eine App zur Unterstützung gemeinsamer Einkaufsprozesse in Wohngemeinschaften (WGs). Ziel ist es, Konflikte um Haushaltsanschaffungen zu minimieren, die Organisation zu erleichtern und die Zusammenarbeit zu fördern.
 
-== Einführung
 
-=== Zweck
-Dieses Dokument beschreibt aus Anwendersicht die grundlegenden Anforderungen an das System ShareShop – eine App zur Unterstützung gemeinsamer Einkaufsprozesse in Wohngemeinschaften (WGs). Ziel ist es, Konflikte um Haushaltsanschaffungen zu minimieren, die Organisation zu erleichtern und die Zusammenarbeit zu fördern.
+== Gültigkeitsbereich (Scope)
 
-=== Gültigkeitsbereich (Scope)
 Dieses Visions-Dokument bezieht sich auf das System ShareShop, das vom Projektteam 4B entwickelt wird. Das System wird es Bewohner:innen von WGs erlauben, kollaborative Einkaufslisten zu nutzen und den Haushaltsbedarf effizient zu organisieren, um damit einen gut geführten Haushalt zu erreichen, das Einkaufen zu erleichtern und Streit zu vermeiden.
 
-=== Definitionen, Akronyme und Abkürzungen
-Siehe <<#glossary, Glossar>>.
+<<<
 
-=== Referenzen
+== Definitionen, Akronyme und Abkürzungen
+
+include::glossary.adoc[lines=1..1;5..-1,leveloffset=+1]
+
+<<<
+
+== Referenzen
+
 - ShareShop-Projektbeschreibung (PDF)
 - Scrum Guide
 - ISO 9241 (Usability-Standards)
+
+<<<
 
 == Positionierung
 
@@ -36,6 +40,8 @@ Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei d
 | anders als | eine reine Einkaufslisten-App
 | kann unser Produkt | intelligente Bedarfsplanung und WG-spezifische Funktionen bieten
 |===
+
+<<<
 
 == Stakeholder Beschreibungen
 
@@ -67,15 +73,13 @@ Einkaufen in Wohngemeinschaften führt häufig zu Konflikten, insbesondere bei d
 | Sie garantieren Qualität der genutzten Arbeitsmittel.
 |===
 
-Die Verfeinerung der Stakeholder erfolgt mittels <<persona, Personas>>.
-// links funktionieren erstmal nur in Belegabgabe.adoc
+Die Verfeinerung der Stakeholder erfolgt mittels Personas.
+
+<<<
 
 == Produktüberblick
 
-[[anforderungen]]
-
 === Bedarfe und Hauptfunktionen Anforderungen
-//Vermeiden Sie Angaben zum Entwurf. Nennen wesentliche Features (Produktmerkmale) auf allgemeiner Ebene. Fokussieren Sie sich auf die benötigten Fähigkeiten des Systems und warum (nicht wie!) diese realisiert werden sollen. Geben Sie die von den Stakeholdern vorgegebenen Prioritäten an.
 
 [%header, cols="4,1,4"]
 |===
@@ -92,16 +96,6 @@ Die Verfeinerung der Stakeholder erfolgt mittels <<persona, Personas>>.
 |===
 
 === Zusätzliche Produktanforderungen
-//Zutreffendes angeben, nicht zutreffendes streichen oder auskommentieren
-//Hinweise:
-////
-. Führen Sie die wesentlichen anzuwendenden Standards, Hardware oder andere Plattformanforderungen, Leistungsanforderungen und Umgebungsanforderungen auf
-. Definieren Sie grob die Qualitätsanforderungen für Leistung, Robustheit, Ausfalltoleranz, Benutzbarkeit und ähnliche Merkmale, die Qualitätsanforderungen an das geplante Produkt beschreiben.
-. Notieren Sie alle Entwurfseinschränkungen, externe Einschränkungen, Annahmen oder andere Abhängigkeiten, die wenn Sie geändert werden, das Visions-Dokument beeinflussen. Ein Beispiel wäre die Annahme, dass ein bestimmtes Betriebssystem für die vom System erforderliche Hardware verfügbar ist. Ist das Betriebssystem nicht verfügbar, muss das Visions-Dokument angepasst werden.
-. Definieren Sie alle Dokumentationsanforderugen, inkl. Benutzerhandbücher, Onlinehilfe, Installations-, Kennzeichnungs- und Auslieferungsanforderungen.
-. Definieren Sie die Priorität für diese zusätzlichen Produktanforderungen. Ergänzen Sie, falls sinnvoll, Angaben zu Stabilität, Nutzen, Aufwand und Risiko für diese Anforderungen.
-////
-
 
 [%header, cols="4,1"]
 |===

@@ -1,8 +1,7 @@
-= Glossar: {project-name}
+= Glossar
 include::../_includes/default-attributes.inc.adoc[]
+//In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fachdomäne) der {project-system-name}'s definiert. Zur besseren Übersichtlichkeit sind Begriffe, Abkürzungen und Datendefinitionen gesondert aufgeführt.
 
-== Einführung
-In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fachdomäne) der {project-system-name}'s definiert. Zur besseren Übersichtlichkeit sind Begriffe, Abkürzungen und Datendefinitionen gesondert aufgeführt.
 
 == Begriffe
 
@@ -56,9 +55,11 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Überprüfung, Verifizierung
 
 | Favoriten-Items
-| Artikel, die der Bewohner öfter kaufen möchte und deshalb in einer persönlichen extra Liste für schnelleren zugriff Gespeichert hat.  
+| Artikel, die der Bewohner öfter kaufen möchte und deshalb in einer persönlichen extra Liste für schnelleren zugriff Gespeichert hat.
 | Favoriten
 |===
+
+<<<
 
 == Abkürzungen und Akronyme
 
@@ -75,6 +76,8 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 | Artikel, die der Bewohner öfter kaufen möchte und deshalb in einer persönlichen extra Liste für schnelleren zugriff Gespeichert hat.
 
 |===
+
+<<<
 
 == Verzeichnis der Datenstrukturen
 
@@ -234,6 +237,8 @@ In diesem Dokument werden die wesentlichen Begriffe aus dem Anwendungsgebiet (Fa
 |===
 
 
+<<<
+
 == Domänenmodell
 
-image::plantuml/DomänenmodellV2.svg[width=100%, height=40%, alt="Domänenmodell ShareShop", title="Domänenmodell ShareShop"]
+image::{imageDir}DomänenmodellV2.svg[width=100%, height=40%, alt="Domänenmodell ShareShop", title="Domänenmodell ShareShop"]
