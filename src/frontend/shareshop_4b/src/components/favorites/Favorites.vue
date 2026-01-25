@@ -83,7 +83,6 @@ export default {
   methods: {
     /**
      * Event Handler, der ausgelöst wird, wenn ein Favorit angeklickt wird.
-     * @method onFavClick
      * @param f {Object} Favorit
      */
     onFavClick(f) {
@@ -93,7 +92,6 @@ export default {
     },
     /**
      * Lädt aktuelle Favoriten des Nutzeres.
-     * @method fetchFavorites
      */
     async fetchFavorites() {
       this.ret = await this.updateFavorites();

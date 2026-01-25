@@ -61,7 +61,6 @@ export default {
   methods: {
     /**
      * Event Handler, der aufgerufen wird, wenn eine neue Möglichkeit ausgewählt wurde.
-     * @method
      * @param event {event} Event-Objekt
      */
     onChange(event) {

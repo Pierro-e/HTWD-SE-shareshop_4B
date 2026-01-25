@@ -43,7 +43,6 @@ export default {
   },
   /**
    * Aktuallisiert den bearbeiteten Favoriten.
-   * @method alter_fav
    */
   methods: {
     async alter_fav() {
@@ -60,7 +59,6 @@ export default {
     },
     /**
      * Löscht den Favoriten.
-     * @method delete_fav
      */
     async delete_fav() {
       const url =

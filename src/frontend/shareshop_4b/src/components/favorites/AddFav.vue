@@ -56,7 +56,6 @@ export default {
   methods: {
     /**
      * Setzt die Werte der Input Elemente zurück auf die Default Werte.
-     * @method resetInput
      */
     resetInput() {
       this.favName = "";
@@ -66,7 +65,6 @@ export default {
     },
     /**
      * Erzeugt einen neuen Favoriten passierend auf den Inhalten der Input Elemente.
-     * @method addFavorite
      */
     async addFavorite() {
       let response;
