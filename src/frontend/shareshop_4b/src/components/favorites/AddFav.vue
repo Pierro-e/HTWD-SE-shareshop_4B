@@ -30,7 +30,6 @@ import SelectObjectArray from "../input/SelectObjectArray.vue";
 
 /**
  * Oberfläche für das Erstellen eines Favoriten.
- *
  * @component
  */
 export default {

@@ -10,7 +10,9 @@
       label="Einheit"
     />
     <button type="submit" class="button-submit">speichern</button>
-    <button type="button" class="button-delete" @click="delete_fav">löschen</button>
+    <button type="button" class="button-delete" @click="delete_fav">
+      löschen
+    </button>
   </form>
 </template>
 
@@ -20,6 +22,10 @@ import NumInput from "../input/NumInput.vue";
 import SelectObjectArray from "../input/SelectObjectArray.vue";
 import axios from "axios";
 
+/**
+ * Oberflächen zum Bearbeiten eines bereits angelegten Favoriten.
+ * @component
+ */
 export default {
   inject: ["fetchUnits", "user", "updateFavorites"],
   components: {
@@ -27,9 +33,18 @@ export default {
     NumInput,
     SelectObjectArray,
   },
+  /**
+   * Favorit, der bearbeitet werden soll.
+   * @prop {Object}
+   * @required
+   */
   props: {
-    fav: { required: true },
+    fav: { type: Object, required: true },
   },
+  /**
+   * Aktuallisiert den bearbeiteten Favoriten.
+   * @method alter_fav
+   */
   methods: {
     async alter_fav() {
       const url =
@@ -39,10 +54,14 @@ export default {
         this.fav.produkt_id;
 
       const response = await axios.put(url, this.fav_copy);
-      
-      this.$parent.$emit("close"); // Popup schließen
-      this.$parent.$emit("update"); // Fav updaten
+
+      this.$parent.$emit("close");
+      this.$parent.$emit("update");
     },
+    /**
+     * Löscht den Favoriten.
+     * @method delete_fav
+     */
     async delete_fav() {
       const url =
         "http://141.56.137.83:8000/fav_produkte_delete/nutzer/" +
@@ -56,16 +75,15 @@ export default {
     },
   },
   data() {
-    return { 
+    return {
       units: [],
-      fav_copy: {} 
+      fav_copy: {},
     };
   },
   async mounted() {
     this.fav_copy = { ...this.fav }; // Arbeitskopie
     try {
       this.units = await this.fetchUnits();
-
     } catch (error) {
       console.log(error);
       return;

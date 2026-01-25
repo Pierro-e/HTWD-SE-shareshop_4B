@@ -2,40 +2,47 @@
   <AppHeader title="Favoriten">
     <template v-slot:left>
       <button @click="$router.go(-1)" class="button-cancel back-button">
-        <font-awesome-icon icon='arrow-left'/>
+        <font-awesome-icon icon="arrow-left" />
       </button>
     </template>
     <template v-slot:right>
       <button @click="add_fav = true" class="button-add">
-        <font-awesome-icon icon='plus'/>
+        <font-awesome-icon icon="plus" />
       </button>
     </template>
   </AppHeader>
 
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
-  <div v-if="ret == 0" class="info">
-      Keine Favoriten
-  </div>
+  <div v-if="ret == 0" class="info">Keine Favoriten</div>
   <div class="card-grid">
-     <ProductCard
-      v-for="(f,index) in favorites"
+    <ProductCard
+      v-for="(f, index) in favorites"
       :key="index"
       :product="f"
       :onSettings="() => onFavClick(f)"
     />
   </div>
 
-  <PopUp v-if="add_fav" @close="add_fav = false" @update="this.fetchFavorites()" name="Favoriten hinzufügen">
-    <AddFav/>
+  <PopUp
+    v-if="add_fav"
+    @close="add_fav = false"
+    @update="this.fetchFavorites()"
+    name="Favoriten hinzufügen"
+  >
+    <AddFav />
   </PopUp>
 
-  <PopUp v-if="edit_fav" @close="edit_fav = false" @update="this.fetchFavorites()" :name="fav_name" type="no-save">
+  <PopUp
+    v-if="edit_fav"
+    @close="edit_fav = false"
+    @update="this.fetchFavorites()"
+    :name="fav_name"
+    type="no-save"
+  >
     <FavEditor :fav="fav" />
   </PopUp>
 
-  <BottomBar 
-    :highlight-btn="3"
-  />
+  <BottomBar :highlight-btn="3" />
 </template>
 
 <script>
@@ -44,8 +51,12 @@ import FavEditor from "./FavEditor.vue";
 import PopUp from "../PopUp.vue";
 import AppHeader from "../AppHeader.vue";
 import ProductCard from "../ProductCard.vue";
-import BottomBar from "../BottomBar.vue"
+import BottomBar from "../BottomBar.vue";
 
+/**
+ * Oberflächen zur Verwaltung der Favoriten eines Nutzers.
+ * @component
+ */
 export default {
   inject: ["updateFavorites", "favorites"],
   components: {
@@ -54,7 +65,7 @@ export default {
     AppHeader,
     ProductCard,
     FavEditor,
-    BottomBar
+    BottomBar,
   },
   data() {
     return {
@@ -63,25 +74,34 @@ export default {
       fav: null,
       fav_name: "",
       errorMessage: "",
-      ret: 1
+      ret: 1,
     };
   },
   async mounted() {
     this.fetchFavorites();
   },
   methods: {
-    onFavClick(f){
+    /**
+     * Event Handler, der ausgelöst wird, wenn ein Favorit angeklickt wird.
+     * @method onFavClick
+     * @param f {Object} Favorit
+     */
+    onFavClick(f) {
       this.edit_fav = true;
       this.fav = f;
       this.fav_name = f.produkt_name;
     },
-    async fetchFavorites(){
+    /**
+     * Lädt aktuelle Favoriten des Nutzeres.
+     * @method fetchFavorites
+     */
+    async fetchFavorites() {
       this.ret = await this.updateFavorites();
-      if (this.ret == -1){
-        this.errorMessage = "Favoriten konnten nicht geladen werden."
+      if (this.ret == -1) {
+        this.errorMessage = "Favoriten konnten nicht geladen werden.";
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
