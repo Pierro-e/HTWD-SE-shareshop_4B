@@ -12,6 +12,13 @@ include::attributes.adoc[]
 
 === Softwareanforderungen
 
+==== mit Docker
+
+* Docker
+* Git
+
+==== Manuell
+
 * Betriebssystem: Ubuntu 24.04.2 LTS x86_64
 * WebServer: Nginx 1.24.0
 * Backend Runtime: Python 3.12.3
@@ -27,22 +34,115 @@ include::attributes.adoc[]
 * API: http://141.56.137.83:8000
 * API-Dokumenation: http://141.56.137.83:8000/docs
 * Voraussetzungen für die Nutzung:
-** Web-Client mit JavaScript
 ** Netzwerkzugriff auf die Server-IP (VPN zur HTW Dresden)
 
-=== manuele Konfiguration
+=== Installation
 
-==== Frontend (Vue.js)
+==== mit Docker
+
+Im Moment werden noch keine vorgefertigten Docker Images zur Verfügung gestellt.
+Sie müssen eigenständig erstellt werden.
+Dafür klonen Sie zuerst den "main" Branch des Remote Git Repository.
+
+[source,bash]
+----
+git clone --branch main https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git
+----
+
+Wechsele in das erstellte Verzeichnis, um die Quelldateien zu inspizieren.
+
+[source,bash]
+----
+cd HTWD-SE-shareshop_4B
+----
+
+Anschließend müssen die Dockerfiles entsprechend des Anwendungszwecks
+konfiguriert werden.
+Die Anwendung umfasst 2 Dockerfiles und eine Compose Datei.
+Sie erzeugen Images für die API und das UI.
+Die Compose Datei erzeugt noch eine Datenbank und ist dafür gedacht,
+alle 3 Anwendungskomponenten (UI, API und Datenbank) auf einem Host zu starten.
+Es können aber auch alle Komponenten verteilt gehostet werden.
+
+In der Datei "<git_root>/src/frontend/Dockerfile" muss die Base URL der API
+definiert werden, da diese von Vite zur Buildzeit gebraucht wird.
+
+[source,dockerfile]
+----
+# =========================================
+# Stage 1: Vite
+# =========================================
+
+# ...
+
+ENV VITE_API_BASE_URL=<api_base_url>
+
+# ...
+----
+
+In der Compose Datei müssen noch die Eigenschaften der Datenbank definiert werden.
+Zudem können noch Ports angepasst werden.
+
+[source,yaml]
+----
+services:
+  ui:
+    build: ./frontend/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - api
+  api:
+    build: ./backend/
+    environment:
+      DB_NAME: <name>
+      DB_USER: <user>
+      DB_PASSWORD: <password>
+      DB_HOST: db
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+  db:
+    image: mysql:8.4
+    restart: always
+    environment:
+      MYSQL_DATABASE: <name>
+      MYSQL_USER: <user>
+      MYSQL_PASSWORD: <password>
+      MYSQL_ROOT_PASSWORD: <rootpassword>
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+volumes:
+  mysql_data:
+----
+
+Die komplette Anwendung kann dann erzeugt und gestartet werden.
+
+[source,bash]
+----
+cd <git_root>/src/
+docker compose build
+docker compose up
+----
+
+Detalierte Informationen zur Verwaltung bietet die link:https://docs.docker.com/compose/[Docker Compose Dokumentation].
+
+==== Manuell
+
+===== Frontend (Vue.js)
 
 . Build-Ausgabe liegt unter /var/www/shareshop/dist
 . Auslieferung über Web Server (Nginx)
 
-==== Web Server (Nginx)
+===== Web Server (Nginx)
 
 . Frontend: "/"
 . Weiterleitung an Backend: "8000"
 
-=== API (FastAPI)
+==== API (FastAPI)
 
 . Umgebungsvariablen
 .. DB_HOST
@@ -52,13 +152,9 @@ include::attributes.adoc[]
 . Start über Uvicorn
 . Betrieb als systemd-Service (fastapi.service)
 
-=== Datenbank (MySQL)
+==== Datenbank (MySQL)
 
 . Datenbankname: share_shop
-
-=== Web-Client
-
-* keine speziellen Einstellungen notwendig
 
 == Systembetreuung
 
