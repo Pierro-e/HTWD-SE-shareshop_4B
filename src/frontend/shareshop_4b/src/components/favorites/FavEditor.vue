@@ -24,7 +24,8 @@ import axios from "axios";
 
 /**
  * Oberflächen zum Bearbeiten eines bereits angelegten Favoriten.
- * @component
+ * @vue-prop {Object} fav - Favorit, der bearbeitet werden soll.
+
  */
 export default {
   inject: ["fetchUnits", "user", "updateFavorites"],
@@ -33,11 +34,6 @@ export default {
     NumInput,
     SelectObjectArray,
   },
-  /**
-   * Favorit, der bearbeitet werden soll.
-   * @prop {Object}
-   * @required
-   */
   props: {
     fav: { type: Object, required: true },
   },

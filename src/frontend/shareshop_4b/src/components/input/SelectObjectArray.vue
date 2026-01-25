@@ -17,42 +17,20 @@
 <script>
 /**
  * Ein Input-Select Feld, was die Auswahl zwischen definierten Möglichkeiten gibt.
- * @component
+ * @vue-prop {Array} options - Die Möglichkeiten, zwischen denen ausgewählt werden kann.
+ * @vue-prop {String} displayKey - Die Eigenschaft, die dem Nutzer als Identifizierung der Möglichkeiten gezeigt wrid.
+ * @vue-prop {String} valueKey - Die Eigenschaft, die als Wert der Möglichkeiten betrachtet wrid.
+ * @vue-prop {Object} choice - Die Möglichkeit, die ausgewählt ist.
+ * @vue-prop {String} label - Das Label, welches das Feld auszeichnen soll.
  */
 export default {
   name: "SelectArray",
-  /**
-   * @emits {Object} update:choice - Sendet ausgewählte Möglichkeit.
-   */
   emits: ["update:choice"],
   props: {
-    /**
-     * Die Möglichkeiten, zwischen denen ausgewählt werden kann.
-     * @prop {Array}
-     * @required
-     */
     options: { type: Array, required: true },
-    /**
-     * Die Eigenschaft, die dem Nutzer als Identifizierung der Möglichkeiten gezeigt wrid.
-     * @prop {String}
-     * @required
-     */
     displayKey: { type: String, required: true },
-    /**
-     * Die Eigenschaft, die als Wert der Möglichkeiten betrachtet wrid.
-     * @prop {String}
-     * @required
-     */
     valueKey: { type: String, require: true },
-    /**
-     * Die Möglichkeit, die ausgewählt ist.
-     * @required
-     */
     choice: { required: true },
-    /**
-     * Das Label, welches das Feld auszeichnen soll.
-     * @prop {String}
-     */
     label: { type: String },
   },
   data() {

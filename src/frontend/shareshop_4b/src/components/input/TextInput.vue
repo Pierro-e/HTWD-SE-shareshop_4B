@@ -13,24 +13,15 @@
 <script>
 /**
  * Ein Input Feld, was textliche Werte akzeptiert.
- * @component
+ *
+ * @vue-prop {String} text - Der aktueller Wert, den das Element beinhaltet.
+ * @vue-prop {String} placeholder - Der Text, welcher als Placeholder dient.
+ * @vue-prop {String} label - Das Label, welches das Input Feld auszeichnen soll.
  */
 export default {
   props: {
-    /**
-     * Der aktueller Wert, den das Element beinhaltet.
-     * @prop {String}
-     */
     text: { type: String },
-    /**
-     * Der Text, welcher als Placeholder dient.
-     * @prop {String}
-     */
     placeholder: { type: String },
-    /**
-     * Das Label, welches das Input Feld auszeichnen soll.
-     * @prop {String}
-     */
     label: { type: String },
   },
 };

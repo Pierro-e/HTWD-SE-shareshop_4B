@@ -15,25 +15,14 @@
 <script>
 /**
  * Ein Input Feld, was nummerische Werte akzeptiert.
- * @component
+ * @vue-prop {Number} num - Der aktueller Wert, den das Element beinhaltet.
+ * @vue-prop {Number} step - Die Schrittweite, welche akzeptierten Eingabe voneinander trennt.
+ * @vue-prop {String} label - Das Label, welches das Input Feld auszeichnen soll.
  */
 export default {
   props: {
-    /**
-     * Der aktueller Wert, den das Element beinhaltet.
-     * @prop {Number}
-     */
     num: { type: Number },
-    /**
-     * Die Schrittweite, welche akzeptierten Eingabe voneinander trennt.
-     * @prop {Number}
-     * @default 0.25
-     */
     step: { type: Number, default: 0.25 },
-    /**
-     * Das Label, welches das Input Feld auszeichnen soll.
-     * @prop {String}
-     */
     label: { type: String },
   },
 };

@@ -55,7 +55,6 @@ import BottomBar from "../BottomBar.vue";
 
 /**
  * Oberflächen zur Verwaltung der Favoriten eines Nutzers.
- * @component
  */
 export default {
   inject: ["updateFavorites", "favorites"],
