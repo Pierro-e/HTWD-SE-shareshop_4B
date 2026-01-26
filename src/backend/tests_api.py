@@ -12,7 +12,7 @@ with patch.dict(os.environ, {
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer
     from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste
-    from share_shop_api import NutzerCreate, ProduktCreate
+    from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
 
 # Hilfsfunktion zum Erstellen von Dummy-Nutzer-Objekten (als MagicMock mit Attributen)
 def create_mock_nutzer(id, email, name, passwort_hash="hashed", theme=0, color=0, decaydays=Decimal('7.0')):
