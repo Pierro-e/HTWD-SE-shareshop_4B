@@ -132,52 +132,276 @@ Detalierte Informationen zur Verwaltung bietet die link:https://docs.docker.com/
 
 ==== Manuell
 
+Die folgenden Schritte beschreiben die Installation ohne Docker auf Ubuntu.
+Die Reihenfolge entspricht der Komponenten-Auflistung (Frontend, Nginx, API, MySQL).
+Hinweis: Die Datenbank muss existieren, bevor das Backend erfolgreich starten kann.
+
 ===== Frontend (Vue.js)
 
-. build erstellen mit:
+Vorraussetzungen:
+
+* Node.js (LTS empfohlen) + npm
+* Quellcode lokal vorhanden (Repository geklont)
 
 [source,bash]
 ----
+# optional: Repo klonen (falls noch nicht vorhanden)
+# git clone --branch main https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git
+# cd HTWD-SE-shareshop_4B/src/frontend/shareshop_4b
+
+cd <git_root>/src/frontend/shareshop_4b
+
+# Dependencies installieren
+npm ci
+
+# API-Base-URL für den Build setzen (Vite)
+# Beispiel: export VITE_API_BASE_URL="http://141.56.137.83:8000"
+export VITE_API_BASE_URL="<api_base_url>"
+
+# Build erstellen
 npm run build
+
+# Build-Ausgabe nach /var/www/shareshop/dist deployen
+sudo mkdir -p /var/www/shareshop
+sudo rm -rf /var/www/shareshop/dist
+sudo cp -r dist /var/www/shareshop/dist
+
+# (optional) Rechte so setzen, dass Nginx lesen kann
+sudo chown -R www-data:www-data /var/www/shareshop/dist
+sudo find /var/www/shareshop/dist -type d -exec chmod 755 {} \;
+sudo find /var/www/shareshop/dist -type f -exec chmod 644 {} \;
 ----
 
-. Build-Ausgabe ablegen unter: /var/www/shareshop/dist
-. Auslieferung über Web Server (Nginx)
+Build-Ausgabe liegt unter: `/var/www/shareshop/dist`.
+Auslieferung erfolgt über Nginx.
+
+===== Web Server (Nginx)
+
+Ziel:
+
+* Frontend unter `/` ausliefern
+* Requests an das Backend auf Port `8000` weiterleiten (typisch unter `/api/`)
+
+[source,bash]
+----
+sudo apt update 
+sudo apt install -y nginx
+
+# Nginx Site-Config erstellen
+sudo nano /etc/nginx/sites-available/shareshop
+----
+
+Beispiel-Konfiguration (Frontend + Proxy):
+
+[source,nginx]
+----
+server {
+    listen 80;
+    server_name _;
+
+    root /var/www/shareshop/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Backend-Weiterleitung (anpassen, falls andere Route verwendet wird)
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+----
+
+Aktivieren und Reload:
+
+[source,bash]
+----
+sudo ln -sf /etc/nginx/sites-available/shareshop /etc/nginx/sites-enabled/shareshop
+sudo rm -f /etc/nginx/sites-enabled/default
+sudo nginx -t
+sudo systemctl enable --now nginx
+sudo systemctl reload nginx
+----  
+
+===== API (FastAPI)
+
+Vorraussetzungen:
+
+* Python 3.12+
+* pip (Python Package Manager)
+* Zugriff auf die MySQL-Datenbank `share_shop`
+* Quellcode lokal vorhanden
+
+Installation:
+
+[source,bash]
+----
+cd <git_root>/src/backend
+
+# Python Dependencies installieren
+sudo apt install -y python3.12 python3.12-venv python3-pip
+
+# Virtuelles Environment erstellen (optional, aber empfohlen)
+python3 -m venv venv
+source venv/bin/activate
+
+# Python-Packages installieren
+pip install fastapi==0.115.12 \
+    uvicorn==0.34.3 \
+    sqlalchemy \
+    pymysql \
+    python-dotenv \
+    pydantic[email] \
+    numpy
+
+# .env Datei erstellen mit Datenbankzugangsdaten
+cat > .env << EOF
+DB_HOST=localhost
+DB_USER=<db_user>
+DB_PASSWORD=<db_password>
+DB_NAME=share_shop
+EOF
+
+# Rechte setzen (nur owner darf lesen)
+chmod 600 .env
+----
+
+Systemd Service einrichten (empfohlen für Produktivbetrieb):
+
+[source,bash]
+----
+sudo nano /etc/systemd/system/fastapi.service
+----
+
+Service-Konfiguration:
+
+[source,ini]
+----
+[Unit]
+Description=FastAPI Share Shop Backend
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=<git_root>/src/backend
+Environment="PATH=<git_root>/src/backend/venv/bin"
+ExecStart=<git_root>/src/backend/venv/bin/uvicorn share_shop_api:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+----
+
+Service aktivieren und starten:
+
+[source,bash]
+----
+sudo systemctl daemon-reload
+sudo systemctl enable fastapi.service
+sudo systemctl start fastapi.service
+
+# Status prüfen
+sudo systemctl status fastapi.service
+----
+
+Alternativ: Manueller Start (für Tests):
+
+[source,bash]
+----
+cd <git_root>/src/backend
+source venv/bin/activate  # falls venv verwendet wird
+uvicorn share_shop_api:app --host 0.0.0.0 --port 8000
+----
+
+Die API ist dann unter `http://localhost:8000` erreichbar.
+API-Dokumentation unter `http://localhost:8000/docs`.
+
+===== Datenbank (MySQL)
+
+Voraussetzungen:
+
+* MySQL 8.0+
+
+Installation:
 
 [source,bash]
 ----
 sudo apt update
-sudo apt install -y nginx
-sudo nano /etc/nginx/sites-available/shareshop
-sudo ln -sf /etc/nginx/sites-available/shareshop /etc/nginx/sites-enabled/shareshop
-sudo nginx -t
-sudo systemctl reload nginx
+sudo apt install -y mysql-server
+
+# MySQL sichern (Root-Passwort setzen, etc.)
+sudo mysql_secure_installation
+
+# Service aktivieren
+sudo systemctl enable mysql
+sudo systemctl start mysql
 ----
 
-===== Web Server (Nginx)
-
-. Frontend: "/"
-. Weiterleitung an Backend: "8000"
-
-==== API (FastAPI)
-
-. Umgebungsvariablen
-.. DB_HOST
-.. DB_PASSWORD
-.. DB_USER
-.. DB_NAME
-. Start über Uvicorn
-. Betrieb als systemd-Service (fastapi.service)
-
-==== Datenbank (MySQL)
-
-. Datenbankname: share_shop
-. DB erstellen mit:
+Datenbank und Benutzer erstellen:
 
 [source,bash]
 ----
-sudo apt install -y mysql-server
-mysql -u root -p -e "CREATE DATABASE share_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+# Als root in MySQL einloggen
+sudo mysql -u root -p
+----
+
+SQL-Befehle ausführen:
+
+[source,sql]
+----
+-- Datenbank erstellen
+CREATE DATABASE share_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Benutzer erstellen und Rechte vergeben
+CREATE USER 'shareshop_user'@'localhost' IDENTIFIED BY '<sicheres_passwort>';
+GRANT ALL PRIVILEGES ON share_shop.* TO 'shareshop_user'@'localhost';
+FLUSH PRIVILEGES;
+
+-- Optional: Remote-Zugriff erlauben (nur wenn nötig)
+-- CREATE USER 'shareshop_user'@'%' IDENTIFIED BY '<sicheres_passwort>';
+-- GRANT ALL PRIVILEGES ON share_shop.* TO 'shareshop_user'@'%';
+
+QUIT;
+----
+
+Datenbank-Schema erstellen:
+
+WICHTIG: Das Backend verwendet SQLAlchemy ORM, erstellt aber die Tabellen NICHT automatisch.
+Das Schema muss manuell erstellt werden.
+
+Im Repository wird eine `backup.sql` Datei bereitgestellt, die alle Tabellen und Basis-Daten enthält.
+Diese kann direkt importiert werden:
+
+[source,bash]
+----
+# Schema aus backup.sql importieren
+mysql -u shareshop_user -p share_shop < <git_root>/backup.sql
+
+# Optional: Falls backup.sql an anderem Ort liegt
+# mysql -u shareshop_user -p share_shop < /pfad/zur/backup.sql
+----
+
+Die `backup.sql` Datei enthält:
+- Alle 11 Tabellen (Nutzer, Einheiten, Produkt, Liste, ListeMitglieder, ListeProdukte, FavProdukte, Bedarfsvorhersage, Einkaufsarchiv, eingekaufte_Produkte, Kostenaufteilung)
+- Basis-Einheiten (Kilogramm, Gramm, Liter, Milliliter, Stück)
+- Alle notwendigen Fremdschlüssel und Indizes
+
+Überprüfung:
+
+[source,bash]
+----
+# Tabellen anzeigen
+mysql -u shareshop_user -p share_shop -e "SHOW TABLES;"
+
+# Struktur prüfen
+mysql -u shareshop_user -p share_shop -e "DESCRIBE Nutzer;"
 ----
 
 == Systembetreuung
