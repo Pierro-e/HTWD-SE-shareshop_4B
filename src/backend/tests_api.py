@@ -480,6 +480,7 @@ def test_get_kostenaufteilung_empfaenger_success(mock_session_local):
 ############### Tests für Mitglieder in Listen################################
 @patch('share_shop_api.SessionLocal')
 def test_add_mitglied_success(mock_session_local):
+    """ Testet das erfolgreiche Hinzufügen eines Mitglieds zu einer Liste. """
     # Arrange
     mock_db = MagicMock()
     mock_session_local.return_value = mock_db
@@ -500,3 +501,17 @@ def test_add_mitglied_success(mock_session_local):
     # Assert
     assert result.listen_id == 1
     assert result.nutzer_id == 2
+
+@patch('share_shop_api.SessionLocal')
+def test_add_mitglied_nutzer_not_found(mock_session_local):
+    """ Testet das Verhalten beim Hinzufügen eines Mitglieds, wenn der Nutzer nicht gefunden wird. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_db.query.return_value.filter.return_value.first.return_value = None  # Nutzer nicht gefunden
+
+    # Act & Assert
+    with pytest.raises(Exception) as exc_info:
+        add_mitglied(1, 999, db=mock_db)
+    assert "Nutzer nicht gefunden" in str(exc_info.value)
