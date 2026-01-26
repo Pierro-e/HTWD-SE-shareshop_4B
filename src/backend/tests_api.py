@@ -11,7 +11,7 @@ with patch.dict(os.environ, {
     'DB_NAME': 'test'
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer
-    from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste
+    from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
     from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
 
 # Hilfsfunktion zum Erstellen von Dummy-Nutzer-Objekten (als MagicMock mit Attributen)
@@ -477,3 +477,26 @@ def test_get_kostenaufteilung_empfaenger_success(mock_session_local):
 
         # Assert
         assert result == []
+############### Tests für Mitglieder in Listen################################
+@patch('share_shop_api.SessionLocal')
+def test_add_mitglied_success(mock_session_local):
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_nutzer = create_mock_nutzer(2, 'member@example.com', 'Member')
+    mock_liste = create_mock_liste(1, 'Test Liste', 1)
+    mock_mitglied = create_mock_mitglied(1, 2)
+
+    # Mock für Nutzer prüfen
+    mock_db.query.return_value.filter.return_value.first.side_effect = [mock_nutzer, mock_liste, None]  # Nutzer gefunden, Liste gefunden, Mitglied nicht vorhanden
+    mock_db.add.return_value = None
+    mock_db.commit.return_value = None
+    mock_db.refresh.side_effect = lambda obj: setattr(obj, 'listen_id', 1) and setattr(obj, 'nutzer_id', 2)
+
+    # Act
+    result = add_mitglied(1, 2, db=mock_db)
+
+    # Assert
+    assert result.listen_id == 1
+    assert result.nutzer_id == 2
