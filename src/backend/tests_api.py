@@ -294,7 +294,7 @@ def test_get_fav_produkte_by_nutzer_not_found(mock_session_local):
         get_fav_produkte_by_nutzer(999, db=mock_db)
     assert "Nutzer nicht gefunden" in str(exc_info.value)
 
-# Tests für DELETE-Endpunkte
+# Tests für DELETE-Endpunkte für Nutzer#############################
 
 @patch('share_shop_api.SessionLocal')
 def test_delete_nutzer_success(mock_session_local):
@@ -325,6 +325,24 @@ def test_delete_nutzer_not_found(mock_session_local):
     with pytest.raises(Exception) as exc_info:
         delete_nutzer(999, db=mock_db)
     assert "Nutzer nicht gefunden" in str(exc_info.value)
+################ delete_liste tests #############################
+@patch('share_shop_api.SessionLocal')
+def test_delete_liste_success(mock_session_local):
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_liste = create_mock_liste(1, 'Test Liste', 1)
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_liste
+
+    # Act
+    result = delete_liste(1, db=mock_db)
+
+    # Assert
+    assert result.status_code == 204
+    mock_db.delete.assert_called_once_with(mock_liste)
+    mock_db.commit.assert_called_once()
+
 
 ################Tests für Eingekaufte Produkte############################
 
