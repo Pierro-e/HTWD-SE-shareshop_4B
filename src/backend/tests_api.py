@@ -328,6 +328,7 @@ def test_delete_nutzer_not_found(mock_session_local):
 ################ delete_liste tests #############################
 @patch('share_shop_api.SessionLocal')
 def test_delete_liste_success(mock_session_local):
+    """ Testet das erfolgreiche Löschen einer Liste. """
     # Arrange
     mock_db = MagicMock()
     mock_session_local.return_value = mock_db
