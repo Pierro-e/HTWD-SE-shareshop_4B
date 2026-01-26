@@ -11,7 +11,7 @@ with patch.dict(os.environ, {
     'DB_NAME': 'test'
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer
-    from share_shop_api import delete_nutzer, get_eingekaufte_produkte
+    from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger
     from share_shop_api import NutzerCreate, ProduktCreate
 
 # Hilfsfunktion zum Erstellen von Dummy-Nutzer-Objekten (als MagicMock mit Attributen)
@@ -375,3 +375,23 @@ def test_get_eingekaufte_produkte_empty(mock_session_local):
 
     # Assert
     assert result == []
+
+############## Tests für Kostenaufteilung################################
+@patch('share_shop_api.SessionLocal')
+def test_get_kostenaufteilung_empfaenger_success(mock_session_local):
+    """ Testet das erfolgreiche Abrufen der Kostenaufteilung für einen Empfänger. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_kosten1 = create_mock_kostenaufteilung(1, 2, 10.50)
+    mock_kosten2 = create_mock_kostenaufteilung(1, 3, 5.25)
+    mock_db.query.return_value.join.return_value.join.return_value.filter.return_value.all.return_value = [mock_kosten1, mock_kosten2]
+
+    # Act
+    result = get_kostenaufteilung_empfaenger(1, db=mock_db)
+
+    # Assert
+    assert len(result) == 2
+    assert result[0].empfaenger_id == 1
+    assert result[0].betrag == 10.50
