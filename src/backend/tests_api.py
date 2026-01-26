@@ -11,7 +11,7 @@ with patch.dict(os.environ, {
     'DB_NAME': 'test'
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer
-    from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste
+    from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste
     from share_shop_api import NutzerCreate, ProduktCreate
 
 # Hilfsfunktion zum Erstellen von Dummy-Nutzer-Objekten (als MagicMock mit Attributen)
@@ -325,7 +325,28 @@ def test_delete_nutzer_not_found(mock_session_local):
     with pytest.raises(Exception) as exc_info:
         delete_nutzer(999, db=mock_db)
     assert "Nutzer nicht gefunden" in str(exc_info.value)
-################ delete_liste tests #############################
+################ liste tests #############################
+@patch('share_shop_api.SessionLocal')
+def test_create_liste_success(mock_session_local):
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_nutzer = create_mock_nutzer(1, 'creator@example.com', 'Creator')
+    mock_db.query.return_value.filter_by.return_value.first.return_value = mock_nutzer  # Nutzer gefunden
+    mock_liste = create_mock_liste(1, 'Neue Liste', 1)
+    mock_db.add.return_value = None
+    mock_db.commit.return_value = None
+    mock_db.refresh.side_effect = lambda obj: setattr(obj, 'id', 1)
+
+    liste_data = ListeCreate(name="Neue Liste", ersteller=1)
+
+    # Act
+    result = create_liste(liste_data, db=mock_db)
+
+    # Assert
+    assert result.id == 1
+    assert result.name == 'Neue Liste'
 
 @patch('share_shop_api.SessionLocal')
 def test_delete_liste_success(mock_session_local):
