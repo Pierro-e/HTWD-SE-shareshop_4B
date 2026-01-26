@@ -69,6 +69,12 @@ def create_mock_liste(id, name, ersteller_id):
     mock.name = name
     mock.ersteller_id = ersteller_id
     return mock
+# Hilfsfunktion zum Erstellen von Dummy-Mitglied-Objekten
+def create_mock_mitglied(listen_id, nutzer_id):
+    mock = MagicMock()
+    mock.listen_id = listen_id
+    mock.nutzer_id = nutzer_id
+    return mock
 ######################################## Tests für Nutzer-Endpunkte############################################################
 @patch('share_shop_api.SessionLocal')
 def test_get_nutzer_all_success(mock_session_local):
