@@ -134,8 +134,25 @@ Detalierte Informationen zur Verwaltung bietet die link:https://docs.docker.com/
 
 ===== Frontend (Vue.js)
 
-. Build-Ausgabe liegt unter /var/www/shareshop/dist
+. build erstellen mit:
+
+[source,bash]
+----
+npm run build
+----
+
+. Build-Ausgabe ablegen unter: /var/www/shareshop/dist
 . Auslieferung über Web Server (Nginx)
+
+[source,bash]
+----
+sudo apt update
+sudo apt install -y nginx
+sudo nano /etc/nginx/sites-available/shareshop
+sudo ln -sf /etc/nginx/sites-available/shareshop /etc/nginx/sites-enabled/shareshop
+sudo nginx -t
+sudo systemctl reload nginx
+----
 
 ===== Web Server (Nginx)
 
@@ -155,6 +172,13 @@ Detalierte Informationen zur Verwaltung bietet die link:https://docs.docker.com/
 ==== Datenbank (MySQL)
 
 . Datenbankname: share_shop
+. DB erstellen mit:
+
+[source,bash]
+----
+sudo apt install -y mysql-server
+mysql -u root -p -e "CREATE DATABASE share_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+----
 
 == Systembetreuung
 
