@@ -50,46 +50,40 @@
 
 === Erik Wenke
 
-Im Rückblick auf den Verlauf des 2. Teil von Software Engineering habe ich hauptsächlich
-an zwei Problemen gearbeitet.
-Einmal galt es, zusätzlich zur schon vorhandenen manuellen Installation, eine weitere
-Deployment-Strategie mittels Docker zu entwickeln.
-Auf der anderen Seite habe ich Zeit dafür investiert die UI für die Favoriten zu
-implementieren. Die Favoriten kann man sich dabei als Templates für häufig gekaufte
-Produkte vorstellen.
+Im Rückblick auf den Verlauf des zweiten Teiles von Software Engineering
+habe ich hauptsächlich an zwei Features/Anforderungen gearbeitet.
+Einmal galt es, zusätzlich zur schon vorhandenen manuellen Installation,
+eine weitere Deployment-Strategie mittels Docker zu entwickeln.
+Zudem habe ich Zeit dafür investiert,
+die UI für die Favoriten zu implementieren.
+Die Favoriten kann man sich dabei als Templates für häufig gekaufte Produkte vorstellen.
 
 ==== Docker
 
-Das zentrale Problem bei der Entwicklung der Strategie lag im aneignen von Wissen.
-Docker war für mich ein neues Tool und dem entsprechend musste ich viel neues lernen.
-Zudem hatten wir in der bisherigen Entwicklung überhaupt wenig Gedanken im Hinblick auf
+Der zentrale Aufwand bei der Entwicklung der Strategie lag im Aneignen von Wissen.
+Docker war für mich ein neues Tool.
+Zudem hatten wir in der bisherigen Entwicklung wenige Gedanken im Hinblick auf
 Deployment-Strategien investiert.
 Um einen Einblick in Docker zu bekommen und meinen Lernprozess anzustoßen,
 hatte sich gut das angebotene Praktikum geeignet.
 Bei allen weiteren Fragen konnte mir die link:https://docs.docker.com/[Docker Dokumentation]
 oder spezifische Anleitungen
-(z.B. linkhttps://docs.docker.com/guides/vuejs/containerize/[Vue.js]) helfen.
+(z.B. link:https://docs.docker.com/guides/vuejs/containerize/[Vue.js]) helfen.
+
 Währender der Umsetzung ist uns aufgefallen,
 dass wir bis jetzt die URL der von uns bereitgestellten API
-direkt in den Frontend Quelltext geschrieben haben.
+direkt in den Frontendquelltext geschrieben haben.
 
 [source,JavaScript]
 ----
 const response = await axios.get(`http://141.56.137.83:8000/einheiten`);
 ----
 
-Dies müssten bei einer Installation ausgetauscht werden,
+Diese müssten bei einer Installation ausgetauscht werden,
 wenn man die API und Datenbank selber hosten möchte.
-Das erstellen einer Axios Instanz mit einer Konfiguration,
+Das Erstellen einer Axios Instanz mit einer Konfiguration,
 welche die Basis URL als Umgebungsvariable bekommt,
-löst das Problem.
-
-[source,JavaScript]
-----
-const api = axios.create({
-  baseURL: API_BASE_URL,
-});
-----
+löste das Problem.
 
 Mit der Umgebungsvariable ensteht aber ein weiteres Problem.
 Das Frontend-Building-Tool link:https://vite.dev/[Vite] benötigt die Umgebungsvariable
@@ -99,20 +93,22 @@ welchem erst zur Laufzeit die Basis URL übergeben bekommt.
 Da wir bis zum aktuellen Stand noch keine Lösung gefunden haben,
 muss man sich das Docker Image selber compilieren,
 auch wenn es "wahrscheinlich" eine Lösung gibt.
+
 Die Beschreibung des Docker Images für die API hat ohne Zwischenfälle funktioniert.
 Hier wurde nur hinzugefügt,
 dass die mit der API verbundene Datenbank noch nicht verhandene,
 aber in der SQLAlchemy MetaData beschriebene,
 Tabellen direkt erstellen soll.
 So muss das Datenmodell nicht zusätzlich durch ein SQL-Skript beschrieben werden.
-Eine Beispiel-Installation der gesamten Anwendung auf einem System,
+Eine Beispiel-Installation der gesamten Anwendung auf einem System
 ist über einem Docker Compose File realisiert.
+
 Damit ergänzt die entwickelte Deployment-Strategie,
 die manuelle Installation des Systems.
-Auch wenn Sie auf Grund der momentanen Notwendigkeit die Docker Images selber zu bauen,
+Auch wenn Sie aufgrund der momentanen Notwendigkeit die Docker Images selber zu bauen,
 noch nicht diese abgelöst hat.
 Im Rückblick freue ich mich darüber, die Möglichkeit bekommen zu haben,
-mich mehr mit Docker auseinander setzen zu können.
+mich mehr mit Docker auseinandersetzen zu können.
 Ich würde behaupten, dass ich einen guten Einblick in Docker bekommen habe,
 auch wenn mir im Moment noch ein bisschen der Überblick fehlt,
 um die Gesamtheit und Sinnigkeit von Docker als Tool einzuschätzen.
@@ -126,17 +122,18 @@ Auch stört es mich, dass bis jetzt keien Lösung für das Vite-Build-Problem ge
 Bevor ich die UI implementierte, waren mir schon zwei Sachen im Kopf.
 Erstens sollten die einzelnen Komponenten übersichtliche sein,
 um zu verhindern, dass wir eine weitere Komponente erstellen,
-welche 900+ Zeilen Quelltext beinhaltete (siehe List.vue),
-aber aus Zeitgründen (jetzt) nicht angefast werden kann.
+welche 900+ Zeilen Quelltext beinhaltete (siehe List.vue).
 Zudem war ein weiteres Ziel, bei der Erstellung des UI mehrere wieder verwendbare
 Komponenten wie zum Beispiel Input Felder zu erstellen.
-Die Herausforderungen hier war,
-dass je kleinteiliger ich die Komponenten von einander trenne,
+
+Die Herausforderung war,
+dass je kleinteiliger ich die Komponenten voneinander trenne,
 desto mehr Gedanken muss ich mir über die Kommunikation dieser miteinander machen.
-Möchte ich um Beispiel ein allgemeines SingleChoice-Feld erstellen,
-dann muss sein Interner zustand abgekoppelt von dem der Elternkomponente sein.
+Möchte ich zum Beispiel ein allgemeines SingleChoice-Feld erstellen,
+dann muss sein interner Zustand abgekoppelt von dem der Elternkomponente sein.
 So mussen Funktionalitäten wie Auswahlmöglichkeiten und Standardwert übergeben
 und deren Veränderung kommuniziert werden.
+
 Eine Lösung war die Favoriten über globales Prop-Drilling,
 allen Kind Komponenten der App-Komponente als reaktive Variable zur Verfügung zu stellen.
 
@@ -152,11 +149,13 @@ inject("favorites");
 
 Somit können alle Komponenten die Favoriten bearbeiten
 und teilen einen gemeinsamen Zustand der Favoriten.
+
 Neben den von mir entwickelten Input Feldern,
-könnte ich auch auf schon bereits implementierte Komponenten zurückgreifen.
+könnte ich auch auf bereits implementierte Komponenten zurückgreifen.
 Die Komponente, welche die Produkte in den Einkauflisten als Karte darstellt,
 konnte ich auch hier nutzen,
 da auch die Favoriten als Gitter dargestellt werden sollten.
+
 Abschießend sehe ich auf die Implementierung des UI eher kritisch.
 Die von mir entwickelten allgemeinen Komponenten (NumInput, TextInput, SelectObjectArray)
 wurden nicht nochmal an anderer Stelle eingebunden.
@@ -167,7 +166,11 @@ Generell würde ich bei einer Überarbeitung des gesamten Projektes gerne
 weitere Frameworks und Tools einbinden
 (z.B. link:https://nuxt.com/[Nuxt] oder link:https://tailwindcss.com/[Tailwind CSS]),
 um Funktionalitäten aus- und zuverlagern.
-Diese Kritikpunkte sind jedoch nicht nur negativ zu sehen.
+Auch würde ich mich bei einer Überarbeitung für einen Store (z.B. link:https://pinia.vuejs.org/[Pinia])
+anstatt des Prop-Drillings entscheiden,
+um den Anwendungszustand zu verwalten.
+
+Diese Verbesserungsmöglichkeiten sind jedoch nicht nur negativ zu sehen.
 Durch verschiedene andere Module ist der Umfang meines/unseres Wissens
 dieses Semester stark gestiegen und unterscheidet sich deutlich von dem,
 was zum Anfang des Semesters vorhanden war.
