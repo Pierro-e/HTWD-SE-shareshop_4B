@@ -34,14 +34,105 @@
 
 === Maximilian Paul
 
+<<<
+
 === Pierre Kißling
+
+<<<
 
 === Marlene Fritz
 
+<<<
+
 === Levin Heinrich
+
+<<<
 
 === Erik Wenke
 
+Im Rückblick auf den Verlauf des 2. Teil von Software Engineering habe ich hauptsächlich
+an zwei Problemen gearbeitet.
+Einmal galt es, zusätzlich zur schon vorhandenen manuellen Installation, eine weitere
+Deployment-Strategie mittels Docker zu entwickeln.
+Auf der anderen Seite habe ich Zeit dafür investiert die UI für die Favoriten zu
+implementieren. Die Favoriten kann man sich dabei als Templates für häufig gekaufte
+Produkte vorstellen.
+
+==== Docker
+
+Das zentrale Problem bei der Entwicklung der Strategie lag im aneignen von Wissen.
+Docker war für mich ein neues Tool und dem entsprechend musste ich viel neues lernen.
+Zudem hatten wir in der bisherigen Entwicklung überhaupt wenig Gedanken im Hinblick auf
+Deployment-Strategien investiert.
+Um einen Einblick in Docker zu bekommen und meinen Lernprozess anzustoßen,
+hatte sich gut das angebotene Praktikum geeignet.
+Bei allen weiteren Fragen konnte mir die link:https://docs.docker.com/[Docker Dokumentation]
+oder spezifische Anleitungen
+(z.B. linkhttps://docs.docker.com/guides/vuejs/containerize/[Vue.js]) helfen.
+Währender der Umsetzung ist uns aufgefallen,
+dass wir bis jetzt die URL der von uns bereitgestellten API
+direkt in den Quelltext geschrieben haben.
+
+[source,JavaScript]
+----
+const response = await axios.get(`http://141.56.137.83:8000/einheiten`);
+----
+
+Dies müssten bei einer Installation ausgetauscht werden,
+wenn man die API und Datenbank selber hosten möchte.
+Ein Wrapper, um die
+
+==== Favoriten
+
+Bevor ich die UI implementierte, waren mir schon zwei Sachen im Kopf.
+Erstens sollten die einzelnen Komponenten übersichtliche sein,
+um zu verhindern, dass wir eine weitere Komponente erstellen,
+welche 900+ Zeilen Quelltext beinhaltete,
+aber aus Zeitgründen (jetzt) nicht angefast werden kann.
+Zudem war ein weiteres Ziel, bei der Erstellung des UI mehrere wieder verwendbare
+Komponenten wie zum Beispiel Input Felder zu erstellen.
+
+* Favoriten
+Wie habe ich das Problem gelöst?
+* Deployment
+** Docker
+** vite building Tool
+** Axios
+* Favoriten
+** Komponenten
+** Komponenten von anderen wieder benutzt
+** Prop Drilling
+Wie steht mein Beitrag im Verhältnis zu anderen?
+* Deployment
+** eine Ergänzung zur Manuellen Installation
+** im Moment noch experimentell
+* Favoriten
+** die von mir entwickelten Komponente wurde nicht angenommen -> Sie Library
+** Nutzen von anderen Komponenten
+Was denke ich jetzt über meinen Beitrag?
+* Deployment
+** Docker als ganze Idee (will ich ein neues Tool lernen oder mein Basis Wissen vertiefen?)
+** Software ist oft schon auf basic level Operating System independent
+** hab noch nicht genug Erfahrung um den Sinn in Docker zu sehen
+** ist im Grunde outsourcing
+** muss ich mich vielleicht am Ende immer auf etwas einigen?
+** Nix
+** NixOs
+** ich konnte es einfach mal ausprobieren
+** Flakes
+** kennen lernen von Docker
+** Verbesserungen -> kann man nochmal ordentlicher machen
+* Favoriten
+** Component Libraries
+** Frameworks Nuxt
+** Tailwind CSS
+** mir gefällt es, dass ich es trotzdem mal "manuell" machen könnte
+** Libraries wie Pinia implementieren
+
+<<<
+
 === Eric Hübel
+
+<<<
 
 === Ahmad Alrmih
