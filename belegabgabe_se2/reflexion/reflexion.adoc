@@ -13,7 +13,7 @@
 :toc-title: Inhaltsverzeichnis
 
 
-= {system-name}: Betriebs Dokumentation
+= {system-name}: Reflexion
 {docdate}
 
 == Gruppenreflexion
