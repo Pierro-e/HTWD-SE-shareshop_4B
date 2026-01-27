@@ -185,3 +185,37 @@ würde ich schlussendlich als gute Erfahrung einschätzen.
 <<<
 
 === Ahmad Alrmih
+
+Im zweiten Teil von *Software Engineering 2* habe ich mich hauptsächlich mit der **Implementierung und Absicherung der Backend-Funktionalitäten** der ShareShop-Anwendung beschäftigt. Mein Schwerpunkt lag dabei auf der **Entwicklung von Unit-Tests**, der **Mitarbeit an API-Endpunkten** sowie der **Implementierung von Validierungslogik**.
+
+== Ausgangssituation und Einordnung in den SE-Prozess
+
+Meine Aufgaben lassen sich vor allem den Phasen **Implementierung** und **Test** zuordnen.  
+Konkret habe ich:
+* an mehrere **FastAPI-Endpunkten** mitgearbeitet
+* **Validierungsfunktionen** für Eingaben entwickelt
+* eine **umfassende Suite von Unit-Tests** für die API erstellt
+
+Die getesteten Endpunkte wurden teilweise oder größten teils  von anderen Teammitgliedern entworfen oder implementiert, sodass meine Arbeit direkt auf bestehenden Analyse- und Entwurfsentscheidungen aufbaute.
+
+== Lösungsweg
+
+Für die Tests habe ich **pytest** in Kombination mit **unittest.mock** verwendet. Ziel war es, die Geschäftslogik der API **isoliert von der Datenbank** zu testen. Dazu habe ich:
+* die SQLAlchemy-Session mit `@patch` gemockt
+* `MagicMock` genutzt, um verschiedene Datenbank-Szenarien (Erfolg, „nicht gefunden“) zu simulieren
+* Hilfsfunktionen erstellt, um Mock-Objekte für Nutzer, Produkte, Listen und weitere Modelle wiederverwendbar zu erzeugen
+
+Die Tests folgen konsequent dem **Arrange–Act–Assert-Prinzip**, was die Lesbarkeit und Wartbarkeit verbessert.  
+Zuvor habe ich Validierungsfunktionen entwickelt, um fehlerhafte Eingaben frühzeitig abzufangen und konsistentes Verhalten der Endpunkte sicherzustellen.
+
+== Bewertung und Lernerfahrungen
+
+Meine Lösung hat gut funktioniert:  
+Alle implementierten Tests nun laufen zuverlässig und decken sowohl Erfolgs- als auch Fehlerfälle ab. Dadurch konnten mehrere logische Fehler frühzeitig erkannt werden, ohne die Anwendung manuell testen zu müssen.
+
+Besonders gelernt habe ich:
+* wie wichtig **korrektes Mocking** komplexer Datenbank-Abfragen ist
+* dass gut geschriebene Tests als **Dokumentation des erwarteten Verhaltens** dienen
+* dass Validierung ein zentraler Bestandteil robuster API-Entwicklung ist
+
+Rückblickend sehe ich meinen Beitrag als wertvoll für die **Qualitätssicherung** und **Wartbarkeit** des Projekts. Die enge Verzahnung meiner Arbeit mit den Implementierungen anderer Teammitglieder hat mir zudem geholfen, den gesamten Entwicklungsprozess besser zu verstehen.
