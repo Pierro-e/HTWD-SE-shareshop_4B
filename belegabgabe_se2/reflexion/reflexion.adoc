@@ -188,7 +188,7 @@ würde ich schlussendlich als gute Erfahrung einschätzen.
 
 Im zweiten Teil von *Software Engineering 2* habe ich mich hauptsächlich mit der **Implementierung und Absicherung der Backend-Funktionalitäten** der ShareShop-Anwendung beschäftigt. Mein Schwerpunkt lag dabei auf der **Entwicklung von Unit-Tests**, der **Mitarbeit an API-Endpunkten** sowie der **Implementierung von Validierungslogik**.
 
-== Ausgangssituation und Einordnung in den SE-Prozess
+==== Ausgangssituation und Einordnung in den SE-Prozess
 
 Meine Aufgaben lassen sich vor allem den Phasen **Implementierung** und **Test** zuordnen.  
 Konkret habe ich:
@@ -198,7 +198,7 @@ Konkret habe ich:
 
 Die getesteten Endpunkte wurden teilweise oder größten teils  von anderen Teammitgliedern entworfen oder implementiert, sodass meine Arbeit direkt auf bestehenden Analyse- und Entwurfsentscheidungen aufbaute.
 
-== Lösungsweg
+==== Lösungsweg
 
 Für die Tests habe ich **pytest** in Kombination mit **unittest.mock** verwendet. Ziel war es, die Geschäftslogik der API **isoliert von der Datenbank** zu testen. Dazu habe ich:
 * die SQLAlchemy-Session mit `@patch` gemockt
@@ -208,7 +208,7 @@ Für die Tests habe ich **pytest** in Kombination mit **unittest.mock** verwende
 Die Tests folgen konsequent dem **Arrange–Act–Assert-Prinzip**, was die Lesbarkeit und Wartbarkeit verbessert.  
 Zuvor habe ich Validierungsfunktionen entwickelt, um fehlerhafte Eingaben frühzeitig abzufangen und konsistentes Verhalten der Endpunkte sicherzustellen.
 
-== Bewertung und Lernerfahrungen
+==== Bewertung und Lernerfahrungen
 
 Meine Lösung hat gut funktioniert:  
 Alle implementierten Tests nun laufen zuverlässig und decken sowohl Erfolgs- als auch Fehlerfälle ab. Dadurch konnten mehrere logische Fehler frühzeitig erkannt werden, ohne die Anwendung manuell testen zu müssen.
