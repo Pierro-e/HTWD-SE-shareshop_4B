@@ -46,7 +46,38 @@
 
 === Levin Heinrich
 
-<<<
+Ich war im Projekt hauptsächlich für die Implementierung des Backends zuständig. Dabei habe ich mich um die Datenbank gekümmert und die API_Endpunkte, sowie die ORMs für die verschiedenen Modelle erstellt. Zusätzliche habe ich jedoch auch Aufgaben im Frontend übernommen, wie zum Beispiel das Archiv-Feature, aber auch die Mitarbeit an der List- und Einkauf-Komponente.
+
+==== Datenbank
+===== Ausgangssituation
+Zu Beginn ging es darum eine Struktur zu entwickeln, die es ermöglicht die verschiedenen Entitäten und deren Beziehnungen (die durch die Planung der APP entstanden sind) in einer Datenbank abbilden zu können. Im Laufe des Projekts musste diese Struktur dann angepasst oder um neue Tabellen ergänzt werden. Ich ordne diese Aufgabe in die Analyse- Entwurf- und Implementierungsphase ein.
+
+===== Lösungsweg
+Als die Datenbank erstellt bzw. erweiter werden musste begann ich mit einer grafischen Abbildung der Tabellen un deren Beziehungen. Sommit konnte ich mir einen Überblick über die geplante Struktur verschaffen und ggf. Fehler frühzeitig vor der Umsetzung erkennen. Zudem mussten die Werte, die gespeichert werden sollten, vorher klar im Zweck definiert werden, um eine Aussage über den Datentyp treffen zu können. Nachdem die Struktur stand, habe ich die Tabellen in MySQL erstellt und dort einmal getestet, um zu prüfen ob Foreign Keys und andere Einschränkungen wie NULL/NOT NULL richtig funktionierten.  
+
+===== Bewertung und Lernerfahrungen
+Rückblickend mkann ich sagen, dass mein Vorgehen grundätzlich gut funktioniert hat. Die grafische Abbildung (auch wenn es nur eine grobe Skizze war) hat besonders am Anfang beim verstehen geholfen. Nahezu am Ende des Projekts habe ich festgestellt dass ich mir jedoch Zeit hätte sparen können, wenn ich die Tabellen direkt in SQLAlchemy erstellt hätte. Da ich mich zu Beginn des Projekts noch nicht so gut mit dem ORM auskannte, habe ich mich für den "sicheren" Weg entschieden. Dies hat zwar funktioniert, aber im Nachhinein gesehen war es unnötig aufwendig.
+
+==== API
+===== Ausgangssituation
+Bereitstellen der API-Endpunkte für das Frontend. Dabei ging es darum die verschiedenen Funktionalitäten, die im Frontend benötigt werden, über Endpunkte verfügbar zu machen. Ich ordne diese Aufgabe in die Implementierungs- und Testphase ein.
+
+===== Lösungsweg
+Da ich immer vorher die Datenbankstruktur erstellte, hatte ich bereits ein gutes Verständnis über die Entitäten und deren Beziehungen. Die Erstellung der ORMs in SQLAlchemy war somit relativ einfach. Anschließend habe ich die Endpunkte (read, create, update, delete) für die verschiedenen Modelle erstellt. Dabei stand ich meistens immer im Austausch mit der Person, die das Frontend dazu entwickelte, um sicherzustellen, dass die Endpunkte auch alle benötigten Funktionalitäten abdecken. Dabei musste ich auch immer überlegen, was man am besten im Backend erledigt und was im Frontend. Wenn ich die Endpunkte erstellt hatte, habe ich diese meist mit der Swagger-UI getestet (weil der Großteil der Arbeit im 1. Semester bzw. am Anfang vom 2. Semester stattfand). In den meisten Fällen mussten dann noch ein paar Anpassungen vorgenommen werden.
+
+===== Bewertung und Lernerfahrungen
+Was positiv war, die Kommunikation mit dem Frontend-Team. Diese Kommunikation war auch nötig, da mann sicherstellen musste, dass beide Seiten (Frontend/Backend) die gleichen Vorstellungen von der Funktionalität haben. Nachteilig war, dass ich mir am Anfang etwas unsicher war, welche Berechnungen/Konvertierungen/Validierungen im Backend oder im Frontend gemacht werde sollten. Das wurde mit der Zeit klarer und die Qualität der API-Endpunkte wurde somit auch besser.  
+
+==== Archiv-Feature (Frontend)
+===== Ausgangssituation
+Das Archiv-Feature ermöglicht es dem Nutzer abgeschlossene Einkäufe, mit allesn Produkten die in diesem Einkauf eingekauft wurden,  im nachhinein anzusehen. Im Archiv kann man nach den einzelnen Listen filtern sowie nur Einkäufe anzeigen lassen die von mir selbst getätig wurden. Ich ordne diese Aufgabe in die Implementierungs- und Testphase ein.
+
+===== Lösungsweg
+Zuerst habe ich mir überlegt wie das UI ausehen soll und welche Funktionalitäten es bieten soll. Anschließend habe ich die API-Endpunkte erstellt, die benötigt werden. Danach habe ich das Frontend entwickelt. Das Ergebnis habe ich dann im Team vorgestellt und Feedback eingeholt. Da ich selbst als auch das Team mit dem Ergebnis mittelmäßig zufrieden waren haben wir uns im Review mit den anderen Projektgruppen ausgetauscht und ich habe mir Anregungen geholt, wie das Archiv verbessert werden könnte. Dort entstanden dann gute Ideen, die ich dann auch umgesetzt habe. Das Endergebnis wurde dann in der App getestet und vom gesamten Team als gut befunden.
+
+===== Bewertung und Lernerfahrungen
+Bei dieser Aufgabe wurde mir bewusst, wie wichtig Feedback ist, welches von Nutzern der App kommt. Diese kennen nämlich die Architektur hinter der App nicht und fokussieren sich lediglich auf die Anforderungen bzw. ihre Wünsche. Somit entstand nämlich eine Idee der Filterfunktion welche grundlegend einen anderen Ansatz verfolgte. Daraus resultierte ein Ergebnis, welches ich selbst aus Nutzersicht besser fand, aber aus Entwicklersicht garnicht so betrachtet hatte.
+
 
 === Erik Wenke
 
