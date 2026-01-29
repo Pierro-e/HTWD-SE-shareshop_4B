@@ -16,19 +16,173 @@
 = {system-name}: Reflexion
 {docdate}
 
-== Gruppenreflexion
+= Gruppenreflexion - ShareShop
 
-=== Misserfolge
+== Grober Überblick
 
-==== 1. ...
-==== 2. ...
-==== 3. ...
+Im SE2-Projekt *ShareShop* haben wir als Team aus 7 Personen, darunter 2 neue Teammitglieder, gearbeitet. Wir haben in 4 Sprints à 3 Wochen gearbeitet.
 
-=== Erfolge
+Als technische Basis haben wir *Vue* im Frontend sowie *FastAPI* und *SQLAlchemy* im Backend benutzt. Für Aufgabenverwaltung haben wir *GitHub Projects* benutzt. Die Themen und Diskussionspunkte für Meetings wurden vorab im *Miro* gesammelt.
 
-==== 1. ...
-==== 2. ...
-==== 3. ...
+Zur Qualitätssicherung gab es eine Definition of Done für Product Backlog Items (PBI):
+
+- Alle Sub-Issues (Tasks oder Akzeptanzkriterien) sind abgeschlossen.
+- Arbeit ist ins Remote Repository aufgenommen.
+- PBI wurde im wöchentlichen Meeting besprochen.
+
+Auf ein Kriterium für Code-Qualität (z.B. Linting, Tests) sind wir erst im Laufe des Semesters eingegangen und haben bewusst darauf verzichtet, um den Fokus auf Feature-Umsetzung zu legen.
+
+Prüfungen erfolgten vor allem manuell. Im Laufe des Semesters haben wir aber Coding Standards eingeführt (Linter, Styleguidelines) und Tests begonnen (automatische Tests sowie Tests mit gemockten Daten).
+
+== Top 3 Erfolge
+
+=== Erfolg 1: Technische Schulden gezielt reduziert und Weiterentwicklung wieder möglich gemacht
+
+*Welche Aufgaben wurden gut gelöst?*
+
+Ein wesentlicher Erfolg war, dass wir technische Schulden aus vorherigen Entwicklungsphasen gezielt reduziert haben. Vorher war der Code im Frontend teilweise unübersichtlich, es gab doppelte Logik und große Dateien ohne klare Struktur. Das führte dazu, dass Teammitglieder viel Zeit für die Einarbeitung in den Code benötigten und einzelne Features, insbesondere das Favoriten-Feature, deutlich länger dauerten als erwartet.
+
+*Wie wurde dieser Erfolg realisiert?*
+
+Wir haben erkannt, dass Feature-Entwicklung ohne Stabilisierung der Codebasis langfristig zu noch mehr Problemen führt. Daher wurden 2–3 Verantwortliche bestimmt, die gezielt aufräumende Arbeiten übernahmen:  
+- Frontend-Code wurde stärker in Komponenten ausgelagert (mehr Wiederverwendbarkeit).  
+- Redundanter oder sinnloser Code wurde entfernt (z.B. doppelt definierte CSS-Regeln, wenn global bereits festgelegt).
+- Für bestimmte Features wurden notwendige Datenbankanpassungen vorbereitet, damit darauf aufbauende Entwicklung möglich wurde.
+
+Wichtig war dabei, dass die technischen Schulden priorisiert wurden, aber nicht in dem Umfang, alles komplett neu zu bauen. Stattdessen wurden die Teile überarbeitet, die die Weiterentwicklung konkret blockierten.
+
+*Was wurde gelernt (Konzepte/Praktiken)?*
+
+- Technische Schulden sichtbar machen und gezielt abbauen
+- Refactoring zur Verbesserung von Wartbarkeit und Verständlichkeit  
+- Aufgabenverantwortung für Aufräumarbeiten festlegen
+
+*Wirkung:*
+
+Nach dieser Aufräumphase war die notwendige Einlesezeit in den Code geringer und die Entwicklung wurde spürbar effizienter. Dadurch konnten wir blockierte bzw. aufgeschobene Features umsetzen: Das Favoriten-Feature wurde anschließend möglich, und auch das Einkaufsarchiv ließ sich einfacher implementieren.
+
+=== Erfolg 2: Schnelles und erfolgreiches einarbeiten von zwei neuen Teammitgliedern
+
+*Welche Aufgaben wurden gut gelöst?*
+
+Zu Semesterbeginn kamen zwei neue Personen ins Team. Wir haben es geschafft, sie schnell einzubinden und "produktiv" zu machen, ohne dass der Prozess nachhaltig ins Stocken geriet.
+
+*Wie wurde dieser Erfolg realisiert?*
+
+Das Einarbeiten wurde durch mehrere Faktoren unterstützt:  
+- Neue Teammitglieder erhielten zunächst kleinere Aufgaben, wurden aber relativ schnell auch an anspruchsvollere Aufgaben herangeführt, sobald es realistisch erschien.
+- Einzelne Teammitglieder nahmen sich aktiv Zeit, um Projektaufbau, Code und Workflow zu erklären.
+- Es gab bereits eine Git-Workflow-Anleitung, die viele typische Einstiegshürden (Branching und Umgang mit Änderungen) reduzierte.
+- Die neuen Teammitglieder brachten sich zusätzlich selbständig ein, stellten Fragen und lieferten eigene Ideen.
+
+*Was wurde gelernt (Konzepte/Praktiken)?*
+
+- Wissensmanagement (Doku + direkte Einführung)  
+- Schrittweises Heranführen über passende Task-Zuschnitte  
+- Teamkultur als Produktivitätsfaktor
+
+*Wirkung:*
+
+Bereits nach etwa einer Woche konnten die neuen Teammitglieder produktiv beitragen, was auch dadurch begünstigt wurde, dass das Projekt zu diesem Zeitpunkt noch relativ überschaubar war. Besonders positiv war, dass sie früh eigene Ideen einbgeracht haben und das Team eine offene Einstellung hatte, in der sämtliche Ideen und verbesserungsvorschläge willkommen waren.
+
+=== Erfolg 3: Flache Hierarchie und konstruktive Entscheidungsprozesse bei Produktfragen
+
+*Welche Aufgaben wurden gut gelöst?*
+
+Ein dritter Erfolg war die Teamkultur: Entscheidungen wurden in der Regel demokratisch getroffen und Meinungsverschiedenheiten offen angesprochen. Das half besonders bei anspruchsvolleren Produktfragen, bei denen es mehrere plausible Varianten gab.
+
+*Wie wurde dieser Erfolg realisiert?*
+
+Obwohl der PO formal das letzte Wort hat, wurden Entscheidungen nicht von oben getroffen. Stattdessen wurden die Einschätzungen der Entwickler:innen aktiv eingeholt, insbesondere zu Umsetzbarkeit und Aufwand. Da die Entwickler:innen auch gleichzeitig Stakeholder der Zielgruppe waren, wurden Diskussionen nicht nur fachlich sondern auch nutzerorientiert geführt.
+
+Ein konkretes Beispiel ist die Kostenaufteilung. Es gab mehrere mögliche Berechnungsmodelle und Umsetzungsmöglichkeiten. Hier wurde vom PO zusammen mit den Entwickler:innen eine gemeinsame Auswahl getroffen (realistisch für Nutzer:innen und gleichzeitig umsetzbar).
+
+*Was wurde gelernt (Konzepte/Praktiken)?*
+
+- Gemeinsames Verständnis über Anforderungen 
+- Abwägung des Mehrwerts für den Nutzer und technischer Realisierbarkeit
+- Konfliktlösung durch direkte Kommunikation und Teamentscheidung
+
+*Wirkung:*
+
+Diese Arbeitsweise verhinderte längere Konflikte, reduzierte Missverständnisse und führte zu sinnvollen Entscheidungen. Teammitglieder fühlten sich sicher, Vorschläge einzubringen, ohne Angst vor negativen Reaktionen.
+
+== Top 3 Misserfolge
+
+=== Misserfolg 1: Coding Standards und Tests wurden relativ spät eingeführt und blieben ohne Automatisierung
+
+*Was ist besonders schlecht gelaufen?*
+
+Coding Standards (Linter, Styleguidelines) und Tests wurden erst zur Mitte des Semesters eingeführt. Davor entstand inkonsistenter Code, und Prüfungen mussten überwiegend manuell erfolgen. Ohne automatisierte Checks war die Durchsetzung der Standards abhängig von der Disziplin und Aufmerksamkeit des Teams.
+
+*Gründe (Wie kam es dazu?):*
+
+- Die Relevanz und konkrete Ausgestaltung dieser Themen wurde in der Lehrveranstaltung/Praktika erst relativ spät behandelt, wodurch das Thema auch im Projekt später priorisiert wurde.  
+- Zu Beginn lag der Fokus stärker auf Feature-Umsetzung; Altlasten im Frontend haben zusätzlich Kapazitäten gefressen.
+- Keine Tools, die Standards automatisch durchsetzen.
+
+*Was hätte man tun können, um das Problem zu verhindern?*  
+
+- Standards und eine minimale Teststrategie bereits im ersten Sprint festlegen (auch ohne den Impuls aus den Vorlesungen).  
+- Definition of Done um Kriterien erweitern z.B. Linter läuft lokal, mindestens Basistests vorhanden.
+- Automatisierte Prüfungen von Anfang an einführen, um menschliche Fehler zu vermeiden.
+
+*Was hätten wir tun können, um das Problem zu verhindern?*
+
+Als direkte Maßnahme würden wir GitHub Actions einführen, sodass nur Code gemerged wird, der zumindest buildbar/kompilierbar ist und grundlegende Checks besteht (Linting). Damit würden Qualitätsanforderungen verlässlich und unabhängig von manueller Kontrolle eingehalten werden.
+
+=== Misserfolg 2: Unter-der-Woche-Kommunikation und frühes Einholen von Feedback war schwierig
+
+*Was ist besonders schlecht gelaufen?*
+
+Die Kommunikation und Abstimmung unter der Woche funktionierte nur eingeschränkt. Durch unterschiedliche Zeitpläne war es schwierig, sich außerhalb des wöchentlichen Meetings regelmäßig abzustimmen. Zwar funktionierten Abhängigkeiten wie z.B. die Datenbankänderungen insgesamt gut, aber bei einzelnen Themen litt die Qualität bzw. entstand Nacharbeit, weil Feedback zu spät kam.
+
+Ein konkretes Beispiel war die Gestaltung von Wireframes. Entwicklermeinungen konnten häufig erst im Meeting eingeholt werden. Dadurch war gelegentlich bereits viel Arbeit in Ausarbeitungen geflossen, die anschließend verworfen wurden, weil eine Alternative aus dem Team besser erschien. Später fehlte Zeit, die Wireframes nachzuziehen mit dem Ergebnis, dass Wireframes und App nicht überall deckungsgleich sind.
+
+*Gründe:*
+
+- Stark asynchrone Zeitfenster; das gemeinsame Meeting musste sehr spät stattfinden (Sonntag 18:00), um alle überhaupt zusammenzubekommen.  
+- Austausch unter der Woche war zwar über Whatsapp und Discord möglich, wurde aber nicht immer ausreichend genutzt, um frühes Feedback einzuholen.
+- Manche Themen wie zum Beispiel das Design/UX profitieren stark von kurzen Feedbackschleifen, die hier erschwert waren.
+
+*Was hätten wir tun können, um das Problem zu verhindern?*
+
+- Frühere Feedback-Mechanismen einführen z.B. 48h Kommentarfenster auf Miro/Issues, klare Deadline für Feedback.  
+- Kurze, optionale Umfragen bzw. schriftliche Entscheidungsrunden(z.B. Abstimmung in Discord).
+- Designentscheidungen stärker als Entscheidungspunkte im Miro behandeln (Wireframe Review).
+
+*Was würden wir jetzt tun?*
+
+Wir würden für Design-/UX-Themen Feedbackprozesse einführen (Miro-Link + Deadline + kurze Entscheidungsdiskussion), damit Meinungen früh eingesammelt werden und nicht erst im Meeting zu spät kommen.
+
+=== Misserfolg 3: Unsauberer Code verursachte Feature-Verschiebungen
+
+*Was ist besonders schlecht gelaufen?*
+
+Altlasten im Frontend (doppelter Code, fehlende klare Struktur, zu viel Logik in einzelnen Dateien) führten dazu, dass Features nicht wie geplant umgesetzt werden konnten. Das Favoriten-Feature musste nach hinten verschoben werden, weil zunächst strukturelle Umbauten nötig waren.
+
+*Gründe:*
+
+- Im Vorsemester wurde viel implementiert, aber nicht sauber strukturiert (Separation of Concerns, Wiederverwendbarkeit). 
+- Ohne frühe Standards und Tests wuchsen die Inkonsistenzen schnell.  
+- Technische Schulden waren erst spürbar, als komplexere Features integriert wurden.
+
+*Was hätten wir tun können, um das Problem zu verhindern?*
+
+- Frühzeitig auf Separation of Concerns und Wiederverwendbarkeit achten (Komponenten/Module)
+- Technische Schulden kontinuierlich in kleinen Anteilen abbauen, statt erst wenn es ernsthafte Probleme gibt.
+- Definition of Done und Styleguidelines früher ernster nehmen.
+
+*Was würden wir jetzt tun?*
+
+Wir würden bereits zu Beginn des Projekts stärker auf eine klare Struktur achten, also mehr kleinere Komponenten, doppelte Logik unterbinden und regelmäßig Refactoring-Zeit einplanen. Außerdem würden wir die im Semester erarbeiteten Styleguidelines konsequent von Anfang an anwenden.
+
+== Fazit
+
+Die Gruppenarbeit hat uns deutlich gezeigt, dass Entwicklung nicht nur von der Umsetzung der Features abhängt, sondern auch stark von Prozess- und Qualitätsentscheidungen. Besonders erfolgreich waren wir beim gezieltem Abbau technischer Schulden, bei einer klaren Einführung von neuen Gruppenmitgliedern oder bei offenen Entscheidungsprozessen. Gleichzeitig hatten wir dort Probleme, wo bei uns Struktur und Automatisierung zu spät umgesetzt wurde (Stichwort Code-Standards/Tests) und wo Kommunikation außerhalb des einzigen wöchentlichen Meetings nur schwer möglich war.
+
+Für zukünftige Projekte würden wir frühe Qualitäts- und Kommunikationsmechanismen stärker priorisieren (GitHub-Actions, eine strengere Definition of Done, Feedback asynchron einholen), um Komplexität über mehrere Sprints besser managebar zu halten.
+
 
 == Einzelreflexion
 
