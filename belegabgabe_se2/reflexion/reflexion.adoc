@@ -16,9 +16,7 @@
 = {system-name}: Reflexion
 {docdate}
 
-= Gruppenreflexion - ShareShop
-
-== Grober Überblick
+== Gruppenreflexion: Grober Überblick
 
 Im SE2-Projekt *ShareShop* haben wir als Team aus 7 Personen, darunter 2 neue Teammitglieder, gearbeitet. Wir haben in 4 Sprints à 3 Wochen gearbeitet.
 
@@ -27,7 +25,9 @@ Als technische Basis haben wir *Vue* im Frontend sowie *FastAPI* und *SQLAlchemy
 Zur Qualitätssicherung gab es eine Definition of Done für Product Backlog Items (PBI):
 
 - Alle Sub-Issues (Tasks oder Akzeptanzkriterien) sind abgeschlossen.
+
 - Arbeit ist ins Remote Repository aufgenommen.
+
 - PBI wurde im wöchentlichen Meeting besprochen.
 
 Auf ein Kriterium für Code-Qualität (z.B. Linting, Tests) sind wir erst im Laufe des Semesters eingegangen und haben bewusst darauf verzichtet, um den Fokus auf Feature-Umsetzung zu legen.
@@ -44,9 +44,12 @@ Ein wesentlicher Erfolg war, dass wir technische Schulden aus vorherigen Entwick
 
 *Wie wurde dieser Erfolg realisiert?*
 
-Wir haben erkannt, dass Feature-Entwicklung ohne Stabilisierung der Codebasis langfristig zu noch mehr Problemen führt. Daher wurden 2–3 Verantwortliche bestimmt, die gezielt aufräumende Arbeiten übernahmen:  
-- Frontend-Code wurde stärker in Komponenten ausgelagert (mehr Wiederverwendbarkeit).  
+Wir haben erkannt, dass Feature-Entwicklung ohne eine saubere Codebasis langfristig zu noch mehr Problemen führt. Daher wurden 2–3 Verantwortliche bestimmt, die gezielt aufräumende Arbeiten übernehmen:
+
+- Frontend-Code wurde stärker in Komponenten ausgelagert (mehr Wiederverwendbarkeit).
+
 - Redundanter oder sinnloser Code wurde entfernt (z.B. doppelt definierte CSS-Regeln, wenn global bereits festgelegt).
+
 - Für bestimmte Features wurden notwendige Datenbankanpassungen vorbereitet, damit darauf aufbauende Entwicklung möglich wurde.
 
 Wichtig war dabei, dass die technischen Schulden priorisiert wurden, aber nicht in dem Umfang, alles komplett neu zu bauen. Stattdessen wurden die Teile überarbeitet, die die Weiterentwicklung konkret blockierten.
@@ -54,7 +57,9 @@ Wichtig war dabei, dass die technischen Schulden priorisiert wurden, aber nicht 
 *Was wurde gelernt (Konzepte/Praktiken)?*
 
 - Technische Schulden sichtbar machen und gezielt abbauen
-- Refactoring zur Verbesserung von Wartbarkeit und Verständlichkeit  
+
+- Refactoring zur Verbesserung von Wartbarkeit und Verständlichkeit
+
 - Aufgabenverantwortung für Aufräumarbeiten festlegen
 
 *Wirkung:*
@@ -69,16 +74,22 @@ Zu Semesterbeginn kamen zwei neue Personen ins Team. Wir haben es geschafft, sie
 
 *Wie wurde dieser Erfolg realisiert?*
 
-Das Einarbeiten wurde durch mehrere Faktoren unterstützt:  
+Das Einarbeiten wurde durch mehrere Faktoren unterstützt:
+
 - Neue Teammitglieder erhielten zunächst kleinere Aufgaben, wurden aber relativ schnell auch an anspruchsvollere Aufgaben herangeführt, sobald es realistisch erschien.
+
 - Einzelne Teammitglieder nahmen sich aktiv Zeit, um Projektaufbau, Code und Workflow zu erklären.
+
 - Es gab bereits eine Git-Workflow-Anleitung, die viele typische Einstiegshürden (Branching und Umgang mit Änderungen) reduzierte.
+
 - Die neuen Teammitglieder brachten sich zusätzlich selbständig ein, stellten Fragen und lieferten eigene Ideen.
 
 *Was wurde gelernt (Konzepte/Praktiken)?*
 
-- Wissensmanagement (Doku + direkte Einführung)  
-- Schrittweises Heranführen über passende Task-Zuschnitte  
+- Wissensmanagement (Doku + direkte Einführung)
+
+- Schrittweises Heranführen über passende Task-Zuschnitte
+
 - Teamkultur als Produktivitätsfaktor
 
 *Wirkung:*
@@ -99,8 +110,10 @@ Ein konkretes Beispiel ist die Kostenaufteilung. Es gab mehrere mögliche Berech
 
 *Was wurde gelernt (Konzepte/Praktiken)?*
 
-- Gemeinsames Verständnis über Anforderungen 
+- Gemeinsames Verständnis über Anforderungen
+
 - Abwägung des Mehrwerts für den Nutzer und technischer Realisierbarkeit
+
 - Konfliktlösung durch direkte Kommunikation und Teamentscheidung
 
 *Wirkung:*
@@ -117,14 +130,18 @@ Coding Standards (Linter, Styleguidelines) und Tests wurden erst zur Mitte des S
 
 *Gründe (Wie kam es dazu?):*
 
-- Die Relevanz und konkrete Ausgestaltung dieser Themen wurde in der Lehrveranstaltung/Praktika erst relativ spät behandelt, wodurch das Thema auch im Projekt später priorisiert wurde.  
+- Die Relevanz und konkrete Ausgestaltung dieser Themen wurde in der Lehrveranstaltung/Praktika erst relativ spät behandelt, wodurch das Thema auch im Projekt später priorisiert wurde.
+
 - Zu Beginn lag der Fokus stärker auf Feature-Umsetzung; Altlasten im Frontend haben zusätzlich Kapazitäten gefressen.
+
 - Keine Tools, die Standards automatisch durchsetzen.
 
 *Was hätte man tun können, um das Problem zu verhindern?*  
 
-- Standards und eine minimale Teststrategie bereits im ersten Sprint festlegen (auch ohne den Impuls aus den Vorlesungen).  
+- Standards und eine minimale Teststrategie bereits im ersten Sprint festlegen (auch ohne den Impuls aus den Vorlesungen).
+
 - Definition of Done um Kriterien erweitern z.B. Linter läuft lokal, mindestens Basistests vorhanden.
+
 - Automatisierte Prüfungen von Anfang an einführen, um menschliche Fehler zu vermeiden.
 
 *Was hätten wir tun können, um das Problem zu verhindern?*
@@ -141,14 +158,18 @@ Ein konkretes Beispiel war die Gestaltung von Wireframes. Entwicklermeinungen ko
 
 *Gründe:*
 
-- Stark asynchrone Zeitfenster; das gemeinsame Meeting musste sehr spät stattfinden (Sonntag 18:00), um alle überhaupt zusammenzubekommen.  
+- Stark asynchrone Zeitfenster; das gemeinsame Meeting musste sehr spät stattfinden (Sonntag 18:00), um alle überhaupt zusammenzubekommen.
+
 - Austausch unter der Woche war zwar über Whatsapp und Discord möglich, wurde aber nicht immer ausreichend genutzt, um frühes Feedback einzuholen.
+
 - Manche Themen wie zum Beispiel das Design/UX profitieren stark von kurzen Feedbackschleifen, die hier erschwert waren.
 
 *Was hätten wir tun können, um das Problem zu verhindern?*
 
-- Frühere Feedback-Mechanismen einführen z.B. 48h Kommentarfenster auf Miro/Issues, klare Deadline für Feedback.  
+- Frühere Feedback-Mechanismen einführen z.B. 48h Kommentarfenster auf Miro/Issues, klare Deadline für Feedback.
+
 - Kurze, optionale Umfragen bzw. schriftliche Entscheidungsrunden(z.B. Abstimmung in Discord).
+
 - Designentscheidungen stärker als Entscheidungspunkte im Miro behandeln (Wireframe Review).
 
 *Was würden wir jetzt tun?*
@@ -163,14 +184,18 @@ Altlasten im Frontend (doppelter Code, fehlende klare Struktur, zu viel Logik in
 
 *Gründe:*
 
-- Im Vorsemester wurde viel implementiert, aber nicht sauber strukturiert (Separation of Concerns, Wiederverwendbarkeit). 
-- Ohne frühe Standards und Tests wuchsen die Inkonsistenzen schnell.  
+- Im Vorsemester wurde viel implementiert, aber nicht sauber strukturiert (Separation of Concerns, Wiederverwendbarkeit).
+
+- Ohne frühe Standards und Tests wuchsen die Inkonsistenzen schnell.
+
 - Technische Schulden waren erst spürbar, als komplexere Features integriert wurden.
 
 *Was hätten wir tun können, um das Problem zu verhindern?*
 
 - Frühzeitig auf Separation of Concerns und Wiederverwendbarkeit achten (Komponenten/Module)
+
 - Technische Schulden kontinuierlich in kleinen Anteilen abbauen, statt erst wenn es ernsthafte Probleme gibt.
+
 - Definition of Done und Styleguidelines früher ernster nehmen.
 
 *Was würden wir jetzt tun?*
@@ -190,9 +215,120 @@ Für zukünftige Projekte würden wir frühe Qualitäts- und Kommunikationsmecha
 
 <<<
 
-=== Pierre Kißling
+=== Pierre Kißling - Einzelreflexion Product Owner
 
-<<<
+==== Ausgangssituation: Welche Aufgaben habe ich im Projekt bearbeitet?
+
+Als PO war meine zentrale Aufgabe, die Vision festzulegen und nicht aus den Augen zu verlieren: Was soll ShareShop lösen, welche Features bringen den WG-Mitgliedern den größten Nutzen oder sorgen dafür, dass WG-Bewohner die App mehr benutzen, wie schneide ich Anforderungen so zu, dass sie für das Team umsetzbar sind. Dazu gehört insbesondere:
+
+* *Die Analyse:*
+** Problem- und Zielgruppenverständnis verbessern (z.B. WG-Kontext, gemeinsames Einkaufen, Kostenaufteilung).
+** Anforderungen als User Stories / Backlog-Items formulieren und priorisieren.
+** Feature-Alternativen abwägen (z.B. unterschiedliche Berechnungsmodelle für Kostenaufteilung).
+
+* *Der Entwurf (Produktseitig):*
+** Produktentscheidungen treffen bzw. vorbereiten: nutzerflow, Screens/Verhalten, Definition of Done.
+** Abhängigkeiten erkennen (z.B. wenn ein Feature Datenbankänderungen erfordert).
+
+* *Das Projektmanagement:*
+** Sprintziele und Umfang festlegen, Arbeitspakete für das Team aufteilbar machen.
+** Backlog pflegen, Fortschritt über Iterationen sichtbar machen.
+** Umgang mit technischen Schulden.
+
+==== Wie bin ich diese Herausforderungen angegangen?
+
+===== Rollenverständnis: Ich kann (und muss) nicht alles überblicken
+
+Mein größter Lernmoment war die Erkenntnis, dass ich als PO nicht dauerhaft überblicken kann, was jede Person im Team im Detail umsetzt oder wie jedes Software-Teil intern funktioniert. Das war zu Beginn leichter (aufgrund des geringeren Umfangs und geringerer Komplexität), wurde aber im Semesterverlauf realistisch unmöglich.
+
+Ich habe daraus zwei Dinge gelernt:
+
+. *Vertrauen in den Rest meines Teams:* Technische Details müss ich als Po nicht wissen, solange Abhängigkeiten und Risiken für mich immer noch klar sind. Ich muss darauf vertrauen, dass meine Entwickler ihre Aufgaben sauber erledigen.
+. *Fokus auf Schnittstellen statt auf den ganzen Code:* Ich muss nicht wissen, wie etwas implementiert wird, aber ich muss wissen, wenn ein Feature von bestimmten Schnittstellen (z.B. Datenbankänderungen) betroffen ist.
+
+Mein Fokus lag daher vor allem mehr darauf, das Produktziel im Auge zu behalten, User-stories und Akzeptanz-kriterien zu formulieren und einer sauberen Priorisierung.
+
+===== Entscheidungen dauern länger als sie aussehen (Kreative Arbeit sichtbar machen lernen)
+
+Ein zweiter Lernmoment war, wie kreativ und zeitintensiv PO-Arbeit ist. Ein Beispiel ist die Kostenaufteilung: Es gibt mehrere Berechnungsmodelle und UX-Varianten, aber bevor man priorisieren kann, muss man sich diese Möglichkeiten überhaupt erst erschließen, vergleichen und gegeneinander abwägen.
+Das kostet sehr viel Zeit, weil es keine "richtige" Antwort gibt, sondern viele verschiedene Faktoren, die man schlecht messen kann (Fairness, Verständlichkeit, Aufwand, Fehleranfälligkeit, Komplexität).
+Meine Vorgehensweise wurde dabei im Verlauf des Semesters zunehmend effizienter und routinierter:
+
+* Erst Optionen sammeln (Modelle/Varianten), dann Kriterien definieren (Fairness, Verständlichkeit, Aufwand, Fehleranfälligkeit, Komplexität).
+* Nicht zu lange im Kopf eine Idee groß ausarbeiten, sondern früh mit Feedback arbeiten: andere Personen, die der Zielgruppe entsprechen, direkt fragen, statt nur meine eigene Intuition als Maßstab nehmen.
+
+Das war für mich ein wetvoller Lernaspekt: Produktqualität entsteht nicht nur durch technische rafinesse, sondern auch durch sinnvolle Entscheidungen.
+
+===== Priorisierung unter technischen Schulden: Wunsch-Scope zu realistischem Sprint-Plan umwandeln
+
+Ein konkreter Misserfolg war meine anfänglich zu optimistische Zeitplanung: Ich habe zu Beginn des Semesters eine zu große Aufgabenmenge als Sprintumfang gewählt. Diese konnten dann nicht vollständig abgeschlossen werden, weil technische Schulden den tatsächlichen Aufwand erhöht haben. Dadurch mussten Aufgaben in den nächsten Sprint verschoben werden.
+
+Wichtig, was ich für mich gelernt habe, war hier, wie ich technische Schulden in der Sprintplanung berücksichtigen kann. Meine Anpassungen waren:
+
+* *Technische Schulden Ernst nehmen:* In der Sprintplanung muss man Schulden/Refactoring als echte Arbeit anerkennen. Das ist keine mal-Nebenbei-Tätigkeit.
+* *Realistischere Sprints planen:* lieber weniger Items mit höherer Abnahmequalität als viele Items, die nur halb fertig sind.
+* *Umsetzbarkeit geht vor Feature-Wunsch:* Man muss erst Grundlagen schaffen  und kann dann erst große Features implementieren.
+
+Ein dazu passender Erfolg war, dass wir die technischen Schulden innerhalb einer Iteration stark reduzieren konnten und zwar in einem Maß, dass anschließend wieder ein großes neues Feature möglich wurde. Für mich hat das gezeigt: Priorisierung von Qualität ist auf lange Sicht sehr viel Wert.
+
+===== Prozess-Transparenz erhöhen: In-Review als sichtbare Zwischenstufe
+
+Ein weiterer Erfolg war die Einführung einer In-Review-Section auf dem Board. Dadurch wurde der Fortschritt innerhalb der Iteration deutlich besser sichtbar. Items sind dadurch nicht mehr direkt in "Done" verschwunden, sondern es gab eine klare Phase für Abnahme & Feedback.
+
+Aus PO-Sicht hat das drei positive Effekte gebracht:
+
+* *Frühere Feedback-Schleifen:* Ich konnte Probleme erkennen, bevor sich zu viel aufgestaut hat.
+* *Bessere Kommunikation:* Das Team kann klar sehen, was noch auf Prüfung wartet.
+* *Realistischere Fortschrittsanzeige:* Die Review-Phase wird dadurch als Arbeit sichtbar.
+
+==== Bewertung: Hat meine Lösung funktioniert? Warum (nicht)? Was habe ich gelernt?
+
+===== Bewertung der Ergebnisse
+
+*Was gut funktioniert hat:*
+
+* Ich habe ein realistischeres Verständnis für die PO-Rolle entwickelt. Mein Fokus muss mehr auf Produktzielen, Akzeptanzkriterien und der Priorisierung liegen und nicht auf technischen Details.
+* Die technische-Schulden-Iteration hat gezeigt, dass Qualitätsarbeit den Projektfortschritt beschleunigen kann.
+* Mit der "In-Review"-Spalte wurde der Prozess transparenter und die Abnahme strukturierter.
+
+*Was nicht sofort funktioniert hat:*
+
+* Sprintplanung war anfangs zu ambitioniert. Technische Schulden wurden unterschätzt. Das führte zu Verzögerungen und erzeugte unnötigen Druck.
+* Scrum-Events waren nur teilweise klar abgegrenzt. Weekly-Meetings fanden regelmäßig klar abgetrennt statt, aber die Zuordnung (Planning/Review/Retro) war nicht immer sauber, was aus meiner Sicht die Prozessdisziplin geschwächt hat. Hier hätte eine klare Dokumentation der Meetings geholfen die Zuordnung transparenter zu gestalten, sodass jedem Klar ist, welche Absprachen zu welchem meeting gehört haben. Das war allerdings auch zu einem Teil der Teamgröße und der damit verbundenen Herausforderung der Zeitplanung geschuldet. Es war wirklich schwierig, alle Teammitglieder zu einem festen Zeitpunkt zu koordinieren und es war daher oft sinnvoll, die Meetings flexibel zu halten und nicht zu starr an Scrum-Regeln zu binden, da wir so viel Zeit verloren hätten.
+
+===== Was ich über Software Engineering gelernt habe
+
+* *Rollen und Arbeitsteilung* Systeme werden irgendwann einfach zu komplex, um sie zentral verstehen zu können. Gute Prozesse schaffen Vertrauen und Transparenz.
+* *Anforderungen müssen verifizierbar werden:* "Klingt sinnvoll" reicht oft nicht, sondern es braucht Akzeptanzkriterien und eine klare Abnahme.
+* *Priorisierung ist irgendwo auch Risikomanagement:* Technische Schulden sind ein echtes nicht zu unterschätzendes Hindernis, denn sie beeinflussen die Produktivität direkt.
+* *Nutzerfeedback spart Arbeitszeit:* Validierung mit Zielgruppen-Personen ist oft effektiver als langes internes Grübeln.
+* *Transparenz erhöht Qualität:* Sichtbare Review-Phasen und klare Board-Zustände machen Probleme früher erkennbar.
+
+===== Qualitätssicherung: was da war und was ich mitnehme
+
+Aus meiner Perspektive wurde Qualität vor allem manuell geprüft. Gleichzeitig haben wir begonnen, Tests zu schreiben, Linter einzuführen und Styleguidelines festzulegen. Mein Lernpunkt daraus:
+
+*Qualität entsteht eher schrittweise.* Auch wenn Automatisierung nicht sofort vollständig greift, schaffen gemeinsame Standards bereits eine Basis. Für kommende Projekte würde ich zusätzlich befürworten, dass "In-Review" klarer an Kriterien gekoppelt wird (z.B. Linter grün, Tests laufen), damit Reviews sich weniger subjektiv anfühlen.
+
+==== Einordnung in vor-/nachgelagerte Teamaktivitäten
+
+*Vorgelagert:* Produktideen, Nutzerbedarfe, sowie Erkenntnisse aus bisherigen Iterationen (z.B. technische Schulden, offene Architekturfragen).
+*Nachgelagert:* Umsetzung durch Entwickler:innen, Datenbankanpassungen, Testing/Review und spätere Erweiterungen.
+
+Ein wichtiger Stabilitätsfaktor im Team war, dass DB-Änderungen zuverlässig und schnell umgesetzt wurden. Unser "Datenbank-Beauftragter" konnte fundamentale Änderungen oft direkt nach dem Meeting erledigen. Dadurch waren Abhängigkeiten früh geklärt, und andere konnten am Folgetag auf einer aktualisierten Datenbank weiterarbeiten. 
+
+==== zusätzlicher Beitrag
+
+Zusätzlich zu den typischen PO-Aufgaben habe ich im Verlauf des Semesters auch die Vorträge/Präsentationen bzw. Fachaustausche für das Projekt vorbereitet. Dazu gehörte, die Inhalte strukturiert und verständlich aufzubereiten. Das war für mich eine wichtige Ergänzung zur PO-Rolle, weil ich dadurch nicht nur die Produktvision innerhalb des Teams vertreten habe, sondern sie auch nach außen verständlich kommunizieren konnte und bei Fachaustauschen Feedback von außen einholen konnte, was unter anderem auch dafür gesorgt hat, dass ich das Product-Backlog, welches wir vom vorherigen Semester übernommen haben, von Grund auf neu aufgebaut habe, um es an die neuen Erkenntnisse und Anforderungen anzupassen.
+
+==== Belege
+
+* Board mit "In-Review"-Einführung: https://github.com/users/Pierro-e/projects/3/views/14
+* Sprintplanung / Sprintziele (Favoriten mussten in die nächste Iteration verschoben werden. Der Link ist zu der Aufgabe, diese fertigzustellen. Die Userstory zur Task ist in der vorherigen Iteration beschlossen worden): https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=139600926&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C272
+* Issues zu technischen-Schulden-Iteration: https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=135623827&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C253, https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=136592015&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C257, https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=136823251&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C259
+
+
+
 
 === Marlene Fritz
 
