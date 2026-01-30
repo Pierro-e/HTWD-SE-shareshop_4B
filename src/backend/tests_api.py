@@ -304,8 +304,6 @@ def test_create_produkt_already_exists(mock_session_local):
 # ###############Tests für Favoriten-Endpunkte#############################
 
 @patch('share_shop_api.SessionLocal')
-
-@patch('share_shop_api.SessionLocal')
 def test_get_fav_produkte_by_nutzer_not_found(mock_session_local):
     """ Testet das Verhalten beim Abrufen der Favoriten-Produkte eines nicht existierenden Nutzers. """
     # Arrange
@@ -358,6 +356,8 @@ def test_delete_fav_produkt_success(mock_session_local):
 
     result = delete_fav_produkt(1, 1, db=mock_db)
     assert result.status_code == 204
+
+@patch('share_shop_api.SessionLocal')
 def test_get_fav_produkte_by_nutzer_success(mock_session_local):
     """ Testet das erfolgreiche Abrufen der Favoriten-Produkte eines Nutzers. """
     # Arrange
@@ -441,7 +441,7 @@ def test_get_listen_by_nutzer_success(mock_session_local):
     mock_db = MagicMock()
     mock_session_local.return_value = mock_db
     mock_list = create_mock_liste(1, 'List1', 1)
-    mock_db.query.return_value.join.return_value.filter.return_value.all.return_value = [mock_list]
+    mock_db.query.return_value.join.return_value.outerjoin.return_value.filter.return_value.all.return_value = [mock_list]
 
     result = get_listen_by_nutzer(1, db=mock_db)
     assert len(result) == 1
@@ -461,6 +461,7 @@ def test_delete_mitglied_success(mock_session_local):
     mock_db = MagicMock()
     mock_session_local.return_value = mock_db
     mock_list = create_mock_liste(1, 'List1', 1)
+    mock_list.ersteller = 1
     mock_member = create_mock_mitglied(1, 2)
     mock_db.query.return_value.filter.return_value.first.side_effect = [mock_list, mock_member]
 
@@ -654,7 +655,7 @@ def test_change_email_success(mock_session_local):
     mock_db = MagicMock()
     mock_session_local.return_value = mock_db
     mock_nutzer = create_mock_nutzer(1, 'old@test.com', 'User')
-    mock_db.query.return_value.filter.return_value.first.return_value = mock_nutzer
+    mock_db.query.return_value.filter.return_value.first.side_effect = [mock_nutzer, None]  # First: user found, Second: new email not taken
 
     body = MagicMock()
     body.neue_email = 'new@test.com'
