@@ -204,7 +204,7 @@ Wir würden bereits zu Beginn des Projekts stärker auf eine klare Struktur acht
 
 == Fazit
 
-Die Gruppenarbeit hat uns deutlich gezeigt, dass Entwicklung nicht nur von der Umsetzung der Features abhängt, sondern auch stark von Prozess- und Qualitätsentscheidungen. Besonders erfolgreich waren wir beim gezieltem Abbau technischer Schulden, bei einer klaren Einführung von neuen Gruppenmitgliedern oder bei offenen Entscheidungsprozessen. Probleme hatten wir wenn vor allem dort, wo bei uns Struktur und Automatisierung zu spät umgesetzt wurde (Stichwort Code-Standards/Tests) und wo Kommunikation außerhalb des einzigen wöchentlichen Meetings nur schwer möglich war.
+Die Gruppenarbeit hat uns deutlich gezeigt, dass Entwicklung nicht nur von der Umsetzung der Features abhängt, sondern auch stark von Prozess- und Qualitätsentscheidungen. Besonders erfolgreich waren wir beim gezieltem Abbau technischer Schulden, bei einer klaren Einführung von neuen Gruppenmitgliedern oder bei offenen Entscheidungsprozessen. Herausforderungen und Probleme hatten wir vor allem dort, wo bei uns Struktur und Automatisierung zu spät umgesetzt wurde (Stichwort Code-Standards/Tests) und wo Kommunikation außerhalb des einzigen wöchentlichen Meetings nur schwer möglich war.
 
 Für zukünftige Projekte würden wir frühe Qualitäts- und Kommunikationsmechanismen stärker priorisieren (GitHub-Actions, eine strengere Definition of Done, Feedback asynchron einholen), um Komplexität über mehrere Sprints besser managebar zu halten.
 Insgesamt sind wir aber äußerst zufrieden mit dem Verlauf des Projekts und den erzielten Ergebnissen und freuen uns, die gewonnenen Erkenntnisse in zukünftigen Projekten anwenden zu können.
