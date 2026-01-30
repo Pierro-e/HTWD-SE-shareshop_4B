@@ -331,12 +331,11 @@ Ein wichtiger Stabilitätsfaktor im Team war, dass DB-Änderungen zuverlässig u
 
 ==== Belege
 
-* Board mit "In-Review"-Einführung: https://github.com/users/Pierro-e/projects/3/views/14
-* Sprintplanung / Sprintziele (Favoriten mussten in die nächste Iteration verschoben werden. Der Link ist zu der Aufgabe, diese fertigzustellen. Die Userstory zur Task ist in der vorherigen Iteration beschlossen worden): https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=139600926&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C272
-* Issues zu technischen-Schulden-Iteration: https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=135623827&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C253, https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=136592015&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C257, https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=136823251&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C259
+* link:https://github.com/users/Pierro-e/projects/3/views/14[Board mit "In-Review"-Einführung]
+* link:https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=139600926&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C272[Sprintplanung / Sprintziele]
+* Issues zu technischen-Schulden-Iteration: link:https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=135623827&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C253[1], https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=136592015&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C257[2], https://github.com/users/Pierro-e/projects/3/views/17?pane=issue&itemId=136823251&issue=Pierro-e%7CHTWD-SE-shareshop_4B%7C259[3]
 
-
-
+<<<
 
 === Marlene Fritz
 
