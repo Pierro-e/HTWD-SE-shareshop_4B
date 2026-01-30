@@ -1,0 +1,85 @@
+## Styleguidelines
+
+### Namen
+
+* immer Englisch
+* Funktionen: `getSomething()` (CamelCase)
+* Konstanten: `THIS_WILL_NOT_CHANGE` (Screaming Snake Case)
+* Variablen: `somethingCool = 2` (CamelCase)
+* Klassen: `ObjectOfRealWorld` (PascalCase)
+
+### Kommentare
+
+* immer Deutsch
+* TODO-Kommentare erlaubt, aber müssen beim PR weg sein
+* Was-Kommentare erlaubt, aber sparsam und bei schwierigeren Sachen
+  -> damit man Code schneller verstehen kann
+* gerne Warum-Kommentare
+
+### Formatierung
+
+* keinen Formatter verwenden, aber Linter?
+* max. 100 Zeichen pro Zeile für Lesbarkeit
+* CSS manches untereinander
+* immer ordentlich mit Tabs einrücken
+
+### Blöcke
+
+* keine einzeiliges Blöcke
+[source,js]
+----
+if (condition == something) { 
+	...code... 
+} else if (condition == something) { 
+	...code... 
+} else { 
+	...code... 
+}
+----
+
+[source,js]
+----
+try { 
+	...code... 
+} catch (error) { 
+	...errorHandling... 
+}
+----
+### Refactoring
+
+* gewünscht, aber nicht übertreiben
+* entweder nur neue Features/Bugfixes oder Refactor/Neustrukturierung,
+* Oder man kann nur refactorn, wenn
+** an dem Teil sowieso nichts gemacht wird,
+** dieser nicht von anderen Sachen, an denen gearbeitet wird, gebraucht wird
+
+### Dateien
+
+* Komponenten in Unterordner (components/input, etc.)
+* relative Pfade (../test anstatt /home/eric/project/test)
+* Zeilenende immer mit LF anstatt CRLF (funktioniert unter Windows & Linux)
+
+### sonstiges
+
+* DRY: Dont Repeat Yourself: wenn es die Komponente/Style schon gibt, dann nutzen
+* keine vertraulichen Daten: DB-Passwörter, API-Keys, etc.
+
+## Github Guidelines
+
+### Branches
+
+* immer branches gleich hochladen
+
+### Committing & Pull Requests
+
+* Commitmessage beschreibt kurz was hinzugefügt oder geändert wurde
+* lieber viele kleinere Commits als ein großer Commit
+* PRs haben immer eine Beschreibung, was getan wurde
+* relevante Issues wurden verlinkt
+* nach mergen des PRs, werden diese auf done gesetzt und geschlossen
+
+### Issues
+
+* immer die Iteration reinschreiben
+* immer die zugewiesenen Leute auswählen
+* bei UserStories keine 13 Subissues machen, sondern Checkmarks verwenden -> [ ] [x]
