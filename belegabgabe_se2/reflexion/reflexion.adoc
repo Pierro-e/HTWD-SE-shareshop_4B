@@ -213,8 +213,38 @@ Insgesamt sind wir aber äußerst zufrieden mit dem Verlauf des Projekts und den
 == Einzelreflexion
 
 === Maximilian Paul
+==== Ausgangssituation: Welche Aufgaben habe ich im Projekt bearbeitet?
 
-<<<
+Im Verlauf des Moduls Software Engineering habe ich zwei unterschiedliche Rollen eingenommen, was mir einen umfassenden Einblick in den gesamten Entwicklungsprozess ermöglicht hat. Im ersten Semester agierte ich als Product Owner (PO) und war damit maßgeblich für die inhaltliche Ausrichtung unseres Projekts verantwortlich. In dieser Phase habe ich die Vision für „ShareShop“ entwickelt und damit den Grundstein für alle weiteren Arbeiten gelegt. Ein wesentlicher Teil meiner Arbeit bestand darin, die Anforderungen in Form von User Stories auf unserem Miro Board zu definieren. Dabei habe ich die wichtigsten Grundfeatures konzipiert, darunter die Prozesse für die Anmeldung, das Anlegen von Listen, die Mitgliederverwaltung sowie das Hinzufügen von Produkten und den eigentlichen Einkauf bis hin zum Archiv. Bei der Übertragung dieser Stories in das GitHub Backlog erhielt ich Unterstützung von Erik Wenke, weshalb im System nicht alle Einträge direkt unter meinem Namen laufen, obwohl die inhaltliche Ausarbeitung von mir stammte.
+
+Mit Beginn des zweiten Semesters haben Pierre und ich die Rollen getauscht, sodass ich fortan die Funktion des Scrum Masters übernahm. In dieser Rolle lag mein Fokus weniger auf dem „Was“, sondern vielmehr auf dem „Wie“. Ich sorgte dafür, dass die Scrum Regeln eingehalten wurden und die Zusammenarbeit im Team reibungslos funktionierte. Ein wichtiger technischer Beitrag war die Einführung von Branching-Guidelines. Da wir im ersten Semester eher intuitiv gearbeitet hatten und neue Teammitglieder dazukamen, hielt ich es für wichtig, hier klare Regeln auf Basis von Best Practices zu etablieren, um einen einheitlichen Arbeitsstand zu garantieren. Zudem befasste ich mich mit den Styleguidelines, wobei ich einen Vorschlag von Eric Hübel aufgriff und diesen nach eigener Recherche für unser Team finalisierte. Außerdem habe ich auf dem Miro Board auch Regeln für das Code Review und auch für das Refactorn dokumentiert. Ein weiterer Schwerpunkt war der Fachaustausch zum Thema Projektmanagement, den wir gemeinsam im Team vorbereitet haben und den ich schließlich mit Pierres Unterstützung präsentierte.
+
+==== Wie bin ich diese Herausforderungen angegangen?
+
+===== Rollenverständnis: Der Wechsel vom Entscheider zum Begleiter
+
+Eine der größten persönlichen Herausforderungen war der Umstieg von der entscheidenden, inhaltlich getriebenen PO-Rolle hin zu einer eher begleitenden Rolle als Scrum Master. Es fiel mir anfangs nicht leicht, mich voll und ganz auf die neue Rolle einzulassen und bei inhaltlichen Diskussionen lediglich meine Meinung zu äußern, die finale Entscheidung jedoch konsequent dem neuen PO zu überlassen. Dieser Prozess erforderte ein hohes Maß an Selbstdisziplin und Vertrauen in die Vision meines Nachfolgers.
+
+===== Die Balance zwischen Methodik und Teamdynamik
+
+Gleichzeitig stand ich vor der Aufgabe, die Balance zwischen der strikten Einhaltung von Scrum-Prozessen und unserer gewohnt entspannten Teamatmosphäre zu halten. Ich wollte vermeiden, dass unsere Meetings zu einem reinen Abarbeiten von Checklisten verkommen. Dabei war es oft schwierig zu entscheiden, wann ich eingreifen sollte, wenn wir thematisch abschweiften. Gelegentlich wurden Themen vorgezogen, die eigentlich an anderer Stelle besprochen werden mussten. Rückblickend betrachtet war ich in diesen Momenten vielleicht manchmal zu entspannt, um den kreativen Fluss nicht zu stören, auch wenn dies die Prozessdisziplin kurzzeitig schwächte.
+
+===== Standardisierung und Wissenstransfer
+
+Um die Qualität im Team sicherzustellen, habe ich mich intensiv in Best Practices eingelesen und diese auf unsere spezifischen Bedürfnisse zugeschnitten. Besonders bei den Branching- und Styleguidelines war es mir wichtig, nicht einfach Regeln vorzugeben, wie sie laut Scrum Guide(oder anderen Quellen) empfohlen werden, sondern diese auf das Team zugeschnitten einzuführen. Auch beim Fachaustausch war unser Ansatz, dass die Vorbereitung eine gemeinsame Teamleistung sein sollte. Dies förderte nicht nur das Verständnis der Inhalte bei allen Beteiligten, sondern stärkte auch den Zusammenhalt, da die Verantwortung für den Wissenserwerb auf mehreren Schultern lastete.
+
+==== Bewertung: Hat meine Lösung funktioniert? Warum (nicht)? Was habe ich gelernt?
+
+Im Rückblick bin ich stolz, wie wir als Team zusammen gearbeitet haben. Es ist uns gelungen, eine gute Atmosphäre beizubehalten, in der konstruktiv gearbeitet wurde und Konflikte schnell und diplomatisch aus der Welt geschafft wurden. Die von mir eingeführten Guidelines haben dazu beigetragen, dass trotz wechselnder Rollen und neuer Mitglieder eine klare Struktur herrschte.
+
+Meine wichtigste Erkenntnis aus diesem Jahr ist, dass die strukturelle Führung eines Projekts mindestens genauso fordernd ist wie die inhaltliche Gestaltung. Ich habe mich kommunikativ spürbar weiterentwickelt: Einerseits kann ich meine Gedanken heute präziser und für andere verständlicher formulieren, andererseits bin ich in meiner Ausdrucksweise deutlich diplomatischer geworden. Ich habe gelernt, dass man als Scrum Master oft im Hintergrund die Fäden ziehen muss, damit das Team im Vordergrund glänzen kann.
+
+==== Belege
+
+User Stories auf dem Miro-Board: https://miro.com/app/board/uXjVIEJUxFI=/
+
+Dokumentation der Branching- und Styleguidelines im Repository: docs/project_management/Branching.adoc und docs/project_management/Styleguidelines.adoc
+
 
 === Pierre Kißling - Einzelreflexion Product Owner
 
