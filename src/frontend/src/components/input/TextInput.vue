@@ -11,6 +11,13 @@
   </label>
 </template>
 <script>
+/**
+ * Ein Input Feld, was textliche Werte akzeptiert.
+ *
+ * @vue-prop {String} text - Der aktueller Wert, den das Element beinhaltet.
+ * @vue-prop {String} placeholder - Der Text, welcher als Placeholder dient.
+ * @vue-prop {String} label - Das Label, welches das Input Feld auszeichnen soll.
+ */
 export default {
   props: {
     text: { type: String },

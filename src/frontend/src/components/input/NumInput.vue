@@ -13,6 +13,12 @@
 </template>
 
 <script>
+/**
+ * Ein Input Feld, was nummerische Werte akzeptiert.
+ * @vue-prop {Number} num - Der aktueller Wert, den das Element beinhaltet.
+ * @vue-prop {Number} step - Die Schrittweite, welche akzeptierten Eingabe voneinander trennt.
+ * @vue-prop {String} label - Das Label, welches das Input Feld auszeichnen soll.
+ */
 export default {
   props: {
     num: { type: Number },

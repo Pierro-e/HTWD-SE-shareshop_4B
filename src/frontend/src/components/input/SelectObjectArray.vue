@@ -15,6 +15,14 @@
 </template>
 
 <script>
+/**
+ * Ein Input-Select Feld, was die Auswahl zwischen definierten Möglichkeiten gibt.
+ * @vue-prop {Array} options - Die Möglichkeiten, zwischen denen ausgewählt werden kann.
+ * @vue-prop {String} displayKey - Die Eigenschaft, die dem Nutzer als Identifizierung der Möglichkeiten gezeigt wrid.
+ * @vue-prop {String} valueKey - Die Eigenschaft, die als Wert der Möglichkeiten betrachtet wrid.
+ * @vue-prop {Object} choice - Die Möglichkeit, die ausgewählt ist.
+ * @vue-prop {String} label - Das Label, welches das Feld auszeichnen soll.
+ */
 export default {
   name: "SelectArray",
   emits: ["update:choice"],
@@ -29,9 +37,12 @@ export default {
     return { local_choice: "" };
   },
   methods: {
+    /**
+     * Event Handler, der aufgerufen wird, wenn eine neue Möglichkeit ausgewählt wurde.
+     * @param event {event} Event-Objekt
+     */
     onChange(event) {
       const newValue = event.target.value;
-      console.log(newValue);
       this.$emit("update:choice", newValue);
     },
   },

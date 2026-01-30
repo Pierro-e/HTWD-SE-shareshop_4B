@@ -3,12 +3,6 @@ include::../_includes/default-attributes.inc.adoc[]
 // Dieses Dokument beschreibt wesentliche Entwurfsentscheidungen auf Ebene der Komponenten und Module. Diese dienen als Vorgabe für die Implementierung und erleichtern das Systemverständnis.
 
 
-== Ausgewählte Sichten
-
-//Entwurfsklassendiagramme, Sequenzdiagramme
-
 == Schnittstellen
 
 * link:http://141.56.137.83:8000/docs[REST-API]
-
-== Datenmodell

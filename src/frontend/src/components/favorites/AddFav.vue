@@ -28,7 +28,11 @@ import TextInput from "../input/TextInput.vue";
 import NumInput from "../input/NumInput.vue";
 import SelectObjectArray from "../input/SelectObjectArray.vue";
 
+/**
+ * Oberfläche für das Erstellen eines Favoriten.
+ */
 export default {
+  name: "AddFav",
   inject: ["user", "fetchUnits", "updateFavorites"],
   components: {
     TextInput,
@@ -49,12 +53,18 @@ export default {
     this.units = await this.fetchUnits();
   },
   methods: {
+    /**
+     * Setzt die Werte der Input Elemente zurück auf die Default Werte.
+     */
     resetInput() {
       this.favName = "";
       this.favDesc = "";
       this.favUnit = 0;
       this.favAmount = 0;
     },
+    /**
+     * Erzeugt einen neuen Favoriten passierend auf den Inhalten der Input Elemente.
+     */
     async addFavorite() {
       let response;
       let url;
@@ -101,7 +111,6 @@ export default {
       // Clean Up
       this.$parent.$emit("close");
       this.$parent.$emit("update");
-      //this.resetInput();
     },
   },
 };

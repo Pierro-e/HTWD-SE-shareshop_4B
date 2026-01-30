@@ -22,6 +22,11 @@ import NumInput from "../input/NumInput.vue";
 import SelectObjectArray from "../input/SelectObjectArray.vue";
 import { api } from "../../api/client";
 
+/**
+ * Oberflächen zum Bearbeiten eines bereits angelegten Favoriten.
+ * @vue-prop {Object} fav - Favorit, der bearbeitet werden soll.
+
+ */
 export default {
   inject: ["fetchUnits", "user", "updateFavorites"],
   components: {
@@ -30,8 +35,11 @@ export default {
     SelectObjectArray,
   },
   props: {
-    fav: { required: true },
+    fav: { type: Object, required: true },
   },
+  /**
+   * Aktuallisiert den bearbeiteten Favoriten.
+   */
   methods: {
     async alter_fav() {
       const url =
@@ -39,12 +47,14 @@ export default {
         this.user.id +
         "/produkt/" +
         this.fav.produkt_id;
-
       const response = await api.put(url, this.fav_copy);
 
       this.$parent.$emit("close"); // Popup schließen
       this.$parent.$emit("update"); // Fav updaten
     },
+    /**
+     * Löscht den Favoriten.
+     */
     async delete_fav() {
       const url =
         "/fav_produkte_delete/nutzer/" +
@@ -86,4 +96,3 @@ form {
   margin-bottom: 1.25rem;
 }
 </style>
-
