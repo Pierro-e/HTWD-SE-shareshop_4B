@@ -12,6 +12,8 @@ include::attributes.adoc[]
 
 === Softwareanforderungen
 
+* Docker
+
 ==== mit Docker
 
 * Docker
@@ -184,7 +186,7 @@ Ziel:
 
 [source,bash]
 ----
-sudo apt update 
+sudo apt update
 sudo apt install -y nginx
 
 # Nginx Site-Config erstellen
@@ -226,7 +228,7 @@ sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t
 sudo systemctl enable --now nginx
 sudo systemctl reload nginx
-----  
+----
 
 ===== API (FastAPI)
 
