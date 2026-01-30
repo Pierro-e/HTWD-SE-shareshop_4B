@@ -303,6 +303,60 @@ def test_create_produkt_already_exists(mock_session_local):
 # ###############Tests für Favoriten-Endpunkte#############################
 
 @patch('share_shop_api.SessionLocal')
+
+@patch('share_shop_api.SessionLocal')
+def test_get_fav_produkte_by_nutzer_not_found(mock_session_local):
+    """ Testet das Verhalten beim Abrufen der Favoriten-Produkte eines nicht existierenden Nutzers. """
+    # Arrange
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_db.query.return_value.filter.return_value.first.return_value = None  # Nutzer nicht gefunden
+
+    # Act & Assert
+    with pytest.raises(Exception) as exc_info:
+        get_fav_produkte_by_nutzer(999, db=mock_db)
+    assert "Nutzer nicht gefunden" in str(exc_info.value)
+
+@patch('share_shop_api.SessionLocal')
+def test_create_fav_produkt_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    
+    mock_db.query.return_value.filter.return_value.count.return_value = 0
+    mock_db.query.return_value.filter.return_value.first.return_value = None
+    mock_db.add.return_value = None
+    mock_db.commit.return_value = None
+    mock_db.refresh.side_effect = lambda obj: setattr(obj, 'nutzer_id', 1)
+
+    body = MagicMock()
+    body.produkt_id = 1
+    body.menge = 2
+
+    result = create_fav_produkt(1, body, db=mock_db)
+    assert result.nutzer_id == 1
+
+@patch('share_shop_api.SessionLocal')
+def test_update_fav_produkt_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_fav = create_mock_fav_produkt(1, 1, 'Apfel', 2.0)
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_fav
+
+    body = MagicMock()
+    body.menge = 5
+
+    result = update_fav_produkt(1, 1, body, db=mock_db)
+    assert result.menge == 5
+@patch('share_shop_api.SessionLocal')
+def test_delete_fav_produkt_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_fav = create_mock_fav_produkt(1, 1, 'Apfel')
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_fav
+
+    result = delete_fav_produkt(1, 1, db=mock_db)
+    assert result.status_code == 204
 def test_get_fav_produkte_by_nutzer_success(mock_session_local):
     """ Testet das erfolgreiche Abrufen der Favoriten-Produkte eines Nutzers. """
     # Arrange
@@ -325,21 +379,6 @@ def test_get_fav_produkte_by_nutzer_success(mock_session_local):
     assert len(result) == 2
     assert result[0].nutzer_id == 1
     assert result[0].produkt_name == 'Apfel'
-
-@patch('share_shop_api.SessionLocal')
-def test_get_fav_produkte_by_nutzer_not_found(mock_session_local):
-    """ Testet das Verhalten beim Abrufen der Favoriten-Produkte eines nicht existierenden Nutzers. """
-    # Arrange
-    mock_db = MagicMock()
-    mock_session_local.return_value = mock_db
-
-    mock_db.query.return_value.filter.return_value.first.return_value = None  # Nutzer nicht gefunden
-
-    # Act & Assert
-    with pytest.raises(Exception) as exc_info:
-        get_fav_produkte_by_nutzer(999, db=mock_db)
-    assert "Nutzer nicht gefunden" in str(exc_info.value)
-
 
 ################ liste tests #############################
 @patch('share_shop_api.SessionLocal')
@@ -566,46 +605,6 @@ def test_change_email_success(mock_session_local):
     result = change_email(1, body, db=mock_db)
     assert result.email == 'new@test.com'
 
-# test für fav_produkte
-@patch('share_shop_api.SessionLocal')
-def test_create_fav_produkt_success(mock_session_local):
-    mock_db = MagicMock()
-    mock_session_local.return_value = mock_db
-    
-    mock_db.query.return_value.filter.return_value.count.return_value = 0
-    mock_db.query.return_value.filter.return_value.first.return_value = None
-    mock_db.add.return_value = None
-    mock_db.commit.return_value = None
-    mock_db.refresh.side_effect = lambda obj: setattr(obj, 'nutzer_id', 1)
-
-    body = MagicMock()
-    body.produkt_id = 1
-    body.menge = 2
-
-    result = create_fav_produkt(1, body, db=mock_db)
-    assert result.nutzer_id == 1
-
-@patch('share_shop_api.SessionLocal')
-def test_update_fav_produkt_success(mock_session_local):
-    mock_db = MagicMock()
-    mock_session_local.return_value = mock_db
-    mock_fav = create_mock_fav_produkt(1, 1, 'Apfel', 2.0)
-    mock_db.query.return_value.filter.return_value.first.return_value = mock_fav
-
-    body = MagicMock()
-    body.menge = 5
-
-    result = update_fav_produkt(1, 1, body, db=mock_db)
-    assert result.menge == 5
-@patch('share_shop_api.SessionLocal')
-def test_delete_fav_produkt_success(mock_session_local):
-    mock_db = MagicMock()
-    mock_session_local.return_value = mock_db
-    mock_fav = create_mock_fav_produkt(1, 1, 'Apfel')
-    mock_db.query.return_value.filter.return_value.first.return_value = mock_fav
-
-    result = delete_fav_produkt(1, 1, db=mock_db)
-    assert result.status_code == 204
 
 ##tests für listen
 
