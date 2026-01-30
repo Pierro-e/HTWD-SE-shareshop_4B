@@ -11,7 +11,7 @@ with patch.dict(os.environ, {
     'DB_NAME': 'test'
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer, get_nutzer_by_email
-    from share_shop_api import change_passwort, change_name
+    from share_shop_api import change_passwort, change_name, change_email
     from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
     from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
 
@@ -553,3 +553,16 @@ def test_change_name_success(mock_session_local):
 
     result = change_name(1, body, db=mock_db)
     assert result.name == 'NewName'
+    
+@patch('share_shop_api.SessionLocal')
+def test_change_email_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_nutzer = create_mock_nutzer(1, 'old@test.com', 'User')
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_nutzer
+
+    body = MagicMock()
+    body.neue_email = 'new@test.com'
+
+    result = change_email(1, body, db=mock_db)
+    assert result.email == 'new@test.com'
