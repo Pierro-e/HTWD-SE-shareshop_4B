@@ -10,7 +10,7 @@ with patch.dict(os.environ, {
     'DB_HOST': 'localhost',
     'DB_NAME': 'test'
 }):
-    from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer, get_nutzer_by_email
+    from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer, get_nutzer_by_email, create_fav_produkt
     from share_shop_api import change_passwort, change_name, change_email
     from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
     from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
@@ -553,7 +553,7 @@ def test_change_name_success(mock_session_local):
 
     result = change_name(1, body, db=mock_db)
     assert result.name == 'NewName'
-    
+
 @patch('share_shop_api.SessionLocal')
 def test_change_email_success(mock_session_local):
     mock_db = MagicMock()
@@ -566,3 +566,22 @@ def test_change_email_success(mock_session_local):
 
     result = change_email(1, body, db=mock_db)
     assert result.email == 'new@test.com'
+
+# test für fav_produkte
+@patch('share_shop_api.SessionLocal')
+def test_create_fav_produkt_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    
+    mock_db.query.return_value.filter.return_value.count.return_value = 0
+    mock_db.query.return_value.filter.return_value.first.return_value = None
+    mock_db.add.return_value = None
+    mock_db.commit.return_value = None
+    mock_db.refresh.side_effect = lambda obj: setattr(obj, 'nutzer_id', 1)
+
+    body = MagicMock()
+    body.produkt_id = 1
+    body.menge = 2
+
+    result = create_fav_produkt(1, body, db=mock_db)
+    assert result.nutzer_id == 1
