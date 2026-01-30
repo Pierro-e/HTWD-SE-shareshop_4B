@@ -247,6 +247,7 @@ User Stories auf dem Miro-Board: https://miro.com/app/board/uXjVIEJUxFI=/
 
 Dokumentation der Branching- und Styleguidelines im Repository: docs/project_management/Branching.adoc und docs/project_management/Styleguidelines.adoc
 
+<<<
 
 === Pierre Kißling
 
@@ -395,6 +396,7 @@ Zuerst habe ich mir überlegt wie das UI ausehen soll und welche Funktionalität
 ===== Bewertung und Lernerfahrungen
 Bei dieser Aufgabe wurde mir bewusst, wie wichtig Feedback ist, welches von Nutzern der App kommt. Diese kennen nämlich die Architektur hinter der App nicht und fokussieren sich lediglich auf die Anforderungen bzw. ihre Wünsche. Somit entstand nämlich eine Idee der Filterfunktion welche grundlegend einen anderen Ansatz verfolgte. Gerade bei UX/Usability liefern externe Nutzer früh Hinweise, die im Entwicklerteam sonst untergehen. Daraus resultierte ein Ergebnis, welches ich selbst aus Nutzersicht besser fand, aber aus Entwicklersicht garnicht so betrachtet hatte.
 
+<<<
 
 === Erik Wenke
 
@@ -551,6 +553,8 @@ Zudem habe ich bemerkt, dass ich mir viel Zeit hätte sparen können, indem wir 
 
 Insgesamt bin ich relativ zufrieden mit dem Endergebnis, denn die App funktioniert stabil und sieht gut aus. Trotzdem hätte man aber noch mehr refactorn und sich stärker an die Coding-Styleguidelines halten müssen. Und wir hätten von Anfang an eine UI-Library wie link:https://vuetifyjs.com[Vuetify] nutzen sollen und nicht alles von Hand erstellen, wodurch wir mehr Zeit für andere Dinge, wie Tests oder das Refactorn haben könnten. Aber immerhin habe ich dadurch viel über CSS lernen können, was man beim bloßen Nutzen von solchen Libraries nicht tut.
 
+<<<
+
 === Ahmad Alrmih
 
 Im zweiten Teil von *Software Engineering 2* habe ich mich hauptsächlich mit der **Implementierung und Absicherung der Backend-Funktionalitäten** der ShareShop-Anwendung beschäftigt. Mein Schwerpunkt lag dabei auf der **Entwicklung von Unit-Tests**, der **Mitarbeit an API-Endpunkten** sowie der **Implementierung von Validierungslogik**.
@@ -559,6 +563,7 @@ Im zweiten Teil von *Software Engineering 2* habe ich mich hauptsächlich mit de
 
 Meine Aufgaben lassen sich vor allem den Phasen **Implementierung** und **Test** zuordnen.
 Konkret habe ich:
+
 * an mehrere **FastAPI-Endpunkten** mitgearbeitet
 * **Validierungsfunktionen** für Eingaben entwickelt
 * eine **umfassende Suite von Unit-Tests** für die API erstellt
@@ -568,6 +573,7 @@ Die getesteten Endpunkte wurden teilweise oder größten teils  von anderen Team
 ==== Lösungsweg
 
 Für die Tests habe ich **pytest** in Kombination mit **unittest.mock** verwendet. Ziel war es, die Geschäftslogik der API **isoliert von der Datenbank** zu testen. Dazu habe ich:
+
 * die SQLAlchemy-Session mit `@patch` gemockt
 * `MagicMock` genutzt, um verschiedene Datenbank-Szenarien (Erfolg, „nicht gefunden“) zu simulieren
 * Hilfsfunktionen erstellt, um Mock-Objekte für Nutzer, Produkte, Listen und weitere Modelle wiederverwendbar zu erzeugen
@@ -581,6 +587,7 @@ Meine Lösung hat gut funktioniert:
 Alle implementierten Tests nun laufen zuverlässig und decken sowohl Erfolgs- als auch Fehlerfälle ab. Dadurch konnten mehrere logische Fehler frühzeitig erkannt werden, ohne die Anwendung manuell testen zu müssen.
 
 Besonders gelernt habe ich:
+
 * wie wichtig **korrektes Mocking** komplexer Datenbank-Abfragen ist
 * dass gut geschriebene Tests als **Dokumentation des erwarteten Verhaltens** dienen
 * dass Validierung ein zentraler Bestandteil robuster API-Entwicklung ist
