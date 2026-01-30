@@ -31,24 +31,30 @@ Swagger UI zur manuellen Überprüfung und Exploration der API-Endpunkte
 
 Die Datenbank wird in den Tests vollständig gemockt, sodass keine echte Verbindung zu einer produktiven oder lokalen Datenbank notwendig ist. Dadurch bleiben die Tests isoliert, reproduzierbar und unabhängig von der Laufzeitumgebung (z. B. VM).
 
-==== Frontend Das Frontend wird durch manuelle Tests überprüft:
+==== Frontend das Frontend wird durch manuelle Tests überprüft:
 
-Starten der Anwendung im Browser
+Das UI kann lokal mit `npm run dev` im Browser gestartet werden.
+Dafür wird ein ".env.development" mit folgender Struktur benötigt.
+Diesen bekommt man von einem aktiven Entwickler.
 
-Durchklicken der Benutzeroberfläche
+[source]
+----
+VITE_API_BASE_URL="..."
+----
 
-Überprüfung der in dem Pull-Request neuen Funktionalität
-
-Dadurch Testen, wie ein Nutzer die Oberfläche sieht und bedient, wie Fehlermeldungen wirken und ob sowhol Design als auch Funktionalität aus Nutzersicht passen.
+Es sollte sowhol das spezifische Feature der Pull-Request erprobt werden,
+als auch die allgemeine Funktionalität der Anwendung.
+Teste wie ein Nutzer die Oberfläche sieht und bedient,
+wie Fehlermeldungen wirken und ob sowhol Design als auch Funktionalität aus Nutzersicht passen.
 
 === Testdurchführungsplanung
 
-* Wann: 
+* Wann:
 ** Backend-Tests: kontinuierlich während der Entwicklung, automatisiert bei jedem Commit/Push
 ** Frontend-Tests: Dev Team: nach Änderungen an der Oberfläche und Funktionalität beim Review des Pull-Requestes bzw während der Entwicklung
 PO unregelmäßig bei Überpfüfen der gestellten Anforderungen
 
-* Wie: 
+* Wie:
 ** Backend: automatisiert über `python -m pytest tests_api.py`
 ** Frontend: manuell im Browser mit "durchklicken"
 
