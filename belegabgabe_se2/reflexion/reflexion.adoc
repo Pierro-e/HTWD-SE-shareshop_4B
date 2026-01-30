@@ -248,7 +248,7 @@ User Stories auf dem Miro-Board: https://miro.com/app/board/uXjVIEJUxFI=/
 Dokumentation der Branching- und Styleguidelines im Repository: docs/project_management/Branching.adoc und docs/project_management/Styleguidelines.adoc
 
 
-=== Pierre Kißling - Einzelreflexion Product Owner
+=== Pierre Kißling
 
 ==== Ausgangssituation: Welche Aufgaben habe ich im Projekt bearbeitet?
 
@@ -270,18 +270,14 @@ Als PO war meine zentrale Aufgabe, die Vision festzulegen und nicht aus den Auge
 
 ==== Wie bin ich diese Herausforderungen angegangen?
 
-===== Rollenverständnis: Ich kann (und muss) nicht alles überblicken
-
-Mein größter Lernmoment war die Erkenntnis, dass ich als PO nicht dauerhaft überblicken kann, was jede Person im Team im Detail umsetzt oder wie jedes Software-Teil intern funktioniert. Das war zu Beginn leichter (aufgrund des geringeren Umfangs und geringerer Komplexität), wurde aber im Semesterverlauf realistisch unmöglich.
-
-Ich habe daraus zwei Dinge gelernt:
+Mein größter Lernmoment war die Erkenntnis, dass ich als PO nicht dauerhaft überblicken kann, was jede Person im Team im Detail umsetzt oder wie jedes Software-Teil intern funktioniert. Das war zu Beginn leichter (aufgrund des geringeren Umfangs und geringerer Komplexität), wurde aber im Semesterverlauf realistisch unmöglich. Ich habe daraus zwei Dinge gelernt:
 
 . *Vertrauen in den Rest meines Teams:* Technische Details müss ich als Po nicht wissen, solange Abhängigkeiten und Risiken für mich immer noch klar sind. Ich muss darauf vertrauen, dass meine Entwickler ihre Aufgaben sauber erledigen.
 . *Fokus auf Schnittstellen statt auf den ganzen Code:* Ich muss nicht wissen, wie etwas implementiert wird, aber ich muss wissen, wenn ein Feature von bestimmten Schnittstellen (z.B. Datenbankänderungen) betroffen ist.
 
 Mein Fokus lag daher vor allem mehr darauf, das Produktziel im Auge zu behalten, User-stories und Akzeptanz-kriterien zu formulieren und einer sauberen Priorisierung.
 
-===== Entscheidungen dauern länger als sie aussehen (Kreative Arbeit sichtbar machen lernen)
+
 
 Ein zweiter Lernmoment war, wie kreativ und zeitintensiv PO-Arbeit ist. Ein Beispiel ist die Kostenaufteilung: Es gibt mehrere Berechnungsmodelle und UX-Varianten, aber bevor man priorisieren kann, muss man sich diese Möglichkeiten überhaupt erst erschließen, vergleichen und gegeneinander abwägen.
 Das kostet sehr viel Zeit, weil es keine "richtige" Antwort gibt, sondern viele verschiedene Faktoren, die man schlecht messen kann (Fairness, Verständlichkeit, Aufwand, Fehleranfälligkeit, Komplexität).
@@ -292,7 +288,6 @@ Meine Vorgehensweise wurde dabei im Verlauf des Semesters zunehmend effizienter 
 
 Das war für mich ein wetvoller Lernaspekt: Produktqualität entsteht nicht nur durch technische rafinesse, sondern auch durch sinnvolle Entscheidungen.
 
-===== Priorisierung unter technischen Schulden: Wunsch-Scope zu realistischem Sprint-Plan umwandeln
 
 Ein konkreter Misserfolg war meine anfänglich zu optimistische Zeitplanung: Ich habe zu Beginn des Semesters eine zu große Aufgabenmenge als Sprintumfang gewählt. Diese konnten dann nicht vollständig abgeschlossen werden, weil technische Schulden den tatsächlichen Aufwand erhöht haben. Dadurch mussten Aufgaben in den nächsten Sprint verschoben werden.
 
@@ -304,7 +299,6 @@ Wichtig, was ich für mich gelernt habe, war hier, wie ich technische Schulden i
 
 Ein dazu passender Erfolg war, dass wir die technischen Schulden innerhalb einer Iteration stark reduzieren konnten und zwar in einem Maß, dass anschließend wieder ein großes neues Feature möglich wurde. Für mich hat das gezeigt: Priorisierung von Qualität ist auf lange Sicht sehr viel Wert.
 
-===== Prozess-Transparenz erhöhen: In-Review als sichtbare Zwischenstufe
 
 Ein weiterer Erfolg war die Einführung einer In-Review-Section auf dem Board. Dadurch wurde der Fortschritt innerhalb der Iteration deutlich besser sichtbar. Items sind dadurch nicht mehr direkt in "Done" verschwunden, sondern es gab eine klare Phase für Abnahme & Feedback.
 
@@ -315,8 +309,6 @@ Aus PO-Sicht hat das drei positive Effekte gebracht:
 * *Realistischere Fortschrittsanzeige:* Die Review-Phase wird dadurch als Arbeit sichtbar.
 
 ==== Bewertung: Hat meine Lösung funktioniert? Warum (nicht)? Was habe ich gelernt?
-
-===== Bewertung der Ergebnisse
 
 *Was gut funktioniert hat:*
 
