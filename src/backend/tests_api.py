@@ -12,7 +12,7 @@ with patch.dict(os.environ, {
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer, get_nutzer_by_email, create_fav_produkt
     from share_shop_api import change_passwort, change_name, change_email
-    from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
+    from share_shop_api import delete_fav_produkt,delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
     from share_shop_api import update_fav_produkt
     from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
 
@@ -599,3 +599,12 @@ def test_update_fav_produkt_success(mock_session_local):
 
     result = update_fav_produkt(1, 1, body, db=mock_db)
     assert result.menge == 5
+@patch('share_shop_api.SessionLocal')
+def test_delete_fav_produkt_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_fav = create_mock_fav_produkt(1, 1, 'Apfel')
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_fav
+
+    result = delete_fav_produkt(1, 1, db=mock_db)
+    assert result.status_code == 204
