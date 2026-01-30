@@ -14,7 +14,7 @@ with patch.dict(os.environ, {
     from share_shop_api import change_passwort, change_name, change_email
     from share_shop_api import delete_kostenaufteilung,delete_mitglied,delete_fav_produkt,delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
     from share_shop_api import update_fav_produkt, get_listen_by_nutzer, get_listen_all
-    from share_shop_api import create_kostenaufteilung
+    from share_shop_api import create_kostenaufteilung, create_bedarfsvorhersage_eintrag
     from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
 
 # Hilfsfunktion zum Erstellen von Dummy-Nutzer-Objekten (als MagicMock mit Attributen)
@@ -662,3 +662,18 @@ def test_change_email_success(mock_session_local):
     result = change_email(1, body, db=mock_db)
     assert result.email == 'new@test.com'
 
+## tests bedarfsvorhersage#####
+@patch('share_shop_api.SessionLocal')
+def test_create_bedarfsvorhersage_eintrag_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_db.query.return_value.filter.return_value.first.return_value = None
+    mock_db.add.return_value = None
+    mock_db.commit.return_value = None
+    mock_db.refresh.side_effect = lambda obj: setattr(obj, 'nutzer_id', 1)
+
+    body = MagicMock()
+    body.produkt_id = 1
+
+    result = create_bedarfsvorhersage_eintrag(1, body, db=mock_db)
+    assert result.nutzer_id == 1
