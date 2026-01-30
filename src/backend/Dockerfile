@@ -24,6 +24,5 @@ USER appuser
 
 COPY . .
 
-# TODO:
 EXPOSE 8000
 CMD uvicorn 'share_shop_api:app' --host=0.0.0.0 --port=8000
