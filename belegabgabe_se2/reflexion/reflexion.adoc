@@ -251,7 +251,7 @@ Dokumentation der Branching- und Styleguidelines im Repository: docs/project_man
 
 === Pierre Kißling
 
-==== Ausgangssituation: Welche Aufgaben habe ich im Projekt bearbeitet?
+*Ausgangssituation: Welche Aufgaben habe ich im Projekt bearbeitet?*
 
 Als PO war meine zentrale Aufgabe, die Vision festzulegen und nicht aus den Augen zu verlieren: Was soll ShareShop lösen, welche Features bringen den WG-Mitgliedern den größten Nutzen oder sorgen dafür, dass WG-Bewohner die App mehr benutzen, wie schneide ich Anforderungen so zu, dass sie für das Team umsetzbar sind. Dazu gehört insbesondere: Die Analyse: Problem- und Zielgruppenverständnis verbessern (z.B. WG-Kontext, gemeinsames Einkaufen, Kostenaufteilung). Anforderungen als User Stories / Backlog-Items formulieren und priorisieren. Feature-Alternativen abwägen (z.B. unterschiedliche Berechnungsmodelle für Kostenaufteilung). Der Entwurf (Produktseitig): Produktentscheidungen treffen bzw. vorbereiten: nutzerflow, Screens/Verhalten, Definition of Done. Abhängigkeiten erkennen (z.B. wenn ein Feature Datenbankänderungen erfordert).
 Das Projektmanagement: Sprintziele und Umfang festlegen, Arbeitspakete für das Team aufteilbar machen. Backlog pflegen, Fortschritt über Iterationen sichtbar machen. Umgang mit technischen Schulden.
