@@ -1,6 +1,12 @@
 # ShareShop
 
-ShareShop ist eine SPA Anwendung zum kollaborativen Einkaufen in Wohngemeinschaften.
+ShareShop ist eine SPA Anwendung zum kollaborativen Einkaufen in WG's.
+
+## Demo
+
+Eine Instanz des Projekts ist auf einer VM der [HTW Dresen](https://www.htw-dresden.de/) gehostet.
+Es kann aus dem internen Netz oder über eine VPN-Verbindung erreicht werden.
+[Hier](http://141.56.137.83/) kannst du es einfach mal ausprobieren.
 
 ## Projektstruktur
 
