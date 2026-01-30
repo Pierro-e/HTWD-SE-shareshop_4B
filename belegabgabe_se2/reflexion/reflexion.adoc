@@ -333,6 +333,26 @@ Zusätzlich zu den typischen PO-Aufgaben habe ich im Verlauf des Semesters auch 
 
 === Marlene Fritz
 
+Im Projekt Shareshop war ich als Entwicklerin in diesem Semester im Frontend dafür zuständig den Code zu strukturieren, neue Features zu implementieren und gegen Ende die Tests zu reviewen und zu dokumentieren.
+
+==== Wiederverwendbarkeit vom Code (link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/issues/259[Issue 295], link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/pull/284[PR])
+Zu Beginn des Semesters habe ich mich mit der Wiederverwendbarkeit und Struktur unseres Codes beschäftigt. Zu dem Zeitpunkt war unsere Komponente List.vue riesig und umfasste die gesamte Logik einer Einkaufliste unserer App. Andere Komponenten, wie die Einkauf.vue enthielt duplizierten Code, da sie ebenfalls eine Liste mit all ihren Artikeln anzeigt. Zusätzlich war die Top Bar in mehreren Komponenten direkt implementiert.
+Zunächst habe ich analysiert, in welchen Komponenten welcher Code doppelt vorkommt und welche Verantwortlichkeiten sinnvoll ausgelagert werden können. Anschließend habe ich mir ein Konzept überlegt, wie durch neue, klar abgegrenzte Komponenten die Lesbarkeit, Wartbarkeit und Wiederverwendbarkeit des Codes verbessert werden kann. Umgesetzt habe ich dies durch die Einführung zweier neuer Komponenten:  eine für den App Header und eine für die Darstellung der Liste. Diese Komponenten können nun durch wenige Zeilen Code an die benötigten Stellen eingebunden werden. 
+Dieses Vorgehen hat sehr gut funktioniert, doch ich habe gesehen, wie schnell Code unübersichtlich werden kann, obwohl man selbst viel dazu beiträgt. Durch die Umstrukturierung hat unser Code deutlich an Qualität gewonnen und es wurde leichter sich darin zurechtzufinden. 
+
+==== Naviagtionsleiste (link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/issues/278[Issue 278], link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/issues/277[Issue 277])
+Ein weiterer Aufgabenbereich war die Implementierung der Navigation Bar. Dabei konnte ich mich gut an den Wireframes orientieren. Die in den Wireframes vorgesehenen Seiten sind jetzt direkt über die Navigation Bar erreichbar, sodass der Nutzer sich intuitiver durch die App bewegen kann. Die Leiste wird in jeder Komponente angezeigt. 
+Die technische Umsetzung war grundsätzlich nicht kompliziert, da es sich um einfache Buttons handelt, die das jeweilige Routing auslösen. Herausfordernder war hingegen die korrekte Darstellung der Navigation Bar: die Buttons sollten nebeneinander angezeigt werden, die Ansicht musste auch auf mobilen Endgeräten korrekt funktionieren, und der Seiteninhalt durfte nicht teilweise von der Leiste überdeckt werden. Diese Aufgaben erforderten mehrere Anpassungen am Layout und am Zusammenspiel von Navigation und Seiteninhalt.
+
+==== Kostenaufteilung (link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/issues/291[Issue 291], link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/pull/331[PR]) 
+Diese obigen Aufgaben konnte ich ohne vorgelagerte Abhängigkeiten zu anderen Teammitgliedern bearbeiten. Insbesondere die Auslagerung der Komponenten war jedoch für das gesamte Team von großer Bedeutung, da es die Projektstruktur nachhaltig verändert hat. Diese neue Struktur wurde im weiteren Verlauf des Projekts konsequent beibehalten. 
+Die letzte Aufgabe, bei der ich programmierend zum Projekt beigetragen habe, war die Umsetzung der ersten Variante der Kostenaufteilung. Die Logik wurde vorher im Meeting festgelegt. Für die Umsetzung des Features im Backend war Levin verantwortlich und wir haben gemeinsam die benötigten Funktionen festgelegt und eine grobe Gestaltung im Frontend entworfen (Wireframes waren nicht ausgereift). Die Fertigstellung des Backends war eine Voraussetzung für meine Arbeit, stellte jedoch kein Problem dar, da Levin die nötigen Funktionen sehr schnell implementierte und mich informierte
+ Trotzdem nahm die Umsetzung dieses Features mehr Zeit in Anspruch als ursprünglich geplant. Mir waren nicht alle internen Abläufe in der Einkaufskomponente vollständig klar, weshalb es schwierig war den passenden Punkt für die Erweiterung zu finden. Zudem habe ich zum ersten Mal mit Promise.all, map und filter gearbeitet. Da das Backend korrekt reagiert hat und keine offensichtlichen Fehler auftraten, war die Fehlersuche teilweise anspruchsvoll.
+
+==== Tests und Dokumentation
+Nachdem die Kostenaufteilung implementiert war, wurden keine weiteren Features mehr entwickelt. In der verbleibenden Zeit habe ich mich daher mit dem Testen beschäftigt. Ich habe die bestehenden Tests geprüft, Vorschläge für zusätzliche Tests relevanter Funktionen gemacht und war für die Testdokumentation verantwortlich.
+
+
 <<<
 
 === Levin Heinrich
