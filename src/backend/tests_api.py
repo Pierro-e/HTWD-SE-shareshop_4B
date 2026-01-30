@@ -10,7 +10,7 @@ with patch.dict(os.environ, {
     'DB_HOST': 'localhost',
     'DB_NAME': 'test'
 }):
-    from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer
+    from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer, get_nutzer_by_email
     from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
     from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
 
@@ -167,6 +167,16 @@ def test_create_nutzer_already_exists(mock_session_local):
         create_nutzer(nutzer_data, db=mock_db)
     assert "Nutzeremail existiert bereits" in str(exc_info.value)
 
+@patch('share_shop_api.SessionLocal')
+def test_get_nutzer_by_email_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+
+    mock_nutzer = create_mock_nutzer(5, 'byemail@example.com', 'ByEmail')
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_nutzer
+
+    result = get_nutzer_by_email('byemail@example.com', db=mock_db)
+    assert result.email == 'byemail@example.com'
      
 
 
