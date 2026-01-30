@@ -12,12 +12,15 @@ include::attributes.adoc[]
 
 === Softwareanforderungen
 
-* Docker
+Die Anwendung besteht aus 3 Containern, welche alle unabhängig voneinander gehostet werden können.
+Ein Container ist die Datenbank, welche frei gewählt werden kann, solange sie mit FastAPI kompatibel ist.
+Der zweite Container ist die API, welche zwischen User Interface und Datenbank liegt.
+Ein User Interface bildet den letzten Container.
 
-==== mit Docker
-
-* Docker
-* Git
+Da die Architektur sich dem Schichten-Pattern bedient, müssen die Conatiner aufeinander aufgebaut werden.
+Kurz gesagt: Ohne die Datenbank, kann die API nicht gestartet werden
+und ohne die API funktioniert das User Interface nicht.
+Die Docker
 
 ==== Manuell
 
