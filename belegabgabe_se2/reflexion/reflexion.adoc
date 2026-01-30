@@ -20,7 +20,7 @@
 
 Im SE2-Projekt *ShareShop* haben wir als Team aus 7 Personen, darunter 2 neue Teammitglieder, gearbeitet. Wir haben in 4 Sprints à 3 Wochen gearbeitet.
 
-Als technische Basis haben wir *Vue* im Frontend sowie *FastAPI* und *SQLAlchemy* im Backend benutzt. Für Aufgabenverwaltung haben wir *GitHub Projects* benutzt. Die Themen und Diskussionspunkte für Meetings wurden vorab im *Miro* gesammelt.
+Als technische Basis haben wir *Vue* im Frontend sowie *FastAPI*, *SQLAlchemy* und *MySQL* im Backend benutzt. Für Aufgabenverwaltung haben wir *GitHub Projects* benutzt. Die Themen und Diskussionspunkte für Meetings wurden vorab im *Miro* gesammelt.
 
 Zur Qualitätssicherung gab es eine Definition of Done für Product Backlog Items (PBI):
 
@@ -76,9 +76,9 @@ Zu Semesterbeginn kamen zwei neue Personen ins Team. Wir haben es geschafft, sie
 
 Das Einarbeiten wurde durch mehrere Faktoren unterstützt:
 
-- Neue Teammitglieder erhielten zunächst kleinere Aufgaben, wurden aber relativ schnell auch an anspruchsvollere Aufgaben herangeführt, sobald es realistisch erschien.
+- Einzelne Teammitglieder nahmen sich aktiv Zeit, um Projektaufbau, Code und Workflow erklärt zu bekommen.
 
-- Einzelne Teammitglieder nahmen sich aktiv Zeit, um Projektaufbau, Code und Workflow zu erklären.
+- Neue Teammitglieder erhielten zunächst kleinere Aufgaben, wurden aber relativ schnell auch an anspruchsvollere Aufgaben herangeführt, sobald es realistisch erschien.
 
 - Es gab bereits eine Git-Workflow-Anleitung, die viele typische Einstiegshürden (Branching und Umgang mit Änderungen) reduzierte.
 
@@ -135,6 +135,8 @@ Coding Standards (Linter, Styleguidelines) und Tests wurden erst zur Mitte des S
 - Zu Beginn lag der Fokus stärker auf Feature-Umsetzung; Altlasten im Frontend haben zusätzlich Kapazitäten gefressen.
 
 - Keine Tools, die Standards automatisch durchsetzen.
+
+- Zudem waren die manuellen Tests, welche über die SwaggerUI oder direkt auf der App erfolgt sind, vom zeitlichen Aufwand überschaubar.
 
 *Was hätte man tun können, um das Problem zu verhindern?*
 
