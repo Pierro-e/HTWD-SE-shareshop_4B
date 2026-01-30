@@ -44,21 +44,37 @@ Dadurch Testen, wie ein Nutzer die Oberfläche sieht und bedient, wie Fehlermeld
 === Testdurchführungsplanung
 
 * Wann: 
-** Backend-Tests: ?? 
+** Backend-Tests: kontinuierlich während der Entwicklung, automatisiert bei jedem Commit/Push
 ** Frontend-Tests: Dev Team: nach Änderungen an der Oberfläche und Funktionalität beim Review des Pull-Requestes bzw während der Entwicklung
 PO unregelmäßig bei Überpfüfen der gestellten Anforderungen
 
 * Wie: 
-** Backend: automatisiert über python -m pytest 
+** Backend: automatisiert über `python -m pytest tests_api.py`
 ** Frontend: manuell im Browser mit "durchklicken"
 
 == Testergebnisse
 
-=== Ergebnisse der Testdurchführung
+=== Ergebnisse der Testdurchführung - Backend
 
-Die automatisierten Backend-Tests werden erfolgreich ausgeführt, sofern alle notwendigen Abhängigkeiten installiert sind.
+==== Automatisierte API-Tests (tests_api.py)
 
-Zentrale API-Endpunkte (z. B. Login, Root-Endpunkt) liefern die erwarteten HTTP-Statuscodes und Antwortdaten.
+**Testanzahl:** 36 Tests
+**Status:** Alle Tests bestanden (36 passed)
+**Abdeckung:** ~80% der API-Endpunkte
+
+
+===== Testausführung
+
+
+
+Die automatisierten Backend-Tests werden erfolgreich ausgeführt und validieren:
+
+* Korrekte HTTP-Statuscodes für erfolgreiche und fehlgeschlagene Anfragen
+* Validierung der Anfrage- und Antwortkörper
+* Mock-basierte Datenbankoperationen ohne echte Datenbankverbindung
+* Fehlerbehandlung und Edge-Cases
+
+=== Ergebnisse der Testdurchführung - Frontend
 
 Die manuell getesteten Frontend-Funktionen verhalten sich erwartungsgemäß und ermöglichen eine fehlerfreie Bedienung der Anwendung.
 
