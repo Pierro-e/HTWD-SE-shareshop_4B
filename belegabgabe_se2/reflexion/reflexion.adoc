@@ -389,7 +389,7 @@ Nachdem die Kostenaufteilung implementiert war, wurden keine weiteren Features m
 
 Ich war im Projekt hauptsächlich für die Implementierung des Backends zuständig. Dabei habe ich mich um die Datenbank gekümmert und die API_Endpunkte, sowie die ORMs für die verschiedenen Modelle erstellt. Zusätzliche habe ich jedoch auch Aufgaben im Frontend übernommen, wie zum Beispiel das Archiv-Feature, aber auch die Mitarbeit an der List- und Einkauf-Komponente.
 
-==== Datenbank
+==== Datenbankmodell + Relationen 
 ===== Ausgangssituation
 Zu Beginn ging es darum eine Struktur zu entwickeln, die es ermöglicht die verschiedenen Entitäten und deren Beziehnungen (die durch die Planung der APP entstanden sind) in einer Datenbank abbilden zu können. Im Laufe des Projekts musste diese Struktur dann angepasst oder um neue Tabellen ergänzt werden. Ich ordne diese Aufgabe in die Analyse- Entwurf- und Implementierungsphase ein.
 
@@ -399,7 +399,7 @@ Als die Datenbank erstellt bzw. erweiter werden musste begann ich mit einer graf
 ===== Bewertung und Lernerfahrungen
 Rückblickend mkann ich sagen, dass mein Vorgehen grundätzlich gut funktioniert hat. Die grafische Abbildung (auch wenn es nur eine grobe Skizze war) hat besonders am Anfang beim verstehen geholfen. Nahezu am Ende des Projekts habe ich festgestellt dass ich mir jedoch Zeit hätte sparen können, wenn ich die Tabellen direkt in SQLAlchemy erstellt hätte. Da ich mich zu Beginn des Projekts noch nicht so gut mit dem ORM auskannte, habe ich mich für den "sicheren" Weg entschieden. Dies hat zwar funktioniert, aber im Nachhinein gesehen war es unnötig aufwendig.
 
-==== API
+====  CRUD-Endpunkte + ORMs | z.B. (link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/pull/268[PR-Bedarfsvorhersage], link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/pull/313[PR-Kostenaufteilung])
 ===== Ausgangssituation
 Bereitstellen der API-Endpunkte für das Frontend. Dabei ging es darum die verschiedenen Funktionalitäten, die im Frontend benötigt werden, über Endpunkte verfügbar zu machen. Ich ordne diese Aufgabe in die Implementierungs- und Testphase ein.
 
@@ -409,7 +409,7 @@ Da ich immer vorher die Datenbankstruktur erstellte, hatte ich bereits ein gutes
 ===== Bewertung und Lernerfahrungen
 Was positiv war, die Kommunikation mit dem Frontend-Team. Diese Kommunikation war auch nötig, da mann sicherstellen musste, dass beide Seiten (Frontend/Backend) die gleichen Vorstellungen von der Funktionalität haben. Nachteilig war, dass ich mir am Anfang etwas unsicher war, welche Berechnungen/Konvertierungen/Validierungen im Backend oder im Frontend gemacht werde sollten. Das wurde mit der Zeit klarer und die Qualität der API-Endpunkte wurde somit auch besser.  
 
-==== Archiv-Feature (Frontend)
+==== Archiv-Feature (Frontend) | (link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/issues/321[Issue-Archiv], link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/issues/322[Issue-Archiv-Filter], link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/pull/286[PR-Archiv], link:https://github.com/Pierro-e/HTWD-SE-shareshop_4B/pull/329[PR-Archiv-Filter])
 ===== Ausgangssituation
 Das Archiv-Feature ermöglicht es dem Nutzer abgeschlossene Einkäufe, mit allesn Produkten die in diesem Einkauf eingekauft wurden,  im nachhinein anzusehen. Im Archiv kann man nach den einzelnen Listen filtern sowie nur Einkäufe anzeigen lassen die von mir selbst getätig wurden. Ich ordne diese Aufgabe in die Implementierungs- und Testphase ein.
 
