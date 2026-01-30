@@ -20,7 +20,7 @@
 import TextInput from "../input/TextInput.vue";
 import NumInput from "../input/NumInput.vue";
 import SelectObjectArray from "../input/SelectObjectArray.vue";
-import axios from "axios";
+import { api } from "../../api/client";
 
 /**
  * Oberflächen zum Bearbeiten eines bereits angelegten Favoriten.
@@ -43,26 +43,25 @@ export default {
   methods: {
     async alter_fav() {
       const url =
-        "http://141.56.137.83:8000/fav_produkte_update/nutzer/" +
+        "/fav_produkte_update/nutzer/" +
         this.user.id +
         "/produkt/" +
         this.fav.produkt_id;
+      const response = await api.put(url, this.fav_copy);
 
-      const response = await axios.put(url, this.fav_copy);
-
-      this.$parent.$emit("close");
-      this.$parent.$emit("update");
+      this.$parent.$emit("close"); // Popup schließen
+      this.$parent.$emit("update"); // Fav updaten
     },
     /**
      * Löscht den Favoriten.
      */
     async delete_fav() {
       const url =
-        "http://141.56.137.83:8000/fav_produkte_delete/nutzer/" +
+        "/fav_produkte_delete/nutzer/" +
         this.user.id +
         "/produkt/" +
         this.fav.produkt_id;
-      const response = await axios.delete(url);
+      const response = await api.delete(url);
 
       this.$parent.$emit("close"); // Popup schließen
       this.$parent.$emit("update"); // Fav updaten

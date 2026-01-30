@@ -1,7 +1,18 @@
 import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, Path, status, HTTPException, Response, Body, Query
-from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, Numeric, Date, DateTime, func, or_
+from sqlalchemy import (
+    create_engine,
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    Numeric,
+    Date,
+    DateTime,
+    func,
+    or_,
+)
 from sqlalchemy.orm import sessionmaker, declarative_base, Session, aliased
 from pydantic import BaseModel, EmailStr, field_validator, Field
 from typing import List, Optional
@@ -28,12 +39,12 @@ Base = declarative_base()
 class Nutzer(Base):
     __tablename__ = "Nutzer"
     id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    name = Column(String, nullable=False)
-    passwort_hash = Column(String, nullable=False)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    name = Column(String(20), nullable=False)
+    passwort_hash = Column(String(255), nullable=False)
     theme = Column(Integer, default=0)
     color = Column(Integer, default=0)
-    decaydays = Column(Numeric(10,2), nullable=False, default=7.00)
+    decaydays = Column(Numeric(10, 2), nullable=False, default=7.00)
 
 
 class Einheit(Base):
@@ -53,84 +64,121 @@ class Liste(Base):
     __tablename__ = "Listen"
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(150), nullable=False)
-    ersteller = Column(Integer, ForeignKey('Nutzer.id', ondelete='SET NULL'), nullable=True)
+    ersteller = Column(
+        Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True
+    )
     datum = Column(Date)
 
 
 class ListeMitglieder(Base):
     __tablename__ = "ListeMitglieder"
-    listen_id = Column(Integer, ForeignKey('Listen.id', ondelete='CASCADE'), primary_key=True)
-    nutzer_id = Column(Integer, ForeignKey('Nutzer.id', ondelete='Cascade'), primary_key=True)
+    listen_id = Column(
+        Integer, ForeignKey("Listen.id", ondelete="CASCADE"), primary_key=True
+    )
+    nutzer_id = Column(
+        Integer, ForeignKey("Nutzer.id", ondelete="Cascade"), primary_key=True
+    )
     beigetreten_am = Column(Date)
 
 
 class ListeProdukte(Base):
     __tablename__ = "ListeProdukte"
-    listen_id = Column(Integer, ForeignKey('Listen.id', ondelete='Cascade'), primary_key=True)
-    produkt_id = Column(Integer, ForeignKey('Produkt.id'), primary_key=True)
-    hinzugefügt_von = Column(Integer, ForeignKey('Nutzer.id', ondelete='SET NULL'), nullable=True)
+    listen_id = Column(
+        Integer, ForeignKey("Listen.id", ondelete="Cascade"), primary_key=True
+    )
+    produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
+    hinzugefügt_von = Column(
+        Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True
+    )
     produkt_menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, nullable=True)
-    beschreibung = Column(String, nullable=True)
+    beschreibung = Column(String(255), nullable=True)
 
 
 class FavProdukte(Base):
     __tablename__ = "fav_Produkte"
-    nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True)
+    nutzer_id = Column(
+        Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True
+    )
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
-    beschreibung = Column(String, nullable=True)
+    beschreibung = Column(String(255), nullable=True)
 
 
 class Bedarfsvorhersage(Base):
     __tablename__ = "Bedarfsvorhersage"
-    nutzer_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True )
+    nutzer_id = Column(
+        Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True
+    )
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), primary_key=True)
     counter = Column(Numeric(10, 2), default=0.00)
-    last_bought = Column(DateTime(timezone=True), server_default=func.current_timestamp())
+    last_bought = Column(
+        DateTime(timezone=True), server_default=func.current_timestamp()
+    )
+
 
 class Einkaufsarchiv(Base):
     __tablename__ = "Einkaufsarchiv"
     einkauf_id = Column(Integer, primary_key=True, nullable=False)
-    listen_id = Column(Integer, ForeignKey("Listen.id", ondelete="CASCADE"), nullable=False)
-    eingekauft_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
-    eingekauft_am = Column(DateTime, server_default=func.now(), nullable=False)  
+    listen_id = Column(
+        Integer, ForeignKey("Listen.id", ondelete="CASCADE"), nullable=False
+    )
+    eingekauft_von = Column(
+        Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True
+    )
+    eingekauft_am = Column(DateTime, server_default=func.now(), nullable=False)
     gesamtpreis = Column(Numeric(10, 2), nullable=True)
+
 
 class EingekaufteProdukte(Base):
     __tablename__ = "eingekaufte_Produkte"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    einkauf_id = Column(Integer, ForeignKey("Einkaufsarchiv.einkauf_id", ondelete="CASCADE"), nullable=False)
+    einkauf_id = Column(
+        Integer,
+        ForeignKey("Einkaufsarchiv.einkauf_id", ondelete="CASCADE"),
+        nullable=False,
+    )
     produkt_id = Column(Integer, ForeignKey("Produkt.id"), nullable=False)
     produkt_menge = Column(Numeric(10, 2), nullable=True)
     einheit_id = Column(Integer, ForeignKey("Einheiten.id"), nullable=True)
     produkt_preis = Column(Numeric(10, 2), nullable=True)
-    hinzugefuegt_von = Column(Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True)
-    beschreibung = Column(String, nullable=True)
+    hinzugefuegt_von = Column(
+        Integer, ForeignKey("Nutzer.id", ondelete="SET NULL"), nullable=True
+    )
+    beschreibung = Column(String(255), nullable=True)
+
 
 class Kostenaufteilung(Base):
     __tablename__ = "Kostenaufteilung"
-    empfaenger_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True)
-    schuldner_id = Column(Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True)
+    empfaenger_id = Column(
+        Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True
+    )
+    schuldner_id = Column(
+        Integer, ForeignKey("Nutzer.id", ondelete="CASCADE"), primary_key=True
+    )
     betrag = Column(Numeric(10, 2), nullable=True)
+
 
 # --- Pydantic-Modelle ---
 class NameBasis(BaseModel):
     """Kapselt die Validierung und Bereinigung für den Namen (z.B. Nutzer, Produkte)."""
-    
+
     # Der Feldname muss 'name' sein, damit der @field_validator in dieser Klasse funktioniert.
     name: str = Field(min_length=1)
 
     # Der Validator, der in der Basisklasse bleiben muss:
-    @field_validator('name', mode='after') 
+    @field_validator("name", mode="after")
     @classmethod
     def validate_name_content(cls, value):
         # Ruft die externe Hilfsfunktion auf
         if not contains_at_least_one_letter(value):
-            raise ValueError('Der Name muss mindestens einen Buchstaben enthalten (A-Z).')
+            raise ValueError(
+                "Der Name muss mindestens einen Buchstaben enthalten (A-Z)."
+            )
         return value.strip()
-    
+
+
 class NutzerRead(BaseModel):
     id: int
     email: str
@@ -142,6 +190,7 @@ class NutzerRead(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class NutzerCreate(NameBasis):
     email: EmailStr
@@ -157,6 +206,7 @@ class EinheitRead(BaseModel):
     class Config:
         from_attributes = True
 
+
 class ProduktRead(BaseModel):
     id: int
     name: str
@@ -164,8 +214,10 @@ class ProduktRead(BaseModel):
     class Config:
         from_attributes = True
 
+
 class ProduktCreate(NameBasis):
     pass
+
 
 class ListeRead(BaseModel):
     id: int
@@ -240,6 +292,7 @@ class FavProdukteRead(BaseModel):
     einheit_id: Optional[int] = None
     einheit_abk: Optional[str] = None
     beschreibung: Optional[str] = None
+
     class Config:
         from_attributes = True
 
@@ -250,10 +303,12 @@ class FavProdukteCreate(BaseModel):
     einheit_id: Optional[int] = None
     beschreibung: Optional[str] = None
 
+
 class FavProdukteUpdate(BaseModel):
     menge: Optional[Decimal] = None
     einheit_id: Optional[int] = None
-    beschreibung: Optional[str] = None  
+    beschreibung: Optional[str] = None
+
 
 class BedarfsvorhersageRead(BaseModel):
     nutzer_id: int
@@ -261,14 +316,18 @@ class BedarfsvorhersageRead(BaseModel):
     produkt_name: Optional[str] = None
     counter: Decimal
     last_bought: Optional[datetime] = None
+
     class Config:
         from_attributes = True
+
 
 class BedarfvorhersageCreate(BaseModel):
     produkt_id: int
 
+
 class PasswortÄndern(BaseModel):
     neues_passwort: str
+
 
 class NameAendern(NameBasis):
 
@@ -277,11 +336,14 @@ class NameAendern(NameBasis):
     # aber hier verwenden wir das geerbte 'name'-Feld direkt.
     pass
 
+
 class EmailAendern(BaseModel):
     neue_email: str
 
+
 class DecayDaysAendern(BaseModel):
     neue_decaydays: Decimal
+
 
 class EinkaufsarchivRead(BaseModel):
     einkauf_id: int
@@ -289,15 +351,17 @@ class EinkaufsarchivRead(BaseModel):
     listen_name: Optional[str] = None
     eingekauft_von: Optional[int] = None
     einkaeufer_name: Optional[str] = None
-    eingekauft_am: Optional[date] = None  
+    eingekauft_am: Optional[datetime] = None
     gesamtpreis: Optional[Decimal] = None
 
     class Config:
         from_attributes = True
 
+
 class EinkaufsarchivCreate(BaseModel):
     eingekauft_von: Optional[int] = None
     gesamtpreis: Optional[Decimal] = None
+
 
 class eingekaufteProdukteRead(BaseModel):
     einkauf_id: int
@@ -314,6 +378,7 @@ class eingekaufteProdukteRead(BaseModel):
     class Config:
         from_attributes = True
 
+
 class eingekaufteProdukteCreate(BaseModel):
     produkt_id: int
     produkt_menge: Optional[Decimal] = None
@@ -321,6 +386,7 @@ class eingekaufteProdukteCreate(BaseModel):
     produkt_preis: Optional[Decimal] = None
     hinzugefuegt_von: Optional[int] = None
     beschreibung: Optional[str] = None
+
 
 class KostenaufteilungRead(BaseModel):
     empfaenger_id: int
@@ -332,12 +398,14 @@ class KostenaufteilungRead(BaseModel):
     class Config:
         from_attributes = True
 
+
 class KostenaufteilungCreate(BaseModel):
     empfaenger_id: int
     schuldner_id: int
     betrag: Decimal
 
 
+Base.metadata.create_all(bind=engine)
 
 
 # --- Hilfsfunktion zur Buchstabenprüfung ---
@@ -345,13 +413,15 @@ def contains_at_least_one_letter(s: str) -> bool:
     """
     Prüft, ob der übergebene String mindestens einen Buchstaben enthält (A-Z, äöü).
 
-    Anwendung: Wird im @field_validator des Pydantic-Modells 'NutzerCreate' 
-                für das Feld 'name' verwendet, um reine Zahlen oder Symbole 
+    Anwendung: Wird im @field_validator des Pydantic-Modells 'NutzerCreate'
+                für das Feld 'name' verwendet, um reine Zahlen oder Symbole
                 (z.B. '123' oder '!!!') abzufangen.
 
     Rückgabe: True, wenn ein Buchstabe gefunden wird, sonst False.
     """
-    return any(c.isalpha() or c in 'äöüÄÖÜß' for c in s)
+    return any(c.isalpha() or c in "äöüÄÖÜß" for c in s)
+
+
 # --- FastAPI-App ---
 
 app = FastAPI()
@@ -378,23 +448,29 @@ def get_db():
 def start():
     return {"message": "API für share_shop DB"}
 
+
 # --- Nutzer ---
 
 
 @app.post("/login", description="Funktion zum Anmelden eines Nutzers")
 def login(login_data: LoginRequest, db: Session = Depends(get_db)):
     # Nutzer mit E-Mail suchen
-    nutzer = db.query(Nutzer).filter(func.lower(Nutzer.email)
-                                     == func.lower(login_data.email)).first()
+    nutzer = (
+        db.query(Nutzer)
+        .filter(func.lower(Nutzer.email) == func.lower(login_data.email))
+        .first()
+    )
     if not nutzer:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Falsche Zugangsdaten")
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Falsche Zugangsdaten"
+        )
 
     # Passwort prüfen - hier Beispiel: einfacher Vergleich
     # TODO: In Produktion: Passwort mit bcrypt oder ähnlichem prüfen
     if nutzer.passwort_hash != login_data.passwort:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Falsche Zugangsdaten")
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Falsche Zugangsdaten"
+        )
 
     # Falls alles stimmt: Nutzerdaten zurückgeben (ohne passwort_hash)
     return {
@@ -403,17 +479,25 @@ def login(login_data: LoginRequest, db: Session = Depends(get_db)):
         "name": nutzer.name,
         "theme": nutzer.theme,
         "color": nutzer.color,
-        "decaydays": nutzer.decaydays
+        "decaydays": nutzer.decaydays,
     }
 
 
-@app.get("/nutzer", description="Gibt alle Nutzer aus der DB zurück | ResponseModel: NutzerRead", response_model=List[NutzerRead])
+@app.get(
+    "/nutzer",
+    description="Gibt alle Nutzer aus der DB zurück | ResponseModel: NutzerRead",
+    response_model=List[NutzerRead],
+)
 def get_nutzer_all(db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).all()
     return nutzer
 
 
-@app.get("/nutzer/by-id", description="Gibt einen Nutzer anhand seiner id aus | ResponseModel: NutzerRead", response_model=NutzerRead)
+@app.get(
+    "/nutzer/by-id",
+    description="Gibt einen Nutzer anhand seiner id aus | ResponseModel: NutzerRead",
+    response_model=NutzerRead,
+)
 def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == id).first()
     if not nutzer:
@@ -421,7 +505,11 @@ def get_nutzer_by_id(id: int, db: Session = Depends(get_db)):
     return nutzer
 
 
-@app.get("/nutzer/by-email", description="Gibt einen Nutzer anhand seiner email aus | ResponseModel: NutzerRead", response_model=NutzerRead)
+@app.get(
+    "/nutzer/by-email",
+    description="Gibt einen Nutzer anhand seiner email aus | ResponseModel: NutzerRead",
+    response_model=NutzerRead,
+)
 def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.email == email).first()
     if not nutzer:
@@ -429,19 +517,21 @@ def get_nutzer_by_email(email: str, db: Session = Depends(get_db)):
     return nutzer
 
 
-@app.post("/nutzer_create", description="Erstellt einen neuen Nutzer | InputModel: NutzerCreate ResponseModel: NutzerRead", response_model=NutzerRead, status_code=status.HTTP_201_CREATED)
+@app.post(
+    "/nutzer_create",
+    description="Erstellt einen neuen Nutzer | InputModel: NutzerCreate ResponseModel: NutzerRead",
+    response_model=NutzerRead,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
 
     vorhanden = db.query(Nutzer).filter(Nutzer.email == nutzer.email).first()
 
     if vorhanden:
-        raise HTTPException(
-            status_code=400, detail="Nutzeremail existiert bereits")
+        raise HTTPException(status_code=400, detail="Nutzeremail existiert bereits")
     else:
         db_nutzer = Nutzer(
-            email=nutzer.email,
-            name=nutzer.name,
-            passwort_hash=nutzer.passwort_hash
+            email=nutzer.email, name=nutzer.name, passwort_hash=nutzer.passwort_hash
         )
         db.add(db_nutzer)
         db.commit()
@@ -449,7 +539,11 @@ def create_nutzer(nutzer: NutzerCreate, db: Session = Depends(get_db)):
         return db_nutzer
 
 
-@app.delete("/nutzer_delete/{nutzer_id}", description="Löscht einen Nutzer anhand seiner id", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete(
+    "/nutzer_delete/{nutzer_id}",
+    description="Löscht einen Nutzer anhand seiner id",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
     if not nutzer:
@@ -460,8 +554,14 @@ def delete_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.put("/nutzer_change/{nutzer_id}/passwort", description="Ändert das Passwort eines Nutzers | InputModel: PasswortÄndern", status_code=status.HTTP_200_OK)
-def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Depends(get_db)):
+@app.put(
+    "/nutzer_change/{nutzer_id}/passwort",
+    description="Ändert das Passwort eines Nutzers | InputModel: PasswortÄndern",
+    status_code=status.HTTP_200_OK,
+)
+def change_passwort(
+    nutzer_id: int, passwort: PasswortÄndern, db: Session = Depends(get_db)
+):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
@@ -474,7 +574,11 @@ def change_passwort(nutzer_id: int, passwort: PasswortÄndern, db: Session = Dep
     return nutzer
 
 
-@app.put("/nutzer_change/{nutzer_id}/name", description="Ändert den Namen eines Nutzers | InputModel: NameAendern", status_code=status.HTTP_200_OK)
+@app.put(
+    "/nutzer_change/{nutzer_id}/name",
+    description="Ändert den Namen eines Nutzers | InputModel: NameAendern",
+    status_code=status.HTTP_200_OK,
+)
 def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -487,14 +591,21 @@ def change_name(nutzer_id: int, name_data: NameAendern, db: Session = Depends(ge
 
     return nutzer
 
-@app.put("/nutzer_change/{nutzer_id}/email", description="Ändert die Email eines Nutzers | InputModel: EmailAendern", status_code=status.HTTP_200_OK)
+
+@app.put(
+    "/nutzer_change/{nutzer_id}/email",
+    description="Ändert die Email eines Nutzers | InputModel: EmailAendern",
+    status_code=status.HTTP_200_OK,
+)
 def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_db)):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
-    vorhandener_nutzer = db.query(Nutzer).filter(Nutzer.email == email.neue_email).first()
+    vorhandener_nutzer = (
+        db.query(Nutzer).filter(Nutzer.email == email.neue_email).first()
+    )
     if vorhandener_nutzer:
         raise HTTPException(status_code=400, detail="E-Mail ist bereits vergeben")
 
@@ -502,10 +613,17 @@ def change_email(nutzer_id: int, email: EmailAendern, db: Session = Depends(get_
     db.commit()
     db.refresh(nutzer)
 
-    return nutzer   
+    return nutzer
 
-@app.put("/nutzer_change/{nutzer_id}/decaydays", description="Ändert die Einstellungen für die Bedarfsvorhersage eines Nutzers | InputModel: DecayDaysAendern", status_code=status.HTTP_200_OK)    
-def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = Depends(get_db)):
+
+@app.put(
+    "/nutzer_change/{nutzer_id}/decaydays",
+    description="Ändert die Einstellungen für die Bedarfsvorhersage eines Nutzers | InputModel: DecayDaysAendern",
+    status_code=status.HTTP_200_OK,
+)
+def change_decaydays(
+    nutzer_id: int, decaydays: DecayDaysAendern, db: Session = Depends(get_db)
+):
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
@@ -518,15 +636,21 @@ def change_decaydays(nutzer_id: int, decaydays: DecayDaysAendern, db: Session = 
     return nutzer
 
 
-@app.get("/nutzer/{nutzer_id}/listen", description="Gibt alle Listen aus, in denen der Nutzer Mitglied ist | ResponseModel: ListeRead", response_model=List[ListeRead])
-def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)): 
+@app.get(
+    "/nutzer/{nutzer_id}/listen",
+    description="Gibt alle Listen aus, in denen der Nutzer Mitglied ist | ResponseModel: ListeRead",
+    response_model=List[ListeRead],
+)
+def get_listen_by_nutzer(
+    nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
     listen = (
         db.query(
             Liste.id,
             Liste.name,
             Liste.ersteller,
             Nutzer.name.label("ersteller_name"),
-            Liste.datum
+            Liste.datum,
         )
         .join(ListeMitglieder, Liste.id == ListeMitglieder.listen_id)
         .outerjoin(Nutzer, Liste.ersteller == Nutzer.id)
@@ -535,19 +659,24 @@ def get_listen_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends
     )
     if not listen:
         raise HTTPException(
-            status_code=404, detail="Keine Listen für diesen Nutzer gefunden")
+            status_code=404, detail="Keine Listen für diesen Nutzer gefunden"
+        )
     return listen
 
 
-
-
 # -- Funktion, in der die Ansichtseinstellungen des Nutzer geändert werden können ---
-@app.put("/nutzer_change/{nutzer_id}/theme_color", description="Ändert die Ansichtseinstellungen des Nutzers", status_code=status.HTTP_200_OK)
+@app.put(
+    "/nutzer_change/{nutzer_id}/theme_color",
+    description="Ändert die Ansichtseinstellungen des Nutzers",
+    status_code=status.HTTP_200_OK,
+)
 def change_theme_color(
-    nutzer_id: int = Path(..., gt=0),                   # muss >0 sein
-    theme: int = Body(..., ge=0, le=2),                 # theme 0–2  ge = greater equal, le = less equal
-    color: int = Body(..., ge=0, le=4),                 # color 0–4
-    db: Session = Depends(get_db)
+    nutzer_id: int = Path(..., gt=0),  # muss >0 sein
+    theme: int = Body(
+        ..., ge=0, le=2
+    ),  # theme 0–2  ge = greater equal, le = less equal
+    color: int = Body(..., ge=0, le=4),  # color 0–4
+    db: Session = Depends(get_db),
 ):
     # Prüfen, ob der Nutzer existiert
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
@@ -565,13 +694,22 @@ def change_theme_color(
 
 # --- Einheiten ---
 
-@app.get("/einheiten", description="Gibt alle Mengeneinheiten aus | ResponseModel: EinheitRead", response_model=List[EinheitRead])
+
+@app.get(
+    "/einheiten",
+    description="Gibt alle Mengeneinheiten aus | ResponseModel: EinheitRead",
+    response_model=List[EinheitRead],
+)
 def get_einheiten_all(db: Session = Depends(get_db)):
     einheiten = db.query(Einheit).all()
     return einheiten
 
 
-@app.get("/einheiten/{einheit_id}", description="Gibt eine Einheit anhand der id aus | ResponseModel: EinheitRead", response_model=EinheitRead)
+@app.get(
+    "/einheiten/{einheit_id}",
+    description="Gibt eine Einheit anhand der id aus | ResponseModel: EinheitRead",
+    response_model=EinheitRead,
+)
 def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     einheit = db.query(Einheit).filter(Einheit.id == einheit_id).first()
     if einheit is None:
@@ -580,14 +718,22 @@ def get_einheit_by_id(einheit_id: int = Path(..., gt=0), db: Session = Depends(g
 
 
 # --- Produkte ---
-@app.get("/produkte/", description="Gibt alle Produkte aus | ResponseModel: ProduktRead", response_model=List[ProduktRead])
+@app.get(
+    "/produkte/",
+    description="Gibt alle Produkte aus | ResponseModel: ProduktRead",
+    response_model=List[ProduktRead],
+)
 def get_produkte_all(db: Session = Depends(get_db)):
     produkte = db.query(Produkt).all()
 
     return produkte
 
 
-@app.get("/produkte/by-id/{produkt_id}", description="Gibt ein Produkt anhand seiner id aus | ResponseModel: ProduktRead", response_model=ProduktRead)
+@app.get(
+    "/produkte/by-id/{produkt_id}",
+    description="Gibt ein Produkt anhand seiner id aus | ResponseModel: ProduktRead",
+    response_model=ProduktRead,
+)
 def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     produkt = db.query(Produkt).filter(Produkt.id == produkt_id).first()
     if not produkt:
@@ -595,26 +741,42 @@ def get_produkt_by_id(produkt_id: int = Path(..., gt=0), db: Session = Depends(g
     return produkt
 
 
-@app.get("/produkte/by-name/{produkt_name}", description="Gibt ein Produkt anhand seines Namen aus | ResponseModel ProduktRead" , response_model=ProduktRead)
+@app.get(
+    "/produkte/by-name/{produkt_name}",
+    description="Gibt ein Produkt anhand seines Namen aus | ResponseModel ProduktRead",
+    response_model=ProduktRead,
+)
 def get_produkt_by_name(produkt_name: str = Path(...), db: Session = Depends(get_db)):
-    produkt = db.query(Produkt).filter(func.lower(
-        Produkt.name) == produkt_name.lower()).first()
+    produkt = (
+        db.query(Produkt)
+        .filter(func.lower(Produkt.name) == produkt_name.lower())
+        .first()
+    )
     if not produkt:
         raise HTTPException(status_code=404, detail="Produkt nicht gefunden")
     return produkt
 
 
-@app.post("/produkte_create", description="Erstellt ein Produkt | InputModel: ProduktCreate ResponseModel: ProduktRead", response_model=ProduktRead, status_code=status.HTTP_201_CREATED)
+@app.post(
+    "/produkte_create",
+    description="Erstellt ein Produkt | InputModel: ProduktCreate ResponseModel: ProduktRead",
+    response_model=ProduktRead,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
 
     # product.name ist bereits validiert und formatiert
 
     # Prüfen, ob Produkt mit dem formatierten Namen schon existiert
-    existing = db.query(Produkt).filter(func.lower(
-        Produkt.name) == produkt.name.lower()).first()
+    existing = (
+        db.query(Produkt)
+        .filter(func.lower(Produkt.name) == produkt.name.lower())
+        .first()
+    )
     if existing:
         raise HTTPException(
-            status_code=400, detail="Produkt mit diesem Namen existiert bereits")
+            status_code=400, detail="Produkt mit diesem Namen existiert bereits"
+        )
 
     # Produkt speichern
     db_produkt = Produkt(
@@ -627,13 +789,19 @@ def create_produkt(produkt: ProduktCreate, db: Session = Depends(get_db)):
 
 
 # -- Funktion, um Produkte zu suchen anahnd des Namen aber mit 'LIKE' (fur die Suchvorschläge) ---
-@app.get("/produkte/suche", description="Gibt einen Suchvorschlag für ein Produkt aus | ResponseModel: ProduktRead", response_model=List[ProduktRead])
+@app.get(
+    "/produkte/suche",
+    description="Gibt einen Suchvorschlag für ein Produkt aus | ResponseModel: ProduktRead",
+    response_model=List[ProduktRead],
+)
 def search_products(
     query: str = Query(..., min_length=1, description="Suchstring für Produktnamen"),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     if not query.strip():  # leerer String oder nur Leerzeichen
-        raise HTTPException(status_code=400, detail="Der Suchstring darf nicht leer sein.")
+        raise HTTPException(
+            status_code=400, detail="Der Suchstring darf nicht leer sein."
+        )
 
     produkte = (
         db.query(Produkt)
@@ -648,19 +816,25 @@ def search_products(
     return produkte
 
 
-
 # --- FavProdukte ---
 
-@app.get("/fav_produkte/nutzer/{nutzer_id}", description="Gibt ein Favoritenprodukt für einen Nutzer anhand der id aus | ResponseModel: FavProdukteRead", response_model=List[FavProdukteRead])
-def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    
+
+@app.get(
+    "/fav_produkte/nutzer/{nutzer_id}",
+    description="Gibt ein Favoritenprodukt für einen Nutzer anhand der id aus | ResponseModel: FavProdukteRead",
+    response_model=List[FavProdukteRead],
+)
+def get_fav_produkte_by_nutzer(
+    nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
+
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
-     # JOIN zwischen FavProdukte und Produkt, um die Produktnamen direkt zu holen
-    
+    # JOIN zwischen FavProdukte und Produkt, um die Produktnamen direkt zu holen
+
     fav_produkte = (
         db.query(
             FavProdukte.nutzer_id,
@@ -668,8 +842,10 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
             Produkt.name.label("produkt_name"),
             FavProdukte.menge,
             FavProdukte.einheit_id,
-            case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),
-            FavProdukte.beschreibung
+            case((Einheit.id != None, Einheit.abkürzung), else_=None).label(
+                "einheit_abk"
+            ),
+            FavProdukte.beschreibung,
         )
         .join(Produkt, FavProdukte.produkt_id == Produkt.id)
         .outerjoin(Einheit, Einheit.id == FavProdukte.einheit_id)
@@ -678,25 +854,42 @@ def get_fav_produkte_by_nutzer(nutzer_id: int = Path(..., gt=0), db: Session = D
     )
     return fav_produkte
 
-@app.post("/fav_produkte_create/nutzer/{nutzer_id}", description="Erstellt eine Favoritenprodukt für einen Nutzer | InputModel: FavProdukteCreate ResponseModel: FavProdukteRead",  response_model=FavProdukteRead, status_code=status.HTTP_201_CREATED)
-def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukteCreate = Body(...), db: Session = Depends(get_db)):
 
-    anzahl_favoriten = db.query(FavProdukte).filter(
-        FavProdukte.nutzer_id == nutzer_id).count() 
-    
+@app.post(
+    "/fav_produkte_create/nutzer/{nutzer_id}",
+    description="Erstellt eine Favoritenprodukt für einen Nutzer | InputModel: FavProdukteCreate ResponseModel: FavProdukteRead",
+    response_model=FavProdukteRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_fav_produkt(
+    nutzer_id: int = Path(..., gt=0),
+    fav_produkt: FavProdukteCreate = Body(...),
+    db: Session = Depends(get_db),
+):
+
+    anzahl_favoriten = (
+        db.query(FavProdukte).filter(FavProdukte.nutzer_id == nutzer_id).count()
+    )
+
     if anzahl_favoriten >= 10:
         raise HTTPException(
-            status_code=400, detail="Maximale Anzahl von 10 Favoriten erreicht")
+            status_code=400, detail="Maximale Anzahl von 10 Favoriten erreicht"
+        )
 
-    vorhandenes_fav_produkt = db.query(FavProdukte).filter(
-        FavProdukte.nutzer_id == nutzer_id,
-        FavProdukte.produkt_id == fav_produkt.produkt_id
-    ).first()
+    vorhandenes_fav_produkt = (
+        db.query(FavProdukte)
+        .filter(
+            FavProdukte.nutzer_id == nutzer_id,
+            FavProdukte.produkt_id == fav_produkt.produkt_id,
+        )
+        .first()
+    )
 
     if vorhandenes_fav_produkt:
         raise HTTPException(
-            status_code=400, detail="Das Produkt ist bereits in den Favoriten vorhanden")
-    
+            status_code=400, detail="Das Produkt ist bereits in den Favoriten vorhanden"
+        )
+
     if fav_produkt.einheit_id == 0 or fav_produkt.menge == 0:
         fav_produkt.einheit_id = None
         fav_produkt.menge = None
@@ -706,7 +899,7 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
         produkt_id=fav_produkt.produkt_id,
         menge=fav_produkt.menge,
         einheit_id=fav_produkt.einheit_id,
-        beschreibung=fav_produkt.beschreibung
+        beschreibung=fav_produkt.beschreibung,
     )
 
     db.add(neues_fav_produkt)
@@ -715,27 +908,54 @@ def create_fav_produkt(nutzer_id: int = Path(..., gt=0), fav_produkt: FavProdukt
     return neues_fav_produkt
 
 
-@app.delete("/fav_produkte_delete/nutzer/{nutzer_id}/produkt/{produkt_id}", description="Löscht ein Favoritenprodukt für einen Nutzer",  status_code=status.HTTP_204_NO_CONTENT)
-def delete_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    fav_produkt = db.query(FavProdukte).filter(
-        FavProdukte.nutzer_id == nutzer_id,
-        FavProdukte.produkt_id == produkt_id
-    ).first()
+@app.delete(
+    "/fav_produkte_delete/nutzer/{nutzer_id}/produkt/{produkt_id}",
+    description="Löscht ein Favoritenprodukt für einen Nutzer",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_fav_produkt(
+    nutzer_id: int = Path(..., gt=0),
+    produkt_id: int = Path(..., gt=0),
+    db: Session = Depends(get_db),
+):
+    fav_produkt = (
+        db.query(FavProdukte)
+        .filter(
+            FavProdukte.nutzer_id == nutzer_id, FavProdukte.produkt_id == produkt_id
+        )
+        .first()
+    )
     if not fav_produkt:
-        raise HTTPException(status_code=404, detail="Favorisiertes Produkt nicht gefunden")
+        raise HTTPException(
+            status_code=404, detail="Favorisiertes Produkt nicht gefunden"
+        )
     db.delete(fav_produkt)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@app.put("/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}", description="Ändert ein FavoritenProdukt für einen Nutzer | InputModel: FavProdukteUpdate ResponseModel: FavProdukteRead",  response_model=FavProdukteRead)
-def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), fav_produkt_update: FavProdukteUpdate = Body(...), db: Session = Depends(get_db)):
-    fav_produkt = db.query(FavProdukte).filter(
-        FavProdukte.nutzer_id == nutzer_id,
-        FavProdukte.produkt_id == produkt_id
-    ).first()
+@app.put(
+    "/fav_produkte_update/nutzer/{nutzer_id}/produkt/{produkt_id}",
+    description="Ändert ein FavoritenProdukt für einen Nutzer | InputModel: FavProdukteUpdate ResponseModel: FavProdukteRead",
+    response_model=FavProdukteRead,
+)
+def update_fav_produkt(
+    nutzer_id: int = Path(..., gt=0),
+    produkt_id: int = Path(..., gt=0),
+    fav_produkt_update: FavProdukteUpdate = Body(...),
+    db: Session = Depends(get_db),
+):
+    fav_produkt = (
+        db.query(FavProdukte)
+        .filter(
+            FavProdukte.nutzer_id == nutzer_id, FavProdukte.produkt_id == produkt_id
+        )
+        .first()
+    )
     if not fav_produkt:
-        raise HTTPException(status_code=404, detail="Favorisiertes Produkt nicht gefunden")
+        raise HTTPException(
+            status_code=404, detail="Favorisiertes Produkt nicht gefunden"
+        )
 
     fav_produkt.menge = fav_produkt_update.menge
     fav_produkt.einheit_id = fav_produkt_update.einheit_id
@@ -745,41 +965,45 @@ def update_fav_produkt(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(
     db.refresh(fav_produkt)
     return fav_produkt
 
+
 # --- Bedarfsvorhersage ---
 # Hilfsfunktion, um die Bedarfsvorhersage zu aktualisieren
 def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Session):
     # Alle Bedarfsvorhersage-Objekte des Nutzers holen
-    eintraege =db.query(Bedarfsvorhersage).filter(
-            Bedarfsvorhersage.nutzer_id == nutzer_id
-        ).all()
+    eintraege = (
+        db.query(Bedarfsvorhersage)
+        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)
+        .all()
+    )
 
     now = datetime.now(timezone.utc)
 
-    treshold = 0 
+    treshold = 0
     # alt:0.00024036947641951407  # bei diesem counter wird der eintrag gelöscht
 
-    berechnete_eintraege = []  
-    decayDays_float = float(decayDays) 
+    berechnete_eintraege = []
+    decayDays_float = float(decayDays)
 
     for eintrag in eintraege:
         # Tage seit last_bought
-        deltaDays = max(0,(now.date() - eintrag.last_bought.date()).days)
-        new_counter = float(eintrag.counter) * np.maximum( 0, 1 - deltaDays / decayDays_float )
-        
-        # alt (exponentiell): new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
+        deltaDays = max(0, (now.date() - eintrag.last_bought.date()).days)
+        new_counter = float(eintrag.counter) * np.maximum(
+            0, 1 - deltaDays / decayDays_float
+        )
 
+        # alt (exponentiell): new_counter = float(eintrag.counter) * np.exp(-deltaDays / (0.12 * decayDays_float))
 
         if new_counter <= treshold:
             db.delete(eintrag)
         else:
             berechnete_eintraege.append((eintrag, new_counter))
         # counter nicht in DB aktualisieren
-        # nur berechnen 
-        # wenn counter < 0.00024036947641951407 rausschmeißen oder mehr als 10 produkte 
+        # nur berechnen
+        # wenn counter < 0.00024036947641951407 rausschmeißen oder mehr als 10 produkte
         # --> anhand des aktualisisteren Counters und dem PK (aus neu erstellter Liste) die Produkte rausschmeißen aus der DB --> db.commit()
-    
+
     berechnete_eintraege.sort(key=lambda x: x[1], reverse=True)
- 
+
     if len(berechnete_eintraege) > 10:
         # nach counter sortieren und nur die Top 10 behalten
         zu_loeschende_eintraege = berechnete_eintraege[10:]
@@ -792,43 +1016,65 @@ def calc_bedarfsvorhersage_by_nutzer(nutzer_id: int, decayDays: Decimal, db: Ses
     result = []
     for eintrag, new_counter in berechnete_eintraege:
         produkt = db.query(Produkt).filter(Produkt.id == eintrag.produkt_id).first()
-        result.append(BedarfsvorhersageRead(
-            nutzer_id=eintrag.nutzer_id,
-            produkt_id=eintrag.produkt_id,
-            produkt_name=produkt.name if produkt else None,
-            counter=Decimal(f"{new_counter:.6f}"),
-            last_bought=eintrag.last_bought.astimezone()
-        ))
+        result.append(
+            BedarfsvorhersageRead(
+                nutzer_id=eintrag.nutzer_id,
+                produkt_id=eintrag.produkt_id,
+                produkt_name=produkt.name if produkt else None,
+                counter=Decimal(f"{new_counter:.6f}"),
+                last_bought=eintrag.last_bought.astimezone(),
+            )
+        )
 
     return result
 
 
 # Abrufen der Bedarfsvorhersage für einen Nutzer
-@app.get("/bedarfsvorhersage/{nutzer_id}", description="Gibt die Produktbedarfsvorhersage für einen Nutzer aus | ResponseModel: BedarfsvorhersageRead",  response_model=List[BedarfsvorhersageRead])
-def get_bedarfsvorhersage_by_nutzer(nutzer_id: int = Path(..., gt=0), decayDays: Decimal = Query(7,gt=0),db: Session = Depends(get_db)):
+@app.get(
+    "/bedarfsvorhersage/{nutzer_id}",
+    description="Gibt die Produktbedarfsvorhersage für einen Nutzer aus | ResponseModel: BedarfsvorhersageRead",
+    response_model=List[BedarfsvorhersageRead],
+)
+def get_bedarfsvorhersage_by_nutzer(
+    nutzer_id: int = Path(..., gt=0),
+    decayDays: Decimal = Query(7, gt=0),
+    db: Session = Depends(get_db),
+):
 
     user = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
-     # Bedarfsvorhersage-Einträge aktualisieren
+    # Bedarfsvorhersage-Einträge aktualisieren
     aktualisierte_einträge = calc_bedarfsvorhersage_by_nutzer(nutzer_id, decayDays, db)
 
     return aktualisierte_einträge
 
 
 # zum Löschen eines Bedarfvorhersage-Produkt
-@app.delete("/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}", description="Löscht einen Eintrag in der Produktbedarfsvorhersage für einen Nutzer",  response_model=BedarfsvorhersageRead)
-def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    eintrag = db.query(Bedarfsvorhersage).filter(
-        Bedarfsvorhersage.nutzer_id == nutzer_id,
-        Bedarfsvorhersage.produkt_id == produkt_id
-    ).first()
+@app.delete(
+    "/bedarfsvorhersage_per_user_and_product/nutzer/{nutzer_id}/produkt/{produkt_id}",
+    description="Löscht einen Eintrag in der Produktbedarfsvorhersage für einen Nutzer",
+    response_model=BedarfsvorhersageRead,
+)
+def delete_bedarfsvorhersage_eintrag(
+    nutzer_id: int = Path(..., gt=0),
+    produkt_id: int = Path(..., gt=0),
+    db: Session = Depends(get_db),
+):
+    eintrag = (
+        db.query(Bedarfsvorhersage)
+        .filter(
+            Bedarfsvorhersage.nutzer_id == nutzer_id,
+            Bedarfsvorhersage.produkt_id == produkt_id,
+        )
+        .first()
+    )
 
     if not eintrag:
         raise HTTPException(status_code=404, detail="Eintrag nicht gefunden")
-    
+
     db.delete(eintrag)
     db.commit()
 
@@ -838,27 +1084,43 @@ def delete_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), produkt_i
 # erstellt einen Eintrag für die Bedarfsvorhersage oder aktualisiert den Counter, wenn der Eintrag bereits existiert
 # der Counter wird erstmal im Body mit übergeben
 
+
 # nutzerid ist eigentlich falsch --> es ist die ID von dem, der das Produkt hinzugefügt hat
-@app.post("/bedarfsvorhersage_create/nutzer/{nutzer_id}", description="Erstellt einen Bedarfsvorhersageprodukt für einen Nutzer | InputModel: BedarfsvorhersageCreate ResponseModel: BedarfsvorhersageRead", response_model=BedarfsvorhersageRead, status_code=status.HTTP_201_CREATED)
-def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_data: BedarfvorhersageCreate = Body(...), db: Session = Depends(get_db)):
+@app.post(
+    "/bedarfsvorhersage_create/nutzer/{nutzer_id}",
+    description="Erstellt einen Bedarfsvorhersageprodukt für einen Nutzer | InputModel: BedarfsvorhersageCreate ResponseModel: BedarfsvorhersageRead",
+    response_model=BedarfsvorhersageRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_bedarfsvorhersage_eintrag(
+    nutzer_id: int = Path(..., gt=0),
+    eintrag_data: BedarfvorhersageCreate = Body(...),
+    db: Session = Depends(get_db),
+):
 
     now = datetime.now(timezone.utc)
 
-     # Prüfen, ob Eintrag existiert
-    eintrag = db.query(Bedarfsvorhersage).filter(
-        Bedarfsvorhersage.nutzer_id == nutzer_id,
-        Bedarfsvorhersage.produkt_id == eintrag_data.produkt_id
-    ).first()
+    # Prüfen, ob Eintrag existiert
+    eintrag = (
+        db.query(Bedarfsvorhersage)
+        .filter(
+            Bedarfsvorhersage.nutzer_id == nutzer_id,
+            Bedarfsvorhersage.produkt_id == eintrag_data.produkt_id,
+        )
+        .first()
+    )
 
     if eintrag:
-        eintrag.counter = (Decimal(eintrag.counter) if eintrag.counter else Decimal(0)) + Decimal(1)
+        eintrag.counter = (
+            Decimal(eintrag.counter) if eintrag.counter else Decimal(0)
+        ) + Decimal(1)
         eintrag.last_bought = now
     else:
         eintrag = Bedarfsvorhersage(
             nutzer_id=nutzer_id,
             produkt_id=eintrag_data.produkt_id,
             counter=Decimal(1),
-            last_bought=now
+            last_bought=now,
         )
         db.add(eintrag)
 
@@ -866,12 +1128,12 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
     db.refresh(eintrag)
 
     # Top-10 Einträge nach counter
-    alle_eintraege = db.query(Bedarfsvorhersage)\
-        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)\
-        .order_by(
-            Bedarfsvorhersage.counter.desc(),
-            Bedarfsvorhersage.last_bought.asc())\
+    alle_eintraege = (
+        db.query(Bedarfsvorhersage)
+        .filter(Bedarfsvorhersage.nutzer_id == nutzer_id)
+        .order_by(Bedarfsvorhersage.counter.desc(), Bedarfsvorhersage.last_bought.asc())
         .all()
+    )
 
     if len(alle_eintraege) > 10:
         for e in alle_eintraege[10:]:
@@ -883,13 +1145,22 @@ def create_bedarfsvorhersage_eintrag(nutzer_id: int = Path(..., gt=0), eintrag_d
 
 # --- Listen ---
 
-@app.get("/listen", description="Gibt alle Liste aus | ResponseModel: ListeRead",  response_model=List[ListeRead])
+
+@app.get(
+    "/listen",
+    description="Gibt alle Liste aus | ResponseModel: ListeRead",
+    response_model=List[ListeRead],
+)
 def get_listen_all(db: Session = Depends(get_db)):
     listen = db.query(Liste).all()
     return listen
 
 
-@app.get("/listen/by-id/{list_id}", description="Gibt eine Liste anhand der id aus | ResponseModel: ListeRead",  response_model=ListeRead)
+@app.get(
+    "/listen/by-id/{list_id}",
+    description="Gibt eine Liste anhand der id aus | ResponseModel: ListeRead",
+    response_model=ListeRead,
+)
 def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     liste = (
         db.query(
@@ -897,7 +1168,7 @@ def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db
             Liste.name,
             Liste.ersteller,
             Nutzer.name.label("ersteller_name"),
-            Liste.datum
+            Liste.datum,
         )
         .join(Nutzer, Liste.ersteller == Nutzer.id)
         .filter(Liste.id == list_id)
@@ -909,23 +1180,28 @@ def get_liste_by_id(list_id: int = Path(..., gt=0), db: Session = Depends(get_db
     return liste
 
 
-@app.post("/listen", description="Erstellt eine Liste | InputModel: ListeCreate ResponseModel: ListeRead",  response_model=ListeRead, status_code=status.HTTP_201_CREATED)
+@app.post(
+    "/listen",
+    description="Erstellt eine Liste | InputModel: ListeCreate ResponseModel: ListeRead",
+    response_model=ListeRead,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
 
     if liste is None:
         raise HTTPException(status_code=400, detail="Listendaten fehlen")
 
     # Prüfen, ob Nutzer mit hinzugefügt_von existiert
-    existierender_nutzer = db.query(
-        Nutzer).filter_by(id=liste.ersteller).first()
+    existierender_nutzer = db.query(Nutzer).filter_by(id=liste.ersteller).first()
     if not existierender_nutzer:
         raise HTTPException(
-            status_code=400, detail="Der Nutzer zum Hinzufügen wurde nicht gefunden")
+            status_code=400, detail="Der Nutzer zum Hinzufügen wurde nicht gefunden"
+        )
 
     db_liste = Liste(
         name=liste.name,
         ersteller=liste.ersteller,
-        datum=liste.datum.isoformat() if liste.datum else None
+        datum=liste.datum.isoformat() if liste.datum else None,
     )
     db.add(db_liste)
     db.commit()
@@ -933,9 +1209,7 @@ def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
 
     # Ersteller automatisch als Mitglied hinzufügen
     neues_mitglied = ListeMitglieder(
-        listen_id=db_liste.id,
-        nutzer_id=liste.ersteller,
-        beigetreten_am=date.today()
+        listen_id=db_liste.id, nutzer_id=liste.ersteller, beigetreten_am=date.today()
     )
     db.add(neues_mitglied)
     db.commit()
@@ -943,8 +1217,16 @@ def create_liste(liste: ListeCreate, db: Session = Depends(get_db)):
     return db_liste
 
 
-@app.put("/listen/{listen_id}/datum", description="Ändert das Datum einer Liste | InputModelL: ListeDatumUpdate ResponseModel: ListeRead",  response_model=ListeRead)
-def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...), db: Session = Depends(get_db)):
+@app.put(
+    "/listen/{listen_id}/datum",
+    description="Ändert das Datum einer Liste | InputModelL: ListeDatumUpdate ResponseModel: ListeRead",
+    response_model=ListeRead,
+)
+def update_liste_datum(
+    listen_id: int,
+    datum_update: ListeDatumUpdate = Body(...),
+    db: Session = Depends(get_db),
+):
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
@@ -957,7 +1239,11 @@ def update_liste_datum(listen_id: int, datum_update: ListeDatumUpdate = Body(...
     return liste
 
 
-@app.delete("/listen/{listen_id}", description="Löscht eine Liste",  status_code=status.HTTP_204_NO_CONTENT)
+@app.delete(
+    "/listen/{listen_id}",
+    description="Löscht eine Liste",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
@@ -966,19 +1252,37 @@ def delete_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+
 # --- Mitglieder in Listen ---
-@app.get("/listen/{listen_id}/mitglieder", description="Gibt alle Mitglieder einer Liste aus | ResponseModel: MitgliedRead", response_model=List[MitgliedRead])
-def get_mitglieder_for_list(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    mitglieder = db.query(ListeMitglieder).filter(
-        ListeMitglieder.listen_id == listen_id).all()
+@app.get(
+    "/listen/{listen_id}/mitglieder",
+    description="Gibt alle Mitglieder einer Liste aus | ResponseModel: MitgliedRead",
+    response_model=List[MitgliedRead],
+)
+def get_mitglieder_for_list(
+    listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
+    mitglieder = (
+        db.query(ListeMitglieder).filter(ListeMitglieder.listen_id == listen_id).all()
+    )
     if not mitglieder:
         raise HTTPException(
-            status_code=404, detail="Keine Mitglieder für diese Liste gefunden")
+            status_code=404, detail="Keine Mitglieder für diese Liste gefunden"
+        )
     return mitglieder
 
 
-@app.post("/listen/{listen_id}/mitglieder/{nutzer_id}", description="Fügt ein Mitglied zu einer Liste hinzu | ResponseModel: MitgliedRead", response_model=MitgliedRead, status_code=status.HTTP_201_CREATED)
-def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+@app.post(
+    "/listen/{listen_id}/mitglieder/{nutzer_id}",
+    description="Fügt ein Mitglied zu einer Liste hinzu | ResponseModel: MitgliedRead",
+    response_model=MitgliedRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def add_mitglied(
+    listen_id: int = Path(..., gt=0),
+    nutzer_id: int = Path(..., gt=0),
+    db: Session = Depends(get_db),
+):
 
     vorhanden = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
@@ -986,9 +1290,7 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
     neues_mitglied = ListeMitglieder(
-        listen_id=listen_id,
-        nutzer_id=nutzer_id,
-        beigetreten_am=date.today()
+        listen_id=listen_id, nutzer_id=nutzer_id, beigetreten_am=date.today()
     )
     db.add(neues_mitglied)
     db.commit()
@@ -996,13 +1298,21 @@ def add_mitglied(listen_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt
     return neues_mitglied
 
 
-@app.delete("/listen/{listen_id}/mitglieder/{nutzer_id}", description="Entfernt ein Mitglied aus einer Liste", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete(
+    "/listen/{listen_id}/mitglieder/{nutzer_id}",
+    description="Entfernt ein Mitglied aus einer Liste",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 def delete_mitglied(
-    listen_id: int = Path(..., gt=0), 
-    nutzer_id: int = Path(..., gt=0), # ID des Nutzers, der entfernt werden soll
-    requester_id: int = Query(..., alias="requesterId", description="ID des Nutzers, der die Entfernung durchführt"), # Aktueller Nutzer (Requester)
-    db: Session = Depends(get_db)
-    ):
+    listen_id: int = Path(..., gt=0),
+    nutzer_id: int = Path(..., gt=0),  # ID des Nutzers, der entfernt werden soll
+    requester_id: int = Query(
+        ...,
+        alias="requesterId",
+        description="ID des Nutzers, der die Entfernung durchführt",
+    ),  # Aktueller Nutzer (Requester)
+    db: Session = Depends(get_db),
+):
     """Entfernt ein Mitglied aus einer Liste mit Autorisierungsprüfung."""
     # 1. Liste finden und Ersteller-ID abrufen
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
@@ -1012,31 +1322,45 @@ def delete_mitglied(
     ersteller_id = liste.ersteller
 
     # 2. Autorisierungsprüfung: Nur Ersteller darf andere entfernen ODER man darf sich selbst entfernen.
-    is_ersteller = (requester_id == ersteller_id)
-    is_self_removal = (requester_id == nutzer_id)
+    is_ersteller = requester_id == ersteller_id
+    is_self_removal = requester_id == nutzer_id
 
     if not is_ersteller and not is_self_removal:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Nur der Ersteller darf andere Mitglieder entfernen, oder man kann sich selbst verlassen."
+            detail="Nur der Ersteller darf andere Mitglieder entfernen, oder man kann sich selbst verlassen.",
         )
     # 3. Mitglieds-Eintrag in ListeMitglieder finden
-    mitglied = db.query(ListeMitglieder).filter(
-        ListeMitglieder.listen_id == listen_id,
-        ListeMitglieder.nutzer_id == nutzer_id
-    ).first()
+    mitglied = (
+        db.query(ListeMitglieder)
+        .filter(
+            ListeMitglieder.listen_id == listen_id,
+            ListeMitglieder.nutzer_id == nutzer_id,
+        )
+        .first()
+    )
 
     if not mitglied:
-        raise HTTPException(status_code=404, detail="Mitglied nicht in dieser Liste gefunden")
+        raise HTTPException(
+            status_code=404, detail="Mitglied nicht in dieser Liste gefunden"
+        )
 
     # 4. Mitglied löschen
     db.delete(mitglied)
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 # --- Produkte in Listen ---
-@app.get("/listen/{listen_id}/produkte", description="Gibt alle Produkte aus einer Liste aus | ResponseModel: ProduktInListeRead", response_model=List[ProduktInListeRead])
-def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+@app.get(
+    "/listen/{listen_id}/produkte",
+    description="Gibt alle Produkte aus einer Liste aus | ResponseModel: ProduktInListeRead",
+    response_model=List[ProduktInListeRead],
+)
+def get_produkte_in_liste(
+    listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
     # Prüfen, ob die Liste existiert
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
@@ -1049,10 +1373,12 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
             Produkt.name.label("produkt_name"),
             ListeProdukte.produkt_menge,
             ListeProdukte.einheit_id,
-            case((Einheit.id != None, Einheit.abkürzung), else_=None).label("einheit_abk"),  # gucken ob einheit_id NULL ist
+            case((Einheit.id != None, Einheit.abkürzung), else_=None).label(
+                "einheit_abk"
+            ),  # gucken ob einheit_id NULL ist
             ListeProdukte.hinzugefügt_von,
             Nutzer.name.label("hinzufueger_name"),
-            ListeProdukte.beschreibung
+            ListeProdukte.beschreibung,
         )
         .join(Produkt, Produkt.id == ListeProdukte.produkt_id)
         .outerjoin(Einheit, Einheit.id == ListeProdukte.einheit_id)
@@ -1063,8 +1389,18 @@ def get_produkte_in_liste(listen_id: int = Path(..., gt=0), db: Session = Depend
     return produkte
 
 
-@app.post("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", description="Fügt ein Produkt zu einer Liste hinzu | ResponseModel: ProduktInListeRead", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
-def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+@app.post(
+    "/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}",
+    description="Fügt ein Produkt zu einer Liste hinzu | ResponseModel: ProduktInListeRead",
+    response_model=ProduktInListeRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def add_produkt_in_liste(
+    listen_id: int = Path(..., gt=0),
+    produkt_id: int = Path(..., gt=0),
+    nutzer_id: int = Path(..., gt=0),
+    db: Session = Depends(get_db),
+):
 
     existing_list = db.query(Liste).filter_by(id=listen_id).first()
     if not existing_list:
@@ -1073,26 +1409,33 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Pat
     existierendes_produkt = db.query(Produkt).filter_by(id=produkt_id).first()
     if not existierendes_produkt:
         raise HTTPException(
-            status_code=400, detail="Das Produkt muss erst in der DB_Tabelle Produkt hinzugefügt werden")
+            status_code=400,
+            detail="Das Produkt muss erst in der DB_Tabelle Produkt hinzugefügt werden",
+        )
 
     existierender_nutzer = db.query(Nutzer).filter_by(id=nutzer_id).first()
     if not existierender_nutzer:
         raise HTTPException(
-            status_code=400, detail="Der Nutzer zum Hinzufügen wurde nicht gefunden")
-
-    vorhandenes_produkt = db.query(ListeProdukte).filter(
-        ListeProdukte.listen_id == listen_id,
-        ListeProdukte.produkt_id == produkt_id,
-        or_(
-            ListeProdukte.hinzugefügt_von == nutzer_id,
-            ListeProdukte.hinzugefügt_von == None  # prüft auf NULL
+            status_code=400, detail="Der Nutzer zum Hinzufügen wurde nicht gefunden"
         )
-    ).first()
+
+    vorhandenes_produkt = (
+        db.query(ListeProdukte)
+        .filter(
+            ListeProdukte.listen_id == listen_id,
+            ListeProdukte.produkt_id == produkt_id,
+            or_(
+                ListeProdukte.hinzugefügt_von == nutzer_id,
+                ListeProdukte.hinzugefügt_von == None,  # prüft auf NULL
+            ),
+        )
+        .first()
+    )
 
     if vorhandenes_produkt:
         raise HTTPException(
             status_code=400,
-            detail=f"Das Produkt ist bereits vorhanden. Du kannst es über den Button bearbeiten."
+            detail=f"Das Produkt ist bereits vorhanden. Du kannst es über den Button bearbeiten.",
         )
     else:
         neues_Produkt = ListeProdukte(
@@ -1101,7 +1444,7 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Pat
             hinzugefügt_von=nutzer_id,
             produkt_menge=None,
             einheit_id=None,
-            beschreibung=''
+            beschreibung="",
         )
 
     db.add(neues_Produkt)
@@ -1110,8 +1453,19 @@ def add_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Pat
     return neues_Produkt
 
 
-@app.put("/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}", description="Ändert ein Produkt in einer Liste | InputModel: ProduktInListeUpdate ResponseModel: ProduktInListeRead", response_model=ProduktInListeRead, status_code=status.HTTP_201_CREATED)
-def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), nutzer_id: int = Path(..., gt=0), produkt: ProduktInListeUpdate = Body(...), db: Session = Depends(get_db)):
+@app.put(
+    "/listen/{listen_id}/produkte/{produkt_id}/nutzer/{nutzer_id}",
+    description="Ändert ein Produkt in einer Liste | InputModel: ProduktInListeUpdate ResponseModel: ProduktInListeRead",
+    response_model=ProduktInListeRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def update_produkt_in_liste(
+    listen_id: int = Path(..., gt=0),
+    produkt_id: int = Path(..., gt=0),
+    nutzer_id: int = Path(..., gt=0),
+    produkt: ProduktInListeUpdate = Body(...),
+    db: Session = Depends(get_db),
+):
 
     existing_list = db.query(Liste).filter_by(id=listen_id).first()
     if not existing_list:
@@ -1120,22 +1474,28 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
     existierendes_produkt = db.query(Produkt).filter_by(id=produkt_id).first()
     if not existierendes_produkt:
         raise HTTPException(
-            status_code=400, detail="Das Produkt muss erst in der DB_Tabelle Produkt hinzugefügt werden")
+            status_code=400,
+            detail="Das Produkt muss erst in der DB_Tabelle Produkt hinzugefügt werden",
+        )
 
     existierender_nutzer = db.query(Nutzer).filter_by(id=nutzer_id).first()
     if not existierender_nutzer:
         raise HTTPException(
-            status_code=400, detail="Der Nutzer zum Hinzufügen wurde nicht gefunden")
+            status_code=400, detail="Der Nutzer zum Hinzufügen wurde nicht gefunden"
+        )
 
-    vorhandenes_produkt = db.query(ListeProdukte).filter(
-        ListeProdukte.listen_id == listen_id,
-        ListeProdukte.produkt_id == produkt_id,
-        ListeProdukte.hinzugefügt_von == nutzer_id
-    ).first()
+    vorhandenes_produkt = (
+        db.query(ListeProdukte)
+        .filter(
+            ListeProdukte.listen_id == listen_id,
+            ListeProdukte.produkt_id == produkt_id,
+            ListeProdukte.hinzugefügt_von == nutzer_id,
+        )
+        .first()
+    )
 
     if not vorhandenes_produkt:
-        raise HTTPException(
-            status_code=404, detail="Produkt in Liste nicht gefunden")
+        raise HTTPException(status_code=404, detail="Produkt in Liste nicht gefunden")
     else:
         if produkt.produkt_menge == 0:
             vorhandenes_produkt.produkt_menge = None
@@ -1149,18 +1509,30 @@ def update_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
         db.commit()
         db.refresh(vorhandenes_produkt)
         return vorhandenes_produkt
-    
-    
-@app.delete("/listen/{listen_id}/produkte/{produkt_id}", description="Entfernt ein Produkt aus einer Liste", status_code=status.HTTP_204_NO_CONTENT)
-def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), deleteRequest: ProduktDeleteRequest = Body(...), db: Session = Depends(get_db)):
-    eintrag = db.query(ListeProdukte).filter(
-        ListeProdukte.listen_id == listen_id,
-        ListeProdukte.produkt_id == produkt_id,
-        ListeProdukte.hinzugefügt_von == deleteRequest.hinzugefügt_von
-    ).first()
+
+
+@app.delete(
+    "/listen/{listen_id}/produkte/{produkt_id}",
+    description="Entfernt ein Produkt aus einer Liste",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_produkt_in_liste(
+    listen_id: int = Path(..., gt=0),
+    produkt_id: int = Path(..., gt=0),
+    deleteRequest: ProduktDeleteRequest = Body(...),
+    db: Session = Depends(get_db),
+):
+    eintrag = (
+        db.query(ListeProdukte)
+        .filter(
+            ListeProdukte.listen_id == listen_id,
+            ListeProdukte.produkt_id == produkt_id,
+            ListeProdukte.hinzugefügt_von == deleteRequest.hinzugefügt_von,
+        )
+        .first()
+    )
     if not eintrag:
-        raise HTTPException(
-            status_code=404, detail="Produkt in Liste nicht gefunden")
+        raise HTTPException(status_code=404, detail="Produkt in Liste nicht gefunden")
     db.delete(eintrag)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -1168,9 +1540,16 @@ def delete_produkt_in_liste(listen_id: int = Path(..., gt=0), produkt_id: int = 
 
 # Einkaufsarchiv ------------------------------------
 
+
 # gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat
-@app.get("/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}", description="Gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat | ResponseMode: EinkaufsarchivRead", response_model=List[EinkaufsarchivRead])
-def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
+@app.get(
+    "/einkaufsarchiv/nutzer_hinzugefuegt/{nutzer_id}",
+    description="Gibt die Einkäufe zurück, in denen der Nutzer ein Produkt hinzugefügt hat | ResponseMode: EinkaufsarchivRead",
+    response_model=List[EinkaufsarchivRead],
+)
+def get_einkaufsarchiv_by_nutzer_listen(
+    nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
 
     einkaeufe = (
         db.query(
@@ -1180,7 +1559,7 @@ def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Se
             Einkaufsarchiv.eingekauft_von,
             Nutzer.name.label("einkaeufer_name"),
             func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
-            Einkaufsarchiv.gesamtpreis
+            Einkaufsarchiv.gesamtpreis,
         )
         .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
         .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
@@ -1192,18 +1571,27 @@ def get_einkaufsarchiv_by_nutzer_listen(nutzer_id: int = Path(..., gt=0), db: Se
 
     return einkaeufe
 
+
 # gibt alle Einkäufe zurück, für die Listen, in denen der Nutzer drin ist
-@app.get("/einkaufsarchiv/nutzer_gesamt/{nutzer_id}",  description="Gibt die Einkäufe für alle Listen zurück, in denen der Nutzer Mitglied ist | ResponseModel: EinkaufsarchivRead", response_model=List[EinkaufsarchivRead])
-def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)):   
+@app.get(
+    "/einkaufsarchiv/nutzer_gesamt/{nutzer_id}",
+    description="Gibt die Einkäufe für alle Listen zurück, in denen der Nutzer Mitglied ist | ResponseModel: EinkaufsarchivRead",
+    response_model=List[EinkaufsarchivRead],
+)
+def get_einkaufsarchiv_by_nutzer_gesamt(
+    nutzer_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
 
     nutzer = db.query(Nutzer).filter(Nutzer.id == nutzer_id).first()
 
     if not nutzer:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
-    listen_ids = db.query(ListeMitglieder.listen_id).filter(
-        ListeMitglieder.nutzer_id == nutzer_id
-    ).subquery()
+    listen_ids = (
+        db.query(ListeMitglieder.listen_id)
+        .filter(ListeMitglieder.nutzer_id == nutzer_id)
+        .subquery()
+    )
 
     einkaeufe = (
         db.query(
@@ -1213,7 +1601,7 @@ def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Se
             Einkaufsarchiv.eingekauft_von,
             Nutzer.name.label("einkaeufer_name"),
             func.date(Einkaufsarchiv.eingekauft_am).label("eingekauft_am"),
-            Einkaufsarchiv.gesamtpreis
+            Einkaufsarchiv.gesamtpreis,
         )
         .join(Liste, Liste.id == Einkaufsarchiv.listen_id)
         .outerjoin(Nutzer, Nutzer.id == Einkaufsarchiv.eingekauft_von)
@@ -1224,23 +1612,33 @@ def get_einkaufsarchiv_by_nutzer_gesamt(nutzer_id: int = Path(..., gt=0), db: Se
 
     return einkaeufe
 
-@app.post("/create/einkaufsarchiv/list/{listen_id}",  description="Erstellt einen Einkauf für eine Liste | InputModel: EinkaufsarchivCreate ResponseModel: EinkaufsarchivCreate", response_model=EinkaufsarchivRead, status_code=status.HTTP_201_CREATED)
-def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: EinkaufsarchivCreate = Body(...), db: Session = Depends(get_db)):
+
+@app.post(
+    "/create/einkaufsarchiv/list/{listen_id}",
+    description="Erstellt einen Einkauf für eine Liste | InputModel: EinkaufsarchivCreate ResponseModel: EinkaufsarchivCreate",
+    response_model=EinkaufsarchivRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_einkaufsarchiv(
+    listen_id: int = Path(..., gt=0),
+    einkauf: EinkaufsarchivCreate = Body(...),
+    db: Session = Depends(get_db),
+):
 
     liste = db.query(Liste).filter(Liste.id == listen_id).first()
     if not liste:
         raise HTTPException(status_code=404, detail="Liste nicht gefunden")
-    
+
     if einkauf.eingekauft_von is not None:
         nutzer = db.query(Nutzer).filter(Nutzer.id == einkauf.eingekauft_von).first()
         if not nutzer:
             raise HTTPException(status_code=400, detail="Eingekäufer nicht gefunden")
-    
+
     neuer_einkauf = Einkaufsarchiv(
-        listen_id = listen_id,
-        eingekauft_von = einkauf.eingekauft_von,
-        eingekauft_am=datetime.utcnow(),         # aktuelles Datum/Uhrzeit in UTC
-        gesamtpreis = einkauf.gesamtpreis
+        listen_id=listen_id,
+        eingekauft_von=einkauf.eingekauft_von,
+        eingekauft_am=datetime.utcnow(),  # aktuelles Datum/Uhrzeit in UTC
+        gesamtpreis=einkauf.gesamtpreis,
     )
 
     db.add(neuer_einkauf)
@@ -1248,27 +1646,48 @@ def create_einkaufsarchiv(listen_id: int = Path(..., gt=0), einkauf: Einkaufsarc
     db.refresh(neuer_einkauf)
     return neuer_einkauf
 
-@app.delete("/delete/einkaufsarchiv/list/{listen_id}",  description="Löscht einen Einkauf aus dem Archiv", status_code=status.HTTP_204_NO_CONTENT)
-def delete_einkaufsarchiv(listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    einkaeufe = db.query(Einkaufsarchiv).filter(
-        Einkaufsarchiv.listen_id == listen_id
-    ).all()
+
+@app.delete(
+    "/delete/einkaufsarchiv/list/{listen_id}",
+    description="Löscht einen Einkauf aus dem Archiv",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_einkaufsarchiv(
+    listen_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
+    einkaeufe = (
+        db.query(Einkaufsarchiv).filter(Einkaufsarchiv.listen_id == listen_id).all()
+    )
     if not einkaeufe:
-        raise HTTPException(status_code=404, detail="Keine Einkäufe für diese Liste gefunden")
-    
+        raise HTTPException(
+            status_code=404, detail="Keine Einkäufe für diese Liste gefunden"
+        )
+
     for einkauf in einkaeufe:
-        db.delete(einkauf)   # die eingekauften Produkte werden in der DB gelöscht da ein ON DELETE CASCADE auf den Fremdschlüssel einkauf_id gesetzt ist
+        db.delete(
+            einkauf
+        )  # die eingekauften Produkte werden in der DB gelöscht da ein ON DELETE CASCADE auf den Fremdschlüssel einkauf_id gesetzt ist
 
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
+
 # eingekaufte Produkte ------------------------------------
 
-@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}", description="Gibt alle Produkte, die zu dem Einkauf gehören aus | ResponseModel: eingekaufteProdukteRead", response_model=List[eingekaufteProdukteRead])
-def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
 
-    einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
+@app.get(
+    "/eingekaufte_produkte/einkauf/{einkauf_id}",
+    description="Gibt alle Produkte, die zu dem Einkauf gehören aus | ResponseModel: eingekaufteProdukteRead",
+    response_model=List[eingekaufteProdukteRead],
+)
+def get_eingekaufte_produkte(
+    einkauf_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
+
+    einkauf = (
+        db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
+    )
 
     if not einkauf:
         raise HTTPException(status_code=404, detail="Einkauf nicht gefunden")
@@ -1284,7 +1703,7 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
             EingekaufteProdukte.produkt_preis,
             EingekaufteProdukte.hinzugefuegt_von,
             Nutzer.name.label("hinzufueger_name"),
-            EingekaufteProdukte.beschreibung
+            EingekaufteProdukte.beschreibung,
         )
         .join(Produkt, Produkt.id == EingekaufteProdukte.produkt_id)
         .outerjoin(Einheit, Einheit.id == EingekaufteProdukte.einheit_id)
@@ -1295,57 +1714,92 @@ def get_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), db: Session = De
 
     return eingekaufte_produkte
 
-@app.get("/eingekaufte_produkte/einkauf/{einkauf_id}/produkt/{produkt_id}/hinzugefuegt_von/{hinzugefuegt_von}",  description="Gibt ein eingekauftes Produkt aus | ResponseModel: eingekaufteProdukteRead", response_model=eingekaufteProdukteRead)
-def get_eingekauftes_produkt(einkauf_id: int = Path(..., gt=0), produkt_id: int = Path(..., gt=0), hinzugefuegt_von: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    eingekauftes_produkt = db.query(EingekaufteProdukte).filter(
-        EingekaufteProdukte.einkauf_id == einkauf_id,
-        EingekaufteProdukte.produkt_id == produkt_id,
-        EingekaufteProdukte.hinzugefuegt_von == hinzugefuegt_von
-    ).first()
+
+@app.get(
+    "/eingekaufte_produkte/einkauf/{einkauf_id}/produkt/{produkt_id}/hinzugefuegt_von/{hinzugefuegt_von}",
+    description="Gibt ein eingekauftes Produkt aus | ResponseModel: eingekaufteProdukteRead",
+    response_model=eingekaufteProdukteRead,
+)
+def get_eingekauftes_produkt(
+    einkauf_id: int = Path(..., gt=0),
+    produkt_id: int = Path(..., gt=0),
+    hinzugefuegt_von: int = Path(..., gt=0),
+    db: Session = Depends(get_db),
+):
+    eingekauftes_produkt = (
+        db.query(EingekaufteProdukte)
+        .filter(
+            EingekaufteProdukte.einkauf_id == einkauf_id,
+            EingekaufteProdukte.produkt_id == produkt_id,
+            EingekaufteProdukte.hinzugefuegt_von == hinzugefuegt_von,
+        )
+        .first()
+    )
 
     if not eingekauftes_produkt:
-        raise HTTPException(status_code=404, detail="Eingekauftes Produkt nicht gefunden")
+        raise HTTPException(
+            status_code=404, detail="Eingekauftes Produkt nicht gefunden"
+        )
 
     return eingekauftes_produkt
 
-@app.post("/create/eingekaufte_produkte/einkauf/{einkauf_id}", response_model=eingekaufteProdukteRead, status_code=status.HTTP_201_CREATED)
-def create_eingekaufte_produkte(einkauf_id: int = Path(..., gt=0), eingekauftes_produkt: eingekaufteProdukteCreate = Body(...), db: Session = Depends(get_db)):
-    
-    einkauf = db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
+
+@app.post(
+    "/create/eingekaufte_produkte/einkauf/{einkauf_id}",
+    response_model=eingekaufteProdukteRead,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_eingekaufte_produkte(
+    einkauf_id: int = Path(..., gt=0),
+    eingekauftes_produkt: eingekaufteProdukteCreate = Body(...),
+    db: Session = Depends(get_db),
+):
+
+    einkauf = (
+        db.query(Einkaufsarchiv).filter(Einkaufsarchiv.einkauf_id == einkauf_id).first()
+    )
 
     if not einkauf:
         raise HTTPException(status_code=404, detail="Einkauf nicht gefunden")
-    
+
     neues_eingekauftes_produkt = EingekaufteProdukte(
-        einkauf_id = einkauf_id,
-        produkt_id = eingekauftes_produkt.produkt_id,
-        produkt_menge = eingekauftes_produkt.produkt_menge,
-        einheit_id = eingekauftes_produkt.einheit_id,
-        produkt_preis = eingekauftes_produkt.produkt_preis,
-        hinzugefuegt_von = eingekauftes_produkt.hinzugefuegt_von,
-        beschreibung = eingekauftes_produkt.beschreibung
+        einkauf_id=einkauf_id,
+        produkt_id=eingekauftes_produkt.produkt_id,
+        produkt_menge=eingekauftes_produkt.produkt_menge,
+        einheit_id=eingekauftes_produkt.einheit_id,
+        produkt_preis=eingekauftes_produkt.produkt_preis,
+        hinzugefuegt_von=eingekauftes_produkt.hinzugefuegt_von,
+        beschreibung=eingekauftes_produkt.beschreibung,
     )
 
     db.add(neues_eingekauftes_produkt)
-    db.commit() 
+    db.commit()
 
     return neues_eingekauftes_produkt
+
 
 # delete EingekaufteProdukte fällt weg, da es in der Datenbank durch die Fremdschlüsselbeziehung mit ON DELETE CASCADE automatisch gelöscht wird, wenn der zugehörige Einkauf gelöscht wird
 
 # Kostenaufteilung
 
-# empfaenger_id = nutzer_id 
+
+# empfaenger_id = nutzer_id
 # diese Funktion gibt zurück "wer mir Geld schuldet"
-@app.get("/kostenaufteilung/empfaenger/{empfaenger_id}", description="Gibt die Kostenaufteilung für einen Nutzer aus (Wer schuldet mir Geld?)| ResponseModel: KostenaufteilungRead", response_model=List[KostenaufteilungRead])
-def get_kostenaufteilung_empfaenger(empfaenger_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+@app.get(
+    "/kostenaufteilung/empfaenger/{empfaenger_id}",
+    description="Gibt die Kostenaufteilung für einen Nutzer aus (Wer schuldet mir Geld?)| ResponseModel: KostenaufteilungRead",
+    response_model=List[KostenaufteilungRead],
+)
+def get_kostenaufteilung_empfaenger(
+    empfaenger_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
 
     user = db.query(Nutzer).filter(Nutzer.id == empfaenger_id).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
 
-    Empfaenger = aliased(Nutzer)    # um Konflikte bei Joins zu vermeiden
+    Empfaenger = aliased(Nutzer)  # um Konflikte bei Joins zu vermeiden
     Schuldner = aliased(Nutzer)
 
     kostenaufteilung = (
@@ -1354,7 +1808,7 @@ def get_kostenaufteilung_empfaenger(empfaenger_id: int = Path(..., gt=0), db: Se
             Empfaenger.name.label("empfaenger_name"),
             Kostenaufteilung.schuldner_id,
             Schuldner.name.label("schuldner_name"),
-            Kostenaufteilung.betrag
+            Kostenaufteilung.betrag,
         )
         .join(Empfaenger, Empfaenger.id == Kostenaufteilung.empfaenger_id)
         .join(Schuldner, Schuldner.id == Kostenaufteilung.schuldner_id)
@@ -1363,17 +1817,24 @@ def get_kostenaufteilung_empfaenger(empfaenger_id: int = Path(..., gt=0), db: Se
     )
     return kostenaufteilung
 
+
 # schuldner_id = nutzer_id
 # diese Funktion gibt zurück "wem ich Geld schulde"
-@app.get("/kostenaufteilung/schuldner/{schuldner_id}", description="Gibt die Kostenaufteilung für einen Nutzer aus (Wem schulde ich Geld?) | ResponseModel: KostenaufteilungRead", response_model=List[KostenaufteilungRead])
-def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
+@app.get(
+    "/kostenaufteilung/schuldner/{schuldner_id}",
+    description="Gibt die Kostenaufteilung für einen Nutzer aus (Wem schulde ich Geld?) | ResponseModel: KostenaufteilungRead",
+    response_model=List[KostenaufteilungRead],
+)
+def get_kostenaufteilung_schuldner(
+    schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)
+):
 
     user = db.query(Nutzer).filter(Nutzer.id == schuldner_id).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="Nutzer nicht gefunden")
-    
-    Empfaenger = aliased(Nutzer)    # um Konflikte bei Joins zu vermeiden
+
+    Empfaenger = aliased(Nutzer)  # um Konflikte bei Joins zu vermeiden
     Schuldner = aliased(Nutzer)
 
     kostenaufteilung = (
@@ -1382,7 +1843,7 @@ def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Sess
             Empfaenger.name.label("empfaenger_name"),
             Kostenaufteilung.schuldner_id,
             Schuldner.name.label("schuldner_name"),
-            Kostenaufteilung.betrag
+            Kostenaufteilung.betrag,
         )
         .join(Empfaenger, Empfaenger.id == Kostenaufteilung.empfaenger_id)
         .join(Schuldner, Schuldner.id == Kostenaufteilung.schuldner_id)
@@ -1391,12 +1852,23 @@ def get_kostenaufteilung_schuldner(schuldner_id: int = Path(..., gt=0), db: Sess
     )
     return kostenaufteilung
 
+
 # Schulden in DB speichern
-@app.post("/kostenaufteilung", response_model=KostenaufteilungRead, description="Erstellt einen Eintrag in der KOstenaufteilung (Schuldner und Empfänger | InputModel: KostenaufteilungCreate)", status_code=status.HTTP_201_CREATED)
-def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Session = Depends(get_db)):
+@app.post(
+    "/kostenaufteilung",
+    response_model=KostenaufteilungRead,
+    description="Erstellt einen Eintrag in der KOstenaufteilung (Schuldner und Empfänger | InputModel: KostenaufteilungCreate)",
+    status_code=status.HTTP_201_CREATED,
+)
+def create_kostenaufteilung(
+    eintrag: KostenaufteilungCreate = Body(...), db: Session = Depends(get_db)
+):
 
     if eintrag.empfaenger_id == eintrag.schuldner_id:
-        raise HTTPException(status_code=400, detail="Empfänger und Schuldner dürfen nicht identisch sein")
+        raise HTTPException(
+            status_code=400,
+            detail="Empfänger und Schuldner dürfen nicht identisch sein",
+        )
 
     empfaenger = db.query(Nutzer).filter(Nutzer.id == eintrag.empfaenger_id).first()
     if not empfaenger:
@@ -1406,10 +1878,14 @@ def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Ses
     if not schuldner:
         raise HTTPException(status_code=400, detail="Schuldner nicht gefunden")
 
-    vorhandener_eintrag = db.query(Kostenaufteilung).filter(
-        Kostenaufteilung.empfaenger_id == eintrag.empfaenger_id,
-        Kostenaufteilung.schuldner_id == eintrag.schuldner_id
-    ).first()
+    vorhandener_eintrag = (
+        db.query(Kostenaufteilung)
+        .filter(
+            Kostenaufteilung.empfaenger_id == eintrag.empfaenger_id,
+            Kostenaufteilung.schuldner_id == eintrag.schuldner_id,
+        )
+        .first()
+    )
 
     if vorhandener_eintrag:
         vorhandener_eintrag.betrag += eintrag.betrag
@@ -1420,7 +1896,7 @@ def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Ses
     neuer_eintrag = Kostenaufteilung(
         empfaenger_id=eintrag.empfaenger_id,
         schuldner_id=eintrag.schuldner_id,
-        betrag=eintrag.betrag
+        betrag=eintrag.betrag,
     )
 
     db.add(neuer_eintrag)
@@ -1428,20 +1904,37 @@ def create_kostenaufteilung(eintrag: KostenaufteilungCreate = Body(...), db: Ses
     db.refresh(neuer_eintrag)
     return neuer_eintrag
 
-@app.delete("/kostenaufteilung/empfaenger/{empfaenger_id}/schuldner/{schuldner_id}", description="Löscht einen Eintrag aus der Kostenaufteilung", status_code=status.HTTP_204_NO_CONTENT)
-def delete_kostenaufteilung(empfaenger_id: int = Path(..., gt=0), schuldner_id: int = Path(..., gt=0), db: Session = Depends(get_db)):
-    
-    if empfaenger_id == schuldner_id:
-        raise HTTPException(status_code=400, detail="Empfänger und Schuldner dürfen nicht identisch sein")
 
-    eintrag = db.query(Kostenaufteilung).filter(
-        Kostenaufteilung.empfaenger_id == empfaenger_id,
-        Kostenaufteilung.schuldner_id == schuldner_id
-    ).first()
+@app.delete(
+    "/kostenaufteilung/empfaenger/{empfaenger_id}/schuldner/{schuldner_id}",
+    description="Löscht einen Eintrag aus der Kostenaufteilung",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_kostenaufteilung(
+    empfaenger_id: int = Path(..., gt=0),
+    schuldner_id: int = Path(..., gt=0),
+    db: Session = Depends(get_db),
+):
+
+    if empfaenger_id == schuldner_id:
+        raise HTTPException(
+            status_code=400,
+            detail="Empfänger und Schuldner dürfen nicht identisch sein",
+        )
+
+    eintrag = (
+        db.query(Kostenaufteilung)
+        .filter(
+            Kostenaufteilung.empfaenger_id == empfaenger_id,
+            Kostenaufteilung.schuldner_id == schuldner_id,
+        )
+        .first()
+    )
 
     if not eintrag:
         raise HTTPException(status_code=404, detail="Eintrag nicht gefunden")
-    
+
     db.delete(eintrag)
     db.commit()
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+

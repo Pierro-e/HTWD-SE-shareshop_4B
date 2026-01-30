@@ -3,11 +3,13 @@
     <div class="product-detail">
       <AppHeader :title="this.$route.query.list_name">
         <template #left>
-          <button class="button-cancel" @click="$router.push(`/list/${listenId}`)">
-            <font-awesome-icon icon='xmark'/>
+          <button
+            class="button-cancel"
+            @click="$router.push(`/list/${listenId}`)"
+          >
+            <font-awesome-icon icon="xmark" />
           </button>
         </template>
-
       </AppHeader>
       <form @submit.prevent="saveProduct">
         <div class="product-name">{{ name }}</div>
@@ -24,17 +26,27 @@
           <label for="einheit">Einheit:</label>
           <select id="einheit" v-model="einheit">
             <option value="">Keine Angabe</option>
-            <option v-for="e in einheiten" :key="e.id" :value="e.id">{{ e.name }}</option>
+            <option v-for="e in einheiten" :key="e.id" :value="e.id">
+              {{ e.name }}
+            </option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="menge">Menge:</label>
-          <input id="menge" type="number" step="0.01" min="0" v-model.number="menge" />
+          <input
+            id="menge"
+            type="number"
+            step="0.01"
+            min="0"
+            v-model.number="menge"
+          />
         </div>
 
         <div class="button-row">
-          <button type="button" class="button-delete" @click="deleteProduct">Löschen</button>
+          <button type="button" class="button-delete" @click="deleteProduct">
+            Löschen
+          </button>
           <button type="submit" class="button-submit">Speichern</button>
         </div>
       </form>
@@ -44,27 +56,25 @@
     </div>
   </div>
 
-  <BottomBar 
-    :highlight-btn="1"
-  />
+  <BottomBar :highlight-btn="1" />
 </template>
 
 <script>
-import axios from "axios";
+import { api } from "../api/client";
 import BottomBar from "./BottomBar.vue";
 import AppHeader from "./AppHeader.vue";
 
 /**
  * Anzeigen/Bearbeiten der Details eines Produktes.
- * 
+ *
  * @vue-prop {number} produktId ID des Produkts
  * @vue-prop {number} listenId ID der Liste, in der sich das Produkt befindet
  * @vue-prop {number} nutzerId ID des Nutzers, welcher Produkt hinzugefügt hat
  */
 export default {
-  components: { 
+  components: {
     AppHeader,
-    BottomBar
+    BottomBar,
   },
   props: ["produktId", "listenId", "nutzerId"],
   data() {
@@ -92,14 +102,12 @@ export default {
      */
     async fetchProduct() {
       try {
-        const response = await axios.get(
-          `http://141.56.137.83:8000/listen/${this.listenId}/produkte`
-        );
+        const response = await api.get(`/listen/${this.listenId}/produkte`);
         const produkte = response.data;
         const produkt = produkte.find(
           (p) =>
             p.produkt_id === parseInt(this.produktId) &&
-            p.hinzugefügt_von === parseInt(this.nutzerId)
+            p.hinzugefügt_von === parseInt(this.nutzerId),
         );
         if (!produkt) {
           this.errorMessage = "Produkt in dieser Liste nicht gefunden.";
@@ -113,7 +121,8 @@ export default {
         this.beschreibung = produkt.beschreibung || "";
         this.hinzufueger_name = produkt.hinzufueger_name || "";
       } catch (error) {
-        this.errorMessage = error.response?.data?.detail || "Fehler beim Laden des Produkts.";
+        this.errorMessage =
+          error.response?.data?.detail || "Fehler beim Laden des Produkts.";
       }
     },
     /**
@@ -121,14 +130,14 @@ export default {
      */
     async fetchEinheiten() {
       try {
-        const response = await axios.get(`http://141.56.137.83:8000/einheiten`);
+        const response = await api.get(`/einheiten`);
         this.einheiten = response.data;
       } catch {
         this.errorMessage = "Einheiten konnten nicht geladen werden.";
       }
     },
     /**
-     * Validiert und sendet Eigenschaften des Produkts an API. 
+     * Validiert und sendet Eigenschaften des Produkts an API.
      */
     async saveProduct() {
       this.message = "";
@@ -140,23 +149,28 @@ export default {
       // Validierung: Menge > 0 aber keine Einheit ausgewählt
       // prüft, ob this.einheit null, 0 oder undefined ist
       if (this.menge > 0 && (!this.einheit || this.einheit === 0)) {
-        this.errorMessage = "Bitte wählen Sie eine Einheit aus, wenn eine Menge angegeben ist.";
+        this.errorMessage =
+          "Bitte wählen Sie eine Einheit aus, wenn eine Menge angegeben ist.";
         return; // abbrechen
       }
 
       // Validierung: Menge = 0 aber Einheit ausgewählt
       if (this.einheit && (!this.menge || this.menge === 0)) {
-        this.errorMessage = "Bitte geben Sie eine Menge an, wenn eine Einheit ausgewählt ist.";
-        return; 
-      } 
-      
-     // Validierung: Einheit stück, Menge= Dezimalzahl
+        this.errorMessage =
+          "Bitte geben Sie eine Menge an, wenn eine Einheit ausgewählt ist.";
+        return;
+      }
+
+      // Validierung: Einheit stück, Menge= Dezimalzahl
       if (this.einheit && this.einheit !== 0) {
-        const selectedEinheit = this.einheiten.find(e => e.id === this.einheit);
+        const selectedEinheit = this.einheiten.find(
+          (e) => e.id === this.einheit,
+        );
         if (selectedEinheit && selectedEinheit.name.toLowerCase() === "stück") {
           if (this.menge && !Number.isInteger(this.menge)) {
-            this.errorMessage = "Für die Einheit 'Stück' muss die Menge eine ganze Zahl sein.";
-            return; 
+            this.errorMessage =
+              "Für die Einheit 'Stück' muss die Menge eine ganze Zahl sein.";
+            return;
           }
         }
       }
@@ -171,33 +185,35 @@ export default {
       };
 
       try {
-        await axios.put(
-          `http://141.56.137.83:8000/listen/${this.listenId}/produkte/${this.produkt_id}/nutzer/${this.hinzugefügt_von}`,
-          daten
+        await api.put(
+          `/listen/${this.listenId}/produkte/${this.produkt_id}/nutzer/${this.hinzugefügt_von}`,
+          daten,
         );
         this.message = "Produkt erfolgreich aktualisiert.";
         this.$router.push(`/list/${this.listenId}`);
       } catch (error) {
-        this.errorMessage = error.response?.data?.detail || "Fehler beim Speichern";
+        this.errorMessage =
+          error.response?.data?.detail || "Fehler beim Speichern";
       }
     },
     /**
-     * Löscht Produkt über API und navigiert zurück zur Liste. 
+     * Löscht Produkt über API und navigiert zurück zur Liste.
      */
     async deleteProduct() {
       this.message = "";
       this.errorMessage = "";
       try {
-        await axios.request({
+        await api.request({
           method: "delete",
-          url: `http://141.56.137.83:8000/listen/${this.listenId}/produkte/${this.produkt_id}`,
+          url: `/listen/${this.listenId}/produkte/${this.produkt_id}`,
           data: { hinzugefügt_von: this.hinzugefügt_von },
           headers: { "Content-Type": "application/json" },
         });
         this.message = "Produkt erfolgreich gelöscht.";
         this.$router.push(`/list/${this.listenId}`);
       } catch (error) {
-        this.errorMessage = error.response?.data?.detail || "Fehler beim Löschen.";
+        this.errorMessage =
+          error.response?.data?.detail || "Fehler beim Löschen.";
       }
     },
   },
@@ -226,7 +242,7 @@ export default {
   justify-content: center;
   margin-bottom: 0.5em;
   word-break: break-word;
-  word-wrap: break-word;  
+  word-wrap: break-word;
   width: 100%;
 }
 
@@ -268,7 +284,8 @@ select {
   width: 100%;
 }
 
-.success, .error {
+.success,
+.error {
   max-width: 210px;
 }
 

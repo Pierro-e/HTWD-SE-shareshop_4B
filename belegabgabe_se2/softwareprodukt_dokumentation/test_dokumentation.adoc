@@ -2,3 +2,106 @@ include::attributes.adoc[]
 
 = {system-name}: Test Dokumentation
 {docdate}
+
+
+== Testkonzept
+
+=== Testobjekte und Teststufen Die Tests orientieren sich an der klassischen Testpyramide und decken mehrere Teststufen ab:
+
+* Modultests:
+API-Endpunkte und Funktionen mit gemockter Datenbank
+
+* Integrationstests:
+Zusammensoiel von API, Routing, HTTP-Statuscodes mit gemockter Datenbank
+
+* Systemtests:
+Zusammenspiel von Frontend und Backend aus Anwendersicht, manuelles Testen
+
+=== Testmethoden
+
+==== Backend Für das Backend werden automatisierte Tests eingesetzt:
+
+pytest als Testframework
+
+unittest.mock (MagicMock, patch) zur Simulation der Datenbankschicht
+
+FastAPI TestClient zur Simulation von HTTP-Anfragen
+
+Swagger UI zur manuellen Überprüfung und Exploration der API-Endpunkte
+
+Die Datenbank wird in den Tests vollständig gemockt, sodass keine echte Verbindung zu einer produktiven oder lokalen Datenbank notwendig ist. Dadurch bleiben die Tests isoliert, reproduzierbar und unabhängig von der Laufzeitumgebung (z. B. VM).
+
+==== Frontend Das Frontend wird durch manuelle Tests überprüft:
+
+Starten der Anwendung im Browser
+
+Durchklicken der Benutzeroberfläche
+
+Überprüfung der in dem Pull-Request neuen Funktionalität
+
+Dadurch Testen, wie ein Nutzer die Oberfläche sieht und bedient, wie Fehlermeldungen wirken und ob sowhol Design als auch Funktionalität aus Nutzersicht passen.
+
+=== Testdurchführungsplanung
+
+* Wann: 
+** Backend-Tests: kontinuierlich während der Entwicklung, automatisiert bei jedem Commit/Push
+** Frontend-Tests: Dev Team: nach Änderungen an der Oberfläche und Funktionalität beim Review des Pull-Requestes bzw während der Entwicklung
+PO unregelmäßig bei Überpfüfen der gestellten Anforderungen
+
+* Wie: 
+** Backend: automatisiert über `python -m pytest tests_api.py`
+** Frontend: manuell im Browser mit "durchklicken"
+
+== Testergebnisse
+
+=== Ergebnisse der Testdurchführung - Backend
+
+==== Automatisierte API-Tests (tests_api.py)
+
+**Testanzahl:** 36 Tests
+**Status:** Alle Tests bestanden (36 passed)
+**Abdeckung:** ~80% der API-Endpunkte
+
+
+===== Testausführung
+
+**Alle Tests ausführen**
+[source,bash]
+----
+cd src/backend
+py -m pytest test_api.py -v
+----
+**Einzelne Tests ausführen**
+Einzelne Test-Kategorien
+
+[source,bash]
+----
+# Nur Nutzer-Tests
+py -m pytest test_api.py -k "nutzer" -v
+
+# Nur DELETE-Tests
+py -m pytest test_api.py -k "delete" -v
+
+# Nur Erfolgs-Fälle
+py -m pytest test_api.py -k "success" -v
+----
+
+**Einzelne Testfälle**
+Einzelnen Test ausführen
+
+[source,bash]
+----
+py -m pytest test_api.py::test_get_nutzer_all_success -v
+----
+Die automatisierten Backend-Tests werden erfolgreich ausgeführt und validieren:
+
+* Korrekte HTTP-Statuscodes für erfolgreiche und fehlgeschlagene Anfragen
+* Validierung der Anfrage- und Antwortkörper
+* Mock-basierte Datenbankoperationen ohne echte Datenbankverbindung
+* Fehlerbehandlung und Edge-Cases
+
+=== Ergebnisse der Testdurchführung - Frontend
+
+Die manuell getesteten Frontend-Funktionen verhalten sich erwartungsgemäß und ermöglichen eine fehlerfreie Bedienung der Anwendung.
+
+

@@ -59,7 +59,7 @@
 import AppHeader from "./AppHeader.vue"
 import ProductCard from "./ProductCard.vue"
 import BottomBar from "./BottomBar.vue"
-import axios from "axios"
+import { api } from "../api/client";
 import { inject } from "vue"
 
 /**
@@ -110,7 +110,7 @@ export default {
       this.loadingActive = false
       return
     }
-   
+
     this.$watch(
       () => userRef.value.id,
       (newId) => {
@@ -157,8 +157,8 @@ export default {
       if (!confirm(`Geld von ${f.schuldner_name} wirklich erhalten?`)) return
 
       try {
-        await axios.delete(
-        `http://141.56.137.83:8000/kostenaufteilung/empfaenger/${this.user.id}/schuldner/${f.schuldner_id}`
+        await api.delete(
+        `/kostenaufteilung/empfaenger/${this.user.id}/schuldner/${f.schuldner_id}`
         )
 
         // lokal entfernen (UI sofort aktualisieren)
@@ -172,15 +172,15 @@ export default {
       }
     },
     /**
-     * Holt Finanzen (Empfänger und Schuldner des Nutzers) von API. 
+     * Holt Finanzen (Empfänger und Schuldner des Nutzers) von API.
      * Empfänger wird in forderungen-Objekt und Schuldner in schulden-Objekt gespeichert.
      * @param user_id {number} ID des Nutzers
      */
     async loadFinanzen(user_id) {
       try {
         const [empfaengerRes, schuldnerRes] = await Promise.all([
-          axios.get(`http://141.56.137.83:8000/kostenaufteilung/empfaenger/${user_id}`),
-          axios.get(`http://141.56.137.83:8000/kostenaufteilung/schuldner/${user_id}`)
+          api.get(`http://141.56.137.83:8000/kostenaufteilung/empfaenger/${user_id}`),
+          api.get(`http://141.56.137.83:8000/kostenaufteilung/schuldner/${user_id}`)
         ])
 
         this.forderungen = empfaengerRes.data

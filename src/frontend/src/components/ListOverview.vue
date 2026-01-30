@@ -1,12 +1,10 @@
 <template>
   <AppHeader :title="user.name + '\'s Einkaufslisten'">
-    <template #left>
-
-    </template>
+    <template #left> </template>
 
     <template #right>
       <button @click="newList" id="newlist" class="button-add">
-        <font-awesome-icon icon='plus'/>
+        <font-awesome-icon icon="plus" />
       </button>
     </template>
   </AppHeader>
@@ -14,7 +12,7 @@
   <div v-if="loadingActive" class="loading">Laden...</div>
   <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
   <main>
-    <div class=card-list>
+    <div class="card-list">
       <ListButton
         v-for="list in lists"
         :key="list.id"
@@ -23,16 +21,14 @@
       />
     </div>
   </main>
-  <BottomBar 
-    :highlight-btn="1"
-  />
+  <BottomBar :highlight-btn="1" />
 </template>
 
 <script>
 import ListButton from "./ListButton.vue";
 import AppHeader from "./AppHeader.vue";
 import { inject, ref } from "vue";
-import axios from "axios";
+import { api } from "../api/client";
 import BottomBar from "./BottomBar.vue";
 
 /**
@@ -55,28 +51,21 @@ export default {
   components: {
     ListButton,
     BottomBar,
-    AppHeader
+    AppHeader,
   },
   async mounted() {
     // Listen des momentanen Nutzers holen
     const user = inject("user");
     const user_id = user.value.id;
     try {
-    const response = await axios.get(
-      `http://141.56.137.83:8000/nutzer/${user_id}/listen`,
-    );
-    this.lists = response.data;
+      const response = await api.get(`/nutzer/${user_id}/listen`);
+      this.lists = response.data;
     } catch (error) {
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.detail
-      ) {
+      if (error.response && error.response.data && error.response.data.detail) {
         this.errorMessage = error.response.data.detail;
       } else {
         this.errorMessage = "Fehler beim Laden der Listen";
       }
-
     }
     this.loadingActive = false;
   },

@@ -15,18 +15,20 @@
       <div class="login_pw">
         <label for="password" class="login_block">Passwort: </label>
         <div class="password-input-container">
-        <input
-          v-model="password"
-          :type="passwordFieldType" 
-          id="password"
-          maxlength="30"
-          placeholder="Passwort"
-          required
-        />
-        <span class="password-toggle-icon" @click="togglePasswordVisibility">
-          <font-awesome-icon :icon="passwordFieldType === 'password' ? 'eye' : 'eye-slash'" />
-        </span>
-      </div>  
+          <input
+            v-model="password"
+            :type="passwordFieldType"
+            id="password"
+            maxlength="30"
+            placeholder="Passwort"
+            required
+          />
+          <span class="password-toggle-icon" @click="togglePasswordVisibility">
+            <font-awesome-icon
+              :icon="passwordFieldType === 'password' ? 'eye' : 'eye-slash'"
+            />
+          </span>
+        </div>
       </div>
       <button class="button-submit" type="submit">Einloggen</button>
     </form>
@@ -41,41 +43,41 @@
 </template>
 
 <script>
-import axios from "axios";
+import { api } from "../api/client";
 
 /**
  * Behandelt das Einloggen des Nutzers.
  */
 export default {
   name: "Login",
-  inject: ["setUser", 'getThemeText', 'getAccentText', 'deleteUser'], // theme, accent, setUser aus app.vue injizieren
+  inject: ["setUser", "getThemeText", "getAccentText", "deleteUser"], // theme, accent, setUser aus app.vue injizieren
   data() {
     return {
       email: "",
       password: "",
       errorMessage: "",
       passwordFieldType: "password",
-      theme: '',
-      accent: '',
-      decaydays: 0.00
+      theme: "",
+      accent: "",
+      decaydays: 0.0,
     };
   },
   methods: {
     /**
      * Schaltet die Sichtbarkeit des Passwortes um.
-     */ 
+     */
     togglePasswordVisibility() {
       this.passwordFieldType =
         this.passwordFieldType === "password" ? "text" : "password";
     },
     /**
      * Sendet die eingegebenen Logindaten an die API, behandelt die Antwort und setzt die Nutzereinstellungen.
-     */ 
+     */
     async onSubmit() {
       this.errorMessage = "";
       let response;
       try {
-        response = await axios.post("http://141.56.137.83:8000/login", {
+        response = await api.post("/login", {
           email: this.email,
           passwort: this.password,
         });
@@ -89,23 +91,23 @@ export default {
         } else {
           this.errorMessage = "Falsche Zugangsdaten";
         }
-        return
+        return;
       }
       this.setUser(response.data); // Benutzerdaten setzen
 
       // Theme setzen
-      const json = response.data
-      this.theme = this.getThemeText(json.theme)
-      this.accent = this.getAccentText(json.color)
+      const json = response.data;
+      this.theme = this.getThemeText(json.theme);
+      this.accent = this.getAccentText(json.color);
 
-      document.documentElement.setAttribute("css-theme", this.theme) // Thema setzen
-      document.documentElement.setAttribute('css-accent', this.accent) // Farbe setzen
+      document.documentElement.setAttribute("css-theme", this.theme); // Thema setzen
+      document.documentElement.setAttribute("css-accent", this.accent); // Farbe setzen
 
       this.$router.push("/listen"); // Einkaufslisten des Nutzers aufrufen
     },
   },
   mounted() {
-    this.deleteUser() // Vor dem Login sicherstellen, dass kein User eingeloggt ist
+    this.deleteUser(); // Vor dem Login sicherstellen, dass kein User eingeloggt ist
   },
 };
 </script>
@@ -158,7 +160,6 @@ input {
 .password-input-container {
   position: relative;
   display: flex;
-
 }
 .password-toggle-icon {
   color: gray;
@@ -170,7 +171,7 @@ input {
 }
 /* falls passwörter lange sind */
 .password-input-container input {
-    padding-right: 2.5em;
+  padding-right: 2.5em;
 }
 
 .login_block {
@@ -178,7 +179,8 @@ input {
   font-weight: 500;
 }
 
-.success, .error {
+.success,
+.error {
   width: calc(100% - 2rem);
   margin-bottom: 0;
 }
