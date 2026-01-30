@@ -30,9 +30,9 @@ Zur Qualitätssicherung gab es eine Definition of Done für Product Backlog Item
 
 - PBI wurde im wöchentlichen Meeting besprochen.
 
-Auf ein Kriterium für Code-Qualität (z.B. Linting, Tests) sind wir erst im Laufe des Semesters eingegangen und haben bewusst darauf verzichtet, um den Fokus auf Feature-Umsetzung zu legen.
+Auf ein Kriterium für Code-Qualität (z.B. Linting) sind wir erst im Laufe des Semesters eingegangen und haben bewusst darauf verzichtet, um den Fokus auf Feature-Umsetzung zu legen.
 
-Prüfungen erfolgten vor allem manuell. Im Laufe des Semesters haben wir aber Coding Standards eingeführt (Linter, Styleguidelines) und Tests begonnen (automatische Tests sowie Tests mit gemockten Daten).
+Prüfungen erfolgten vor allem manuell. Im Laufe des Semesters haben wir aber Coding Standards eingeführt (Styleguidelines) und Tests begonnen (automatische Tests sowie Tests mit gemockten Daten).
 
 == Top 3 Erfolge
 
