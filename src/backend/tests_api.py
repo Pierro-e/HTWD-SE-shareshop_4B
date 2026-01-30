@@ -14,6 +14,7 @@ with patch.dict(os.environ, {
     from share_shop_api import change_passwort, change_name, change_email
     from share_shop_api import delete_mitglied,delete_fav_produkt,delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
     from share_shop_api import update_fav_produkt, get_listen_by_nutzer, get_listen_all
+    from share_shop_api import create_kostenaufteilung
     from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
 
 # Hilfsfunktion zum Erstellen von Dummy-Nutzer-Objekten (als MagicMock mit Attributen)
@@ -524,6 +525,22 @@ def test_get_eingekaufte_produkte_empty(mock_session_local):
     assert result == []
 
 ############## Tests für Kostenaufteilung################################
+@patch('share_shop_api.SessionLocal')
+def test_create_kostenaufteilung_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_db.add.return_value = None
+    mock_db.commit.return_value = None
+    mock_db.refresh.side_effect = lambda obj: setattr(obj, 'empfaenger_id', 1)
+
+    body = MagicMock()
+    body.empfaenger_id = 1
+    body.schuldner_id = 2
+    body.betrag = 10.50
+
+    result = create_kostenaufteilung(body, db=mock_db)
+    assert result.empfaenger_id == 1
+
 @patch('share_shop_api.SessionLocal')
 def test_get_kostenaufteilung_empfaenger_success(mock_session_local):
     """ Testet das erfolgreiche Abrufen der Kostenaufteilung für einen Empfänger. """
