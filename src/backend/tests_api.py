@@ -435,6 +435,36 @@ def test_delete_liste_not_found(mock_session_local):
         delete_liste(999, db=mock_db)
     assert "Liste nicht gefunden" in str(exc_info.value)
 
+@patch('share_shop_api.SessionLocal')
+def test_get_listen_by_nutzer_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_list = create_mock_liste(1, 'List1', 1)
+    mock_db.query.return_value.join.return_value.filter.return_value.all.return_value = [mock_list]
+
+    result = get_listen_by_nutzer(1, db=mock_db)
+    assert len(result) == 1
+
+@patch('share_shop_api.SessionLocal')
+def test_get_listen_all_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_list = create_mock_liste(1, 'List1', 1)
+    mock_db.query.return_value.all.return_value = [mock_list]
+
+    result = get_listen_all(db=mock_db)
+    assert len(result) == 1
+
+@patch('share_shop_api.SessionLocal')
+def test_delete_mitglied_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_list = create_mock_liste(1, 'List1', 1)
+    mock_member = create_mock_mitglied(1, 2)
+    mock_db.query.return_value.filter.return_value.first.side_effect = [mock_list, mock_member]
+
+    result = delete_mitglied(1, 2, requester_id=1, db=mock_db)
+    assert result.status_code == 204
 
 ################Tests für Eingekaufte Produkte############################
 
@@ -605,36 +635,3 @@ def test_change_email_success(mock_session_local):
     result = change_email(1, body, db=mock_db)
     assert result.email == 'new@test.com'
 
-
-##tests für listen
-
-@patch('share_shop_api.SessionLocal')
-def test_get_listen_by_nutzer_success(mock_session_local):
-    mock_db = MagicMock()
-    mock_session_local.return_value = mock_db
-    mock_list = create_mock_liste(1, 'List1', 1)
-    mock_db.query.return_value.join.return_value.filter.return_value.all.return_value = [mock_list]
-
-    result = get_listen_by_nutzer(1, db=mock_db)
-    assert len(result) == 1
-
-@patch('share_shop_api.SessionLocal')
-def test_get_listen_all_success(mock_session_local):
-    mock_db = MagicMock()
-    mock_session_local.return_value = mock_db
-    mock_list = create_mock_liste(1, 'List1', 1)
-    mock_db.query.return_value.all.return_value = [mock_list]
-
-    result = get_listen_all(db=mock_db)
-    assert len(result) == 1
-
-@patch('share_shop_api.SessionLocal')
-def test_delete_mitglied_success(mock_session_local):
-    mock_db = MagicMock()
-    mock_session_local.return_value = mock_db
-    mock_list = create_mock_liste(1, 'List1', 1)
-    mock_member = create_mock_mitglied(1, 2)
-    mock_db.query.return_value.filter.return_value.first.side_effect = [mock_list, mock_member]
-
-    result = delete_mitglied(1, 2, requester_id=1, db=mock_db)
-    assert result.status_code == 204
