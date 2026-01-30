@@ -1,0 +1,165 @@
+= Betriebsdokumentation
+
+
+
+
+
+== Systemvorraussetzungen
+
+=== Hardwareanforderungen
+
+Grundsätzlich läuft die Software auf so gut wie allen modernen Systemen
+mit einer Netzwerkarte und den Fähigkeiten die aktuelle Docker Version zu installieren.
+Eine genaue Hardwareanforderung zu spezifizieren ist schwer,
+da dies sehr von der zu erwartenden Nutzlast abhängt.
+
+=== Softwareanforderungen
+
+* Docker
+
+=== Installation
+
+Die Anwendung besteht aus 3 Containern, welche alle unabhängig voneinander gehostet werden können.
+Ein Container ist die Datenbank.
+Der zweite Container ist die API, welche zwischen User Interface und Datenbank liegt.
+Ein User Interface bildet den letzten Container.
+
+Da die Architektur sich dem Schichten-Pattern bedient, müssen die Conatiner aufeinander aufgebaut werden.
+Ohne eine laufende Datenbank kann keine API instanziert werden und ohne eine API kein User Interface.
+
+==== Verteilt
+
+===== Datenbank
+
+Es kann jede mit FastAPI kompatible Datenbank gewählt werden.
+
+===== API
+
+Die API steht als Docker Image in link:https://hub.docker.com/r/erikwennke2003/shop_api/tags[Docker Hub]
+zur Verfügung.
+Es muss der Port auf dem sie zur Verfügung stehen soll zugänglich gemacht werden.
+Au
+
+[source, bash]
+----
+# holen des Images
+docker pull erikwennke2003/shop_api:<tag-name>
+
+# Start Container
+docker run -p 8000:8000 -e DB_NAME="<name>" -e DB_USER="<user>" -e DB_PASSWORD="<password>" -e DB_HOST="<host>" erikwennke2003/shop_api:<tag-name>
+----
+
+===== User Interface
+
+Das User Interface ist ebenfalls auf link:https://hub.docker.com/r/erikwennke2003/shop_ui/tags[Docker Hub]
+verfügbar.
+Die UI muss den default Port von Nginx öffnen.
+Zudem muss ihr die Basis URL der API übergeben werden.
+
+[source, bash]
+----
+# holen des Images
+docker pull erikwennke2003/shop_ui:<tag-name>
+
+# Start Container
+docker run -p 80:80 -e MY_APP_API_BASE_URL="<api>" erikwennke2003/shop_ui:<tag-name>
+----
+
+==== Zusammen
+
+Es können alle Container zusammen auf einer Maschine gehostet werden.
+Hierfür kann man eine Docker Compose File nutzen.
+Dabei ist es wichtig die Reienfolge der Inbetriebnahme (Datenbank -> API -> UI) zu beachten.
+Ein typische Stolperfall ist,
+dass zum Beispiel die MySQL erst eine Demo-Service erstellt, sich anschließent aber Neustartet,
+bevor sie komplett zur Verfügung steht.
+Das führt dazu, dass die API einen verstärkten Healthcheck durchführen muss,
+bevor sie gestartet werden kann.
+
+Im folgenden Beispile müssen nur noch <tag-name> ersetzt werden.
+Dann sollte die Ausführung möglich sein.
+
+[source, bash]
+----
+services:
+  ui:
+    image: erikwenke2003/shop_ui:<tag-name>
+    environment:
+      MY_APP_API_BASE_URL: http://localhost:8000/
+    depends_on:
+     - api
+    ports:
+      "80:80"
+  api:
+    image: erikwenke2003/shop_api:<tag-name>
+    environment:
+      DB_NAME: share_shop
+      DB_USER: userTest
+      DB_PASSWORD: testPassword
+      DB_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      "8000:8000"
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: share_shop
+      MYSQL_USER: userTest
+      MYSQL_PASSWORD: testPassword
+      MYSQL_ROOT_PASSWORD: testRootPassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+        test: ["CMD-SHELL", "mysql -uuserTest -ptestPassword -e 'SELECT 1;' share_shop"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
+volumes:
+  mysql_data:
+----
+
+Weiterführende Informationen zum Verwalten und Starten von Containern für diesen Zusammenhang
+gibt es in der link:https://docs.docker.com/compose/[Docker Compose Dokumentation].
+
+== Systembetreuung
+
+=== FAQ für Benutzersupport
+
+. Frontend lädt nicht
+.. Nginx-Service prüfen
+. API antwortet nicht
+.. Status von fastapi.service prüfen
+.. Backend-Logs einsehen
+. Daten fehlen oder sind inkonsistent
+.. MySQL-Service prüfen
+.. Datenbank share_shop prüfen
+
+=== Fehlerdiagnose (Logfile-Einträge)
+
+* Backend-Logs: 'journalctl -u fastapi.service'
+* Webserver-Logs: '/var/log/nginx/error.log'
+* Datenbank-Logs: systemd (mysql.service)
+
+=== Typische Fehler
+
+* 502/504 -> Backend nicht erreichbar
+* Datenbankfehler -> falsche Zugangsdaten oder DB nicht verfügbar
+
+== Datensicherung und Wiederherstellung
+
+=== Strategien
+
+* Manuell
+* Sicherung der Datenbank
+
+=== Durchführung
+
+* 'mysqldump -u root -p share_shop > backup.sql'
+
+=== Wiederherstellung
+
+* 'mysql -u root -p share_shop < share_shop'
+* Quellcode liegt im GitHub-Repository

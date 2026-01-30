@@ -1,0 +1,79 @@
+<template>
+  <AppHeader :title="user.name + '\'s Einkaufslisten'">
+    <template #left> </template>
+
+    <template #right>
+      <button @click="newList" id="newlist" class="button-add">
+        <font-awesome-icon icon="plus" />
+      </button>
+    </template>
+  </AppHeader>
+
+  <div v-if="loadingActive" class="loading">Laden...</div>
+  <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+  <main>
+    <div class="card-list">
+      <ListButton
+        v-for="list in lists"
+        :key="list.id"
+        :name="list.name"
+        :item="list"
+      />
+    </div>
+  </main>
+  <BottomBar :highlight-btn="1" />
+</template>
+
+<script>
+import ListButton from "./ListButton.vue";
+import AppHeader from "./AppHeader.vue";
+import { inject, ref } from "vue";
+import { api } from "../api/client";
+import BottomBar from "./BottomBar.vue";
+
+/**
+ * Komponente zur Anzeige der Listenübersicht des Nutzers
+ */
+
+export default {
+  data() {
+    // momentanen Nutzer holen
+    const user = inject("user");
+
+    return { lists: [], user, errorMessage: "", loadingActive: true };
+  },
+  methods: {
+    // Nutzer möchte neue Liste erstellen
+    newList() {
+      this.$router.push("/neueliste");
+    },
+  },
+  components: {
+    ListButton,
+    BottomBar,
+    AppHeader,
+  },
+  async mounted() {
+    // Listen des momentanen Nutzers holen
+    const user = inject("user");
+    const user_id = user.value.id;
+    try {
+      const response = await api.get(`/nutzer/${user_id}/listen`);
+      this.lists = response.data;
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.detail) {
+        this.errorMessage = error.response.data.detail;
+      } else {
+        this.errorMessage = "Fehler beim Laden der Listen";
+      }
+    }
+    this.loadingActive = false;
+  },
+};
+</script>
+
+<style scoped>
+.error {
+  width: 300px;
+}
+</style>

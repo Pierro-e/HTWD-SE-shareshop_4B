@@ -1,0 +1,63 @@
+= Branching-Guideline für das Team
+:doctype: article
+:toc:
+:toclevels: 2
+
+
+
+== 1. Feature-Branch-Prinzip
+
+Zweck::
+Ein Feature-Branch dient als Sammelpunkt für alle Tasks, die zur vollständigen Implementierung eines Features gehören. Er isoliert die Entwicklungsarbeit eines gesamten Features vom Hauptentwicklungszweig.
+
+Ablauf::
+- Feature-Branches werden direkt von `develop` abgeleitet.
+- Alle zugehörigen Task-Branches werden von diesem Feature-Branch abgeleitet.
+
+== 2. Ableitung von Task-Branches
+
+Regel::
+- Niemals einen Task-Branch direkt von `develop` ableiten.
+
+Ablauf::
+- Leite einen Task-Branch für eine einzelne Aufgabe/Ticket immer direkt vom zugehörigen Feature-Branch ab.
+
+Zweck::
+- Sicherstellen, dass die Arbeit an einem Task auf der stabilen Basis des Feature-Branches aufbaut und nicht direkt auf `develop` trifft, solange das Feature noch nicht vollständig ist.
+
+== 3. Namenskonventionen (Vorschlag)
+
+Um die Übersichtlichkeit zu gewährleisten, verwenden wir folgende Namenskonventionen:
+
+[options="header"]
+|===
+| Branch-Typ | Namensformat | Beispiel
+
+| Hauptzweig
+| `develop`
+| `develop`
+
+| Feature
+| `feature/<Kurzbeschreibung>`
+| `feature/neuer-warenkorb`
+
+| Task
+| `task/<Kurzbeschreibung>`
+| `task/warenkorb-datenmodell`
+|===
+
+
+== 4. Zusammenführung (Merging)
+
+- Task → Feature:
+    - Nachdem ein Task abgeschlossen und der Code-Review erfolgreich ist, wird der Task-Branch per Pull Request (PR) in den zugehörigen Feature-Branch gemerged.
+    - Vor dem Merge: Tests lokal/CI grün, Konflikte gelöst.
+
+- Feature → develop:
+    - Erst wenn ALLE Tasks innerhalb des Feature-Branches abgeschlossen, getestet und das gesamte Feature bereit für die Integration ist, wird der Feature-Branch per Pull Request in `develop` gemerged.
+    - PR-Prüfpunkte: Integrationstests, Release-Notes-Eintrag (falls erforderlich), Merge-Strategie (Squash/Merge/Rebase) gemäß Teamvereinbarung.
+
+== Anmerkungen
+
+- Konfliktlösung: Konflikte zuerst im Feature-Branch beheben; erst dann Feature → develop.
+- Kurzlebige Hotfixs: Direkt auf `develop` oder ein eigener `hotfix/*`-Zweig nach Teamvereinbarung.

@@ -1,0 +1,8 @@
+include::attributes.adoc[]
+
+= {system-name}: Test Dokumentation
+{docdate}
+
+include::{docs}test/test_ergebnisse.adoc[leveloffset=+1]
+
+include::{docs}test/test_konzept.adoc[leveloffset=+1]

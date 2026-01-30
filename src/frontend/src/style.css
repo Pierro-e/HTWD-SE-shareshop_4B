@@ -1,0 +1,587 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+
+  color-scheme: light dark;
+
+  color: var(--text-color);
+  background-color: var(--bg-color);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[css-accent="Blau"] {
+  --accent-color: #646cff;
+  --accent-button-color: #3350d4;
+  --accent-button-cancel-color: #66688d;
+
+  --accent-header-bg-color: #1a1c3b;
+}
+
+[css-accent="Lila"] {
+  --accent-color: #9d60ff;
+  --accent-button-color: #6728cc;
+  --accent-button-cancel-color: #7e7194;
+
+  --accent-header-bg-color: #221438;
+}
+
+[css-accent="Grün"] {
+  --accent-color: #359191;
+  --accent-button-color: #126862;
+  --accent-button-cancel-color: #688383;
+
+  --accent-header-bg-color: #123131;
+}
+
+[css-accent="Rot"] {
+  --accent-color: #b25050;
+  --accent-button-color: #9e2f2f;
+  --accent-button-cancel-color: #b48686;
+
+  --accent-header-bg-color: #300f0f;
+}
+
+[css-accent="Orange"] {
+  --accent-color: #ca7631;
+  --accent-button-color: #cc5c00;
+  --accent-button-cancel-color: #d89d6c;
+  
+  --accent-header-bg-color: #3d1b00;
+  
+}
+
+[css-theme="Hell"] {
+  --bg-color: #ececec;
+  --text-color: #000000;
+  --text-color2: #363636;
+
+  --inputbox-color: #000000;
+  --inputbox-bg-color: #e6e6e6;
+  --inputbox-focus-bg-color: #dfdfdf;
+
+  --box-bg-color: #dadada;
+  --box-bg-color2: #cdcdcd;
+  --box-shadow-color: rgba(0, 0, 0, 0.3);
+
+  --success-color: #29692e;
+  --success-bg-color: #aff0af;
+  --success-border-color: #4caf50;
+  --error-color: #692d2d;
+  --error-bg-color: #f0adb3;
+  --error-border-color: #c0392b;
+}
+
+[css-theme="Dunkel"] {
+  --bg-color: #111111;
+  --text-color: #ffffff;
+  --text-color2: #cfcfcf;
+
+  --inputbox-color: #ffffff;
+  --inputbox-bg-color: #3a3a3a;
+  --inputbox-focus-bg-color: #505050;
+
+  --box-bg-color: #2a2a2a;
+  --box-bg-color2: #3d3d3d;
+  --box-shadow-color: rgba(220, 220, 220, 0.3);
+
+  --success-color: #a4ffac;
+  --success-bg-color: #264d26;
+  --success-border-color: #4caf50;
+  --error-color: #f9c8c8;
+  --error-border-color: #e55353;
+  --error-bg-color: #4d2626;
+}
+
+
+@media (prefers-color-scheme: light) {
+  [css-theme="Automatisch"] {
+    --bg-color: #ececec;
+    --text-color: #000000;
+    --text-color2: #363636;
+
+    --inputbox-color: #000000;
+    --inputbox-bg-color: #e6e6e6;
+    --inputbox-focus-bg-color: #dfdfdf;
+
+    --box-bg-color: #dadada;
+    --box-bg-color2: #cdcdcd;
+    --box-shadow-color: rgba(0, 0, 0, 0.3);
+
+    --success-color: #29692e;
+    --success-bg-color: #aff0af;
+    --success-border-color: #4caf50;
+    --error-color: #692d2d;
+    --error-bg-color: #f0adb3;
+    --error-border-color: #c0392b;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  [css-theme="Automatisch"] {
+    --bg-color: #111111;
+    --text-color: #ffffff;
+    --text-color2: #cfcfcf;
+
+    --inputbox-color: #ffffff;
+    --inputbox-bg-color: #3a3a3a;
+    --inputbox-focus-bg-color: #505050;
+
+    --box-bg-color: #2a2a2a;
+    --box-bg-color2: #3d3d3d;
+    --box-shadow-color: rgba(255, 255, 255, 0.3);
+
+    --success-color: #a4ffac;
+    --success-bg-color: #264d26;
+    --success-border-color: #4caf50;
+    --error-color: #f9c8c8;
+    --error-border-color: #e55353;
+    --error-bg-color: #4d2626;
+  }
+}
+
+a {
+  font-weight: 500;
+  color: var(--accent-color);
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+#app {
+  width: 97.5%;
+  max-width: 1280px;
+  padding-top: 0.5em;
+  padding-bottom: 2.5em; /* für BottomBar */
+  padding-left: 0.5em;
+  padding-right: 1em;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+/*wirkt bei allen <button>-Elementen*/
+button {
+  border: 1px solid transparent;
+  background-color: var(--accent-button-color);
+  color: white;
+  padding: 0.6em 1.2em;
+  border-radius: 0.5em;
+  text-align: center;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  margin: 0.3em;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  transform: translateZ(0) scale(1);
+  transition: transform .15s;
+}
+
+button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0.3em 0.6em var(--box-shadow-color); 
+}
+
+/*wirkt nur bei <button>-Elementen mit class="button-add"*/
+.button-add {
+  background-color: #067720; 
+}
+
+.button-cancel {
+  background-color: var(--accent-button-cancel-color);
+}
+
+.button-delete {
+  background-color: #a50c1b; 
+}
+
+.button-edit {
+  background-color: #0052aa; 
+}
+
+.button-submit {
+  background-color: var(--accent-color);
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Eingabefelder */
+input, textarea, select {
+  width: 100%;
+  padding: 0.6em 0.8em;
+  border-radius: 0.4em;
+  border: 1px solid gray;
+  font-size: 1em;
+  box-sizing: border-box;
+  background-color: var(--inputbox-bg-color);
+  color: var(--inputbox-color);
+  accent-color: var(--accent-color);
+  font-family: inherit;
+  resize: vertical;
+  text-overflow: ellipsis;
+  transition:
+    background-color 0.25s,
+    border-color 0.25s;
+}
+
+input:focus, textarea:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -1px;
+  background-color: var(--inputbox-focus-bg-color);
+}
+
+select:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: -1px;
+}
+
+/* Vue Select */
+:root {
+  --vs-controls-color: var(--text-color);
+  --vs-border-color: transparent;
+  --vs-border-radius: 0.4em;
+  --vs-border-width: 2px;
+
+  --vs-dropdown-bg: var(--inputbox-focus-bg-color);
+  --vs-dropdown-color: var(--text-color);
+  --vs-dropdown-option-color: var(--text-color);
+  --vs-dropdown-max-height: 170px;
+
+  --vs-selected-bg: var(--accent-color);
+  --vs-selected-color: var(--text-color);
+
+  --vs-search-input-bg: rgb(255, 255, 255);
+  --vs-line-height: 1.7;
+
+  --vs-state-disabled-bg: var(--box-shadow-color); 
+  --vs-state-disabled-color: rgb(240, 240, 240);
+
+  --vs-search-input-color: var(--text-color);
+
+  --vs-dropdown-option--active-bg: var(--accent-color);
+  --vs-dropdown-option--active-color: white;
+
+  --vs-transition-duration: 150ms;
+}
+
+.v-select .vs__search::placeholder { /* Placeholderfarbe des Browsers */
+  color: revert; 
+}
+
+.vs__selected-options { /* https://github.com/sagalbot/vue-select/issues/754#issuecomment-654065539 */
+  flex-wrap: nowrap;
+  max-width: calc(100% - 25px); /* change this to `- 40px` if you're supporting a `clearable` field; I was not */
+}
+
+.vs__selected {
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+ .vs__dropdown-toggle { /* Eingabefeld */
+  border: 1px solid gray; 
+
+  padding-left: 0.2em;
+  background-color: var(--inputbox-bg-color);
+  box-sizing: border-box;
+
+  transition:
+    background-color var(--vs-transition-duration),
+    border-color var(--vs-transition-duration);
+}
+
+.vs__fade-leave-from { /* eigenes Fading - davor */
+  border-color: var(--accent-color);
+  opacity: 1;
+}
+
+.vs__fade-leave-to { /* eigenes Fading - danach */
+  border-color: transparent;
+  opacity: 0;
+}
+
+.vs__fade-leave-active { /* eigenes Fading */
+  transition:
+    border-color var(--vs-transition-duration),
+    opacity var(--vs-transition-duration);
+}
+
+.v-select:focus-within .vs__dropdown-toggle { /* Eingabefeld fokussiert */
+  outline: 2px solid var(--accent-color);
+  outline-offset: -2px; /* sitzt direkt auf dem Rand */
+  background-color: var(--inputbox-focus-bg-color);
+}
+
+ .v-select.vs--open .vs__dropdown-menu { /* Dropdownmenü */
+  border-color: var(--accent-color);
+}
+
+/* Hack: Input immer zwei Pixel größer (bei Platzhalter oder keinem), damit es nicht verrutscht */
+.v-select input:placeholder-shown { 
+  margin-bottom: 2px;
+}
+
+.v-select input:not(:placeholder-shown) { 
+  margin-bottom: 2px;
+}
+
+/* Formular (besser geeignet, wenn Label: [Textbox])*/
+.form-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 5px;
+}
+
+form div {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  width: 100%; 
+}
+
+form label {
+  text-align: right; 
+}
+
+form input {
+  flex: 1; /* Rest ausfüllen */
+  box-sizing: border-box;
+}
+
+form select {
+  flex: 1; /* Rest ausfüllen */
+  box-sizing: border-box;
+}
+
+/* Karten */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Button und Name auf gleicher Höhe */
+}
+
+.card-header-buy { /* bei Einkauf */
+  gap: 0.5em;
+  justify-content: left;
+  align-items: center;
+}
+
+.card {
+  max-width: 400px;
+  min-width: 275px;
+  background-color: var(--box-bg-color);
+  border: 1px solid var(--accent-button-color);
+  border-radius: 1rem;
+  padding: 0.75rem;
+  text-align: left;
+  box-shadow: 0 1px 2px var(--box-shadow-color);
+  transition: box-shadow 0.3s ease;
+  gap: 1em;
+}
+
+@media (max-width: 400px) {
+  .card {
+    min-width: 88vw;
+  }
+}
+
+.card:hover {
+  color: var(--text-color);
+  background-image: linear-gradient(to bottom, var(--box-bg-color), var(--box-bg-color2));
+  outline: 2px solid var(--accent-button-color);
+  outline-offset: -1px;
+  box-shadow: 0 4px 6px var(--box-shadow-color);
+}
+
+.card-name {
+  margin: 0;
+  color: var(--text-color);
+  font-size: 1.2em;
+  font-weight: bold;
+  word-break: break-word;
+}
+
+.card-info {
+  font-size: 1rem; /* 14px */
+  color: var(--text-color2);
+  font-weight: 450;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center; /* Vertikal zentrieren */
+}
+
+.card-info strong {
+  font-weight: 600;
+  color: var(--text-color2);
+  text-align: left;
+}
+
+.card-beschreibung {
+  font-size: 1rem;
+  color: var(--text-color2);
+  font-weight: 450;
+  margin-top: 0.5rem;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Anzahl sichtbarer Zeilen */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  hyphens: none;
+  text-align: left; /* Linksbündig explizit gesetzt */
+}
+
+.card:hover .card-beschreibung {
+  display: flex;
+  word-break: break-word;
+}
+
+.button-product-settings {
+  color: var(--text-color);
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1; /* optional, für vertikale Ausrichtung */
+}
+
+.card-grid {
+  width: 100%; /* nimmt die volle Breite der Grid-Zelle */
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+} 
+
+.card-list {
+  padding-top: 65px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  max-width: 400px;
+  margin: auto auto; /* zentrieren */
+}
+
+/* Settings-Container fixiert unter der Überschrift mittig */
+.settings-container {
+  display: flex;
+  color: white;
+  background-color: var(--accent-header-bg-color);
+  box-shadow: 0 2px 5px var(--box-shadow-color);
+  position: fixed;
+
+  top: 70px;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  gap: 0.5em;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-container button {
+  padding: 0.5em 1.0em;
+  margin: 0em;
+}
+
+.settings-container input,
+.settings-container select {
+  max-width: 300px;
+  padding: 0.5em 1.0em;
+}
+
+/* Erfolg- und Fehlerboxen */
+.success, .error, .loading {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: 5px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.success {
+  background-color: var(--success-bg-color);
+  border: 1.5px solid var(--success-border-color);
+  color: var(--success-color);
+  width: calc(100% - 2rem);
+  margin: 1.5rem auto 0 auto;
+}
+
+.error {
+  background-color: var(--error-bg-color);
+  border: 1.5px solid var(--error-border-color);
+  color: var(--error-color);
+  width: calc(100% - 2rem);
+}
+
+.loading {
+  font-weight: bold;
+  font-size: larger;
+}
+
+.info {
+  font-weight: bold;
+  font-size: larger;
+  word-wrap: break-word;
+}
+
+.info-block {
+  background-color: var(--box-bg-color);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+
+}

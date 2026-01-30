@@ -1,0 +1,53 @@
+= Testergebnisse
+
+== Ergebnisse der Testdurchführung - Backend
+
+=== Automatisierte API-Tests (tests_api.py)
+
+**Testanzahl:** 36 Tests
+**Status:** Alle Tests bestanden (36 passed)
+**Abdeckung:** ~80% der API-Endpunkte
+
+
+==== Testausführung
+
+**Alle Tests ausführen**
+[source,bash]
+----
+cd src/backend
+py -m pytest test_api.py -v
+----
+**Einzelne Tests ausführen**
+Einzelne Test-Kategorien
+
+[source,bash]
+----
+# Nur Nutzer-Tests
+py -m pytest test_api.py -k "nutzer" -v
+
+# Nur DELETE-Tests
+py -m pytest test_api.py -k "delete" -v
+
+# Nur Erfolgs-Fälle
+py -m pytest test_api.py -k "success" -v
+----
+
+**Einzelne Testfälle**
+Einzelnen Test ausführen
+
+[source,bash]
+----
+py -m pytest test_api.py::test_get_nutzer_all_success -v
+----
+Die automatisierten Backend-Tests werden erfolgreich ausgeführt und validieren:
+
+* Korrekte HTTP-Statuscodes für erfolgreiche und fehlgeschlagene Anfragen
+* Validierung der Anfrage- und Antwortkörper
+* Mock-basierte Datenbankoperationen ohne echte Datenbankverbindung
+* Fehlerbehandlung und Edge-Cases
+
+== Ergebnisse der Testdurchführung - Frontend
+
+Die manuell getesteten Frontend-Funktionen verhalten sich erwartungsgemäß und ermöglichen eine fehlerfreie Bedienung der Anwendung.
+
+

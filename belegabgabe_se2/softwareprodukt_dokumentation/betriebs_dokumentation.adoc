@@ -1,0 +1,6 @@
+include::attributes.adoc[]
+
+= {system-name}: Betriebs Dokumentation
+{docdate}
+
+include::{docs}deployment/betriebsdokumentation.adoc[lines=1..1;5..-1,leveloffset=+1]

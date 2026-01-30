@@ -1,0 +1,31 @@
+{
+  "name": "shareshop_4b",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "docs": "jsdoc -c jsdoc.json",
+    "docs-pdf": "jsdoc -c jsdoc_pdf.json"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
+    "@fortawesome/vue-fontawesome": "^3.1.2",
+    "axios": "^1.12.2",
+    "taffydb": "^2.7.3",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.1",
+    "vue-select": "^4.0.0-beta.6"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/compiler-sfc": "^3.5.26",
+    "jsdoc": "^4.0.5",
+    "jsdoc-vuejs": "^4.0.0",
+    "minami": "^1.2.3",
+    "vite": "^6.3.5"
+  }
+}

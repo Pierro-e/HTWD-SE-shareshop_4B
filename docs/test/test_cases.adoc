@@ -1,7 +1,0 @@
-= Test Cases: {project-name}
-{localdatetime}
-include::../_includes/default-attributes.inc.adoc[]
-// Platzhalter für weitere Dokumenten-Attribute
-
-
-* Es wurden keine Testcases benötigt.

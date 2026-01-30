@@ -1,0 +1,58 @@
+import { createRouter, createWebHistory } from "vue-router";
+import Login from "./components/Login.vue";
+import ProjektEinführung from "./components/ProjektEinführung.vue";
+import CreateAccount from "./components/CreateAccount.vue";
+import ListOverview from "./components/ListOverview.vue";
+import ListCreator from "./components/ListCreator.vue";
+import List from "./components/List.vue";
+import UserSettings from "./components/UserSettings.vue";
+import ProductDetail from "./components/ProductDetail.vue";
+import Einkauf from "./components/Einkauf.vue";
+import Favorites from "./components/favorites/Favorites.vue"
+import ProductArchive from "./components/ProductArchive.vue";
+import UserArchive from "./components/UserArchive.vue";
+import Finanzen from "./components/Finanzen.vue";
+
+const routes = [
+  { path: "/", component: Login },
+  { path: "/einfuehrung", component: ProjektEinführung },
+  { path: "/registrieren", component: CreateAccount },
+  { path: "/settings", component: UserSettings },
+  { path: "/listen", component: ListOverview },
+  { path: "/neueliste/", component: ListCreator },
+  { path: "/list/:id", component: List, props: true, name: "List" },
+  { path: "/fav", component: Favorites },
+  {
+    path: "/liste/:listenId/produkte/:produktId/nutzer/:nutzerId",
+    component: ProductDetail,
+    props: true,
+    name: "ProductDetail"
+  },
+  { path: "/list/:listenId/einkauf", component: Einkauf, props: true },
+
+  { path: "/product/archive/:purchase_id",
+    component: ProductArchive,
+    props: route => ({
+      purchase_id: route.params.purchase_id
+    }),
+    name: "ProductArchive"
+  },
+  
+  { path: "/finanzen", component: Finanzen },
+  
+  { path: "/userArchive", component: UserArchive,
+    name: "UserArchive",
+    props: route => ({
+      listFilter: route.query.listFilter ? Number(route.query.listFilter) : null
+    })
+  },
+];
+const router = createRouter({
+  history: createWebHistory(),
+  routes,
+  scrollBehavior() {
+    window.scrollTo(0,0);
+  }
+});
+
+export default router;
