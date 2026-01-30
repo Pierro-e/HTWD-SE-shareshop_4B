@@ -56,24 +56,10 @@ PO unregelmäßig bei Überpfüfen der gestellten Anforderungen
 
 === Ergebnisse der Testdurchführung
 
-Die automatisierten Backend-Tests werden erfolgreich ausgeführt, sofern alle notwendigen Abhängigkeiten installiert sind und die Tests korrekt gemockt werden.
+Die automatisierten Backend-Tests werden erfolgreich ausgeführt, sofern alle notwendigen Abhängigkeiten installiert sind.
 
 Zentrale API-Endpunkte (z. B. Login, Root-Endpunkt) liefern die erwarteten HTTP-Statuscodes und Antwortdaten.
 
 Die manuell getesteten Frontend-Funktionen verhalten sich erwartungsgemäß und ermöglichen eine fehlerfreie Bedienung der Anwendung.
 
-=== Erkannte Abweichungen und Konsequenzen
 
-??Ist das relevant? bisher nur bei mit(malrene aufgetreten)
-
-Während der Testdurchführung wurde festgestellt, dass das Backend beim Import der API-Module zwingend gesetzte Umgebungsvariablen erwartet.
-
-Dies führt lokal zu Fehlern (KeyError), wenn die Anwendung außerhalb der VM getestet wird.
-
-Konsequenzen:
-
-Für Tests werden Dummy-Umgebungsvariablen verwendet oder über Fixtures gesetzt.
-
-Die Problematik ist dokumentiert und kann zukünftig durch eine robustere Konfigurationslogik (z. B. Default-Werte oder Konfigurationsdateien) verbessert werden.
-
-Bekannte, noch nicht behobene Bugs werden in den GitHub Issues dokumentiert und mit dem Label bug gekennzeichnet.
