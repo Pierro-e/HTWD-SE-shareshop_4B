@@ -65,8 +65,26 @@ PO unregelmäßig bei Überpfüfen der gestellten Anforderungen
 
 ===== Testausführung
 
+**Alle Tests ausführen**
+[source,bash]
+----
+cd src/backend
+py -m pytest test_api.py -v
+----
+**Einzelne Tests ausführen**
+Einzelne Test-Kategorien
 
+[source,bash]
+----
+# Nur Nutzer-Tests
+py -m pytest test_api.py -k "nutzer" -v
 
+# Nur DELETE-Tests
+py -m pytest test_api.py -k "delete" -v
+
+# Nur Erfolgs-Fälle
+py -m pytest test_api.py -k "success" -v
+----
 Die automatisierten Backend-Tests werden erfolgreich ausgeführt und validieren:
 
 * Korrekte HTTP-Statuscodes für erfolgreiche und fehlgeschlagene Anfragen
