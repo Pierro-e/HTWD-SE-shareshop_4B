@@ -12,23 +12,16 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 
 COPY . .
 
-# TODO:
-ENV VITE_API_BASE_URL=http://37.205.9.138:8000
-
 RUN npm run build
 
 # =========================================
 # Stage 2: Nginx
 # =========================================
 
-FROM nginxinc/nginx-unprivileged:alpine3.22
+FROM nginx:1.29.4-alpine
 
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx_default.conf /etc/nginx/conf.d/default.conf
 
-COPY --chown=nginx:nginx --from=builder /app/dist /usr/share/nginx/html
-
-USER nginx
-
-EXPOSE 8080
-ENTRYPOINT ["nginx", "-c", "/etc/nginx/nginx.conf"]
-CMD ["-g", "daemon off;"]
+COPY env.sh /docker-entrypoint.d/env.sh
+RUN chmod +x /docker-entrypoint.d/env.sh

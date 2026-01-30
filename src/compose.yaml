@@ -1,26 +1,29 @@
 services:
   ui:
     build: ./frontend/
-    ports:
-      - "8080:8080"
+    environment:
+      MY_APP_API_BASE_URL: http://localhost:8000
     depends_on:
       - api
+    ports:
+      - "80:80"
+
   api:
     build: ./backend/
-    # TODO:
     environment:
       DB_NAME: share_shop
       DB_USER: userAdmin
       DB_PASSWORD: xdb_Admin890!
       DB_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8000:8000"
-    depends_on:
-      - db
+
   db:
-    image: mysql:8.4
+    image: mysql:8.0
     restart: always
-    # TODO:
     environment:
       MYSQL_DATABASE: share_shop
       MYSQL_USER: userAdmin
@@ -28,7 +31,11 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
       - mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "mysql -uuserAdmin -pxdb_Admin890! -e 'SELECT 1;' share_shop"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 volumes:
   mysql_data:
