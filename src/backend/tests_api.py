@@ -12,7 +12,7 @@ with patch.dict(os.environ, {
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer, get_nutzer_by_email, create_fav_produkt
     from share_shop_api import change_passwort, change_name, change_email
-    from share_shop_api import delete_fav_produkt,delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
+    from share_shop_api import delete_mitglied,delete_fav_produkt,delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
     from share_shop_api import update_fav_produkt, get_listen_by_nutzer, get_listen_all
     from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
 
@@ -630,3 +630,14 @@ def test_get_listen_all_success(mock_session_local):
 
     result = get_listen_all(db=mock_db)
     assert len(result) == 1
+
+@patch('share_shop_api.SessionLocal')
+def test_delete_mitglied_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_list = create_mock_liste(1, 'List1', 1)
+    mock_member = create_mock_mitglied(1, 2)
+    mock_db.query.return_value.filter.return_value.first.side_effect = [mock_list, mock_member]
+
+    result = delete_mitglied(1, 2, requester_id=1, db=mock_db)
+    assert result.status_code == 204
