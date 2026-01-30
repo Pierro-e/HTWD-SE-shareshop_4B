@@ -7,8 +7,10 @@ include::attributes.adoc[]
 
 === Hardwareanforderungen
 
-* CPU: vergleichbar oder besser als Intel Xeon Gold 6132 (2) @ 2.593GHz
-* Memory: 1000 MiB (für leere Datenbank)
+Grundsätzlich läuft die Software auf so gut wie allen modernen Systemen
+mit einer Netzwerkarte und den Fähigkeiten die aktuelle Docker Version zu installieren.
+Eine genaue Hardwareanforderung zu spezifizieren ist schwer,
+da dies sehr von der zu erwartenden Nutzlast abhängt.
 
 === Softwareanforderungen
 
@@ -35,7 +37,7 @@ Es kann jede mit FastAPI kompatible Datenbank gewählt werden.
 Die API steht als Docker Image in link:https://hub.docker.com/r/erikwennke2003/shop_api/tags[Docker Hub]
 zur Verfügung.
 Es muss der Port auf dem sie zur Verfügung stehen soll zugänglich gemacht werden.
-Außerdem müssen die Parameter der Datenbank definiert werden.
+Au
 
 [source, bash]
 ----
@@ -43,8 +45,7 @@ Außerdem müssen die Parameter der Datenbank definiert werden.
 docker pull erikwennke2003/shop_api:<tag-name>
 
 # Start Container
-docker run -p 8000:8000 -e DB_NAME="<name>" -e DB_USER="<user>" \
--e DB_PASSWORD="<password>" -e DB_HOST="<host>" erikwennke2003/shop_api:<tag-name>
+docker run -p 8000:8000 -e DB_NAME="<name>" -e DB_USER="<user>" -e DB_PASSWORD="<password>" -e DB_HOST="<host>" erikwennke2003/shop_api:<tag-name>
 ----
 
 ===== User Interface
@@ -69,7 +70,7 @@ Es können alle Container zusammen auf einer Maschine gehostet werden.
 Hierfür kann man eine Docker Compose File nutzen.
 Dabei ist es wichtig die Reienfolge der Inbetriebnahme (Datenbank -> API -> UI) zu beachten.
 Ein typische Stolperfall ist,
-dass zum Beispiel die MySQL erst eine Demo-Service ertstellt, sich anschließent aber Neustartet,
+dass zum Beispiel die MySQL erst eine Demo-Service erstellt, sich anschließent aber Neustartet,
 bevor sie komplett zur Verfügung steht.
 Das führt dazu, dass die API einen verstärkten Healthcheck durchführen muss,
 bevor sie gestartet werden kann.
@@ -92,8 +93,8 @@ services:
     image: erikwenke2003/shop_api:<tag-name>
     environment:
       DB_NAME: share_shop
-      DB_USER: userAdmin
-      DB_PASSWORD: xdb_Admin890!
+      DB_USER: userTest
+      DB_PASSWORD: testPassword
       DB_HOST: db
     depends_on:
       db:
@@ -105,13 +106,13 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: share_shop
-      MYSQL_USER: userAdmin
-      MYSQL_PASSWORD: xdb_Admin890!
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: userTest
+      MYSQL_PASSWORD: testPassword
+      MYSQL_ROOT_PASSWORD: testRootPassword
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-        test: ["CMD-SHELL", "mysql -uuserAdmin -pxdb_Admin890! -e 'SELECT 1;' share_shop"]
+        test: ["CMD-SHELL", "mysql -uuserTest -ptestPassword -e 'SELECT 1;' share_shop"]
         interval: 5s
         timeout: 5s
         retries: 5
