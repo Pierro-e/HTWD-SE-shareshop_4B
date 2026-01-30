@@ -6,7 +6,7 @@ ShareShop ist eine SPA Anwendung zum kollaborativen Einkaufen in WG's.
 
 Eine Instanz des Projekts ist auf einer VM der [HTW Dresden](https://www.htw-dresden.de/) gehostet.
 Es kann aus dem internen Netz oder über eine VPN-Verbindung erreicht werden.
-[Hier](http://141.56.137.83/) kannst du es einfach mal ausprobieren.
+[Probier es einfach mal aus](http://141.56.137.83/) kannst du es einfach mal ausprobieren.
 
 ## Docker
 
@@ -15,6 +15,8 @@ Die Docker Images finden sich auf [Docker Hub](https://hub.docker.com/u/erikwenn
 ## Projektstruktur
 
 ```text
+
+
 docs
 ├── _includes
 │   └── default-attributes.inc.adoc
