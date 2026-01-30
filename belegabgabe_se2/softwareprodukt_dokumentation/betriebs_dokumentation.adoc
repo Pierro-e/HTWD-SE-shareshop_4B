@@ -12,402 +12,115 @@ include::attributes.adoc[]
 
 === Softwareanforderungen
 
+* Docker
+
+=== Installation
+
 Die Anwendung besteht aus 3 Containern, welche alle unabhängig voneinander gehostet werden können.
-Ein Container ist die Datenbank, welche frei gewählt werden kann, solange sie mit FastAPI kompatibel ist.
+Ein Container ist die Datenbank.
 Der zweite Container ist die API, welche zwischen User Interface und Datenbank liegt.
 Ein User Interface bildet den letzten Container.
 
 Da die Architektur sich dem Schichten-Pattern bedient, müssen die Conatiner aufeinander aufgebaut werden.
-Kurz gesagt: Ohne die Datenbank, kann die API nicht gestartet werden
-und ohne die API funktioniert das User Interface nicht.
-Die Docker
+Ohne eine laufende Datenbank kann keine API instanziert werden und ohne eine API kein User Interface.
 
-==== Manuell
+==== Verteilt
 
-* Betriebssystem: Ubuntu 24.04.2 LTS x86_64
-* WebServer: Nginx 1.24.0
-* Backend Runtime: Python 3.12.3
-* Backend Framework: FastAPI 0.115.12
-* ASGI Server: Uvicorn 0.34.3
-* Datenbank: MySQL 8.0.44
+===== Datenbank
 
-== Systemeinrichtung
+Es kann jede mit FastAPI kompatible Datenbank gewählt werden.
 
-=== aktuelles System
+===== API
 
-* Anwendung: http://141.56.137.83/
-* API: http://141.56.137.83:8000
-* API-Dokumenation: http://141.56.137.83:8000/docs
-* Voraussetzungen für die Nutzung:
-** Netzwerkzugriff auf die Server-IP (VPN zur HTW Dresden)
+Die API steht als Docker Image in link:https://hub.docker.com/r/erikwennke2003/shop_api/tags[Docker Hub]
+zur Verfügung.
+Es muss der Port auf dem sie zur Verfügung stehen soll zugänglich gemacht werden.
+Außerdem müssen die Parameter der Datenbank definiert werden.
 
-=== Installation
-
-==== mit Docker
-
-Im Moment werden noch keine vorgefertigten Docker Images zur Verfügung gestellt.
-Sie müssen eigenständig erstellt werden.
-Dafür klonen Sie zuerst den "main" Branch des Remote Git Repository.
-
-[source,bash]
+[source, bash]
 ----
-git clone --branch main https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git
+# holen des Images
+docker pull erikwennke2003/shop_api:<tag-name>
+
+# Start Container
+docker run -p 8000:8000 -e DB_NAME="<name>" -e DB_USER="<user>" \
+-e DB_PASSWORD="<password>" -e DB_HOST="<host>" erikwennke2003/shop_api:<tag-name>
 ----
 
-Wechsele in das erstellte Verzeichnis, um die Quelldateien zu inspizieren.
+===== User Interface
 
-[source,bash]
+Das User Interface ist ebenfalls auf link:https://hub.docker.com/r/erikwennke2003/shop_ui/tags[Docker Hub]
+verfügbar.
+Die UI muss den default Port von Nginx öffnen.
+Zudem muss ihr die Basis URL der API übergeben werden.
+
+[source, bash]
 ----
-cd HTWD-SE-shareshop_4B
-----
+# holen des Images
+docker pull erikwennke2003/shop_ui:<tag-name>
 
-Anschließend müssen die Dockerfiles entsprechend des Anwendungszwecks
-konfiguriert werden.
-Die Anwendung umfasst 2 Dockerfiles und eine Compose Datei.
-Sie erzeugen Images für die API und das UI.
-Die Compose Datei erzeugt noch eine Datenbank und ist dafür gedacht,
-alle 3 Anwendungskomponenten (UI, API und Datenbank) auf einem Host zu starten.
-Es können aber auch alle Komponenten verteilt gehostet werden.
-
-In der Datei "<git_root>/src/frontend/Dockerfile" muss die Base URL der API
-definiert werden, da diese von Vite zur Buildzeit gebraucht wird.
-
-[source,dockerfile]
-----
-# =========================================
-# Stage 1: Vite
-# =========================================
-
-# ...
-
-ENV VITE_API_BASE_URL=<api_base_url>
-
-# ...
+# Start Container
+docker run -p 80:80 -e MY_APP_API_BASE_URL="<api>" erikwennke2003/shop_ui:<tag-name>
 ----
 
-In der Compose Datei müssen noch die Eigenschaften der Datenbank definiert werden.
-Zudem können noch Ports angepasst werden.
+==== Zusammen
 
-[source,yaml]
+Es können alle Container zusammen auf einer Maschine gehostet werden.
+Hierfür kann man eine Docker Compose File nutzen.
+Dabei ist es wichtig die Reienfolge der Inbetriebnahme (Datenbank -> API -> UI) zu beachten.
+Ein typische Stolperfall ist,
+dass zum Beispiel die MySQL erst eine Demo-Service ertstellt, sich anschließent aber Neustartet,
+bevor sie komplett zur Verfügung steht.
+Das führt dazu, dass die API einen verstärkten Healthcheck durchführen muss,
+bevor sie gestartet werden kann.
+
+Im folgenden Beispile müssen nur noch <tag-name> ersetzt werden.
+Dann sollte die Ausführung möglich sein.
+
+[source, bash]
 ----
 services:
   ui:
-    build: ./frontend/
-    ports:
-      - "8080:8080"
-    depends_on:
-      - api
-  api:
-    build: ./backend/
+    image: erikwenke2003/shop_ui:<tag-name>
     environment:
-      DB_NAME: <name>
-      DB_USER: <user>
-      DB_PASSWORD: <password>
-      DB_HOST: db
-    ports:
-      - "8000:8000"
+      MY_APP_API_BASE_URL: http://localhost:8000/
     depends_on:
-      - db
+     - api
+    ports:
+      "80:80"
+  api:
+    image: erikwenke2003/shop_api:<tag-name>
+    environment:
+      DB_NAME: share_shop
+      DB_USER: userAdmin
+      DB_PASSWORD: xdb_Admin890!
+      DB_HOST: db
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      "8000:8000"
   db:
-    image: mysql:8.4
+    image: mysql:8.0
     restart: always
     environment:
-      MYSQL_DATABASE: <name>
-      MYSQL_USER: <user>
-      MYSQL_PASSWORD: <password>
-      MYSQL_ROOT_PASSWORD: <rootpassword>
+      MYSQL_DATABASE: share_shop
+      MYSQL_USER: userAdmin
+      MYSQL_PASSWORD: xdb_Admin890!
+      MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
       - mysql_data:/var/lib/mysql
-    ports:
-      - "3306:3306"
+    healthcheck:
+        test: ["CMD-SHELL", "mysql -uuserAdmin -pxdb_Admin890! -e 'SELECT 1;' share_shop"]
+        interval: 5s
+        timeout: 5s
+        retries: 5
 volumes:
   mysql_data:
 ----
 
-Die komplette Anwendung kann dann erzeugt und gestartet werden.
-
-[source,bash]
-----
-cd <git_root>/src/
-docker compose build
-docker compose up
-----
-
-Detalierte Informationen zur Verwaltung bietet die link:https://docs.docker.com/compose/[Docker Compose Dokumentation].
-
-==== Manuell
-
-Die folgenden Schritte beschreiben die Installation ohne Docker auf Ubuntu.
-Die Reihenfolge entspricht der Komponenten-Auflistung (Frontend, Nginx, API, MySQL).
-Hinweis: Die Datenbank muss existieren, bevor das Backend erfolgreich starten kann.
-
-===== Frontend (Vue.js)
-
-Vorraussetzungen:
-
-* Node.js (LTS empfohlen) + npm
-* Quellcode lokal vorhanden (Repository geklont)
-
-[source,bash]
-----
-# optional: Repo klonen (falls noch nicht vorhanden)
-# git clone --branch main https://github.com/Pierro-e/HTWD-SE-shareshop_4B.git
-# cd HTWD-SE-shareshop_4B/src/frontend/shareshop_4b
-
-cd <git_root>/src/frontend/shareshop_4b
-
-# Dependencies installieren
-npm ci
-
-# API-Base-URL für den Build setzen (Vite)
-# Beispiel: export VITE_API_BASE_URL="http://141.56.137.83:8000"
-export VITE_API_BASE_URL="<api_base_url>"
-
-# Build erstellen
-npm run build
-
-# Build-Ausgabe nach /var/www/shareshop/dist deployen
-sudo mkdir -p /var/www/shareshop
-sudo rm -rf /var/www/shareshop/dist
-sudo cp -r dist /var/www/shareshop/dist
-
-# (optional) Rechte so setzen, dass Nginx lesen kann
-sudo chown -R www-data:www-data /var/www/shareshop/dist
-sudo find /var/www/shareshop/dist -type d -exec chmod 755 {} \;
-sudo find /var/www/shareshop/dist -type f -exec chmod 644 {} \;
-----
-
-Build-Ausgabe liegt unter: `/var/www/shareshop/dist`.
-Auslieferung erfolgt über Nginx.
-
-===== Web Server (Nginx)
-
-Ziel:
-
-* Frontend unter `/` ausliefern
-* Requests an das Backend auf Port `8000` weiterleiten (typisch unter `/api/`)
-
-[source,bash]
-----
-sudo apt update
-sudo apt install -y nginx
-
-# Nginx Site-Config erstellen
-sudo nano /etc/nginx/sites-available/shareshop
-----
-
-Beispiel-Konfiguration (Frontend + Proxy):
-
-[source,nginx]
-----
-server {
-    listen 80;
-    server_name _;
-
-    root /var/www/shareshop/dist;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Backend-Weiterleitung (anpassen, falls andere Route verwendet wird)
-    location /api/ {
-        proxy_pass http://127.0.0.1:8000/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-----
-
-Aktivieren und Reload:
-
-[source,bash]
-----
-sudo ln -sf /etc/nginx/sites-available/shareshop /etc/nginx/sites-enabled/shareshop
-sudo rm -f /etc/nginx/sites-enabled/default
-sudo nginx -t
-sudo systemctl enable --now nginx
-sudo systemctl reload nginx
-----
-
-===== API (FastAPI)
-
-Vorraussetzungen:
-
-* Python 3.12+
-* pip (Python Package Manager)
-* Zugriff auf die MySQL-Datenbank `share_shop`
-* Quellcode lokal vorhanden
-
-Installation:
-
-[source,bash]
-----
-cd <git_root>/src/backend
-
-# Python Dependencies installieren
-sudo apt install -y python3.12 python3.12-venv python3-pip
-
-# Virtuelles Environment erstellen (optional, aber empfohlen)
-python3 -m venv venv
-source venv/bin/activate
-
-# Python-Packages installieren
-pip install fastapi==0.115.12 \
-    uvicorn==0.34.3 \
-    sqlalchemy \
-    pymysql \
-    python-dotenv \
-    pydantic[email] \
-    numpy
-
-# .env Datei erstellen mit Datenbankzugangsdaten
-cat > .env << EOF
-DB_HOST=localhost
-DB_USER=<db_user>
-DB_PASSWORD=<db_password>
-DB_NAME=share_shop
-EOF
-
-# Rechte setzen (nur owner darf lesen)
-chmod 600 .env
-----
-
-Systemd Service einrichten (empfohlen für Produktivbetrieb):
-
-[source,bash]
-----
-sudo nano /etc/systemd/system/fastapi.service
-----
-
-Service-Konfiguration:
-
-[source,ini]
-----
-[Unit]
-Description=FastAPI Share Shop Backend
-After=network.target mysql.service
-
-[Service]
-Type=simple
-User=www-data
-WorkingDirectory=<git_root>/src/backend
-Environment="PATH=<git_root>/src/backend/venv/bin"
-ExecStart=<git_root>/src/backend/venv/bin/uvicorn share_shop_api:app --host 0.0.0.0 --port 8000
-Restart=always
-RestartSec=10
-
-[Install]
-WantedBy=multi-user.target
-----
-
-Service aktivieren und starten:
-
-[source,bash]
-----
-sudo systemctl daemon-reload
-sudo systemctl enable fastapi.service
-sudo systemctl start fastapi.service
-
-# Status prüfen
-sudo systemctl status fastapi.service
-----
-
-Alternativ: Manueller Start (für Tests):
-
-[source,bash]
-----
-cd <git_root>/src/backend
-source venv/bin/activate  # falls venv verwendet wird
-uvicorn share_shop_api:app --host 0.0.0.0 --port 8000
-----
-
-Die API ist dann unter `http://localhost:8000` erreichbar.
-API-Dokumentation unter `http://localhost:8000/docs`.
-
-===== Datenbank (MySQL)
-
-Voraussetzungen:
-
-* MySQL 8.0+
-
-Installation:
-
-[source,bash]
-----
-sudo apt update
-sudo apt install -y mysql-server
-
-# MySQL sichern (Root-Passwort setzen, etc.)
-sudo mysql_secure_installation
-
-# Service aktivieren
-sudo systemctl enable mysql
-sudo systemctl start mysql
-----
-
-Datenbank und Benutzer erstellen:
-
-[source,bash]
-----
-# Als root in MySQL einloggen
-sudo mysql -u root -p
-----
-
-SQL-Befehle ausführen:
-
-[source,sql]
-----
--- Datenbank erstellen
-CREATE DATABASE share_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- Benutzer erstellen und Rechte vergeben
-CREATE USER 'shareshop_user'@'localhost' IDENTIFIED BY '<sicheres_passwort>';
-GRANT ALL PRIVILEGES ON share_shop.* TO 'shareshop_user'@'localhost';
-FLUSH PRIVILEGES;
-
--- Optional: Remote-Zugriff erlauben (nur wenn nötig)
--- CREATE USER 'shareshop_user'@'%' IDENTIFIED BY '<sicheres_passwort>';
--- GRANT ALL PRIVILEGES ON share_shop.* TO 'shareshop_user'@'%';
-
-QUIT;
-----
-
-Datenbank-Schema erstellen:
-
-WICHTIG: Das Backend verwendet SQLAlchemy ORM, erstellt aber die Tabellen NICHT automatisch.
-Das Schema muss manuell erstellt werden.
-
-Im Repository wird eine `backup.sql` Datei bereitgestellt, die alle Tabellen und Basis-Daten enthält.
-Diese kann direkt importiert werden:
-
-[source,bash]
-----
-# Schema aus backup.sql importieren
-mysql -u shareshop_user -p share_shop < <git_root>/backup.sql
-
-# Optional: Falls backup.sql an anderem Ort liegt
-# mysql -u shareshop_user -p share_shop < /pfad/zur/backup.sql
-----
-
-Die `backup.sql` Datei enthält:
-- Alle 11 Tabellen (Nutzer, Einheiten, Produkt, Liste, ListeMitglieder, ListeProdukte, FavProdukte, Bedarfsvorhersage, Einkaufsarchiv, eingekaufte_Produkte, Kostenaufteilung)
-- Basis-Einheiten (Kilogramm, Gramm, Liter, Milliliter, Stück)
-- Alle notwendigen Fremdschlüssel und Indizes
-
-Überprüfung:
-
-[source,bash]
-----
-# Tabellen anzeigen
-mysql -u shareshop_user -p share_shop -e "SHOW TABLES;"
-
-# Struktur prüfen
-mysql -u shareshop_user -p share_shop -e "DESCRIBE Nutzer;"
-----
+Weiterführende Informationen zum Verwalten und Starten von Containern für diesen Zusammenhang
+gibt es in der link:https://docs.docker.com/compose/[Docker Compose Dokumentation].
 
 == Systembetreuung
 
