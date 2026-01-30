@@ -11,6 +11,7 @@ with patch.dict(os.environ, {
     'DB_NAME': 'test'
 }):
     from share_shop_api import get_nutzer_all, get_nutzer_by_id, create_nutzer, get_produkte_all, get_produkt_by_id, create_produkt, get_fav_produkte_by_nutzer, get_nutzer_by_email
+    from share_shop_api import change_passwort
     from share_shop_api import delete_nutzer, get_eingekaufte_produkte, get_kostenaufteilung_empfaenger, delete_liste, create_liste, add_mitglied
     from share_shop_api import NutzerCreate, ProduktCreate, ListeCreate
 
@@ -525,3 +526,17 @@ def test_add_mitglied_nutzer_not_found(mock_session_local):
     with pytest.raises(Exception) as exc_info:
         add_mitglied(1, 999, db=mock_db)
     assert "Nutzer nicht gefunden" in str(exc_info.value)
+
+### weitere Tests folgen hier ###
+@patch('share_shop_api.SessionLocal')
+def test_change_passwort_success(mock_session_local):
+    mock_db = MagicMock()
+    mock_session_local.return_value = mock_db
+    mock_nutzer = create_mock_nutzer(1, 'user@test.com', 'User')
+    mock_db.query.return_value.filter.return_value.first.return_value = mock_nutzer
+
+    body = MagicMock()
+    body.neues_passwort = 'newhash'
+
+    result = change_passwort(1, body, db=mock_db)
+    assert result.passwort_hash == 'newhash'
