@@ -1,4 +1,4 @@
-# ShareShop
+# ShareShop 
 
 ShareShop ist eine SPA Anwendung zum kollaborativen Einkaufen in WG's.
 
