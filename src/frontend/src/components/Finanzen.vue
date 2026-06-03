@@ -179,8 +179,8 @@ export default {
     async loadFinanzen(user_id) {
       try {
         const [empfaengerRes, schuldnerRes] = await Promise.all([
-          api.get(`http://141.56.137.83:8000/kostenaufteilung/empfaenger/${user_id}`),
-          api.get(`http://141.56.137.83:8000/kostenaufteilung/schuldner/${user_id}`)
+          api.get(`/kostenaufteilung/empfaenger/${user_id}`),
+          api.get(`/kostenaufteilung/schuldner/${user_id}`)
         ])
 
         this.forderungen = empfaengerRes.data

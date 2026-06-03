@@ -36,6 +36,17 @@
 
     <button
       class="bottom-btn"
+      :class="{ highlight: highlightBtn === 5 }"
+      @click="$router.push('/finanzen')"
+    >
+      <div class="icon">
+        <font-awesome-icon icon="euro-sign" />
+      </div>
+      <span>Finanzen</span>
+    </button>
+
+    <button
+      class="bottom-btn"
       :class="{ highlight: highlightBtn === 4 }"
       @click="$router.push('/settings')"
     >
